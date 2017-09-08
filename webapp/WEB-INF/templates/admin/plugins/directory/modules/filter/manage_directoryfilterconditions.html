@@ -1,0 +1,56 @@
+<#include "managedirectoryfiltercondition_tabs.html" />
+<@tabs2 tab="directoryfiltercondition" />
+
+<@box>
+	<@boxHeader title='#i18n{module.directory.filter.manage_directoryfiltercondition.title}' boxTools=true>
+		<@tform class='form-inline pull-right' name='manage_directoryfiltercondition' action='jsp/admin/plugins/directory/modules/filter/ManageDirectoryFilterConditions.jsp'>
+			<@button type='submit' name='view_createDirectoryFilterCondition' buttonIcon='plus' title='#i18n{module.directory.filter.manage_directoryfilterconditions.buttonAdd}' />
+		</@tform>
+	</@boxHeader>
+	<@boxBody>    
+    <@messages infos=infos />
+    <@paginationAdmin paginator=paginator combo=1 />
+    <div class="clearfix"></div>
+    <@table>
+        <tr>
+            <input type="hidden" id="id" name="id"/>
+            <th>#i18n{module.directory.filter.manage_directoryfilterconditions.columnIdDirectoryFilter}</th>
+            <th>#i18n{module.directory.filter.manage_directoryfilterconditions.columnIdUnit}</th>
+            <th>#i18n{module.directory.filter.manage_directoryfilterconditions.columnIdEntry}</th>
+            <th>#i18n{module.directory.filter.manage_directoryfilterconditions.columnOperator}</th>
+            <th>#i18n{module.directory.filter.manage_directoryfilterconditions.columnFilterType}</th>
+            <th>#i18n{portal.util.labelActions}</th>
+        </tr>
+        <@tableHeadBodySeparator />
+            <#list directoryfiltercondition_list as directoryfiltercondition >
+        <tr>
+            <input type="hidden" id="id" name="id"/>
+            <td>
+                ${directoryfiltercondition.idDirectoryFilter}
+            </td>
+            <td>
+                ${directoryfiltercondition.idUnit}
+            </td>
+            <td>
+                ${directoryfiltercondition.idEntry}
+            </td>
+            <td>
+                ${directoryfiltercondition.operator}
+            </td>
+            <td>
+                ${directoryfiltercondition.filterType}
+            </td>
+        <td>
+			<@aButton href='jsp/admin/plugins/directory/modules/filter/ManageDirectoryFilterConditions.jsp?view=modifyDirectoryFilterCondition&id=${directoryfiltercondition.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' showTitle=false />
+						
+			<@aButton href='jsp/admin/plugins/directory/modules/filter/ManageDirectoryFilterConditions.jsp?action=confirmRemoveDirectoryFilterCondition&id=${directoryfiltercondition.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='btn-danger' showTitle=false />
+
+        </td>
+        </tr>
+        </#list>
+    </@table>
+
+    <@paginationAdmin paginator=paginator />
+
+  </@boxBody>
+</@box>

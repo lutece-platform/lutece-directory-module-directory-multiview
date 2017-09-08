@@ -1,0 +1,10 @@
+<#macro tabs2 tab >
+<@tabs>
+	<@listTabs>
+			<li <#if tab="directoryfilter">class="active"</#if>>
+				<a href="jsp/admin/plugins/directory/modules/filter/ManageDirectoryFilters.jsp">#i18n{module.directory.filter.manage_directoryfilters.pageTitle}</a>
+			</li>
+	</@listTabs>
+</@tabs>
+
+</#macro>

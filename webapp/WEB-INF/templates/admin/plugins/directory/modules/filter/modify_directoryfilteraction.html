@@ -1,0 +1,29 @@
+<#include "managedirectoryfilteraction_tabs.html" />
+<@tabs2 tab="directoryfilteraction" />
+
+<@box>
+	<@boxHeader title='#i18n{module.directory.filter.modify_directoryfilteraction.title}' />
+	<@boxBody>
+    <@tform class="form-horizontal" method="post" name="modify_directoryfilteraction" action="jsp/admin/plugins/directory/modules/filter/ManageDirectoryFilterActions.jsp">
+			<@messages errors=errors />
+			<input type="hidden" id="id" name="id" value="${directoryfilteraction.id}"/>
+			
+				<@formGroup labelKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelIdDirectoryFilter}' helpKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelIdDirectoryFilter.help}' mandatory=true>
+					<@input type='text' name='id_directory_filter' value='${directoryfilteraction.idDirectoryFilter}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelIdAction}' helpKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelIdAction.help}' mandatory=true>
+					<@input type='text' name='id_action' value='${directoryfilteraction.idAction}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelPosition}' helpKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelPosition.help}' >
+					<@input type='text' name='position' value='${directoryfilteraction.position}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelStyle}' helpKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelStyle.help}' >
+					<@input type='text' name='style' value='${directoryfilteraction.style}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelNbItem}' helpKey='#i18n{module.directory.filter.modify_directoryfilteraction.labelNbItem.help}' >
+					<@input type='text' name='nb_item' value='${directoryfilteraction.nbItem}' />
+				</@formGroup>
+        <@actionButtons button1Name="action_modifyDirectoryFilterAction" button2Name="view_manageDirectoryFilterAction"/>
+    </@tform>
+	</@boxBody>
+</@box>
