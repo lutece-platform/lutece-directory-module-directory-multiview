@@ -1,23 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
-        <title>Plugin directory-filter</title>
+        <title>Plugin directory-multiview</title>
     </properties>
     <body>
-        <section name="Plugin directory-filter">
+        <section name="Plugin directory-multiview">
             <!--
             <p>
-                <img src="images/directory-filter.png" />
+                <img src="images/directory-multiview.png" />
             </p>
             -->
             <subsection name="Introduction">
-                <p></p>
+                <p>This module proposes a view of multiple directories and directory records filtered by user, 
+                    depending on his unit membership in unitTree, and proposes a dashboard of those directory records 
+                    filtered by the workflow state of the records.
+                </p>
+                <p>
+                    <ul>
+                        <li>The directory ViewFilter represents the filter bound to a directory</li>
+                        <li>The ViewFilter condition has different types :
+                            <ul>
+                                <li>Type unitTreeFilter : the condition stores the entry Id of the 
+                                    directory record that must match a unit bound to the user
+                                </li>
+                            </ul>
+                        </li>
+                        <li>The ViewFilter action stores the state of the workflow 
+                            chosen for displaying the dashboard of the number of records 
+                            corresponding to this state, filtered by the filter condition 
+                        </li>
+                    </ul>
+                </p>
             </subsection>
             <subsection name="Configuration">
-                <p></p>
+                <p>requires at least  a form / workflow / directory complete configuration</p>
+                <p>requires the conditions and actions filter configuration</p>
             </subsection>
             <subsection name="Usage">
-                <p></p>
+                 <p>/!\ the directory entry containing the unitTree value should be indexed !</p>
             </subsection>
         </section>
     </body>

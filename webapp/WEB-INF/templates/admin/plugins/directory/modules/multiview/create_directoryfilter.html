@@ -1,0 +1,27 @@
+<#include "managedirectoryfilter_tabs.html" />
+<@tabs2 tab="directoryfilter" />
+<@box>
+	<@boxHeader title='#i18n{module.directory.multiview.create_directoryfilter.title}' />
+	<@boxBody>
+    <@tform name='create_directoryfilter' action='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilters.jsp'>
+
+        <@messages errors=errors />
+        <input type="hidden" id="id" name="id"/>
+        
+				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfilter.idDirectory}' helpKey='#i18n{module.directory.multiview.modify_directoryfilter.idDirectory.help}' mandatory=true>
+					<@input type='text' name='idDirectory' value='${directoryfilter.idDirectory!\'\'}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.multiview.create_directoryfilter.labelName}' helpKey='#i18n{module.directory.multiview.create_directoryfilter.labelName.help}' mandatory=true>
+					<@input type='text' name='name' value='${directoryfilter.name!\'\'}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.multiview.create_directoryfilter.labelStyle}' helpKey='#i18n{module.directory.multiview.create_directoryfilter.labelStyle.help}' >
+					<@input type='text' name='style' value='${directoryfilter.style!\'\'}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.multiview.create_directoryfilter.labelPosition}' helpKey='#i18n{module.directory.multiview.create_directoryfilter.labelPosition.help}' >
+					<@input type='text' name='position' value='${directoryfilter.position!\'\'}' />
+				</@formGroup>
+				
+				<@actionButtons button1Name="action_createDirectoryFilter" button2Name="view_manageDirectoryFilter"/>
+    </@tform>
+	</@boxBody>
+</@box>

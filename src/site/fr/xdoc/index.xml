@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
-        <title>Plugin directory-filter</title>
+        <title>Plugin directory-multiview</title>
     </properties>
     <body>
-        <section name="Plugin directory-filter">
+        <section name="Plugin directory-multiview">
             <!--
             <p>
-                <img src="images/directory-filter.png" />
+                <img src="images/directory-multiview.png" />
             </p>
             -->
             <subsection name="Introduction">

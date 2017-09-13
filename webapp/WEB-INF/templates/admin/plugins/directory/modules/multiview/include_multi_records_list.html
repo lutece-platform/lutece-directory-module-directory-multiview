@@ -1,0 +1,102 @@
+<div class="box">
+	<div class="box-header">
+ 	<h3 class="box-title"></h3>
+		<div class="box-tools">
+		<@paginationAdmin paginator=paginator combo=0 form=0 showcount=0 />
+		</div>
+ 	</div>
+ 	<div class="box-body table-responsive">
+ 	
+ 	
+ 	
+<!-- NEW ------------------------------------- -->
+
+<link href="css/admin/plugins/directory/modules/multiview/gru.css"  rel="stylesheet" > 
+<link href="css/admin/plugins/directory/modules/multiview/ticketing.css"  rel="stylesheet" > 
+<link href="css/admin/plugins/directory/modules/multiview/workflow_ticketing.css"  rel="stylesheet" > 
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 table-responsive">
+	<table class="table table-hover table-striped">
+      	<thead>
+      	  <tr>
+                  <th data-field="reference">Etat</th>
+    
+        	  <th data-field="category_label">Nature</th>
+        	  <th data-field="lastname">Résumé</th>
+                <#if show_date_creation_result??>
+                  <th data-field="date_create" class="th-sort-DESC">Créée le</th>
+                </#if>
+                <#if show_date_modification_result??>
+                  <th data-field="date_modification" class="th-sort-DESC">Modifiée le</th>
+                </#if>
+
+
+      	  </tr>
+      	</thead>	
+      	<tbody>
+
+    <#list resource_actions_list as resource_actions>
+		<tr data-url="jsp/admin/plugins/directory/modules/multiview/DoVisualisationRecord_multi.jsp?id_directory_record=${resource_actions.record.idRecord}&id_directory=${resource_actions.record.directory.idDirectory}">
+			
+                    <td> <a href="jsp/admin/plugins/directory/modules/multiview/DoVisualisationRecord_multi.jsp?id_directory_record=${resource_actions.record.idRecord}&id_directory=${resource_actions.record.directory.idDirectory}" data-toggle="tooltip" data-placement="bottom" >
+                            <span class="label label-info unread">
+                        <#if resource_actions.workflow_state?exists>
+                            ${resource_actions.workflow_state.name}
+                        </#if>
+                        </span>
+                         </a>
+                    </td>
+
+                    <td><#if resource_actions.record.directory.title?exists>${resource_actions.record.directory.title}</#if></td>
+			 
+                    <td>
+			<#assign first_entry = true />
+			<#list entry_list_search_result as entry>
+                            <#assign entryKey = "" + entry.idEntry>
+                            <#assign listRecordField = resource_actions.map_id_entry_list_record_field[entryKey]>
+                            <!-- td -->
+                                   <#if listRecordField?has_content>
+                                       <#assign first_record_field = true />
+                                       <#assign compt = 0 />
+                                       <#list listRecordField as record_field>
+                                           ${entry.getHtmlRecordFieldValue( locale,record_field,false )}
+                     
+                                                   <#if show_date_creation_result?? && record_field.record?? && record_field.record.dateCreation??>
+                                                   <#assign date_creation = record_field.record.dateCreation>
+                                                   <#else>
+                                                   <#assign date_creation = "">
+                                                   </#if>
+                                                   <#if show_date_modification_result?? && record_field.record?? && record_field.record.dateModification??>
+                                                   <#assign date_modification = record_field.record.dateModification>
+                                                   <#else>
+                                                   <#assign date_modification = "">
+                                                   </#if>
+                                            <br>
+                                        </#list>
+                                    </#if>
+                            <!-- /td -->
+			
+		 	</#list>
+                        </td>
+
+                        <#if show_date_creation_result??>
+                        <td><#if date_creation??>${date_creation}</#if></td>
+                        </#if>
+                        <#if show_date_modification_result??>
+                        <td><#if date_modification??>${date_modification}</#if></td>
+                        </#if>                       	
+
+
+                 </tr>
+
+	</#list>
+
+
+			
+		</tbody>
+		</table>
+            </div>
+		
+		<@paginationAdmin paginator=paginator combo=1 form=0 />
+	</div>
+</div>

@@ -1,0 +1,203 @@
+<#--
+-- Return true if the given entry is an entry type Image
+-- @param entry the entry to check
+-- @return true if the entry is an entry type Image
+-->
+<#function isEntryTypeImage entry>
+	<#return entry.entryType?has_content && entry.entryType.idType?has_content && entry.entryType.idType == id_entry_type_image>
+</#function>
+
+<#--
+-- Return true if the given entry is an entry type MyLuteceUser
+-- @param entry the entry to check
+-- @return true if the entry is an entry type MyLuteceUser
+-->
+<#function isEntryTypeMyLuteceUser entry>
+	<#return entry.entryType?has_content && entry.entryType.idType?has_content && entry.entryType.idType == id_entry_type_mylutece_user>
+</#function>
+
+<#--
+-- Return true if the given entry is an entry type Geolocation
+-- @param entry the entry to check
+-- @return true if the entry is an entry type Geolocation
+-->
+<#function isEntryTypeGeolocation entry>
+	<#return entry.entryType?has_content && entry.entryType.idType?has_content && entry.entryType.idType == id_entry_type_geolocation>
+</#function>
+
+<#--
+-- Build the HTML of the given record field
+-- @param entry the entry of the record field
+-- @param recordfield the recordfield
+-- @param first true if the record field is the first record field of the list of record fields of the given entry
+-- @return the HTLM code of the record field
+-->
+<#macro getRecordFieldHtml entry recordfield first>
+	<#if isEntryTypeGeolocation( entry )>
+		${entry.getHtmlRecordFieldValue( locale, recordfield, false )}
+		<#if recordfield.field?? && recordfield.field.title?? && recordfield.field.title == 'address' >
+			<#include "../../../skin/plugins/directory/" + entry.mapProvider.frontHtmlCode />
+		</#if>
+			
+	<#else>
+		<#if !first>
+		</#if>
+		<#if isEntryTypeImage( entry )>
+			<#if recordfield.field?? & recordfield.field.isShownInResultRecord(  )>${entry.getHtmlRecordFieldValue( locale, recordfield, false )}</#if>
+			<#elseif isEntryTypeMyLuteceUser(entry) && !permission_visualisation_mylutece_user>${record_field.value}<#else>
+			${entry.getHtmlRecordFieldValue( locale,recordfield, false )}
+		</#if>
+	</#if>
+</#macro>
+
+<#--
+-- Build the HTML code to display the actions
+-- @param resource_actions the actions to display
+-- @return the HTML code of the actions
+-->
+<#macro display_actions resource_actions >
+<#if resource_actions.workflow_action_list?exists>
+	<#list resource_actions.workflow_action_list as action>
+		<a class="btn btn-block btn-flat btn-primary" href="jsp/admin/plugins/directory/DoProcessActionWorkflow.jsp?id_action=${action.id}&amp;id_directory_record=${resource_actions.record.idRecord}&amp;id_directory=${directory.idDirectory}">
+			<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}" <#if action.icon.width!=-1>	width="${action.icon.width}"</#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if> title="${action.name}" alt="${action.name}"/>
+                        ${action.name}
+		</a>
+	</#list>
+</#if>
+	<#--
+         <#list resource_actions.record.actions?sort_by("nameKey") as action >
+		<#if (action.nameKey!="directory.action.history.name") || (action.nameKey=="directory.action.history.name" && history_workflow)>
+	 		<a class="btn btn-xs btn-flat <#if action.nameKey="directory.action.delete.name" || action.nameKey=="directory.action.disable.name" >btn-danger<#elseif action.nameKey="directory.action.enable.name">btn-success<#else>btn-primary</#if>" href="${action.url}?id_directory_record=${resource_actions.record.idRecord}&amp;id_directory=${directory.idDirectory}" title="${action.description}">
+	  		<i class="${action.iconUrl!}"></i>
+	  	</a>
+		</#if>
+	</#list>
+        -->
+</#macro>
+
+<div class="row">
+	<div class="col-xs-12 col-sm-8">
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">#i18n{directory.viewing_directory_record.title} : '${directory.title}' - #i18n{directory.viewing_directory_record.labelRecord} ${record.idRecord}
+				<#if record.dateCreation?? && show_date_creation_record >
+				<small>
+					- #i18n{directory.viewing_directory_record.date_creation} ${record.dateCreation}</#if>
+					<#if record.dateModification?? && show_date_modification_record > - #i18n{directory.viewing_directory_record.date_modification} ${record.dateModification}</#if>
+				</small>
+                                </h3>
+			</div>
+
+			<div class="box-body">
+				<form class="form-horizontal" action="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" method="get">
+				<input name="page" value="directory" type="hidden" >
+				<input type="hidden" name="id_directory" value="${directory.idDirectory}">
+				<input type="hidden" name="session" value="session">
+			<#assign editModeValue = "ReadOnly">
+			
+			<#assign viewNumberAttValue = "1">
+			
+			<#list entry_list as entry>
+			
+			
+			<#if entry.fields?? && entry.fields?has_content>
+				<#list entry.fields as field>
+					<#if field?? && field.title?has_content && field.title == "viewNumberAtt">
+						<#assign viewNumberAttValue = field.value >
+						<#break>
+					</#if>
+				</#list>
+			</#if>
+			<#if entry.mapProvider?has_content>
+					<#if entry.mapProvider.key?has_content && entry.mapProvider.key == "gismap" >
+						<#if entry.mapProvider.getParameter(viewNumberAttValue?number)?? && entry.mapProvider.getParameter(viewNumberAttValue?number).mapParameter??>
+							<#assign map_parameter = entry.mapProvider.getParameter(viewNumberAttValue?number).mapParameter >
+						</#if>
+						
+						<#if entry.mapProvider.getParameter(viewNumberAttValue?number)?? && entry.mapProvider.getParameter(viewNumberAttValue?number).addressParam??>
+							<#assign add_parameter = entry.mapProvider.getParameter(viewNumberAttValue?number).addressParam >
+						</#if>
+					</#if>
+			</#if>
+					<#if entry.entryType.group>
+						<fieldset>
+							<legend>${entry.title} </legend>
+							<#if entry.children?has_content>
+								<#list entry.children as child >
+								<div class="control-group">
+									<label class="control-label" for=""><#if child.title?exists>${child.title}</#if></label>
+									<div class="controls">
+										
+										<#assign entryKey=""+child.idEntry><#assign first = true>
+										<#list map_id_entry_list_record_field[entryKey] as recordfield>
+											<@getRecordFieldHtml entry=child recordfield=recordfield first=first /><#assign first = false>
+										</#list>
+									</div>
+								</div>
+								</#list>
+							</#if>
+						<#else>
+							<#assign entryKey=""+entry.idEntry>
+							<#assign first = true>
+							<div class="form-group">
+							<#if entry.title?exists>
+								<label class="control-label col-xs-12 col-sm-2" for="">${entry.title}</label>
+							</#if>
+							<#list map_id_entry_list_record_field[entryKey] as recordfield>
+								<#if recordfield.field?? && recordfield.field.title?? && recordfield.field.title == 'geometry' && recordfield.value?has_content>
+									<input type="hidden" id="${entry.idEntry}_geometry" name="${entry.idEntry}_geometry" value="${recordfield.value}" />
+								</#if>
+							</#list>
+							<#list map_id_entry_list_record_field[entryKey] as recordfield>
+								<div class="col-xs-12 col-sm-9">
+									<@getRecordFieldHtml entry=entry recordfield=recordfield first=first />
+									<#assign first = false>
+								</div>
+							</#list>
+							</div>
+						</#if>
+					</#list>
+					<div class="form-group">
+						<div class="col-xs-12 col-sm-offset-2 col-sm-9">
+							<button class="btn btn-default" type="submit" >
+								<i class="fa fa-remove"></i>&nbsp;#i18n{directory.resource_history.buttonBack}
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+                <div class="box box-primary">
+                        <div class="box-header with-border">
+				<div class="">
+				<#if resource_actions.workflow_state?exists>
+					#i18n{directory.viewing_directory_record.labelState}</th>
+					${resource_actions.workflow_state.name}</td>
+				</#if>
+				</div>
+                        </div>
+	                <div class="box-body">
+				<div class="">
+					<@display_actions resource_actions/>
+				</div>
+                        </div>
+
+                        <div class="box-body">
+				<div class="">
+				<#if item_navigator??>
+					<@item_navigation item_navigator=item_navigator />
+				</#if>
+				</div>
+                        </div>
+
+			</div>
+                </div>
+        </div>
+</div>
+<script>
+$( function(){
+	$(".pager").addClass("pager-xs");
+});
+</script>

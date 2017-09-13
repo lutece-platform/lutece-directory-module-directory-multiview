@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" >
+
+    <bean id="directory-multiview.directoryViewFilterDAO" class="fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterDAO" />
+    <bean id="directory-multiview.directoryViewFilterActionDAO" class="fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterActionDAO" />
+    <bean id="directory-multiview.directoryViewFilterConditionDAO" class="fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterConditionDAO" />
+
+    	<bean id="multiDirectory.searchAction" class="fr.paris.lutece.plugins.directory.modules.multiview.web.action.SearchRecordMultiDirectoryAction" />
+
+</beans>

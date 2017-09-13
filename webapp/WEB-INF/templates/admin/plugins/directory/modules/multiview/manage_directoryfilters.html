@@ -1,0 +1,57 @@
+<#include "managedirectoryfilter_tabs.html" />
+<@tabs2 tab="directoryfilter" />
+
+<@box>
+	<@boxHeader title='#i18n{module.directory.multiview.manage_directoryfilter.title}' boxTools=true>
+		<@tform class='form-inline pull-right' name='manage_directoryfilter' action='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilters.jsp'>
+			<@button type='submit' name='view_createDirectoryFilter' buttonIcon='plus' title='#i18n{module.directory.multiview.manage_directoryfilters.buttonAdd}' />
+		</@tform>
+	</@boxHeader>
+	<@boxBody>    
+    <@messages infos=infos />
+    <@paginationAdmin paginator=paginator combo=1 />
+    <div class="clearfix"></div>
+    <@table>
+        <tr>
+            <input type="hidden" id="id" name="id"/>
+            <th>#i18n{module.directory.multiview.manage_directoryfilters.columnIdDirectory}</th>
+            <th>#i18n{module.directory.multiview.manage_directoryfilters.columnName}</th>
+            <th>#i18n{module.directory.multiview.manage_directoryfilters.columnStyle}</th>
+            <th>#i18n{module.directory.multiview.manage_directoryfilters.columnPosition}</th>
+            <th>#i18n{portal.util.labelActions}</th>
+        </tr>
+        <@tableHeadBodySeparator />
+            <#list directoryfilter_list as directoryfilter >
+        <tr>
+            <input type="hidden" id="id" name="id"/>
+            <td>
+                ${directoryfilter.idDirectory}
+            </td>
+            <td>
+                ${directoryfilter.name}
+            </td>
+            <td>
+                ${directoryfilter.style}
+            </td>
+            <td>
+                ${directoryfilter.position}
+            </td>
+        <td>
+			<@aButton href='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilters.jsp?view=modifyDirectoryFilter&id=${directoryfilter.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' showTitle=false />
+						
+			<@aButton href='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilters.jsp?action=confirmRemoveDirectoryFilter&id=${directoryfilter.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='btn-danger' showTitle=false />
+
+                        <@aButton href='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterActions.jsp?id=${directoryfilter.id}' title='#i18n{module.directory.multiview.manage_directoryfilteractions.title}' buttonIcon='flag' color='btn-default' showTitle=false />
+
+                        <@aButton href='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterConditions.jsp?id=${directoryfilter.id}' title='#i18n{module.directory.multiview.manage_directoryfilterconditions.title}' buttonIcon='tags' color='btn-default' showTitle=false />
+
+
+        </td>
+        </tr>
+        </#list>
+    </@table>
+
+    <@paginationAdmin paginator=paginator />
+
+  </@boxBody>
+</@box>

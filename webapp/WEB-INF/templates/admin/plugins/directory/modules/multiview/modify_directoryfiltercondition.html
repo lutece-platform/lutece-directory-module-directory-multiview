@@ -1,0 +1,26 @@
+<#include "managedirectoryfiltercondition_tabs.html" />
+<@tabs2 tab="directoryfiltercondition" />
+
+<@box>
+	<@boxHeader title='#i18n{module.directory.multiview.modify_directoryfiltercondition.title}' />
+	<@boxBody>
+    <@tform class="form-horizontal" method="post" name="modify_directoryfiltercondition" action="jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterConditions.jsp">
+			<@messages errors=errors />
+			<input type="hidden" id="id" name="id" value="${directoryfiltercondition.id}"/>
+			
+				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfiltercondition.labelIdDirectoryFilter}' helpKey='#i18n{module.directory.multiview.modify_directoryfiltercondition.labelIdDirectoryFilter.help}' mandatory=true>
+					<@input type='text' name='id_directory_filter' value='${directoryfiltercondition.idDirectoryFilter}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfiltercondition.labelIdEntry}' helpKey='#i18n{module.directory.multiview.modify_directoryfiltercondition.labelIdEntry.help}' >
+					<@input type='text' name='id_entry' value='${directoryfiltercondition.idEntry}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfiltercondition.labelOperator}' helpKey='#i18n{module.directory.multiview.modify_directoryfiltercondition.labelOperator.help}' >
+					<@input type='text' name='operator' value='${directoryfiltercondition.operator}' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfiltercondition.labelFilterType}' helpKey='#i18n{module.directory.multiview.modify_directoryfiltercondition.labelFilterType.help}' >
+					<@input type='text' name='filter_type' value='${directoryfiltercondition.filterType}' />
+				</@formGroup>
+        <@actionButtons button1Name="action_modifyDirectoryFilterCondition" button2Name="view_manageDirectoryFilterCondition"/>
+    </@tform>
+	</@boxBody>
+</@box>

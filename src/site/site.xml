@@ -5,13 +5,13 @@
             <item name="FR" href="/fr/index.html" />
         </links>
         
-        <menu name="Plugin directory-filter">
+        <menu name="Plugin directory-multiview">
             <item name="Home" href="index.html"/>
         </menu>
         
         <menu name="Downloads" inherit="bottom">
-            <item name="Released versions" href="../../stable_builds/plugins/plugin-directory-filter/"/>
-            <item name="Nightly builds" href="../../nightly_builds/plugins/plugin-directory-filter/" />
+            <item name="Released versions" href="../../stable_builds/plugins/plugin-directory-multiview/"/>
+            <item name="Nightly builds" href="../../nightly_builds/plugins/plugin-directory-multiview/" />
         </menu>
 
     <!--

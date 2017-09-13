@@ -1,0 +1,73 @@
+<#include "include_multi_records_list_header.html">
+<@row>
+	<@tform action='jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp' id='searchForm'>
+		<input type="hidden" name="id_directory" value="<#if directory??>${directory.idDirectory}</#if>">
+		<input type="hidden" name="session" value="session">
+		<input name="page" value="directory" type="hidden">
+		<input name="search_action" value="search_action" type="hidden">
+		
+                
+                <#if dashboard_multi_directory_view?exists >
+                <@columns>
+                        <div>
+                            ${dashboard_multi_directory_view}
+                        </div>
+                </@columns>
+                </#if> 
+                <#if directory??>
+		<@columns>
+			<#include "include_multi_records_list_search.html">
+		</@columns>
+                </#if>
+		<@columns>
+			<#include "include_multi_records_list.html">
+		</@columns>
+	</@tform>
+</@row>
+
+<script>
+$(document).ready(function () {
+
+	$.fn.clearForm = function()
+ 	{
+ 	return this.each(function()
+ 	{
+ 		var type = this.type, tag = this.tagName.toLowerCase();
+ 		if (tag == 'form')
+ 			return $(':input',this).clearForm();
+ 		if (type == 'text' || type == 'password' || tag == 'textarea')
+ 		  this.value = '';
+ 		else if (type == 'checkbox' || type == 'radio')
+ 			this.checked = false;
+ 		else if (tag == 'select')
+ 			this.selectedIndex = 0;
+ 	  });
+ 	};
+
+	// For multi selection
+	$("#select-ids").change(function(){
+		$(".selected-id").prop('checked', $(this).prop("checked"));
+	});
+
+		$("#reset").click(function() {
+			$("#searchForm").clearForm();
+		});
+
+		$("#advanced-search").toggle();
+
+		$("#advSearch").click(function() {
+			$("#advanced-search").toggle();
+			$("#advSearch-icon").toggleClass("fa fa-chevron-down");
+			$("#advSearch-icon").toggleClass("fa fa-chevron-up");
+		});
+
+		$('#searchForm').keypress(function(e) {
+		if(e.keyCode == 13) {
+			// add input hidden to add search into the request
+			$('#searchForm').append('<input type="hidden" name="search" value="Rechercher" />');
+			$("#searchForm").submit();
+			return false;
+			}
+		});
+});
+</script>
