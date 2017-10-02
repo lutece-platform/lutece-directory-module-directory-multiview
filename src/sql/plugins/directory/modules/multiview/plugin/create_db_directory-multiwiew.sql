@@ -6,6 +6,7 @@
 DROP TABLE IF EXISTS directory_filter;
 CREATE TABLE directory_filter (
 id_directory_filter int NOT NULL,
+id_directory int default 0,
 name varchar(255) default '' NOT NULL,
 style varchar(50) default '',
 position int default '0',
