@@ -2,7 +2,7 @@
 	<div class="box-header">
  	<h3 class="box-title"></h3>
 		<div class="box-tools">
-		<@paginationAdmin paginator=paginator combo=0 form=0 showcount=0 />
+		<@paginationAdmin paginator=paginator combo=1 form=0 showcount=1 />
 		</div>
  	</div>
  	<div class="box-body table-responsive">
@@ -19,17 +19,14 @@
 	<table class="table table-hover table-striped">
       	<thead>
       	  <tr>
-                  <th data-field="reference">Etat</th>
+                  <th data-field="reference">#i18n{module.directory.multiview.records_list.state}</th>
     
-        	  <th data-field="category_label">Nature</th>
-        	  <th data-field="lastname">Résumé</th>
-                <#if show_date_creation_result??>
-                  <th data-field="date_create" class="th-sort-DESC">Créée le</th>
-                </#if>
-                <#if show_date_modification_result??>
-                  <th data-field="date_modification" class="th-sort-DESC">Modifiée le</th>
-                </#if>
-
+        	  <th data-field="category_label">#i18n{module.directory.multiview.records_list.nature}</th>
+        	  <th data-field="lastname">#i18n{module.directory.multiview.records_list.content}</th>
+                
+                  <th data-field="date_create" class="th-sort-DESC">#i18n{module.directory.multiview.records_list.created}</th>
+                
+                  <th data-field="date_modification" class="th-sort-DESC">#i18n{module.directory.multiview.records_list.modified}</th>              
 
       	  </tr>
       	</thead>	
@@ -61,12 +58,12 @@
                                        <#list listRecordField as record_field>
                                            ${entry.getHtmlRecordFieldValue( locale,record_field,false )}
                      
-                                                   <#if show_date_creation_result?? && record_field.record?? && record_field.record.dateCreation??>
+                                                   <#if record_field.record?? && record_field.record.dateCreation??>
                                                    <#assign date_creation = record_field.record.dateCreation>
                                                    <#else>
                                                    <#assign date_creation = "">
                                                    </#if>
-                                                   <#if show_date_modification_result?? && record_field.record?? && record_field.record.dateModification??>
+                                                   <#if record_field.record?? && record_field.record.dateModification??>
                                                    <#assign date_modification = record_field.record.dateModification>
                                                    <#else>
                                                    <#assign date_modification = "">
@@ -79,13 +76,9 @@
 		 	</#list>
                         </td>
 
-                        <#if show_date_creation_result??>
-                        <td><#if date_creation??>${date_creation}</#if></td>
-                        </#if>
-                        <#if show_date_modification_result??>
-                        <td><#if date_modification??>${date_modification}</#if></td>
-                        </#if>                       	
-
+                        <td><#if date_creation??>${date_creation}</#if>&nbsp;</td>
+                        <td><#if date_modification??>${date_modification}</#if>&nbsp;</td>
+                        
 
                  </tr>
 
@@ -97,6 +90,6 @@
 		</table>
             </div>
 		
-		<@paginationAdmin paginator=paginator combo=1 form=0 />
+		
 	</div>
 </div>

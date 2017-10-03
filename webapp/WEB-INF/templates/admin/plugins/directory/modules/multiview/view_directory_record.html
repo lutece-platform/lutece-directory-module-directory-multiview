@@ -58,21 +58,13 @@
 <#macro display_actions resource_actions >
 <#if resource_actions.workflow_action_list?exists>
 	<#list resource_actions.workflow_action_list as action>
-		<a class="btn btn-block btn-flat btn-primary" href="jsp/admin/plugins/directory/DoProcessActionWorkflow.jsp?id_action=${action.id}&amp;id_directory_record=${resource_actions.record.idRecord}&amp;id_directory=${directory.idDirectory}">
+		<a class="btn btn-lg btn-primary btn-block bg-gru-dark" href="jsp/admin/plugins/directory/modules/multiview/DoProcessActionWorkflow.jsp?id_action=${action.id}&amp;id_directory_record=${resource_actions.record.idRecord}&amp;id_directory=${directory.idDirectory}">
 			<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}" <#if action.icon.width!=-1>	width="${action.icon.width}"</#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if> title="${action.name}" alt="${action.name}"/>
                         ${action.name}
 		</a>
 	</#list>
 </#if>
-	<#--
-         <#list resource_actions.record.actions?sort_by("nameKey") as action >
-		<#if (action.nameKey!="directory.action.history.name") || (action.nameKey=="directory.action.history.name" && history_workflow)>
-	 		<a class="btn btn-xs btn-flat <#if action.nameKey="directory.action.delete.name" || action.nameKey=="directory.action.disable.name" >btn-danger<#elseif action.nameKey="directory.action.enable.name">btn-success<#else>btn-primary</#if>" href="${action.url}?id_directory_record=${resource_actions.record.idRecord}&amp;id_directory=${directory.idDirectory}" title="${action.description}">
-	  		<i class="${action.iconUrl!}"></i>
-	  	</a>
-		</#if>
-	</#list>
-        -->
+
 </#macro>
 
 <div class="row">
@@ -80,10 +72,10 @@
 		<div class="box box-primary">
 			<div class="box-header with-border">
 				<h3 class="box-title">#i18n{directory.viewing_directory_record.title} : '${directory.title}' - #i18n{directory.viewing_directory_record.labelRecord} ${record.idRecord}
-				<#if record.dateCreation?? && show_date_creation_record >
+				
 				<small>
-					- #i18n{directory.viewing_directory_record.date_creation} ${record.dateCreation}</#if>
-					<#if record.dateModification?? && show_date_modification_record > - #i18n{directory.viewing_directory_record.date_modification} ${record.dateModification}</#if>
+					- #i18n{directory.viewing_directory_record.date_creation} ${record.dateCreation}
+					- #i18n{directory.viewing_directory_record.date_modification} ${record.dateModification}
 				</small>
                                 </h3>
 			</div>
@@ -91,7 +83,7 @@
 			<div class="box-body">
 				<form class="form-horizontal" action="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" method="get">
 				<input name="page" value="directory" type="hidden" >
-				<input type="hidden" name="id_directory" value="${directory.idDirectory}">
+				
 				<input type="hidden" name="session" value="session">
 			<#assign editModeValue = "ReadOnly">
 			
@@ -167,14 +159,20 @@
 				</form>
 			</div>
 		</div>
+                <div class="box box-primary">
+                    <h3 class="box-title">#i18n{module.directory.multiview.view_directoryrecord.historyBlocTitle} </h3>
+		    <div>${resource_history}</div>
+                </div>
         </div>
         <div class="col-xs-12 col-sm-4">
                 <div class="box box-primary">
                         <div class="box-header with-border">
-				<div class="">
+				<div >
 				<#if resource_actions.workflow_state?exists>
-					#i18n{directory.viewing_directory_record.labelState}</th>
-					${resource_actions.workflow_state.name}</td>
+					#i18n{directory.viewing_directory_record.labelState} : 
+                                        <span class="label label-info">
+                                            ${resource_actions.workflow_state.name}
+                                        </span>
 				</#if>
 				</div>
                         </div>
@@ -184,13 +182,7 @@
 				</div>
                         </div>
 
-                        <div class="box-body">
-				<div class="">
-				<#if item_navigator??>
-					<@item_navigation item_navigator=item_navigator />
-				</#if>
-				</div>
-                        </div>
+
 
 			</div>
                 </div>
