@@ -11,14 +11,21 @@
             <tbody>
                     <tr>
                         <td>
+
+                        <a class="label label-info" href="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?plugin_name=directory">
+                            #i18n{module.directory.multiview.dashboard.allDemandsButton}
+                        </a> &nbsp; 
+
                 <#list directory_list as directory>
 
                              <strong>&nbsp;${directory.title}</strong> : 
-                                <a class="label label-info" href="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?id_directory=${directory.idDirectory}&plugin_name=directory&search_state_workflow=${directory_state_list[directory.idDirectory?string]}">
+                                <a class="label label-${record_style_list[directory.idDirectory?string]}" href="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?id_directory=${directory.idDirectory}&plugin_name=directory&search_state_workflow=${directory_state_list[directory.idDirectory?string]}">
                                  ${record_count_list[directory.idDirectory?string]} 
                                 </a> 
                         
                 </#list>
+                
+
                         </td>
                     </tr>
             </tbody>

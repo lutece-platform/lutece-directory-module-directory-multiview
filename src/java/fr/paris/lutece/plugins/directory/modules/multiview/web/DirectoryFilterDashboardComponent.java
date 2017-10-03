@@ -36,21 +36,16 @@ package fr.paris.lutece.plugins.directory.modules.multiview.web;
 import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.DirectoryAction;
 import fr.paris.lutece.plugins.directory.business.DirectoryActionHome;
-import fr.paris.lutece.plugins.directory.business.DirectoryFilter;
 import fr.paris.lutece.plugins.directory.business.DirectoryHome;
 import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.directory.business.RecordFieldFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterCondition;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterConditionHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterHome;
-import static fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterHome.getDirectoryFiltersListByDirectoryId;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterAction;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterActionHome;
 import fr.paris.lutece.plugins.directory.service.DirectoryPlugin;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
-import fr.paris.lutece.plugins.directory.service.DirectoryService;
 import fr.paris.lutece.plugins.directory.service.directorysearch.DirectorySearchService;
 import fr.paris.lutece.plugins.directory.service.record.IRecordService;
 import fr.paris.lutece.plugins.directory.service.record.RecordService;
@@ -70,7 +65,6 @@ import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
-import java.util.AbstractList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,6 +83,7 @@ public class DirectoryFilterDashboardComponent extends DashboardComponent
     private static final String MARK_ICON = "icon";
     private static final String MARK_DIRECTORY_LIST = "directory_list";
     private static final String MARK_RECORD_COUNT_LIST = "record_count_list";
+    private static final String MARK_RECORD_STYLE_LIST = "record_style_list";
     private static final String MARK_DIRECTORY_STATE_LIST = "directory_state_list";
 
     private static final String MARK_AUTHORIZED_DIRECTORY_MODIFICATION_LIST = "authorized_directory_modification_list";
@@ -120,12 +115,13 @@ public class DirectoryFilterDashboardComponent extends DashboardComponent
         UrlItem url = new UrlItem( right.getUrl( ) );
         url.addParameter( DirectoryPlugin.PLUGIN_NAME, right.getPluginName( ) );
 
-        Map<String, Object> model = new HashMap<String, Object>( );
-        List<Directory> directoryList = new ArrayList<Directory>( );
+        Map<String, Object> model = new HashMap<>( );
+        List<Directory> directoryList = new ArrayList<>( );
 
-        Map<String, Object> recordCountMap = new HashMap<String, Object>( );
-        List<Integer> nAuthorizedModificationList = new ArrayList<Integer>( );
-        HashMap<String, String> directoryStateMap = new HashMap<String, String>( );
+        Map<String, Object> recordCountMap = new HashMap<>( );
+        Map<String, Object> recordStyleMap = new HashMap<>( );
+        List<Integer> nAuthorizedModificationList = new ArrayList<>( );
+        HashMap<String, String> directoryStateMap = new HashMap<>( );
 
         List<DirectoryViewFilter> directoryFilterList = DirectoryViewFilterHome.getDirectoryFiltersList( );
         for ( DirectoryViewFilter directoryViewFilter : directoryFilterList )
@@ -139,6 +135,8 @@ public class DirectoryFilterDashboardComponent extends DashboardComponent
             {
                 directoryStateMap.put( String.valueOf( directory.getIdDirectory( ) ), String.valueOf( action.getIdAction( ) ) );
             }
+
+            recordStyleMap.put( Integer.toString( directory.getIdDirectory( ) ), directoryViewFilter.getStyle( ) );
         }
 
         // workgroup control
@@ -164,10 +162,12 @@ public class DirectoryFilterDashboardComponent extends DashboardComponent
             int filterStateId = DirectoryViewFilterHome.getFilterStateId( directory.getIdDirectory( ) );
 
             recordCountMap.put( Integer.toString( directory.getIdDirectory( ) ), getRecordsCount( directory, user, filterStateId, filterMapSearch ) );
+
         }
 
         model.put( MARK_DIRECTORY_LIST, directoryList );
         model.put( MARK_RECORD_COUNT_LIST, recordCountMap );
+        model.put( MARK_RECORD_STYLE_LIST, recordStyleMap );
         model.put( MARK_DIRECTORY_STATE_LIST, directoryStateMap );
         model.put( MARK_AUTHORIZED_DIRECTORY_MODIFICATION_LIST, nAuthorizedModificationList );
 
