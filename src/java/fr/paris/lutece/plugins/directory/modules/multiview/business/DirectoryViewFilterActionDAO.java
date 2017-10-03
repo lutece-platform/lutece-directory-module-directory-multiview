@@ -48,12 +48,12 @@ public final class DirectoryViewFilterActionDAO implements IDirectoryViewFilterA
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_directory_filter_action ) FROM directory_filter_action";
-    private static final String SQL_QUERY_SELECT = "SELECT id_directory_filter_action, id_directory_filter, id_action, position, style, nb_item FROM directory_filter_action WHERE id_directory_filter_action = ?";
+    private static final String SQL_QUERY_SELECT = "SELECT id_directory_filter_action, id_directory_filter, id_action, workflow_state.name as lib_action, position, style, nb_item FROM directory_filter_action  LEFT JOIN workflow_state on (directory_filter_action.id_action = workflow_state.id_state ) WHERE id_directory_filter_action = ?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO directory_filter_action ( id_directory_filter_action, id_directory_filter, id_action, position, style, nb_item ) VALUES ( ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM directory_filter_action WHERE id_directory_filter_action = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE directory_filter_action SET id_directory_filter = ?, id_action = ?, position = ?, style = ?, nb_item = ? WHERE id_directory_filter_action = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_directory_filter_action, id_directory_filter, id_action, position, style, nb_item FROM directory_filter_action";
-    private static final String SQL_QUERY_SELECTALL_BY_DIRECTORY_FILTER = "SELECT id_directory_filter_action, id_directory_filter, id_action, position, style, nb_item FROM directory_filter_action WHERE id_directory_filter = ? ";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_directory_filter_action, id_directory_filter, id_action, workflow_state.name as lib_action, position, style, nb_item FROM directory_filter_action LEFT JOIN workflow_state on (directory_filter_action.id_action = workflow_state.id_state )";
+    private static final String SQL_QUERY_SELECTALL_BY_DIRECTORY_FILTER = "SELECT id_directory_filter_action, id_directory_filter, id_action, workflow_state.name as lib_action, position, style, nb_item FROM directory_filter_action  LEFT JOIN workflow_state on (directory_filter_action.id_action = workflow_state.id_state ) WHERE id_directory_filter = ? ";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_directory_filter_action FROM directory_filter_action";
 
     /**
@@ -118,6 +118,7 @@ public final class DirectoryViewFilterActionDAO implements IDirectoryViewFilterA
             directoryFilterAction.setId( daoUtil.getInt( nIndex++ ) );
             directoryFilterAction.setIdDirectoryFilter( daoUtil.getInt( nIndex++ ) );
             directoryFilterAction.setIdAction( daoUtil.getInt( nIndex++ ) );
+            directoryFilterAction.setLibAction( daoUtil.getString( nIndex++ ) );
             directoryFilterAction.setPosition( daoUtil.getInt( nIndex++ ) );
             directoryFilterAction.setStyle( daoUtil.getString( nIndex++ ) );
             directoryFilterAction.setNbItem( daoUtil.getInt( nIndex++ ) );
@@ -180,6 +181,7 @@ public final class DirectoryViewFilterActionDAO implements IDirectoryViewFilterA
             directoryFilterAction.setId( daoUtil.getInt( nIndex++ ) );
             directoryFilterAction.setIdDirectoryFilter( daoUtil.getInt( nIndex++ ) );
             directoryFilterAction.setIdAction( daoUtil.getInt( nIndex++ ) );
+            directoryFilterAction.setLibAction( daoUtil.getString( nIndex++ ) );
             directoryFilterAction.setPosition( daoUtil.getInt( nIndex++ ) );
             directoryFilterAction.setStyle( daoUtil.getString( nIndex++ ) );
             directoryFilterAction.setNbItem( daoUtil.getInt( nIndex++ ) );
@@ -210,6 +212,7 @@ public final class DirectoryViewFilterActionDAO implements IDirectoryViewFilterA
             directoryFilterAction.setId( daoUtil.getInt( nIndex++ ) );
             directoryFilterAction.setIdDirectoryFilter( daoUtil.getInt( nIndex++ ) );
             directoryFilterAction.setIdAction( daoUtil.getInt( nIndex++ ) );
+            directoryFilterAction.setLibAction( daoUtil.getString( nIndex++ ) );
             directoryFilterAction.setPosition( daoUtil.getInt( nIndex++ ) );
             directoryFilterAction.setStyle( daoUtil.getString( nIndex++ ) );
             directoryFilterAction.setNbItem( daoUtil.getInt( nIndex++ ) );

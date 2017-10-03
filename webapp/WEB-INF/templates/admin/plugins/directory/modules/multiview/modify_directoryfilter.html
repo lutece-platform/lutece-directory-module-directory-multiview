@@ -9,7 +9,7 @@
 			<input type="hidden" id="id" name="id" value="${directoryfilter.id}"/>
 						
 				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfilter.idDirectory}' helpKey='#i18n{module.directory.multiview.modify_directoryfilter.idDirectory.help}' mandatory=true>
-					<@input type='text' name='idDirectory' value='${directoryfilter.idDirectory}' />
+					<@input type='text' name='idDirectory' value='${directoryfilter.idDirectory}' readonly=true/>
 				</@formGroup>
 				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfilter.labelName}' helpKey='#i18n{module.directory.multiview.modify_directoryfilter.labelName.help}' mandatory=true>
 					<@input type='text' name='name' value='${directoryfilter.name}' />
@@ -19,6 +19,10 @@
 				</@formGroup>
 				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfilter.labelPosition}' helpKey='#i18n{module.directory.multiview.modify_directoryfilter.labelPosition.help}' >
 					<@input type='text' name='position' value='${directoryfilter.position}' />
+				</@formGroup>
+                                <@formGroup labelKey='#i18n{module.directory.multiview.create_directoryfilter.labelEntryTitle}' helpKey='#i18n{module.directory.multiview.create_directoryfilter.labelPosition.labelEntryTitleHelp}' >
+
+                                    <@select name='id_entry_title' id='id_entry_title' default_value='${directoryfilter.idEntryTitle!\'\'}' items=entry_list />
 				</@formGroup>
         <@actionButtons button1Name="action_modifyDirectoryFilter" button2Name="view_manageDirectoryFilter"/>
     </@tform>

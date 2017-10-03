@@ -159,11 +159,13 @@ public final class DirectoryViewFilterHome
     /**
      * build the searchMap to filter the list of records with the filter condition
      * 
+     * @param directory
+     * @param user
      * @return the referenceList which contains the data of all the directoryFilter objects
      */
     public static HashMap<String, List<RecordField>> getFilterSearchMap( Directory directory, AdminUser user )
     {
-        HashMap<String, List<RecordField>> filterSearchMap = new HashMap<String, List<RecordField>>( );
+        HashMap<String, List<RecordField>> filterSearchMap = new HashMap<>( );
 
         List<DirectoryViewFilter> directoryFilterList = getDirectoryFiltersListByDirectoryId( directory.getIdDirectory( ) );
         for ( DirectoryViewFilter directoryFilter : directoryFilterList )
@@ -181,7 +183,7 @@ public final class DirectoryViewFilterHome
                 entry.setDirectory( directory );
                 recordField.setEntry( entry );
 
-                if ( condition.getFilterType( ) == DirectoryViewFilterCondition.TYPE_UNITTREE_USER_MATCH )
+                if ( condition.getFilterType( ) == DirectoryViewFilterConditionDAO.PROPERTY_TYPE_UNITTREE_CODE )
                 {
                     IUnitService unitService = SpringContextService.getBean( IUnitService.BEAN_UNIT_SERVICE );
                     List<Unit> unitList = unitService.getUnitsByIdUser( user.getUserId( ), true );
@@ -191,7 +193,7 @@ public final class DirectoryViewFilterHome
                         unit = (Unit) unitList.get( 0 ); // TODO multi unit case
                         recordField.setValue( unit.getLabel( ) );
 
-                        List<RecordField> recordFieldList = new ArrayList<RecordField>( );
+                        List<RecordField> recordFieldList = new ArrayList<>( );
                         recordFieldList.add( recordField );
                         filterSearchMap.put( String.valueOf( entryId ), recordFieldList );
                     }
@@ -206,6 +208,7 @@ public final class DirectoryViewFilterHome
     /**
      * build the searchMap to filter the list of records with the filter condition
      * 
+     * @param nIdDirectory
      * @return the referenceList which contains the data of all the directoryFilter objects
      */
     public static int getFilterStateId( int nIdDirectory )
@@ -229,6 +232,7 @@ public final class DirectoryViewFilterHome
     /**
      * return true if a filter directory exist for the directory
      * 
+     * @param nIdDirectory
      * @return the referenceList which contains the data of all the directoryFilter objects
      */
     public static boolean existFilter( int nIdDirectory )
@@ -239,11 +243,11 @@ public final class DirectoryViewFilterHome
 
             List<DirectoryViewFilterAction> actionList = DirectoryViewFilterActionHome
                     .getDirectoryFilterActionsListByDirectoryFilter( directoryFilter.getId( ) );
-            for ( DirectoryViewFilterAction action : actionList )
-            {
-                // returns the first one only (one directory by dashboard)
+
+            // one directory by dashboard
+            if ( actionList != null && actionList.size( ) > 0 )
                 return true;
-            }
+
         }
 
         return false;

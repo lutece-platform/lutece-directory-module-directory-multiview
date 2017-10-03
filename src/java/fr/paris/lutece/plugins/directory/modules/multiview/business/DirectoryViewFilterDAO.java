@@ -48,12 +48,12 @@ public final class DirectoryViewFilterDAO implements IDirectoryViewFilterDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_directory_filter ) FROM directory_filter";
-    private static final String SQL_QUERY_SELECT = "SELECT id_directory_filter, id_directory, name, style, position FROM directory_filter WHERE id_directory_filter = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO directory_filter ( id_directory_filter, id_directory, name, style, position ) VALUES ( ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_directory_filter, directory_filter.id_directory, directory_directory.title, name, style, position, id_entry_title, directory_entry.title FROM directory_filter  LEFT JOIN directory_directory on (directory_directory.id_directory = directory_filter.id_directory)   LEFT OUTER JOIN directory_entry on (directory_entry.id_entry = directory_filter.id_entry_title) WHERE id_directory_filter = ? ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO directory_filter ( id_directory_filter, id_directory, name, style, position, id_entry_title ) VALUES ( ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM directory_filter WHERE id_directory_filter = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE directory_filter SET id_directory= ? , name = ?, style = ?, position = ? WHERE id_directory_filter = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_directory_filter, id_directory, name, style, position FROM directory_filter";
-    private static final String SQL_QUERY_SELECTALL_BY_DIRECTORY = "SELECT id_directory_filter, id_directory, name, style, position FROM directory_filter WHERE id_directory = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE directory_filter SET id_directory= ? , name = ?, style = ?, position = ?, id_entry_title = ? WHERE id_directory_filter = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_directory_filter, directory_filter.id_directory, directory_directory.title, name, style, position, id_entry_title, directory_entry.title FROM directory_filter  LEFT JOIN directory_directory on (directory_directory.id_directory = directory_filter.id_directory)   LEFT OUTER JOIN directory_entry on (directory_entry.id_entry = directory_filter.id_entry_title)  ORDER BY  position ";
+    private static final String SQL_QUERY_SELECTALL_BY_DIRECTORY = "SELECT id_directory_filter, directory_filter.id_directory, directory_directory.title, name, style, position, id_entry_title, directory_entry.title FROM directory_filter  LEFT JOIN directory_directory on (directory_directory.id_directory = directory_filter.id_directory)   LEFT OUTER JOIN directory_entry on (directory_entry.id_entry = directory_filter.id_entry_title)  WHERE directory_filter.id_directory = ?  ORDER BY  position ";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_directory_filter FROM directory_filter";
 
     /**
@@ -93,7 +93,7 @@ public final class DirectoryViewFilterDAO implements IDirectoryViewFilterDAO
         daoUtil.setString( nIndex++, directoryFilter.getName( ) );
         daoUtil.setString( nIndex++, directoryFilter.getStyle( ) );
         daoUtil.setInt( nIndex++, directoryFilter.getPosition( ) );
-
+        daoUtil.setInt( nIndex++, directoryFilter.getIdEntryTitle( ) );
         daoUtil.executeUpdate( );
         daoUtil.free( );
     }
@@ -116,9 +116,13 @@ public final class DirectoryViewFilterDAO implements IDirectoryViewFilterDAO
 
             directoryFilter.setId( daoUtil.getInt( nIndex++ ) );
             directoryFilter.setIdDirectory( daoUtil.getInt( nIndex++ ) );
+            directoryFilter.setDirectoryTitle( daoUtil.getString( nIndex++ ) );
             directoryFilter.setName( daoUtil.getString( nIndex++ ) );
             directoryFilter.setStyle( daoUtil.getString( nIndex++ ) );
             directoryFilter.setPosition( daoUtil.getInt( nIndex++ ) );
+            directoryFilter.setIdEntryTitle( daoUtil.getInt( nIndex++ ) );
+            directoryFilter.setEntryTitle( daoUtil.getString( nIndex++ ) );
+
         }
 
         daoUtil.free( );
@@ -151,6 +155,7 @@ public final class DirectoryViewFilterDAO implements IDirectoryViewFilterDAO
         daoUtil.setString( nIndex++, directoryFilter.getName( ) );
         daoUtil.setString( nIndex++, directoryFilter.getStyle( ) );
         daoUtil.setInt( nIndex++, directoryFilter.getPosition( ) );
+        daoUtil.setInt( nIndex++, directoryFilter.getIdEntryTitle( ) );
 
         // id
         daoUtil.setInt( nIndex++, directoryFilter.getId( ) );
@@ -176,9 +181,12 @@ public final class DirectoryViewFilterDAO implements IDirectoryViewFilterDAO
 
             directoryFilter.setId( daoUtil.getInt( nIndex++ ) );
             directoryFilter.setIdDirectory( daoUtil.getInt( nIndex++ ) );
+            directoryFilter.setDirectoryTitle( daoUtil.getString( nIndex++ ) );
             directoryFilter.setName( daoUtil.getString( nIndex++ ) );
             directoryFilter.setStyle( daoUtil.getString( nIndex++ ) );
             directoryFilter.setPosition( daoUtil.getInt( nIndex++ ) );
+            directoryFilter.setIdEntryTitle( daoUtil.getInt( nIndex++ ) );
+            directoryFilter.setEntryTitle( daoUtil.getString( nIndex++ ) );
 
             directoryFilterList.add( directoryFilter );
         }
@@ -206,9 +214,12 @@ public final class DirectoryViewFilterDAO implements IDirectoryViewFilterDAO
 
             directoryFilter.setId( daoUtil.getInt( nIndex++ ) );
             directoryFilter.setIdDirectory( daoUtil.getInt( nIndex++ ) );
+            directoryFilter.setDirectoryTitle( daoUtil.getString( nIndex++ ) );
             directoryFilter.setName( daoUtil.getString( nIndex++ ) );
             directoryFilter.setStyle( daoUtil.getString( nIndex++ ) );
             directoryFilter.setPosition( daoUtil.getInt( nIndex++ ) );
+            directoryFilter.setIdEntryTitle( daoUtil.getInt( nIndex++ ) );
+            directoryFilter.setEntryTitle( daoUtil.getString( nIndex++ ) );
 
             directoryFilterList.add( directoryFilter );
         }

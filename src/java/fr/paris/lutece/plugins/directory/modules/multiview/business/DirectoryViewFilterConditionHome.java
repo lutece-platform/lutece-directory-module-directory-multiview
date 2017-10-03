@@ -36,9 +36,13 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides instances management methods (create, find, ...) for DirectoryViewFilterCondition objects
@@ -145,5 +149,51 @@ public final class DirectoryViewFilterConditionHome
     public static ReferenceList getDirectoryFilterConditionsReferenceList( )
     {
         return _dao.selectDirectoryFilterConditionsReferenceList( _plugin );
+    }
+
+    /**
+     * Load the list of Condition types and return them as a referenceList
+     * 
+     * @return the referenceList which contains the data of all the condition types
+     */
+    public static ReferenceList getDirectoryFilterConditionTypesReferenceList( )
+    {
+        ReferenceList _conditionTypesReferenceList = new ReferenceList( );
+        HashMap<String, String> _types = _dao.loadTypes( );
+
+        Iterator it = _types.entrySet( ).iterator( );
+        while ( it.hasNext( ) )
+        {
+            Map.Entry typ = (Map.Entry) it.next( );
+
+            ReferenceItem _item = new ReferenceItem( );
+            _item.setCode( (String) typ.getKey( ) );
+            _item.setName( (String) typ.getValue( ) );
+            _conditionTypesReferenceList.add( _item );
+        }
+        return _conditionTypesReferenceList;
+    }
+
+    /**
+     * Load the list of operator types and return them as a referenceList
+     * 
+     * @return the referenceList which contains the operator types
+     */
+    public static ReferenceList getDirectoryFilterConditionOperatorsReferenceList( )
+    {
+        ReferenceList _conditionOperatorReferenceList = new ReferenceList( );
+        HashMap<String, String> _operators = _dao.loadOperators( );
+
+        Iterator it = _operators.entrySet( ).iterator( );
+        while ( it.hasNext( ) )
+        {
+            Map.Entry op = (Map.Entry) it.next( );
+
+            ReferenceItem _item = new ReferenceItem( );
+            _item.setCode( (String) op.getKey( ) );
+            _item.setName( (String) op.getValue( ) );
+            _conditionOperatorReferenceList.add( _item );
+        }
+        return _conditionOperatorReferenceList;
     }
 }

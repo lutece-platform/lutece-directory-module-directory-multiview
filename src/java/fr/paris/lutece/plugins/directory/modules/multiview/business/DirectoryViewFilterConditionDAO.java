@@ -39,6 +39,7 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -48,14 +49,19 @@ public final class DirectoryViewFilterConditionDAO implements IDirectoryViewFilt
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_directory_filter_condition ) FROM directory_filter_condition";
-    private static final String SQL_QUERY_SELECT = "SELECT id_directory_filter_condition, id_directory_filter, id_entry, operator, filter_type FROM directory_filter_condition WHERE id_directory_filter_condition = ?";
+    private static final String SQL_QUERY_SELECT = "SELECT id_directory_filter_condition, id_directory_filter, directory_filter_condition.id_entry, directory_entry.title, operator, filter_type FROM directory_filter_condition  LEFT JOIN directory_entry on (directory_filter_condition.id_entry = directory_entry.id_entry ) WHERE id_directory_filter_condition = ?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO directory_filter_condition ( id_directory_filter_condition, id_directory_filter, id_entry, operator, filter_type ) VALUES ( ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM directory_filter_condition WHERE id_directory_filter_condition = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE directory_filter_condition SET  id_directory_filter = ?, id_entry = ?, operator = ?, filter_type = ? WHERE id_directory_filter_condition = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_directory_filter_condition, id_directory_filter, id_entry, operator, filter_type FROM directory_filter_condition";
-    private static final String SQL_QUERY_SELECTALL_BY_DIRECTORY_FILTER = "SELECT id_directory_filter_condition, id_directory_filter, id_entry, operator, filter_type FROM directory_filter_condition  WHERE id_directory_filter = ? ";
-
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_directory_filter_condition, id_directory_filter, directory_filter_condition.id_entry, directory_entry.title, operator, filter_type FROM directory_filter_condition LEFT JOIN directory_entry on (directory_filter_condition.id_entry = directory_entry.id_entry ) ";
+    private static final String SQL_QUERY_SELECTALL_BY_DIRECTORY_FILTER = "SELECT id_directory_filter_condition, id_directory_filter, directory_filter_condition.id_entry, directory_entry.title, operator, filter_type FROM directory_filter_condition  LEFT JOIN directory_entry on (directory_filter_condition.id_entry = directory_entry.id_entry )  WHERE id_directory_filter = ? ";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_directory_filter_condition FROM directory_filter_condition";
+
+    // Properties
+    public static final int PROPERTY_OPERATOR_EQUALS_CODE = 0;
+    public static final String PROPERTY_OPERATOR_EQUALS_NAME = " = ";
+    public static final int PROPERTY_TYPE_UNITTREE_CODE = 1;
+    public static final String PROPERTY_TYPE_UNITTREE_NAME = " UnitTree unit / Entry ";
 
     /**
      * Generates a new primary key
@@ -118,8 +124,12 @@ public final class DirectoryViewFilterConditionDAO implements IDirectoryViewFilt
             directoryFilterCondition.setId( daoUtil.getInt( nIndex++ ) );
             directoryFilterCondition.setIdDirectoryFilter( daoUtil.getInt( nIndex++ ) );
             directoryFilterCondition.setIdEntry( daoUtil.getInt( nIndex++ ) );
+            directoryFilterCondition.setEntryTitle( daoUtil.getString( nIndex++ ) );
             directoryFilterCondition.setOperator( daoUtil.getInt( nIndex++ ) );
             directoryFilterCondition.setFilterType( daoUtil.getInt( nIndex++ ) );
+
+            directoryFilterCondition.setOperatorName( getOperatorName( directoryFilterCondition.getOperator( ) ) );
+            directoryFilterCondition.setFilterTypeName( getTypeName( directoryFilterCondition.getFilterType( ) ) );
         }
 
         daoUtil.free( );
@@ -178,8 +188,12 @@ public final class DirectoryViewFilterConditionDAO implements IDirectoryViewFilt
             directoryFilterCondition.setId( daoUtil.getInt( nIndex++ ) );
             directoryFilterCondition.setIdDirectoryFilter( daoUtil.getInt( nIndex++ ) );
             directoryFilterCondition.setIdEntry( daoUtil.getInt( nIndex++ ) );
+            directoryFilterCondition.setEntryTitle( daoUtil.getString( nIndex++ ) );
             directoryFilterCondition.setOperator( daoUtil.getInt( nIndex++ ) );
             directoryFilterCondition.setFilterType( daoUtil.getInt( nIndex++ ) );
+
+            directoryFilterCondition.setOperatorName( getOperatorName( directoryFilterCondition.getOperator( ) ) );
+            directoryFilterCondition.setFilterTypeName( getTypeName( directoryFilterCondition.getFilterType( ) ) );
 
             directoryFilterConditionList.add( directoryFilterCondition );
         }
@@ -207,8 +221,12 @@ public final class DirectoryViewFilterConditionDAO implements IDirectoryViewFilt
             directoryFilterCondition.setId( daoUtil.getInt( nIndex++ ) );
             directoryFilterCondition.setIdDirectoryFilter( daoUtil.getInt( nIndex++ ) );
             directoryFilterCondition.setIdEntry( daoUtil.getInt( nIndex++ ) );
+            directoryFilterCondition.setEntryTitle( daoUtil.getString( nIndex++ ) );
             directoryFilterCondition.setOperator( daoUtil.getInt( nIndex++ ) );
             directoryFilterCondition.setFilterType( daoUtil.getInt( nIndex++ ) );
+
+            directoryFilterCondition.setOperatorName( getOperatorName( directoryFilterCondition.getOperator( ) ) );
+            directoryFilterCondition.setFilterTypeName( getTypeName( directoryFilterCondition.getFilterType( ) ) );
 
             directoryFilterConditionList.add( directoryFilterCondition );
         }
@@ -254,4 +272,53 @@ public final class DirectoryViewFilterConditionDAO implements IDirectoryViewFilt
         daoUtil.free( );
         return directoryFilterConditionList;
     }
+
+    /**
+     * {@inheritDoc }
+     */
+    public HashMap<String, String> loadOperators( )
+    {
+        HashMap<String, String> _operators = new HashMap<>( );
+        _operators.put( String.valueOf( PROPERTY_OPERATOR_EQUALS_CODE ), PROPERTY_OPERATOR_EQUALS_NAME );
+
+        return _operators;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    public HashMap<String, String> loadTypes( )
+    {
+        HashMap<String, String> _types = new HashMap<>( );
+        _types.put( String.valueOf( PROPERTY_TYPE_UNITTREE_CODE ), PROPERTY_TYPE_UNITTREE_NAME );
+
+        return _types;
+    }
+
+    /**
+     * get the type name
+     * 
+     * @param code
+     * @return the type name
+     */
+    private String getTypeName( int code )
+    {
+        HashMap<String, String> _types = loadTypes( );
+
+        return _types.get( String.valueOf( code ) );
+    }
+
+    /**
+     * get the operator name
+     * 
+     * @param code
+     * @return the type name
+     */
+    private String getOperatorName( int code )
+    {
+        HashMap<String, String> _types = loadOperators( );
+
+        return _types.get( String.valueOf( code ) );
+    }
+
 }

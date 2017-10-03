@@ -33,6 +33,10 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web;
 
+import fr.paris.lutece.plugins.directory.business.DirectoryHome;
+import fr.paris.lutece.plugins.directory.business.EntryFilter;
+import fr.paris.lutece.plugins.directory.business.EntryHome;
+import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterHome;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -40,6 +44,8 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
 
 import java.util.List;
@@ -68,6 +74,8 @@ public class DirectoryFilterJspBean extends AbstractManageDirectoryFilterJspBean
     // Markers
     private static final String MARK_DIRECTORYFILTER_LIST = "directoryfilter_list";
     private static final String MARK_DIRECTORYFILTER = "directoryfilter";
+    private static final String MARK_DIRECTORYREFERENCELIST = "directoryreference_list";
+    private static final String MARK_ENTRY_LIST = "entry_list";
 
     private static final String JSP_MANAGE_DIRECTORYFILTERS = "jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilters.jsp";
 
@@ -125,8 +133,11 @@ public class DirectoryFilterJspBean extends AbstractManageDirectoryFilterJspBean
     {
         _directoryfilter = ( _directoryfilter != null ) ? _directoryfilter : new DirectoryViewFilter( );
 
+        ReferenceList directoryReferenceList = DirectoryHome.getDirectoryList( getPlugin( ) );
+
         Map<String, Object> model = getModel( );
         model.put( MARK_DIRECTORYFILTER, _directoryfilter );
+        model.put( MARK_DIRECTORYREFERENCELIST, directoryReferenceList );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_DIRECTORYFILTER, TEMPLATE_CREATE_DIRECTORYFILTER, model );
     }
@@ -209,8 +220,11 @@ public class DirectoryFilterJspBean extends AbstractManageDirectoryFilterJspBean
             _directoryfilter = DirectoryViewFilterHome.findByPrimaryKey( nId );
         }
 
+        ReferenceList entryReferenceList = getEntryReferenceListByDirectoryId( _directoryfilter.getIdDirectory( ) );
+
         Map<String, Object> model = getModel( );
         model.put( MARK_DIRECTORYFILTER, _directoryfilter );
+        model.put( MARK_ENTRY_LIST, entryReferenceList );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_DIRECTORYFILTER, TEMPLATE_MODIFY_DIRECTORYFILTER, model );
     }
@@ -237,5 +251,36 @@ public class DirectoryFilterJspBean extends AbstractManageDirectoryFilterJspBean
         addInfo( INFO_DIRECTORYFILTER_UPDATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_DIRECTORYFILTERS );
+    }
+
+    /**
+     * Load the entry reference list of thze directory
+     *
+     * @param nIdDirectory
+     *            the directory id
+     * 
+     * @return The reference list of entries
+     */
+    private ReferenceList getEntryReferenceListByDirectoryId( int nIdDirectory )
+    {
+
+        ReferenceList entryReferenceList = new ReferenceList( );
+
+        EntryFilter filter = new EntryFilter( );
+        filter.setIdDirectory( nIdDirectory );
+        List<IEntry> entryList = EntryHome.getEntryList( filter, getPlugin( ) );
+
+        for ( IEntry entry : entryList )
+        {
+            if ( entry.getTitle( ) != null )
+            {
+                ReferenceItem item = new ReferenceItem( );
+                item.setCode( String.valueOf( entry.getIdEntry( ) ) );
+                item.setName( entry.getTitle( ) );
+                entryReferenceList.add( item );
+            }
+        }
+
+        return entryReferenceList;
     }
 }

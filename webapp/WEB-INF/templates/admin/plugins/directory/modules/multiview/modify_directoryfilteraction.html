@@ -7,12 +7,16 @@
     <@tform class="form-horizontal" method="post" name="modify_directoryfilteraction" action="jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterActions.jsp">
 			<@messages errors=errors />
 			<input type="hidden" id="id" name="id" value="${directoryfilteraction.id}"/>
-			
+			<input type="hidden" id="directory_filter_id" name="directory_filter_id" value='${directoryfilterid}'/>
+                        <input type="hidden" id="directory_workflow_id" name="directory_workflow_id" value='${directoryworkflowid}'/>
+        
 				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfilteraction.labelIdDirectoryFilter}' helpKey='#i18n{module.directory.multiview.modify_directoryfilteraction.labelIdDirectoryFilter.help}' mandatory=true>
-					<@input type='text' name='id_directory_filter' value='${directoryfilteraction.idDirectoryFilter}' />
+					<@input type='text' name='id_directory_filter' value='${directoryfilteraction.idDirectoryFilter}'  readonly=true />
 				</@formGroup>
 				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfilteraction.labelIdAction}' helpKey='#i18n{module.directory.multiview.modify_directoryfilteraction.labelIdAction.help}' mandatory=true>
-					<@input type='text' name='id_action' value='${directoryfilteraction.idAction}' />
+					
+                                    <@select name='id_action' id='id_action' default_value='${directoryfilteraction.idAction}' items=action_list />
+
 				</@formGroup>
 				<@formGroup labelKey='#i18n{module.directory.multiview.modify_directoryfilteraction.labelPosition}' helpKey='#i18n{module.directory.multiview.modify_directoryfilteraction.labelPosition.help}' >
 					<@input type='text' name='position' value='${directoryfilteraction.position}' />

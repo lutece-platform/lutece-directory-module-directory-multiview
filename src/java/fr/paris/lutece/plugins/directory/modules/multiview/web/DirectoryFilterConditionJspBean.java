@@ -33,6 +33,10 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web;
 
+import fr.paris.lutece.plugins.directory.business.Entry;
+import fr.paris.lutece.plugins.directory.business.EntryFilter;
+import fr.paris.lutece.plugins.directory.business.EntryHome;
+import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterCondition;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterConditionHome;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -40,7 +44,10 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
+import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
@@ -59,6 +66,8 @@ public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilt
 
     // Parameters
     private static final String PARAMETER_ID_DIRECTORYFILTERCONDITION = "id";
+    private static final String PARAMETER_ID_DIRECTORYFILTER = "directory_filter_id";
+    private static final String PARAMETER_ID_DIRECTORY = "directory_id";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_DIRECTORYFILTERCONDITIONS = "module.directory.multiview.manage_directoryfilterconditions.pageTitle";
@@ -68,7 +77,13 @@ public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilt
     // Markers
     private static final String MARK_DIRECTORYFILTERCONDITION_LIST = "directoryfiltercondition_list";
     private static final String MARK_DIRECTORYFILTERCONDITION = "directoryfiltercondition";
+    private static final String MARK_DIRECTORYFILTERID = "directoryfilterid";
+    private static final String MARK_DIRECTORYID = "directoryid";
+    private static final String MARK_CONDITIONTYPEREFERENCELIST = "conditiontype_list";
+    private static final String MARK_CONDITIONOPERATORREFERENCELIST = "conditionoperator_list";
+    private static final String MARK_ENTRYLIST = "entry_list";
 
+    // jsp
     private static final String JSP_MANAGE_DIRECTORYFILTERCONDITIONS = "jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterConditions.jsp";
 
     // Properties
@@ -107,9 +122,17 @@ public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilt
     public String getManageDirectoryFilterConditions( HttpServletRequest request )
     {
         _directoryfiltercondition = null;
-        List<DirectoryViewFilterCondition> listDirectoryFilterConditions = DirectoryViewFilterConditionHome.getDirectoryFilterConditionsList( );
+
+        int nIdDirectoryFilter = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTER ) );
+        int nIdDirectory = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY ) );
+
+        List<DirectoryViewFilterCondition> listDirectoryFilterConditions = DirectoryViewFilterConditionHome
+                .getDirectoryFilterConditionsListByDirectoryFilter( nIdDirectoryFilter );
         Map<String, Object> model = getPaginatedListModel( request, MARK_DIRECTORYFILTERCONDITION_LIST, listDirectoryFilterConditions,
                 JSP_MANAGE_DIRECTORYFILTERCONDITIONS );
+
+        model.put( MARK_DIRECTORYFILTERID, nIdDirectoryFilter );
+        model.put( MARK_DIRECTORYID, nIdDirectory );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_DIRECTORYFILTERCONDITIONS, TEMPLATE_MANAGE_DIRECTORYFILTERCONDITIONS, model );
     }
@@ -126,8 +149,21 @@ public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilt
     {
         _directoryfiltercondition = ( _directoryfiltercondition != null ) ? _directoryfiltercondition : new DirectoryViewFilterCondition( );
 
+        int nIdDirectoryFilter = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTER ) );
+        int nIdDirectory = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY ) );
+        _directoryfiltercondition.setIdDirectoryFilter( nIdDirectoryFilter );
+
+        ReferenceList conditionReferenceList = DirectoryViewFilterConditionHome.getDirectoryFilterConditionTypesReferenceList( );
+        ReferenceList operatorReferenceList = DirectoryViewFilterConditionHome.getDirectoryFilterConditionOperatorsReferenceList( );
+        ReferenceList entryReferenceList = getEntryReferenceListByDirectoryId( nIdDirectory );
+
         Map<String, Object> model = getModel( );
         model.put( MARK_DIRECTORYFILTERCONDITION, _directoryfiltercondition );
+        model.put( MARK_CONDITIONTYPEREFERENCELIST, conditionReferenceList );
+        model.put( MARK_CONDITIONOPERATORREFERENCELIST, operatorReferenceList );
+        model.put( MARK_ENTRYLIST, entryReferenceList );
+        model.put( MARK_DIRECTORYID, nIdDirectory );
+        model.put( MARK_DIRECTORYFILTERID, nIdDirectoryFilter );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_DIRECTORYFILTERCONDITION, TEMPLATE_CREATE_DIRECTORYFILTERCONDITION, model );
     }
@@ -144,16 +180,22 @@ public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilt
     {
         populate( _directoryfiltercondition, request );
 
+        Map<String, String> additionalParameters = new HashMap<>( );
+        String strIdDirectoryFilter = request.getParameter( PARAMETER_ID_DIRECTORYFILTER );
+        String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
+        additionalParameters.put( PARAMETER_ID_DIRECTORYFILTER, strIdDirectoryFilter );
+        additionalParameters.put( PARAMETER_ID_DIRECTORY, strIdDirectory );
+
         // Check constraints
         if ( !validateBean( _directoryfiltercondition, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
-            return redirectView( request, VIEW_CREATE_DIRECTORYFILTERCONDITION );
+            return redirect( request, VIEW_CREATE_DIRECTORYFILTERCONDITION, additionalParameters );
         }
 
         DirectoryViewFilterConditionHome.create( _directoryfiltercondition );
         addInfo( INFO_DIRECTORYFILTERCONDITION_CREATED, getLocale( ) );
 
-        return redirectView( request, VIEW_MANAGE_DIRECTORYFILTERCONDITIONS );
+        return redirect( request, VIEW_MANAGE_DIRECTORYFILTERCONDITIONS, additionalParameters );
     }
 
     /**
@@ -169,6 +211,11 @@ public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilt
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTERCONDITION ) );
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_DIRECTORYFILTERCONDITION ) );
         url.addParameter( PARAMETER_ID_DIRECTORYFILTERCONDITION, nId );
+
+        String strIdDirectoryFilter = request.getParameter( PARAMETER_ID_DIRECTORYFILTER );
+        String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
+        url.addParameter( PARAMETER_ID_DIRECTORYFILTER, strIdDirectoryFilter );
+        url.addParameter( PARAMETER_ID_DIRECTORY, strIdDirectory );
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_DIRECTORYFILTERCONDITION, url.getUrl( ),
                 AdminMessage.TYPE_CONFIRMATION );
@@ -190,7 +237,13 @@ public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilt
         DirectoryViewFilterConditionHome.remove( nId );
         addInfo( INFO_DIRECTORYFILTERCONDITION_REMOVED, getLocale( ) );
 
-        return redirectView( request, VIEW_MANAGE_DIRECTORYFILTERCONDITIONS );
+        Map<String, String> additionalParameters = new HashMap<>( );
+        String strIdDirectoryFilter = request.getParameter( PARAMETER_ID_DIRECTORYFILTER );
+        String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
+        additionalParameters.put( PARAMETER_ID_DIRECTORYFILTER, strIdDirectoryFilter );
+        additionalParameters.put( PARAMETER_ID_DIRECTORY, strIdDirectory );
+
+        return redirect( request, VIEW_MANAGE_DIRECTORYFILTERCONDITIONS, additionalParameters );
     }
 
     /**
@@ -204,14 +257,24 @@ public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilt
     public String getModifyDirectoryFilterCondition( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTERCONDITION ) );
+        int nIdDirectory = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY ) );
 
         if ( _directoryfiltercondition == null || ( _directoryfiltercondition.getId( ) != nId ) )
         {
             _directoryfiltercondition = DirectoryViewFilterConditionHome.findByPrimaryKey( nId );
         }
 
+        ReferenceList conditionReferenceList = DirectoryViewFilterConditionHome.getDirectoryFilterConditionTypesReferenceList( );
+        ReferenceList operatorReferenceList = DirectoryViewFilterConditionHome.getDirectoryFilterConditionOperatorsReferenceList( );
+        ReferenceList entryReferenceList = getEntryReferenceListByDirectoryId( nIdDirectory );
+
         Map<String, Object> model = getModel( );
         model.put( MARK_DIRECTORYFILTERCONDITION, _directoryfiltercondition );
+        model.put( MARK_CONDITIONTYPEREFERENCELIST, conditionReferenceList );
+        model.put( MARK_CONDITIONOPERATORREFERENCELIST, operatorReferenceList );
+        model.put( MARK_ENTRYLIST, entryReferenceList );
+        model.put( MARK_DIRECTORYID, nIdDirectory );
+        model.put( MARK_DIRECTORYFILTERID, _directoryfiltercondition.getIdDirectoryFilter( ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_DIRECTORYFILTERCONDITION, TEMPLATE_MODIFY_DIRECTORYFILTERCONDITION, model );
     }
@@ -228,15 +291,53 @@ public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilt
     {
         populate( _directoryfiltercondition, request );
 
+        Map<String, String> additionalParameters = new HashMap<>( );
+        String strIdDirectoryFilter = request.getParameter( PARAMETER_ID_DIRECTORYFILTER );
+        String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
+        additionalParameters.put( PARAMETER_ID_DIRECTORYFILTER, strIdDirectoryFilter );
+        additionalParameters.put( PARAMETER_ID_DIRECTORY, strIdDirectory );
+
         // Check constraints
         if ( !validateBean( _directoryfiltercondition, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
-            return redirect( request, VIEW_MODIFY_DIRECTORYFILTERCONDITION, PARAMETER_ID_DIRECTORYFILTERCONDITION, _directoryfiltercondition.getId( ) );
+            additionalParameters.put( PARAMETER_ID_DIRECTORYFILTERCONDITION, String.valueOf( _directoryfiltercondition.getId( ) ) );
+            return redirect( request, VIEW_MODIFY_DIRECTORYFILTERCONDITION, additionalParameters );
         }
 
         DirectoryViewFilterConditionHome.update( _directoryfiltercondition );
         addInfo( INFO_DIRECTORYFILTERCONDITION_UPDATED, getLocale( ) );
 
-        return redirectView( request, VIEW_MANAGE_DIRECTORYFILTERCONDITIONS );
+        return redirect( request, VIEW_MANAGE_DIRECTORYFILTERCONDITIONS, additionalParameters );
+    }
+
+    /**
+     * Load the entry reference list of thze directory
+     *
+     * @param nIdDirectory
+     *            the directory id
+     * 
+     * @return The reference list of entries
+     */
+    private ReferenceList getEntryReferenceListByDirectoryId( int nIdDirectory )
+    {
+
+        ReferenceList entryReferenceList = new ReferenceList( );
+
+        EntryFilter filter = new EntryFilter( );
+        filter.setIdDirectory( nIdDirectory );
+        List<IEntry> entryList = EntryHome.getEntryList( filter, getPlugin( ) );
+
+        for ( IEntry entry : entryList )
+        {
+            if ( entry.getTitle( ) != null )
+            {
+                ReferenceItem item = new ReferenceItem( );
+                item.setCode( String.valueOf( entry.getIdEntry( ) ) );
+                item.setName( entry.getTitle( ) );
+                entryReferenceList.add( item );
+            }
+        }
+
+        return entryReferenceList;
     }
 }

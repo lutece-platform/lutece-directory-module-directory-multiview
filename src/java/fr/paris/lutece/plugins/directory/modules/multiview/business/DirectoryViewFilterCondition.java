@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business;
 import javax.validation.constraints.*;
 import org.hibernate.validator.constraints.*;
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * This is the business class for the object DirectoryViewFilterCondition
@@ -44,15 +45,15 @@ public class DirectoryViewFilterCondition implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    // constants
-    public static int TYPE_UNITTREE_USER_MATCH = 1;
-
     // Variables declarations
     private int _nId;
     private int _nIdDirectoryFilter;
     private int _nIdEntry;
+    private String _strEntryTitle;
     private int _nOperator;
     private int _nFilterType;
+    private String _strOperatorName;
+    private String _strFilterTypeName;
 
     /**
      * Returns the Id
@@ -158,4 +159,66 @@ public class DirectoryViewFilterCondition implements Serializable
     {
         _nFilterType = nFilterType;
     }
+
+    /**
+     * Returns the Entry title
+     * 
+     * @return The Entry title
+     */
+    public String getEntryTitle( )
+    {
+        return _strEntryTitle;
+    }
+
+    /**
+     * Sets the Entry title
+     * 
+     * @param Entry
+     *            title The Entry title
+     */
+    public void setEntryTitle( String _strEntryTitle )
+    {
+        this._strEntryTitle = _strEntryTitle;
+    }
+
+    /**
+     * Returns the operator name
+     * 
+     * @return The operator name
+     */
+    public String getOperatorName( )
+    {
+        return _strOperatorName;
+    }
+
+    /**
+     * Sets the operator name
+     * 
+     * @param name
+     */
+    public void setOperatorName( String _strOperatorName )
+    {
+        this._strOperatorName = _strOperatorName;
+    }
+
+    /**
+     * Returns the filter type name
+     * 
+     * @return The filter type name
+     */
+    public String getFilterTypeName( )
+    {
+        return _strFilterTypeName;
+    }
+
+    /**
+     * Sets the filter type name
+     * 
+     * @param name
+     */
+    public void setFilterTypeName( String _strFilterTypeName )
+    {
+        this._strFilterTypeName = _strFilterTypeName;
+    }
+
 }

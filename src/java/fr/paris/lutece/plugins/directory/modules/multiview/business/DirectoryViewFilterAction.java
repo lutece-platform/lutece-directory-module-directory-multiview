@@ -51,6 +51,8 @@ public class DirectoryViewFilterAction implements Serializable
 
     private int _nIdAction;
 
+    private String _strLibAction;
+
     private int _nPosition;
 
     @Size( max = 50, message = "#i18n{module.directory.multiview.validation.directoryfilteraction.Style.size}" )
@@ -119,6 +121,27 @@ public class DirectoryViewFilterAction implements Serializable
     public void setIdAction( int nIdAction )
     {
         _nIdAction = nIdAction;
+    }
+
+    /**
+     * Returns the LibAction
+     * 
+     * @return The LibAction
+     */
+    public String getLibAction( )
+    {
+        return _strLibAction;
+    }
+
+    /**
+     * Sets the libAction
+     * 
+     * @param strLibAction
+     *            The libdAction
+     */
+    public void setLibAction( String strLibAction )
+    {
+        _strLibAction = strLibAction;
     }
 
     /**

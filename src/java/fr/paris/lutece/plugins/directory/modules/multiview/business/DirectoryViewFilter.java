@@ -47,6 +47,7 @@ public class DirectoryViewFilter implements Serializable
     // Variables declarations
     private int _nId;
     private int _nIdDirectory;
+    private String _strDirectoryTitle;
 
     @NotEmpty( message = "#i18n{module.directory.multiview.validation.directoryfilter.Name.notEmpty}" )
     @Size( max = 255, message = "#i18n{module.directory.multiview.validation.directoryfilter.Name.size}" )
@@ -56,6 +57,8 @@ public class DirectoryViewFilter implements Serializable
     private String _strStyle;
 
     private int _nPosition;
+    private int _nIdEntryTitle;
+    private String _strEntryTitle;
 
     /**
      * Returns the Id
@@ -161,4 +164,68 @@ public class DirectoryViewFilter implements Serializable
     {
         this._nIdDirectory = nIdDirectory;
     }
+
+    /**
+     * Returns the directory title
+     * 
+     * @return _strDirectoryTitle
+     */
+    public String getDirectoryTitle( )
+    {
+        return _strDirectoryTitle;
+    }
+
+    /**
+     * Sets the _strDirectoryTitle
+     * 
+     * @param _strDirectoryTitle
+     *            The Directory title
+     */
+    public void setDirectoryTitle( String _strDirectoryTitle )
+    {
+        this._strDirectoryTitle = _strDirectoryTitle;
+    }
+
+    /**
+     * get the _nIdEntryTitle
+     * 
+     * @return _nIdEntryTitle The Id of the entry to use for the title of the record
+     */
+    public int getIdEntryTitle( )
+    {
+        return _nIdEntryTitle;
+    }
+
+    /**
+     * Sets the _nIdEntryTitle
+     * 
+     * @param _nIdEntryTitle
+     *            The Id of the entry to use for the title of the record
+     */
+    public void setIdEntryTitle( int _nIdEntryTitle )
+    {
+        this._nIdEntryTitle = _nIdEntryTitle;
+    }
+
+    /**
+     * get the _strEntryTitle
+     * 
+     * @return _strEntryTitle The title the entry to use for the title of the record
+     */
+    public String getEntryTitle( )
+    {
+        return _strEntryTitle;
+    }
+
+    /**
+     * Sets the _strEntryTitle
+     * 
+     * @param _strEntryTitle
+     *            The entry title
+     */
+    public void setEntryTitle( String _strEntryTitle )
+    {
+        this._strEntryTitle = _strEntryTitle;
+    }
+
 }

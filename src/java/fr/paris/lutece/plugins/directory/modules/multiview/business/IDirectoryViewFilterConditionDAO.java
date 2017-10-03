@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -122,4 +123,18 @@ public interface IDirectoryViewFilterConditionDAO
      * @return The referenceList which contains the data of all the directoryFilterCondition objects
      */
     ReferenceList selectDirectoryFilterConditionsReferenceList( Plugin plugin );
+
+    /**
+     * Loads the types
+     * 
+     * @return hashmap of the types
+     */
+    HashMap<String, String> loadTypes( );
+
+    /**
+     * Loads the operators
+     * 
+     * @return hashmap of the operators
+     */
+    HashMap<String, String> loadOperators( );
 }

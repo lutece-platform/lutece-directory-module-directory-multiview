@@ -33,14 +33,25 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web;
 
+import fr.paris.lutece.plugins.directory.business.Directory;
+import fr.paris.lutece.plugins.directory.business.DirectoryHome;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterAction;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterActionHome;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterHome;
+import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
+import java.util.AbstractMap;
+import java.util.Collection;
+import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
@@ -59,6 +70,8 @@ public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterA
 
     // Parameters
     private static final String PARAMETER_ID_DIRECTORYFILTERACTION = "id";
+    private static final String PARAMETER_ID_DIRECTORYFILTER = "directory_filter_id";
+    private static final String PARAMETER_ID_DIRECTORYWORKFLOW = "directory_workflow_id";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_DIRECTORYFILTERACTIONS = "module.directory.multiview.manage_directoryfilteractions.pageTitle";
@@ -68,7 +81,9 @@ public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterA
     // Markers
     private static final String MARK_DIRECTORYFILTERACTION_LIST = "directoryfilteraction_list";
     private static final String MARK_DIRECTORYFILTERACTION = "directoryfilteraction";
-
+    private static final String MARK_DIRECTORYFILTERID = "directoryfilterid";
+    private static final String MARK_DIRECTORYWORKFLOWID = "directoryworkflowid";
+    private static final String MARK_ACTION_LIST = "action_list";
     private static final String JSP_MANAGE_DIRECTORYFILTERACTIONS = "jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterActions.jsp";
 
     // Properties
@@ -107,9 +122,32 @@ public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterA
     public String getManageDirectoryFilterActions( HttpServletRequest request )
     {
         _directoryfilteraction = null;
-        List<DirectoryViewFilterAction> listDirectoryFilterActions = DirectoryViewFilterActionHome.getDirectoryFilterActionsList( );
+        int nIdDirectoryWorkflow = -1;
+
+        int nIdDirectoryFilter = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTER ) );
+        String strIdDirectoryWorkflow = request.getParameter( PARAMETER_ID_DIRECTORYWORKFLOW );
+
+        if ( strIdDirectoryWorkflow == null )
+        {
+            DirectoryViewFilter dvf = DirectoryViewFilterHome.findByPrimaryKey( nIdDirectoryFilter );
+            if ( dvf != null )
+                nIdDirectoryWorkflow = dvf.getIdDirectory( );
+            Directory dir = DirectoryHome.findByPrimaryKey( dvf.getIdDirectory( ), getPlugin( ) );
+            if ( dir != null )
+                nIdDirectoryWorkflow = dir.getIdWorkflow( );
+
+        }
+        else
+        {
+            nIdDirectoryWorkflow = Integer.parseInt( strIdDirectoryWorkflow );
+        }
+
+        List<DirectoryViewFilterAction> listDirectoryFilterActions = DirectoryViewFilterActionHome
+                .getDirectoryFilterActionsListByDirectoryFilter( nIdDirectoryFilter );
         Map<String, Object> model = getPaginatedListModel( request, MARK_DIRECTORYFILTERACTION_LIST, listDirectoryFilterActions,
                 JSP_MANAGE_DIRECTORYFILTERACTIONS );
+        model.put( MARK_DIRECTORYFILTERID, nIdDirectoryFilter );
+        model.put( MARK_DIRECTORYWORKFLOWID, nIdDirectoryWorkflow );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_DIRECTORYFILTERACTIONS, TEMPLATE_MANAGE_DIRECTORYFILTERACTIONS, model );
     }
@@ -126,8 +164,28 @@ public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterA
     {
         _directoryfilteraction = ( _directoryfilteraction != null ) ? _directoryfilteraction : new DirectoryViewFilterAction( );
 
+        int nIdDirectoryFilter = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTER ) );
+        int nIdDirectoryWorkflow = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYWORKFLOW ) );
+
+        _directoryfilteraction.setIdDirectoryFilter( nIdDirectoryFilter );
+
+        Collection<State> stateList = WorkflowService.getInstance( ).getAllStateByWorkflow( nIdDirectoryWorkflow, getUser( ) );
+
+        ReferenceList actionList = new ReferenceList( );
+        for ( State state : stateList )
+        {
+            ReferenceItem item = new ReferenceItem( );
+            item.setCode( state.getResourceId( ) );
+            item.setName( state.getName( ) );
+            actionList.add( item );
+        }
+
         Map<String, Object> model = getModel( );
         model.put( MARK_DIRECTORYFILTERACTION, _directoryfilteraction );
+        model.put( MARK_ACTION_LIST, actionList );
+
+        model.put( MARK_DIRECTORYFILTERID, nIdDirectoryFilter );
+        model.put( MARK_DIRECTORYWORKFLOWID, nIdDirectoryWorkflow );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_DIRECTORYFILTERACTION, TEMPLATE_CREATE_DIRECTORYFILTERACTION, model );
     }
@@ -142,18 +200,25 @@ public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterA
     @Action( ACTION_CREATE_DIRECTORYFILTERACTION )
     public String doCreateDirectoryFilterAction( HttpServletRequest request )
     {
+
         populate( _directoryfilteraction, request );
+
+        Map<String, String> additionalParameters = new HashMap<>( );
+        String strIdDirectoryFilter = request.getParameter( PARAMETER_ID_DIRECTORYFILTER );
+        String strIdDirectoryWorkflow = request.getParameter( PARAMETER_ID_DIRECTORYWORKFLOW );
+        additionalParameters.put( PARAMETER_ID_DIRECTORYFILTER, strIdDirectoryFilter );
+        additionalParameters.put( PARAMETER_ID_DIRECTORYWORKFLOW, strIdDirectoryWorkflow );
 
         // Check constraints
         if ( !validateBean( _directoryfilteraction, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
-            return redirectView( request, VIEW_CREATE_DIRECTORYFILTERACTION );
+            return redirect( request, VIEW_CREATE_DIRECTORYFILTERACTION, additionalParameters );
         }
 
         DirectoryViewFilterActionHome.create( _directoryfilteraction );
         addInfo( INFO_DIRECTORYFILTERACTION_CREATED, getLocale( ) );
 
-        return redirectView( request, VIEW_MANAGE_DIRECTORYFILTERACTIONS );
+        return redirect( request, VIEW_MANAGE_DIRECTORYFILTERACTIONS, additionalParameters );
     }
 
     /**
@@ -167,8 +232,13 @@ public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterA
     public String getConfirmRemoveDirectoryFilterAction( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTERACTION ) );
+        int nIdDirectoryFilter = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTER ) );
+        int nIdDirectoryWorkflow = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYWORKFLOW ) );
+
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_DIRECTORYFILTERACTION ) );
         url.addParameter( PARAMETER_ID_DIRECTORYFILTERACTION, nId );
+        url.addParameter( PARAMETER_ID_DIRECTORYFILTER, nIdDirectoryFilter );
+        url.addParameter( PARAMETER_ID_DIRECTORYWORKFLOW, nIdDirectoryWorkflow );
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_DIRECTORYFILTERACTION, url.getUrl( ),
                 AdminMessage.TYPE_CONFIRMATION );
@@ -190,7 +260,14 @@ public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterA
         DirectoryViewFilterActionHome.remove( nId );
         addInfo( INFO_DIRECTORYFILTERACTION_REMOVED, getLocale( ) );
 
-        return redirectView( request, VIEW_MANAGE_DIRECTORYFILTERACTIONS );
+        Map<String, String> additionalParameters = new HashMap<>( );
+
+        String strIdDirectoryFilter = request.getParameter( PARAMETER_ID_DIRECTORYFILTER );
+        String strIdDirectoryWorkflow = request.getParameter( PARAMETER_ID_DIRECTORYWORKFLOW );
+        additionalParameters.put( PARAMETER_ID_DIRECTORYFILTER, strIdDirectoryFilter );
+        additionalParameters.put( PARAMETER_ID_DIRECTORYWORKFLOW, strIdDirectoryWorkflow );
+
+        return redirect( request, VIEW_MANAGE_DIRECTORYFILTERACTIONS, additionalParameters );
     }
 
     /**
@@ -204,14 +281,30 @@ public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterA
     public String getModifyDirectoryFilterAction( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTERACTION ) );
+        int nIdDirectoryFilter = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYFILTER ) );
+        int nIdDirectoryWorkflow = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORYWORKFLOW ) );
 
         if ( _directoryfilteraction == null || ( _directoryfilteraction.getId( ) != nId ) )
         {
             _directoryfilteraction = DirectoryViewFilterActionHome.findByPrimaryKey( nId );
         }
 
+        Collection<State> stateList = WorkflowService.getInstance( ).getAllStateByWorkflow( nIdDirectoryWorkflow, getUser( ) );
+
+        ReferenceList actionList = new ReferenceList( );
+        for ( State state : stateList )
+        {
+            ReferenceItem item = new ReferenceItem( );
+            item.setCode( state.getResourceId( ) );
+            item.setName( state.getName( ) );
+            actionList.add( item );
+        }
+
         Map<String, Object> model = getModel( );
         model.put( MARK_DIRECTORYFILTERACTION, _directoryfilteraction );
+        model.put( MARK_ACTION_LIST, actionList );
+        model.put( MARK_DIRECTORYFILTERID, nIdDirectoryFilter );
+        model.put( MARK_DIRECTORYWORKFLOWID, nIdDirectoryWorkflow );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_DIRECTORYFILTERACTION, TEMPLATE_MODIFY_DIRECTORYFILTERACTION, model );
     }
@@ -228,15 +321,22 @@ public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterA
     {
         populate( _directoryfilteraction, request );
 
+        Map<String, String> additionalParameters = new HashMap<>( );
+        String strIdDirectoryFilter = request.getParameter( PARAMETER_ID_DIRECTORYFILTER );
+        String strIdDirectoryWorkflow = request.getParameter( PARAMETER_ID_DIRECTORYWORKFLOW );
+        additionalParameters.put( PARAMETER_ID_DIRECTORYFILTER, strIdDirectoryFilter );
+        additionalParameters.put( PARAMETER_ID_DIRECTORYWORKFLOW, strIdDirectoryWorkflow );
+
         // Check constraints
         if ( !validateBean( _directoryfilteraction, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
-            return redirect( request, VIEW_MODIFY_DIRECTORYFILTERACTION, PARAMETER_ID_DIRECTORYFILTERACTION, _directoryfilteraction.getId( ) );
+            additionalParameters.put( PARAMETER_ID_DIRECTORYFILTERACTION, String.valueOf( _directoryfilteraction.getId( ) ) );
+            return redirect( request, VIEW_MODIFY_DIRECTORYFILTERACTION, additionalParameters );
         }
 
         DirectoryViewFilterActionHome.update( _directoryfilteraction );
         addInfo( INFO_DIRECTORYFILTERACTION_UPDATED, getLocale( ) );
 
-        return redirectView( request, VIEW_MANAGE_DIRECTORYFILTERACTIONS );
+        return redirect( request, VIEW_MANAGE_DIRECTORYFILTERACTIONS, additionalParameters );
     }
 }

@@ -3,7 +3,7 @@
 
 <@box>
 	<@boxHeader title='#i18n{module.directory.multiview.manage_directoryfilteraction.title}' boxTools=true>
-		<@tform class='form-inline pull-right' name='manage_directoryfilteraction' action='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterActions.jsp'>
+		<@tform class='form-inline pull-right' name='manage_directoryfilteraction' action='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterActions.jsp?directory_filter_id=${directoryfilterid}&directory_workflow_id=${directoryworkflowid}'>
 			<@button type='submit' name='view_createDirectoryFilterAction' buttonIcon='plus' title='#i18n{module.directory.multiview.manage_directoryfilteractions.buttonAdd}' />
 		</@tform>
 	</@boxHeader>
@@ -29,7 +29,7 @@
                 ${directoryfilteraction.idDirectoryFilter}
             </td>
             <td>
-                ${directoryfilteraction.idAction}
+                (${directoryfilteraction.idAction}) ${directoryfilteraction.libAction}
             </td>
             <td>
                 ${directoryfilteraction.position}
@@ -41,9 +41,9 @@
                 ${directoryfilteraction.nbItem}
             </td>
         <td>
-			<@aButton href='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterActions.jsp?view=modifyDirectoryFilterAction&id=${directoryfilteraction.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' showTitle=false />
+			<@aButton href='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterActions.jsp?view=modifyDirectoryFilterAction&id=${directoryfilteraction.id}&directory_filter_id=${directoryfilterid}&directory_workflow_id=${directoryworkflowid}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' showTitle=false />
 						
-			<@aButton href='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterActions.jsp?action=confirmRemoveDirectoryFilterAction&id=${directoryfilteraction.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='btn-danger' showTitle=false />
+			<@aButton href='jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilterActions.jsp?action=confirmRemoveDirectoryFilterAction&id=${directoryfilteraction.id}&directory_filter_id=${directoryfilterid}&directory_workflow_id=${directoryworkflowid}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='btn-danger' showTitle=false />
 
         </td>
         </tr>
