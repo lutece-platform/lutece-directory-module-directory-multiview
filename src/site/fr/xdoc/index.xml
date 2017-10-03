@@ -11,13 +11,49 @@
             </p>
             -->
             <subsection name="Introduction">
-                <p></p>
+                <p>Ce module propose une vue unique de fiches de différents annuaires, filtrée par 
+                    une condition liée à une valeur d'entrée des fiches (cette valeur doit correspondre à 
+                    une unité "unit Tree" associée à l'utilisateur), et par un statut de la fiche.
+                </p>
+                <p>
+                    Le filtre Mult annuaire a différentes propriétés :
+                            <ul>
+                                <li>L'identifiant de l'annuaire associé  </li>
+                                <li>Le nom du filtre   </li>
+                                <li>Le style d'affichage du nombre de fiches correspondant à la condition et au statut </li>
+                                <li>La position d'affichage</li>
+                                <li>L'entrée de l'annuaire choisie pour être affichée dans les liste résultat de fiches</li>
+                            </ul>
+                </p>
+                <p>
+                    Les conditions ont différentes propriétés :
+                           <ul>
+                                
+                                <li>L'identifiant de l'entrée qui doit correspondre au test</li>
+                                    <li>L'opérateur pour le test ( = par défaut ) </li>
+                                    <li>Le type de condition (defaut : unit Tree filter =
+                                        la valeur de l'entrée de la fiche doit correspondre 
+                                        à l'unité à laquelle est associé l'utilistateur )</li>
+                            </ul>
+                </p>
+                <p>
+                    Les actions ont différentes propriétés :
+                            <ul>
+                                <li>L'état du workflow choisi pour afficher le tableau de bord du nombre de fiches
+                                    correspondantes à cet état, filtré par la condition du filtre</li>
+                                <li>L'ordre d'affichage de l'action (non utilisé pour le moment)</li>
+                                <li>Le style de rendu de l'action (non utilisé pour le moment)</li>
+                                <li>Le nombre maximum de résultat à afficher (non utilisé pour le moment)</li>                
+                            </ul>
+                    
+                </p>
             </subsection>
             <subsection name="Configuration">
-                <p></p>
+                <p>Prérequis : la configuration des Workflow, Directory et Unittree</p>
+                <p>Prérequis : la configuration du filtre (actions et conditions)</p>
             </subsection>
             <subsection name="Usage">
-                <p></p>
+                 <p>/!\ L'entrée de l'annuaire contenant l'unité à comparer doit être indexée !</p>
             </subsection>
         </section>
     </body>

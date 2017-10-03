@@ -5,14 +5,28 @@
 
 This module proposes a view of multiple directories and directory records filtered by user, depending on his unit membership in unitTree, and proposes a dashboard of those directory recordsfiltered by the workflow state of the records.
 
-
+The ViewFilter has different properties :
  
-* The directory ViewFilter represents the filter bound to a directory
-* The ViewFilter condition has different types :
- 
-* Type unitTreeFilter : the condition stores the entry Id of the directory record that must match a unit bound to the user
+* The id of the directory
+* The filter name
+* The rendering style for the number of records corresponding to this filter
+* The display position in the dashboard
+* The entry to display to represent the record in multi-type records list
 
-* The ViewFilter action stores the state of the workflow chosen for displaying the dashboard of the number of recordscorresponding to this state, filtered by the filter condition
+
+The ViewFilter condition has different properties :
+ 
+* The entry Id of the directory record whose value must match the condition
+* The operator for the condition (default : "equals")
+* The Type of the condition (default : unit Tree filter = the value of the entry must match a unit bound to the user )
+
+
+The ViewFilter action has different properties :
+ 
+* the state of the workflow chosen for displaying the dashboard of the number of recordscorresponding to this state, filtered by the filter condition
+* The display position by action in the dashboard (not used yet)
+* The rendeding style (not used yet)
+* The maximum of item to display in result lists (not used yet)
 
 
 ## Configuration

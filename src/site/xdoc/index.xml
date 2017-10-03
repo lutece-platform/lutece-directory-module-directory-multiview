@@ -16,20 +16,36 @@
                     filtered by the workflow state of the records.
                 </p>
                 <p>
-                    <ul>
-                        <li>The directory ViewFilter represents the filter bound to a directory</li>
-                        <li>The ViewFilter condition has different types :
+                    The ViewFilter has different properties :
                             <ul>
-                                <li>Type unitTreeFilter : the condition stores the entry Id of the 
-                                    directory record that must match a unit bound to the user
-                                </li>
+                                <li>The id of the directory  </li>
+                                <li>The filter name </li>
+                                <li>The rendering style for the number of records corresponding to this filter </li>
+                                <li>The display position in the dashboard</li>
+                                <li>The entry to display to represent the record in multi-type records list</li>
                             </ul>
-                        </li>
-                        <li>The ViewFilter action stores the state of the workflow 
+                </p>
+                <p>
+                    The ViewFilter condition has different properties :
+                            <ul>
+                                
+                                <li>The entry Id of the directory record whose value must match the condition</li>
+                                    <li>The operator for the condition (default : "equals") </li>
+                                    <li>The Type of the condition (default : unit Tree filter =
+                                        the value of the entry must match a unit bound to the user )</li>
+                            </ul>
+                </p>
+                <p>
+                    The ViewFilter action has different properties :
+                            <ul>
+                                <li>the state of the workflow 
                             chosen for displaying the dashboard of the number of records 
-                            corresponding to this state, filtered by the filter condition 
-                        </li>
-                    </ul>
+                            corresponding to this state, filtered by the filter condition                                 </li>
+                                <li>The display position by action in the dashboard (not used yet)</li>
+                                <li>The rendeding style (not used yet)  	</li>
+                                <li>The maximum of item to display in result lists (not used yet)</li>                
+                            </ul>
+                    
                 </p>
             </subsection>
             <subsection name="Configuration">
