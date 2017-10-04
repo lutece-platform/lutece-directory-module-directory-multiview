@@ -10,6 +10,7 @@ id_directory int default 0,
 name varchar(255) default '' NOT NULL,
 style varchar(50) default '',
 position int default '0',
+id_entry_title int default '0',
 PRIMARY KEY (id_directory_filter)
 );
 
