@@ -58,7 +58,6 @@ import fr.paris.lutece.plugins.directory.web.action.DirectoryActionResult;
 import fr.paris.lutece.plugins.directory.web.action.DirectoryAdminSearchFields;
 import fr.paris.lutece.plugins.directory.web.action.IDirectoryAction;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
-import fr.paris.lutece.portal.business.dashboard.DashboardFactory;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -78,16 +77,19 @@ import fr.paris.lutece.portal.web.pluginaction.DefaultPluginActionResult;
 import fr.paris.lutece.portal.web.pluginaction.IPluginActionResult;
 import fr.paris.lutece.portal.web.pluginaction.PluginActionManager;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
+import java.util.AbstractList;
 
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -135,8 +137,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     private static final String MARK_ENTRY_LIST_GEOLOCATION = "entry_list_geolocation";
-
-    // private static final String MARK_DIRECTORY_RECORD_LIST = "directory_record_list";
+    private static final String MARK_DIRECTORY_LIST = "directory_list";
     private static final String MARK_DIRECTORY = "directory";
     private static final String MARK_ENTRY_LIST = "entry_list";
     private static final String MARK_ENTRY_LIST_FORM_MAIN_SEARCH = "entry_list_form_main_search";
@@ -162,7 +163,6 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String MARK_DATE_MODIFICATION_SEARCH = "date_modification_search";
     private static final String MARK_DATE_MODIFICATION_BEGIN_SEARCH = "date_modification_begin_search";
     private static final String MARK_DATE_MODIFICATION_END_SEARCH = "date_modification_end_search";
-    private static final String MARK_DASHBOARD_MULTI_DIRECTORY_VIEW = "dashboard_multi_directory_view";
     private static final String MARK_ITEM_NAVIGATOR = "item_navigator";
 
     private static final String MARK_RECORD = "record";
@@ -183,8 +183,8 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String JSP_DO_CHANGE_STATES_RECORD = "jsp/admin/plugins/directory/modules/multiview/DoChangeStatesRecord.jsp";
     private static final String JSP_DO_VISUALISATION_RECORD = "jsp/admin/plugins/directory/modules/multiview/DoVisualisationRecord.jsp";
     private static final String JSP_RESOURCE_HISTORY = "jsp/admin/plugins/directory/modules/multiview/ResourceHistory.jsp";
-    public static final String JSP_MANAGE_MULTI_DIRECTORY_RECORD = "jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp";
     private static final String JSP_ACTION_RESULT = "jsp/admin/plugins/directory/ActionResult.jsp";
+    private static final String JSP_MANAGE_MULTI_DIRECTORY_RECORD = "jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp";
     
     // Parameters
     private static final String PARAMETER_ID_DIRECTORY = DirectoryUtils.PARAMETER_ID_DIRECTORY;
@@ -193,8 +193,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String PARAMETER_SESSION = DirectoryUtils.PARAMETER_SESSION;
     private static final String PARAMETER_RESET_SEARCH = "resetsearch";
-
-
+    
     // defaults
     private String DEFAULT_TYPE_IMAGE = "10";
     private int DEFAULT_ACTION_ID = -1;
@@ -204,7 +203,10 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private DirectoryActionResult _directoryActionResult = new DirectoryActionResult( );
     private IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
 
-
+    private List<DirectoryViewFilter> _directoryViewList = new ArrayList<>( ) ;
+    private HashMap<Integer, Directory> _directoryList = new HashMap<>( ) ;
+    private HashMap<Integer, ReferenceList> _workflowStateByDirectoryList = new HashMap<>( ) ;
+    
     /**
      * Gets the DirectoryAdminSearchFields
      * 
@@ -241,7 +243,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             session.setAttribute( MARK_EXTENT_CURRENT, strExtentCurrent );
             session.setAttribute( MARK_VISIBLE_LAYER, strVisibleLayer );
         }
-
+        
         // first - see if there is an invoked action
         IDirectoryAction action = PluginActionManager.getPluginAction( request, IDirectoryAction.class );
 
@@ -255,6 +257,9 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             return action.process( request, response, getUser( ), _searchFields );
         }
 
+        // reinit search
+        reInitDirectoryRecordFilter( );
+        
         // display could have been an action but it's the default one an will always be here...
         DefaultPluginActionResult result = new DefaultPluginActionResult( );
         String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
@@ -266,56 +271,52 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         boolean bWorkflowServiceEnable = WorkflowService.getInstance( ).isAvailable( );
         AdminUser adminUser = getUser( );
 
-        List<Directory> directoryList = new ArrayList<>( );
-        List<Integer> workflowStateIdList = new ArrayList<>( );
-        List<DirectoryViewFilter> directoryViewList = new ArrayList<>( );
-
-        if ( nIdDirectory <= 0 )
-        {
-            // present the list of directories of the filters by default
-            directoryViewList = DirectoryViewFilterHome.getDirectoryFiltersList( );
-            for ( DirectoryViewFilter dvf : directoryViewList )
+        // list of directories of the filters 
+        if ( _directoryViewList == null || _directoryViewList.size( ) == 0 ) {
+            
+            _directoryViewList = DirectoryViewFilterHome.getDirectoryFiltersList( );
+            for ( DirectoryViewFilter dvf : _directoryViewList )
             {
                 Directory directory = DirectoryHome.findByPrimaryKey( dvf.getIdDirectory( ), getPlugin( ) );
                 if ( RBACService.isAuthorized( Directory.RESOURCE_TYPE, strIdDirectory, DirectoryResourceIdService.PERMISSION_MANAGE_RECORD, getUser( ) )
                         || AdminWorkgroupService.isAuthorized( directory, getUser( ) ) )
                 {
-                    directoryList.add( directory );
-                    List<DirectoryViewFilterAction> DFactionList = DirectoryViewFilterActionHome.getDirectoryFilterActionsListByDirectoryFilter( dvf.getId( ) );
-                    if ( DFactionList != null && DFactionList.size( ) > 0 )
+                    _directoryList.put( directory.getIdDirectory( ),  directory );
+                    ReferenceList workflowStateList = new ReferenceList( );
+                    
+                    Collection<State> colState = WorkflowService.getInstance( ).getAllStateByWorkflow( _directoryList.get( directory.getIdDirectory( ) ).getIdWorkflow( ), adminUser );
+                    ReferenceItem item = new ReferenceItem( ) ;
+                    item.setCode( "-1" ) ;
+                    item.setName( " - " ) ;
+                    workflowStateList.add( item ) ;
+                            
+                    if ( colState != null )
                     {
-                        // get the first action only
-                        workflowStateIdList.add( DFactionList.get( 0 ).getIdAction( ) );
+                        for ( State stateWorkflow : colState )
+                        {
+                            item = new ReferenceItem( ) ;
+                            item.setCode( String.valueOf( stateWorkflow.getId( ) ) ) ;
+                            item.setName( stateWorkflow.getName( ) ) ;
+                            workflowStateList.add( item );
+                        }
                     }
-                    else
-                    {
-                        workflowStateIdList.add( DEFAULT_ACTION_ID );
-                    }
-
+                    
+                    _workflowStateByDirectoryList.put( directory.getIdDirectory( ) , workflowStateList );
                 }
             }
-
-            if ( directoryList.isEmpty( ) )
-            {
-                throw new AccessDeniedException( MESSAGE_ACCESS_DENIED );
-            }
         }
-        else
+        
+        // get the selected directory
+        if ( nIdDirectory > 0 )
         {
             // access by ONE directory
-            Directory directory = DirectoryHome.findByPrimaryKey( nIdDirectory, getPlugin( ) );
+            Directory directory = _directoryList.get( nIdDirectory );
             if ( ( directory == null )
                     || ( !RBACService.isAuthorized( Directory.RESOURCE_TYPE, strIdDirectory, DirectoryResourceIdService.PERMISSION_MANAGE_RECORD, getUser( ) ) || !AdminWorkgroupService
                             .isAuthorized( directory, getUser( ) ) ) )
             {
                 throw new AccessDeniedException( MESSAGE_ACCESS_DENIED );
             }
-
-            directoryList.add( directory );
-            if ( nIdWorkflowState >= 0 )
-                workflowStateIdList.add( nIdWorkflowState );
-
-            directoryViewList = DirectoryViewFilterHome.getDirectoryFiltersListByDirectoryId( nIdDirectory );
         }
 
         if ( ( request.getParameter( PARAMETER_SESSION ) == null ) || Boolean.parseBoolean( request.getParameter( PARAMETER_RESET_SEARCH ) ) )
@@ -327,19 +328,21 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         _searchFields.setCurrentPageIndexDirectoryRecord( Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
                 _searchFields.getCurrentPageIndexDirectoryRecord( ) ) );
         _searchFields.setItemsPerPageDirectoryRecord( Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
-                _searchFields.getItemsPerPageDirectoryRecord( ), _searchFields.getDefaultItemsPerPage( ) ) );
+        _searchFields.getItemsPerPageDirectoryRecord( ), _searchFields.getDefaultItemsPerPage( ) ) );
 
         List<Integer> listResultRecordId = new ArrayList<>( );
-        int index = 0;
-        List<IEntry> listEntryFormMainSearch = new ArrayList<>( );
-        List<IEntry> listEntryFormComplementarySearch = new ArrayList<>( );
-        List<IEntry> listEntryResultSearch = new ArrayList<>( );
-        List<IEntry> listEntryGeolocation = new ArrayList<>( );
+        List<IEntry>  listEntryFormMainSearch = new ArrayList<>( );
+        List<IEntry>  listEntryFormComplementarySearch = new ArrayList<>( );
+        List<IEntry>  listEntryResultSearch = new ArrayList<>( );
+        List<IEntry>  listEntryGeolocation = new ArrayList<>( );
 
-        for ( DirectoryViewFilter dvf : directoryViewList )
+        
+        for ( DirectoryViewFilter dvf : _directoryViewList )
         {
-
-            Directory directory = DirectoryHome.findByPrimaryKey( dvf.getIdDirectory( ), getPlugin( ) );
+            // case of request of results of ONE directory 
+            if ( nIdDirectory > 0 && nIdDirectory != dvf.getIdDirectory( ) ) continue ;
+            
+            Directory directory = _directoryList.get( dvf.getIdDirectory( ) );
 
             // build entryFilter
             EntryFilter entryFilter = new EntryFilter( );
@@ -380,11 +383,12 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
                 }
             }
 
-            // get the records Ids for this directory
+            // Get the records Ids for this directory
 
+            // filter the search with a directory filter condition
             HashMap<String, List<RecordField>> map = DirectoryViewFilterHome.getFilterSearchMap( directory, adminUser );
             HashMap<String, List<RecordField>> mapQuery = _searchFields.getMapQuery( );
-            if ( directoryList.size( ) == 1 && mapQuery != null )
+            if ( _directoryList.size( ) == 1 && mapQuery != null )
             {
                 mapQuery.putAll( map );
             }
@@ -395,16 +399,15 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             _searchFields.setMapQuery( mapQuery );
 
             // filter the search with a directory filter action
-            if ( workflowStateIdList.size( ) > 0 && workflowStateIdList.get( index ) > 0 )
-                _searchFields.setIdWorkflowSate( workflowStateIdList.get( index ) );
+            if ( nIdDirectory > 0 && directory.getIdDirectory( )==nIdDirectory && nIdWorkflowState > 0 )
+                _searchFields.setIdWorkflowSate( nIdWorkflowState );
 
             _searchFields.setSortParameters( request, directory, getPlugin( ) );
-            _searchFields.setListIdsResultRecord( new ArrayList<Integer>( ) );
+            _searchFields.setListIdsResultRecord( new ArrayList<>( ) );
 
             listResultRecordId.addAll( DirectoryUtils
                     .getListResults( request, directory, bWorkflowServiceEnable, true, _searchFields, getUser( ), getLocale( ) ) );
 
-            index++;
         }
 
         // Store the list of id records in session
@@ -413,17 +416,17 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         // HACK : We copy the list so workflow does not clear the paginator list.
         LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( new ArrayList<Integer>( listResultRecordId ),
                 _searchFields.getItemsPerPageDirectoryRecord( ), getJspManageMultiDirectoryRecord( request,
-                        ( directoryList.size( ) == 1 ? directoryList.get( 0 ) : null ) ), PARAMETER_PAGE_INDEX,
+                        ( _directoryList.size( ) == 1 ? _directoryList.get( 0 ) : null ) ), PARAMETER_PAGE_INDEX,
                 _searchFields.getCurrentPageIndexDirectoryRecord( ), getLocale( ) );
 
         // get only record for page items.
         List<Record> lRecord = _recordService.loadListByListId( paginator.getPageItems( ), getPlugin( ) );
 
-        boolean bHistoryEnabled = ( directoryList.size( ) == 1 && WorkflowService.getInstance( ).isAvailable( ) && directoryList.get( 0 ).getIdWorkflow( ) != DirectoryUtils.CONSTANT_ID_NULL );
+        boolean bHistoryEnabled = ( _directoryList.size( ) == 1 && WorkflowService.getInstance( ).isAvailable( ) && _directoryList.get( 0 ).getIdWorkflow( ) != DirectoryUtils.CONSTANT_ID_NULL );
         RecordFieldFilter recordFieldFilter = new RecordFieldFilter( );
         recordFieldFilter.setIsEntryShownInResultList( RecordFieldFilter.FILTER_TRUE );
 
-        bWorkflowServiceEnable = ( directoryList.size( ) == 1 && directoryList.get( 0 ).getIdWorkflow( ) != DirectoryUtils.CONSTANT_ID_NULL && bWorkflowServiceEnable );
+        bWorkflowServiceEnable = ( _directoryList.size( ) == 1 && _directoryList.get( 0 ).getIdWorkflow( ) != DirectoryUtils.CONSTANT_ID_NULL && bWorkflowServiceEnable );
 
         List<Map<String, Object>> listResourceActions = new ArrayList<Map<String, Object>>( lRecord.size( ) );
 
@@ -432,41 +435,31 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         List<DirectoryAction> listActionsForDirectoryDisable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_DISABLE, getPlugin( ),
                 getLocale( ) );
 
-        if ( directoryList.size( ) == 1 )
+        if ( nIdDirectory > 0 )
         {
             listActionsForDirectoryEnable = (List<DirectoryAction>) RBACService.getAuthorizedActionsCollection( listActionsForDirectoryEnable,
-                    directoryList.get( 0 ), getUser( ) );
+                    _directoryList.get( nIdDirectory ), getUser( ) );
             listActionsForDirectoryDisable = (List<DirectoryAction>) RBACService.getAuthorizedActionsCollection( listActionsForDirectoryDisable,
-                    directoryList.get( 0 ), getUser( ) );
+                    _directoryList.get( nIdDirectory ), getUser( ) );
         }
 
         // Get asynchronous file names put at false for better performance
         // since it must call a webservice to get the file name
-        boolean bGetFileName = false;
-
-        // data complement (should be done in directory plugin)
-        for ( Directory directory : directoryList )
-        {
-            for ( Record record : lRecord )
-            {
-                if ( record.getDirectory( ).getIdDirectory( ) == directory.getIdDirectory( ) )
-                {
-                    record.getDirectory( ).setIdWorkflow( directory.getIdWorkflow( ) );
-                    record.getDirectory( ).setTitle( directory.getTitle( ) );
-                }
-            }
-        }
+        boolean bGetFileName = false ;
 
         for ( Record record : lRecord )
         {
+            // data complement (should be done in directory plugin)
+            record.getDirectory( ).setIdWorkflow( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getIdWorkflow( ) );
+            record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
+        
+            // add resourceActions
             listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), listEntryResultSearch, adminUser,
                     listActionsForDirectoryEnable, listActionsForDirectoryDisable, bGetFileName, getPlugin( ) ) );
         }
 
-        DirectoryFilterDashboardComponent dashboard = (DirectoryFilterDashboardComponent) DashboardFactory.getDashboardComponent( "DIRECTORY_FILTER" );
-        String strDashBoardMultiViewContent = dashboard.getDashboardData( getUser( ), request );
-
-        Map<String, Object> model = new HashMap<String, Object>( );
+        
+        Map<String, Object> model = new HashMap<>( );
 
         model.put( MARK_ID_ENTRY_TYPE_IMAGE, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_IMAGE, 10 ) );
         model.put( MARK_ID_ENTRY_TYPE_DIRECTORY, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_DIRECTORY, 12 ) );
@@ -489,13 +482,6 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         model.put( MARK_DATE_MODIFICATION_BEGIN_SEARCH, _searchFields.getDateModificationBeginRecord( ) );
         model.put( MARK_DATE_MODIFICATION_END_SEARCH, _searchFields.getDateModificationEndRecord( ) );
 
-        if ( directoryList.size( ) == 1 )
-        {
-            model.put( MARK_SHOW_DATE_CREATION_RESULT, directoryList.get( 0 ).isDateShownInResultList( ) );
-            model.put( MARK_SHOW_DATE_MODIFICATION_RESULT, directoryList.get( 0 ).isDateModificationShownInResultList( ) );
-            model.put( MARK_DIRECTORY, directoryList.get( 0 ) );
-        }
-
         model.put( MARK_NUMBER_RECORD, listResultRecordId.size( ) );
         model.put( MARK_RESOURCE_ACTIONS_LIST, listResourceActions );
         model.put( MARK_HISTORY_WORKFLOW_ENABLED, bHistoryEnabled );
@@ -513,23 +499,15 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         model.put( MARK_EXTENT_CURRENT, session.getAttribute( MARK_EXTENT_CURRENT ) );
         model.put( MARK_VISIBLE_LAYER, session.getAttribute( MARK_VISIBLE_LAYER ) );
 
-        model.put( MARK_DASHBOARD_MULTI_DIRECTORY_VIEW, strDashBoardMultiViewContent );
-        if ( directoryList.size( ) == 1 && ( directoryList.get( 0 ).isDisplayComplementarySearchState( ) || directoryList.get( 0 ).isDisplaySearchState( ) ) )
+        model.put( MARK_DIRECTORY_LIST , getDirectoryReferenceList( _directoryList ) );
+        
+        
+        if ( nIdDirectory > 0 ) 
         {
-            ReferenceList referenceList = new ReferenceList( );
-            referenceList.addItem( -1, "" );
-
-            Collection<State> colState = WorkflowService.getInstance( ).getAllStateByWorkflow( directoryList.get( 0 ).getIdWorkflow( ), adminUser );
-
-            if ( colState != null )
-            {
-                for ( State stateWorkflow : colState )
-                {
-                    referenceList.addItem( stateWorkflow.getId( ), stateWorkflow.getName( ) );
-                }
-            }
-
-            model.put( MARK_SEARCH_STATE_WORKFLOW, referenceList );
+            model.put( MARK_SHOW_DATE_CREATION_RESULT, _directoryList.get( nIdDirectory ).isDateShownInResultList( ) );
+            model.put( MARK_SHOW_DATE_MODIFICATION_RESULT, _directoryList.get( nIdDirectory ).isDateModificationShownInResultList( ) );
+            model.put( MARK_DIRECTORY, _directoryList.get( nIdDirectory ) );
+            model.put( MARK_SEARCH_STATE_WORKFLOW, _workflowStateByDirectoryList.get( nIdDirectory ) );
         }
 
         PluginActionManager.fillModel( request, adminUser, model, IDirectoryAction.class, MARK_DIRECTORY_ACTIONS );
@@ -1030,6 +1008,36 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         }
 
         return url.getUrl( );
+    }
+    
+    /**
+     * return a referenceList of directories
+     * 
+     * @param list
+     *          the directory list
+     * @return ReferenceList 
+     *          the directory referenceList
+     */
+    private ReferenceList getDirectoryReferenceList( HashMap<Integer, Directory> list ) 
+    {
+        ReferenceList refList = new ReferenceList( );
+        ReferenceItem item = new ReferenceItem( );
+        item.setCode( "-1" );
+        item.setName( " - " );
+        refList.add( item ) ;
+        
+        if ( list == null ) return refList ;
+    
+        
+        Iterator it = list.entrySet( ).iterator( );
+        while ( it.hasNext( ) ) {
+            Map.Entry dir = ( Map.Entry ) it.next( );
+            item = new ReferenceItem( );
+            item.setCode( String.valueOf( dir.getKey( ) ) );
+            item.setName( ((Directory)dir.getValue( )).getTitle( ) );
+            refList.add( item ) ;
+        }
+        return refList ;
     }
 
 }
