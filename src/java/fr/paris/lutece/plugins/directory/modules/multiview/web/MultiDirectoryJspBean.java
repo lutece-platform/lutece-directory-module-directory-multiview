@@ -422,11 +422,11 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         // get only record for page items.
         List<Record> lRecord = _recordService.loadListByListId( paginator.getPageItems( ), getPlugin( ) );
 
-        boolean bHistoryEnabled = ( _directoryList.size( ) == 1 && WorkflowService.getInstance( ).isAvailable( ) && _directoryList.get( 0 ).getIdWorkflow( ) != DirectoryUtils.CONSTANT_ID_NULL );
+        boolean bHistoryEnabled = WorkflowService.getInstance( ).isAvailable( ) ;
         RecordFieldFilter recordFieldFilter = new RecordFieldFilter( );
         recordFieldFilter.setIsEntryShownInResultList( RecordFieldFilter.FILTER_TRUE );
 
-        bWorkflowServiceEnable = ( _directoryList.size( ) == 1 && _directoryList.get( 0 ).getIdWorkflow( ) != DirectoryUtils.CONSTANT_ID_NULL && bWorkflowServiceEnable );
+        bWorkflowServiceEnable = true ;
 
         List<Map<String, Object>> listResourceActions = new ArrayList<Map<String, Object>>( lRecord.size( ) );
 
