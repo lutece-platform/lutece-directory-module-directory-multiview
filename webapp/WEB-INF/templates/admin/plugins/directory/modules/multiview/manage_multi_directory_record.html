@@ -10,7 +10,7 @@
                     <input name="search_action" value="search_action" type="hidden">
 
                            
-                    ${resource_actions_list?size} Demande(s) 
+                    ${resource_actions_list?size} #i18n{directory.module.multiview.records_list.label_records_count} 
 
                     <#if directory_list?has_content >
                             <#assign dirId=-1>  
@@ -22,10 +22,10 @@
 	            </#if>
 
                     <select id="search_open_since" name="search_open_since" class="form-control ">
-                                    <option value="-1">Ouvert depuis...</option>
-                                    <option value="1">moins d'un jour</option>
-                                    <option value="2">moins d'une semaine</option>
-                                    <option value="3">moins d'un mois</option>
+                                    <option value="-1">#i18n{directory.module.multiview.records_list.search_since_default}</option>
+                                    <option value="1">#i18n{directory.module.multiview.records_list.search_since_last_dayt</option>
+                                    <option value="2">#i18n{directory.module.multiview.records_list.search_since_last_week}</option>
+                                    <option value="3">#i18n{directory.module.multiview.records_list.search_since_last_month}</option>
                     </select>
 
                     <button class="btn btn-primary btn-flat" type="submit" name="multi_search">
