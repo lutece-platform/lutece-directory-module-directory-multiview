@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletResponse;
 public class SearchRecordMultiDirectoryAction extends AbstractPluginAction<DirectoryAdminSearchFields> implements IDirectoryAction
 {
     private static final String PARAMETER_BUTTON_SEARCH = "multi_search";
-    private static final String ACTION_NAME = "Search Directory";
+    private static final String ACTION_NAME = "Search Multi Directory";
     private static final String PARAMETER_DATE_BEGIN_CREATION = "date_begin_creation";
     private static final String PARAMETER_DATE_CREATION = "date_creation";
     private static final String PARAMETER_DATE_END_CREATION = "date_end_creation";

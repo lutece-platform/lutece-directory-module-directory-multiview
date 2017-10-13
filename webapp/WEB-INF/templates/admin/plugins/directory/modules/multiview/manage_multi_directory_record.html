@@ -9,23 +9,21 @@
                     <input name="page" value="directory" type="hidden">
                     <input name="search_action" value="search_action" type="hidden">
 
-                           
-                    ${resource_actions_list?size} #i18n{directory.module.multiview.records_list.label_records_count} 
+
+                    ${resource_actions_list?size} #i18n{module.directory.multiview.records_list.label_records_count} 
 
                     <#if directory_list?has_content >
-                            <#assign dirId=-1>  
-                            <#if directory?? && directory?has_content><#assign dirId=directory.idDirectory ></#if>
-                            <@select name='id_directory' id='id_directory' default_value='${dirId}' items=directory_list />
+                            <@select name='id_directory' id='id_directory' default_value='${search_directory_id_default!-1}' items=directory_list />
                     </#if>                
                     <#if search_state_workflow?has_content >
-                            <@select id="search_state_workflow" name="search_state_workflow" default_value=search_state_workflow_default?string items=search_state_workflow />
+                            <@select id="search_state_workflow" name="search_state_workflow" default_value='${search_state_workflow_id_default!-1}' items=search_state_workflow />
 	            </#if>
 
                     <select id="search_open_since" name="search_open_since" class="form-control ">
-                                    <option value="-1">#i18n{directory.module.multiview.records_list.search_since_default}</option>
-                                    <option value="1">#i18n{directory.module.multiview.records_list.search_since_last_dayt</option>
-                                    <option value="2">#i18n{directory.module.multiview.records_list.search_since_last_week}</option>
-                                    <option value="3">#i18n{directory.module.multiview.records_list.search_since_last_month}</option>
+                                    <option value="-1">#i18n{module.directory.multiview.records_list.search_since_default}</option>
+                                    <option value="1" >#i18n{module.directory.multiview.records_list.search_since_last_day}</option>
+                                    <option value="7" >#i18n{module.directory.multiview.records_list.search_since_last_week}</option>
+                                    <option value="31">#i18n{module.directory.multiview.records_list.search_since_last_month}</option>
                     </select>
 
                     <button class="btn btn-primary btn-flat" type="submit" name="multi_search">
@@ -45,11 +43,16 @@
 <script >
 $( document ).ready(function() {
     $( "#id_directory" ).change( function( ) {
+
         // reinit workflow states 
-        $("#search_state_workflow").find("option").remove();
+        $( "#search_state_workflow" ).find( "option" ).remove( );
+
         // submit to get new states
         $( "#searchForm" ).submit( ) ;
+
     });
+
+    $( "#search_open_since").val("${search_period_id_default!-1}");
 });
 </script>
 

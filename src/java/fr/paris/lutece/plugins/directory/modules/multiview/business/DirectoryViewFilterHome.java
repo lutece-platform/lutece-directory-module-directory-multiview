@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.directory.business.Entry;
 import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.unittree.service.unit.IUnitService;
-import fr.paris.lutece.plugins.unittree.service.unit.UnitService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -187,7 +186,7 @@ public final class DirectoryViewFilterHome
                 {
                     IUnitService unitService = SpringContextService.getBean( IUnitService.BEAN_UNIT_SERVICE );
                     List<Unit> unitList = unitService.getUnitsByIdUser( user.getUserId( ), true );
-                    Unit unit = null;
+                    Unit unit = null ;
                     if ( unitList != null )
                     {
                         unit = (Unit) unitList.get( 0 ); // TODO multi unit case
