@@ -430,9 +430,9 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         _searchFields.setListIdsResultRecord( listResultRecordId );
 
         // HACK : We copy the list so workflow does not clear the paginator list.
-        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( new ArrayList<Integer>( listResultRecordId ),
-                _searchFields.getItemsPerPageDirectoryRecord( ), getJspManageMultiDirectoryRecord( request,
-                        ( _directoryList.size( ) == 1 ? _directoryList.get( 0 ) : null ) ), PARAMETER_PAGE_INDEX,
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( new ArrayList<>( listResultRecordId ),
+                _searchFields.getItemsPerPageDirectoryRecord( ), getJspManageMultiDirectoryRecord( request ), 
+                PARAMETER_PAGE_INDEX,
                 _searchFields.getCurrentPageIndexDirectoryRecord( ), getLocale( ) );
 
         // get only record for page items.
@@ -915,21 +915,6 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         return getJspManageDirectory( request );
     }
 
-    /**
-     * return url of the jsp manage multi directory record
-     *
-     * @param request
-     *            The HTTP request
-     * @param nIdDirectory
-     *            the directory id
-     * @return url of the jsp manage directory record
-     */
-    public static String getJspManageMultiDirectoryRecord( HttpServletRequest request, int nIdDirectory )
-    {
-        Directory directory = new Directory( );
-        directory.setIdDirectory( nIdDirectory );
-        return getJspManageMultiDirectoryRecord( request, directory );
-    }
 
     /**
      * return url of the jsp manage multi directory record
@@ -940,28 +925,20 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
      *            the directory
      * @return url of the jsp manage directory record
      */
-    public static String getJspManageMultiDirectoryRecord( HttpServletRequest request, Directory directory )
+    public static String getJspManageMultiDirectoryRecord( HttpServletRequest request )
     {
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_MULTI_DIRECTORY_RECORD );
-        if ( directory != null )
-            urlItem.addParameter( PARAMETER_ID_DIRECTORY, directory.getIdDirectory( ) );
+        
         urlItem.addParameter( PARAMETER_SESSION, PARAMETER_SESSION );
 
         String strSortedAttributeName = request.getParameter( Parameters.SORTED_ATTRIBUTE_NAME );
         String strAscSort = null;
 
-        if ( ( directory != null ) && ( ( strSortedAttributeName != null ) || ( directory.getIdSortEntry( ) != null ) ) )
-        {
-            if ( strSortedAttributeName == null )
-            {
-                strSortedAttributeName = directory.getIdSortEntry( );
-            }
+        strAscSort = request.getParameter( Parameters.SORTED_ASC );
 
-            strAscSort = request.getParameter( Parameters.SORTED_ASC );
-
-            urlItem.addParameter( Parameters.SORTED_ATTRIBUTE_NAME, strSortedAttributeName );
-            urlItem.addParameter( Parameters.SORTED_ASC, strAscSort );
-        }
+        urlItem.addParameter( Parameters.SORTED_ATTRIBUTE_NAME, strSortedAttributeName );
+        urlItem.addParameter( Parameters.SORTED_ASC, strAscSort );
+        
 
         return urlItem.getUrl( );
     }

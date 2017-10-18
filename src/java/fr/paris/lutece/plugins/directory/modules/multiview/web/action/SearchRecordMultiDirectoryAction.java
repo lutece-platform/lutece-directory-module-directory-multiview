@@ -131,7 +131,7 @@ public class SearchRecordMultiDirectoryAction extends AbstractPluginAction<Direc
             searchFields.setDateModificationRecord( DirectoryUtils.getSearchRecordDateCreationFromRequest( request, PARAMETER_DATE_MODIFICATION, locale ) );
 
             // build redirect url
-            result.setRedirect( MultiDirectoryJspBean.getJspManageMultiDirectoryRecord( request, nIdDirectory ) );
+            result.setRedirect( MultiDirectoryJspBean.getJspManageMultiDirectoryRecord( request ) );
         }
         catch( DirectoryErrorException error )
         {
