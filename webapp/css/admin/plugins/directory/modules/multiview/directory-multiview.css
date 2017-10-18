@@ -1,0 +1,68 @@
+.text-gra{ color: #0082D8 !important }
+.label-record-history{ padding-top: initial !important; }
+
+#multi-directory-history-panel{ padding: 15px 0; }
+#multi-directory-history-panel .panel{ padding: 15px; background-color: #EEE; margin-bottom: 0; margin-top: 15px }
+
+.timeline-body > hr{ margin: 5px 0 }
+
+#directory-record-details{ font-family: 'Montserrat-Light','Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif; }
+
+#multi-record-list{ font-family: 'Montserrat-Light','Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif; }
+
+table.table-hover thead tr th[data-field]:hover{ cursor: pointer }
+table.table-hover tbody tr:hover{ cursor: pointer }
+
+#multi-record-list .tab-content{ padding:10px 0 0 90px; background-color: #fff; min-height: 800px }
+
+#multi-record-list .tab-content table{ color: #BEBEBE }
+#multi-record-list .tab-content table thead{ background-color: #fff; color: #000  }
+
+#multi-record-list .tab-content table th{ border-top: 0; text-transform: uppercase; font-size: 1rem; vertical-align: top; text-align: center }
+#multi-record-list .tab-content table th i.fa{ font-size: 10px; vertical-align: 2px }
+
+#multi-record-list .tab-content table td{ color: #656565; font-size: 1.3rem; text-align: center  }
+
+#multi-record-list .tab-content table td strong.lead{ font-size: 4rem; font-weight: bold  }
+
+#multi-record-list.records .tab-content{ padding-left: 0 }
+#multi-record-list.records .tab-content table td{ padding: 15px 15px }
+
+#multi-record-list.records .tab-content table td:first-of-type{ min-width: 150px }
+#multi-record-list.records .tab-content table td:nth-of-type(2){ min-width: 120px }
+#multi-record-list.records .tab-content table td:last-of-type{ min-width: 130px }
+
+#multi-record-list .tab-content table th.th-sort-desc:after{ content:'\f107'; color:#606059; font-family: 'FontAwesome'; right:5px; margin-left: 3px }
+#multi-record-list .tab-content table th.th-sort-asc:after{ content:'\f106'; color:#606059; font-family: 'FontAwesome'; right:5px; margin-left: 3px }
+
+#multi-record-list .tab-content table td .unread{ font-size: 13px; text-transform: uppercase; }
+
+#info-right{ border-left: 1px solid #DDD; padding: 20px 20px  }
+#info-right h5{ color:#808179 }
+
+/* Large Devices, Wide Screens */
+@media only screen and (max-width : 1200px) {
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 992px) {
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px) {
+  #multi-record-list.records .tab-content td:nth-of-type(1):before { content: "\0000c9tat"; }
+  #multi-record-list.records .tab-content td:nth-of-type(2):before { content: "Nature"; }
+  #multi-record-list.records .tab-content td:nth-of-type(3):before { content: "Demandeur"; }
+  #multi-record-list.records .tab-content td:nth-of-type(4):before { content: "Cr\0000e9\0000e9e le"; }
+}
+
+@media only screen and (max-width: 560px) {
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (max-width : 480px) {
+}
+
+/* Custom, iPhone Retina */
+@media only screen and (max-width : 320px) {
+}

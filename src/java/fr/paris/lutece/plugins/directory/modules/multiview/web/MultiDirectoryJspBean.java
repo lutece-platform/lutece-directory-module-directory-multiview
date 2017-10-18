@@ -33,6 +33,20 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web;
 
+import static fr.paris.lutece.plugins.directory.utils.DirectoryUtils.PARAMETER_ID_ACTION;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.DirectoryAction;
 import fr.paris.lutece.plugins.directory.business.DirectoryActionHome;
@@ -41,19 +55,16 @@ import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.EntryHome;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
-import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.directory.business.RecordFieldFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterAction;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterActionHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterHome;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
 import fr.paris.lutece.plugins.directory.service.DirectoryService;
 import fr.paris.lutece.plugins.directory.service.record.IRecordService;
 import fr.paris.lutece.plugins.directory.service.record.RecordService;
 import fr.paris.lutece.plugins.directory.service.upload.DirectoryAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
-import static fr.paris.lutece.plugins.directory.utils.DirectoryUtils.PARAMETER_ID_ACTION;
 import fr.paris.lutece.plugins.directory.web.action.DirectoryActionResult;
 import fr.paris.lutece.plugins.directory.web.action.DirectoryAdminSearchFields;
 import fr.paris.lutece.plugins.directory.web.action.IDirectoryAction;
@@ -87,20 +98,6 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
-import java.util.AbstractList;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * This class provides the user interface to manage form features ( manage, create, modify, remove)
@@ -117,6 +114,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String TEMPLATE_MANAGE_MULTI_DIRECTORY_RECORD = "admin/plugins/directory/modules/multiview/manage_multi_directory_record.html";
     private static final String TEMPLATE_RESOURCE_HISTORY = "admin/plugins/directory/modules/multiview/resource_history.html";
     private static final String TEMPLATE_VIEW_DIRECTORY_RECORD = "admin/plugins/directory/modules/multiview/view_directory_record.html";
+    private static final String TEMPLATE_RECORD_HISTORY = "admin/plugins/directory/modules/multiview/record_history.html";
 
     // Messages (I18n keys)
     private static final String MESSAGE_CONFIRM_CHANGE_STATES_RECORD = "directory.message.confirm_change_states_record";
@@ -167,6 +165,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String MARK_DATE_MODIFICATION_BEGIN_SEARCH = "date_modification_begin_search";
     private static final String MARK_DATE_MODIFICATION_END_SEARCH = "date_modification_end_search";
     private static final String MARK_ITEM_NAVIGATOR = "item_navigator";
+    private static final String MARK_USER_FACTORY = "user_factory";
 
     private static final String MARK_RECORD = "record";
     private static final String MARK_RESOURCE_ACTIONS_LIST = "resource_actions_list";
@@ -706,10 +705,9 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         model.put( MARK_ITEM_NAVIGATOR, _searchFields.getItemNavigatorViewRecords( ) );
         model.put( MARK_HISTORY_WORKFLOW_ENABLED, bHistoryEnabled );
 
-        model.put(
-                MARK_RESOURCE_HISTORY,
-                WorkflowService.getInstance( ).getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, directory.getIdWorkflow( ), request,
-                        getLocale( ) ) );
+        model.put( MARK_USER_FACTORY, UserFactory.getInstance( ) );
+        model.put( MARK_RESOURCE_HISTORY, WorkflowService.getInstance( ).getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, 
+                directory.getIdWorkflow( ), request, getLocale( ), model, TEMPLATE_RECORD_HISTORY ) );
 
         HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_VIEW_DIRECTORY_RECORD, getLocale( ), model );
 

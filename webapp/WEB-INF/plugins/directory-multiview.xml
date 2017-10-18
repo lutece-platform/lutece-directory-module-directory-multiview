@@ -57,4 +57,9 @@
         </dashboard-component>
     </dashboard-components>
     
+   <!-- Css -->
+   <admin-css-stylesheets>
+       <admin-css-stylesheet>css/admin/plugins/directory/modules/multiview/directory-multiview.css</admin-css-stylesheet>
+   </admin-css-stylesheets>
+    
 </plug-in>

@@ -1,0 +1,37 @@
+<script src="js/plugins/directory/modules/multiview/user_info.js"></script>
+<#macro info_user user>
+	<div class="modal" id="template-${user.idUser}">
+		<p>
+			<span>
+				<b>${user.firstName}  ${user.lastName}</b>
+			</span>
+		</p>
+		<p>
+			<span class='fa fa-envelope'>
+				<a href='mailto:${user.email}'>
+					<em>${user.email}</em>
+				</a>
+			</span>
+		</p>
+		<p>
+			<span class='fa fa-weixin'>
+				<a href='sip:${user.email}'>
+					<em>#i18n{module.directory.multiview.user.info.label.chat}</em>
+				</a>
+			</span>
+		</p>
+		<p>#i18n{module.directory.multiview.user.info.label.unit} :
+			<span>
+				<#if (user.units)??>
+					<#list user.units as units>
+						<#if units_has_next>
+							${units.label},
+						<#else>
+							${units.label}
+						</#if>
+					</#list>
+				</#if>
+			</span>
+		</p>
+	</div>
+</#macro>

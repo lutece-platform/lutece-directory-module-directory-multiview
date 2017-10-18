@@ -1,93 +1,82 @@
 <div class="box">
+
 	<div class="box-header">
- 	<h3 class="box-title"></h3>
-		<div class="box-tools">
-		<@paginationAdmin paginator=paginator combo=1 form=0 showcount=1 />
+		<h3 class="box-title"></h3>
+	</div>
+
+	<div id="multi-record-list" class="box-body table-responsive records">
+		<div class="col-xs-12 col-sm-offset-1 col-sm-10 table-responsive tab-content">
+			<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+						<th data-field="reference">
+							#i18n{module.directory.multiview.records_list.state}
+						</th>
+						<th data-field="category_label">
+							#i18n{module.directory.multiview.records_list.nature}
+						</th>
+						<th data-field="lastname">
+							#i18n{module.directory.multiview.records_list.content}
+						</th>
+						<th data-field="date_create" class="th-sort-DESC">
+							#i18n{module.directory.multiview.records_list.created}
+							<@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="dateCreation" />
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<#list resource_actions_list as resource_actions>
+						<tr data-url="jsp/admin/plugins/directory/modules/multiview/DoVisualisationRecord_multi.jsp?id_directory_record=${resource_actions.record.idRecord}&id_directory=${resource_actions.record.directory.idDirectory}">
+							<td>
+								<span class="label label-info unread">
+									<#if resource_actions.workflow_state?exists>
+										${resource_actions.workflow_state.name}
+									</#if>
+								</span>
+							</td>
+							<td>
+								<#if resource_actions.record.directory.title?exists>
+									${resource_actions.record.directory.title}
+								</#if>
+							</td>
+							<td>
+								<#assign first_entry = true />
+								<#list entry_list_search_result as entry>
+									<#assign entryKey = "" + entry.idEntry>
+									<#assign listRecordField = resource_actions.map_id_entry_list_record_field[entryKey]>
+									<#if listRecordField?has_content>
+										<#list listRecordField as record_field>
+											${entry.getHtmlRecordFieldValue( locale,record_field,false )}
+											<#if record_field.record?? && record_field.record.dateCreation??>
+												<#assign date_creation = record_field.record.dateCreation>
+											<#else>
+												<#assign date_creation = "">
+											</#if>
+											<#if record_field.record?? && record_field.record.dateModification??>
+												<#assign date_modification = record_field.record.dateModification>
+											<#else>
+												<#assign date_modification = "">
+											</#if>
+											<br>
+										</#list>
+									</#if>
+								</#list>
+							</td>
+							<td>
+								<#if date_creation??>
+									${date_creation}
+								</#if>&nbsp;
+							</td>
+						</tr>
+					</#list>
+				</tbody>
+			</table>
 		</div>
- 	</div>
- 	<div class="box-body table-responsive">
- 	
- 	
- 	
-<!-- NEW ------------------------------------- -->
 
-<link href="css/admin/plugins/directory/modules/multiview/gru.css"  rel="stylesheet" > 
-<link href="css/admin/plugins/directory/modules/multiview/ticketing.css"  rel="stylesheet" > 
-<link href="css/admin/plugins/directory/modules/multiview/workflow_ticketing.css"  rel="stylesheet" > 
+		<div class="col-xs-12">
+			<@paginationAdmin paginator=paginator combo=1 showcount=1 />
+		</div>
 
-<div class="col-xs-12 col-sm-offset-1 col-sm-10 table-responsive">
-	<table class="table table-hover table-striped">
-      	<thead>
-      	  <tr>
-                <th data-field="reference">#i18n{module.directory.multiview.records_list.state}
-                </th>
-    
-        	<th data-field="category_label">#i18n{module.directory.multiview.records_list.nature}</th>
-        	
-                <th data-field="lastname">#i18n{module.directory.multiview.records_list.content}</th>
-                
-                <th data-field="date_create" class="th-sort-DESC">#i18n{module.directory.multiview.records_list.created}
-                    <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="dateCreation" />
-                </th>
-
-      	  </tr>
-      	</thead>	
-      	<tbody>
-
-    <#list resource_actions_list as resource_actions>
-		<tr data-url="jsp/admin/plugins/directory/modules/multiview/DoVisualisationRecord_multi.jsp?id_directory_record=${resource_actions.record.idRecord}&id_directory=${resource_actions.record.directory.idDirectory}">
-			
-                    <td> <a href="jsp/admin/plugins/directory/modules/multiview/DoVisualisationRecord_multi.jsp?id_directory_record=${resource_actions.record.idRecord}&id_directory=${resource_actions.record.directory.idDirectory}" data-toggle="tooltip" data-placement="bottom" >
-                            <span class="label label-info unread">
-                        <#if resource_actions.workflow_state?exists>
-                            ${resource_actions.workflow_state.name}
-                        </#if>
-                        </span>
-                         </a>
-                    </td>
-
-                    <td><#if resource_actions.record.directory.title?exists>${resource_actions.record.directory.title}</#if></td>
-			 
-                    <td>
-			<#assign first_entry = true />
-			<#list entry_list_search_result as entry>
-                            <#assign entryKey = "" + entry.idEntry>
-                            <#assign listRecordField = resource_actions.map_id_entry_list_record_field[entryKey]>
-                            
-                                   <#if listRecordField?has_content>
-                                       <#list listRecordField as record_field>
-                                           ${entry.getHtmlRecordFieldValue( locale,record_field,false )}
-                                            
-                                                   <#if record_field.record?? && record_field.record.dateCreation??>
-                                                   <#assign date_creation = record_field.record.dateCreation>
-                                                   <#else>
-                                                   <#assign date_creation = "">
-                                                   </#if>
-                                                   <#if record_field.record?? && record_field.record.dateModification??>
-                                                   <#assign date_modification = record_field.record.dateModification>
-                                                   <#else>
-                                                   <#assign date_modification = "">
-                                                   </#if>
-                                            <br>
-                                        </#list>
-                                    </#if>
-			
-		 	</#list>
-                        </td>
-
-                        <td><#if date_creation??>${date_creation}</#if>&nbsp;</td>
-                        
-
-                 </tr>
-
-	</#list>
-
-
-			
-		</tbody>
-		</table>
-            </div>
-		
-		
 	</div>
 </div>
+<script src="js/plugins/directory/modules/multiview/directory-multiview.js"></script>
