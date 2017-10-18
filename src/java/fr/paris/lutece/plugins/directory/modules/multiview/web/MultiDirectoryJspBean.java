@@ -200,6 +200,9 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_SESSION = DirectoryUtils.PARAMETER_SESSION;
     private static final String PARAMETER_RESET_SEARCH = "resetsearch";
     
+    // constants
+    private static final String CONSTANT_IDENTIFYING_ENTRY_TITLE = "GUID";
+    
     // defaults
     private String DEFAULT_TYPE_IMAGE = "10";
     private int DEFAULT_ACTION_ID = -1;
@@ -360,17 +363,15 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
                     entryTmp.setFields( DirectoryUtils.getAuthorizedFieldsByWorkgroup( entryTmp.getFields( ), getUser( ) ) );
                 }
 
-                if ( entryTmp.isIndexed( ) )
+                // keep only the entry of the filter (in place of : entryTmp.isIndexed( ) AND entry.isShownInAdvancedSearch() )
+                if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( )  )
                 {
-                    // keep only the entry of the filter (in place of entry.isShownInAdvancedSearch() )
-                    if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( )  )
-                    {
-                        listEntryFormMainSearch.add( entryTmp );
-                    }
+                    listEntryFormMainSearch.add( entryTmp );
                 }
-
-                // keep only the entry of the filter (in place of entry.isShownInResultList( ) )
-                if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( ) )
+                
+                // keep only the entry of the filter and the identifyer (in place of entry.isShownInResultList( )  )
+                if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( ) 
+                        || CONSTANT_IDENTIFYING_ENTRY_TITLE.equals(entryTmp.getTitle( ) ) )
                 {
                     listEntryResultSearch.add( entryTmp );
 
