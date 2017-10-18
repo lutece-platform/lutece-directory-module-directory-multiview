@@ -186,7 +186,7 @@ public final class DirectoryViewFilterHome
                 {
                     IUnitService unitService = SpringContextService.getBean( IUnitService.BEAN_UNIT_SERVICE );
                     List<Unit> unitList = unitService.getUnitsByIdUser( user.getUserId( ), true );
-                    Unit unit = null ;
+                    Unit unit = null;
                     if ( unitList != null )
                     {
                         unit = (Unit) unitList.get( 0 ); // TODO multi unit case
