@@ -30,6 +30,9 @@
                     <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="dateCreation" />
                 </th>
 
+                <th data-field="assigned">#i18n{module.directory.multiview.records_list.assigned}
+                </th>
+
       	  </tr>
       	</thead>	
       	<tbody>
@@ -76,6 +79,15 @@
                         </td>
 
                         <td><#if date_creation??>${date_creation}</#if>&nbsp;</td>
+                        
+                        <td><#if recordAssignmentMap?? >
+                                <#if recordAssignmentMap[resource_actions.record.idRecord?string].assignorUnit.label?? >
+                                    ${recordAssignmentMap[resource_actions.record.idRecord?string].assignorUnit.label} &gt; 
+                                </#if>
+                                <strong> ${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUnit.label} </strong>
+
+                            </#if>&nbsp;
+                        </td>
                         
 
                  </tr>

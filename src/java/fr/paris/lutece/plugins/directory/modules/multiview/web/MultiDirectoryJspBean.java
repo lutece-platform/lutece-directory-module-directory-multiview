@@ -41,11 +41,8 @@ import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.EntryHome;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
-import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.directory.business.RecordFieldFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterAction;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterActionHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterHome;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
 import fr.paris.lutece.plugins.directory.service.DirectoryService;
@@ -87,7 +84,6 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
-import java.util.AbstractList;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -100,7 +96,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * This class provides the user interface to manage form features ( manage, create, modify, remove)
@@ -170,6 +165,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
 
     private static final String MARK_RECORD = "record";
     private static final String MARK_RESOURCE_ACTIONS_LIST = "resource_actions_list";
+    private static final String MARK_RECORD_ASSIGNMENT_MAP = "recordAssignmentMap" ;
     private static final String MARK_RESOURCE_ACTIONS = "resource_actions";
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
     private static final String MARK_HISTORY_WORKFLOW_ENABLED = "history_workflow";
@@ -215,6 +211,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private List<DirectoryViewFilter> _directoryViewList = new ArrayList<>( ) ;
     private HashMap<Integer, Directory> _directoryList = new HashMap<>( ) ;
     private HashMap<Integer, ReferenceList> _workflowStateByDirectoryList = new HashMap<>( ) ;
+    
     
     /**
      * Gets the DirectoryAdminSearchFields
@@ -330,7 +327,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         _searchFields.setCurrentPageIndexDirectoryRecord( Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
                 _searchFields.getCurrentPageIndexDirectoryRecord( ) ) );
         _searchFields.setItemsPerPageDirectoryRecord( Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
-        _searchFields.getItemsPerPageDirectoryRecord( ), _searchFields.getDefaultItemsPerPage( ) ) );
+                _searchFields.getItemsPerPageDirectoryRecord( ), _searchFields.getDefaultItemsPerPage( ) ) );
 
         List<Integer> listResultRecordId = new ArrayList<>( );
         List<IEntry>  listEntryFormMainSearch = new ArrayList<>( );
@@ -386,7 +383,6 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         }
 
         // get the records filtred list
-        listResultRecordId = new ArrayList<>( ) ; // reinit
         List<RecordAssignment> recordAssignmentList = new ArrayList<>( ) ;
         
         // for each unit of the user, get records :
@@ -420,10 +416,16 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             } 
         }
         
-        // get the records Id from the assigned records
+        // get the records Id from the assigned records & prepare an hashmap for the model
+        HashMap<String,RecordAssignment> recordAssignmentMap = new HashMap<>( );
         for (RecordAssignment assignedRecord : recordAssignmentList )
         {
             listResultRecordId.add( assignedRecord.getIdRecord( ) ) ;
+            if ( recordAssignmentMap.containsKey( String.valueOf(assignedRecord.getIdRecord( ) ) ) 
+                    && 
+                    ( recordAssignmentMap.get( String.valueOf(assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
+                    .before(assignedRecord.getAssignmentDate( ) ) ) ) // keep only the last one
+                recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord) ;
         }
         
         // Store the list of id records in session
@@ -444,7 +446,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
 
         bWorkflowServiceEnable = true ;
 
-        List<Map<String, Object>> listResourceActions = new ArrayList<Map<String, Object>>( lRecord.size( ) );
+        List<Map<String, Object>> listResourceActions = new ArrayList<>( lRecord.size( ) );
 
         List<DirectoryAction> listActionsForDirectoryEnable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_ENABLE, getPlugin( ),
                 getLocale( ) );
@@ -522,10 +524,12 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             model.put( MARK_SEARCH_STATE_WORKFLOW, _workflowStateByDirectoryList.get( nIdDirectory ) );
             model.put( MARK_DIRECTORY_SEARCH_ID, nIdDirectory );
         }
-        if ( nIdWorkflowState > 0) 
+        if ( nIdWorkflowState > 0 ) 
             model.put( MARK_WORKFLOW_STATE_SEARCH_ID, nIdWorkflowState );
         if ( nIdPeriodParameter > 0 )
             model.put( MARK_PERIOD_SEARCH_ID , nIdPeriodParameter ) ;
+        
+        model.put( MARK_RECORD_ASSIGNMENT_MAP , recordAssignmentMap );
         
         PluginActionManager.fillModel( request, adminUser, model, IDirectoryAction.class, MARK_DIRECTORY_ACTIONS );
 
@@ -685,7 +689,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         // Get asynchronous file names
         boolean bGetFileName = true;
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
 
         model.put( MARK_RECORD, record );
         model.put( MARK_ENTRY_LIST, listEntry );

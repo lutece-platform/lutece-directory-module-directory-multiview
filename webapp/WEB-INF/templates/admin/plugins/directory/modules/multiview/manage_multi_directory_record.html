@@ -1,16 +1,17 @@
 <#include "include_multi_records_list_header.html">
+<@tform action='jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp' id='searchForm' class2='form-inline'>
+
 <@row>
         <@columns>
                 <div class="box">
                 <div class="box-body">
-                <@tform action='jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp' id='searchForm' class2='form-inline'>
-
+                
                     <input type="hidden" name="session" value="session">
                     <input name="page" value="directory" type="hidden">
                     <input name="search_action" value="search_action" type="hidden">
 
 
-                    ${resource_actions_list?size} #i18n{module.directory.multiview.records_list.label_records_count} 
+                    ${paginator.itemsCount} #i18n{module.directory.multiview.records_list.label_records_count} 
 
                     <#if directory_list?has_content >
                             <@select name='id_directory' id='id_directory' default_value='${search_directory_id_default!-1}' items=directory_list />
@@ -29,7 +30,7 @@
                     <button class="btn btn-primary btn-flat" type="submit" name="multi_search">
                             <i class="fa fa-search"></i>&nbsp;#i18n{directory.manage_directory_record.button_search}
                     </button>
-                </@tform>
+                
                 </div>
                 </div>
         </@columns>
@@ -39,18 +40,29 @@
         </@columns>
 	
 </@row>
+</@tform>
 
 <script >
 $( document ).ready(function() {
-    $( "#id_directory" ).change( function( ) {
-
+    $( "#id_directory" ).change( function( ) 
+    {
         // reinit workflow states 
         $( "#search_state_workflow" ).find( "option" ).remove( );
 
         // submit to get new states
         $( "#searchForm" ).submit( ) ;
-
     });
+
+    $( "#search_state_workflow" ).change( function( ) 
+    {
+        $( "#searchForm" ).submit( ) ;
+    });
+    
+    $( "#search_open_since" ).change( function( ) 
+    {
+        $( "#searchForm" ).submit( ) ;
+    });
+    
 
     $( "#search_open_since").val("${search_period_id_default!-1}");
 });
