@@ -414,7 +414,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
                 if ( nIdPeriodParameter > 0 )
                     filterParameters.put( RecordAssignmentFilterType.FILTER_PERIOD.toString( ), nIdPeriodParameter );
 
-                recordAssignmentList.addAll( RecordAssignmentHome.getRecordAssignmentsFiltredList( filterParameters, getPlugin( ) ) );
+                recordAssignmentList.addAll( RecordAssignmentHome.getRecordAssignmentsFiltredList( filterParameters ) );
 
             }
         }
