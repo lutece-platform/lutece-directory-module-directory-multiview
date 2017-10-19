@@ -423,11 +423,15 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         HashMap<String, RecordAssignment> recordAssignmentMap = new HashMap<>( );
         for ( RecordAssignment assignedRecord : recordAssignmentList )
         {
-            listResultRecordId.add( assignedRecord.getIdRecord( ) );
-            if ( recordAssignmentMap.containsKey( String.valueOf( assignedRecord.getIdRecord( ) ) )
-                    && ( recordAssignmentMap.get( String.valueOf( assignedRecord.getIdRecord( ) ) ).getAssignmentDate( ).before( assignedRecord
-                            .getAssignmentDate( ) ) ) ) // keep only the last one
-                recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord );
+            listResultRecordId.add( assignedRecord.getIdRecord( ) ) ;
+            if ( ! recordAssignmentMap.containsKey( String.valueOf(assignedRecord.getIdRecord( ) ) ) 
+                    || recordAssignmentMap.get( String.valueOf(assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
+                    .before( assignedRecord.getAssignmentDate( ) ) ) {
+                    
+                    // keep only the last one
+                    recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord) ;
+                
+            } 
         }
 
         // Store the list of id records in session
