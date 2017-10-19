@@ -57,11 +57,9 @@ import static fr.paris.lutece.plugins.directory.utils.DirectoryUtils.PARAMETER_I
 import fr.paris.lutece.plugins.directory.web.action.DirectoryActionResult;
 import fr.paris.lutece.plugins.directory.web.action.DirectoryAdminSearchFields;
 import fr.paris.lutece.plugins.directory.web.action.IDirectoryAction;
-import fr.paris.lutece.plugins.unittree.business.unit.Unit;
-import fr.paris.lutece.plugins.unittree.service.unit.IUnitService;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilterType;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentHome;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.service.AssignmentService;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -217,7 +215,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private List<DirectoryViewFilter> _directoryViewList = new ArrayList<>( );
     private HashMap<Integer, Directory> _directoryList = new HashMap<>( );
     private HashMap<Integer, ReferenceList> _workflowStateByDirectoryList = new HashMap<>( );
-
+    
     /**
      * Gets the DirectoryAdminSearchFields
      * 
@@ -390,37 +388,26 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         // get the records filtred list
         List<RecordAssignment> recordAssignmentList = new ArrayList<>( );
 
-        // for each unit of the user, get records :
-        IUnitService unitService = SpringContextService.getBean( IUnitService.BEAN_UNIT_SERVICE );
-        List<Unit> unitList = unitService.getUnitsByIdUser( getUser( ).getUserId( ), true );
+        RecordAssignmentFilter AssignmentFilter = new RecordAssignmentFilter( );
+        
+        AssignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( adminUser ) );
+        AssignmentFilter.setActiveRecordsOnly( true );
 
-        if ( unitList != null )
+        // filter by Directory (and state)
+        if ( nIdDirectory > 0 )
         {
-            for ( Unit unit : unitList )
-            {
-                HashMap<String, Integer> filterParameters = new HashMap<>( );
-
-                // filter by unit
-                filterParameters.put( RecordAssignmentFilterType.USER_UNIT_ID.toString( ), unit.getIdUnit( ) );
-                filterParameters.put( RecordAssignmentFilterType.RECURSIVE_SEARCH_DEPTH.toString( ), 3 );
-                filterParameters.put( RecordAssignmentFilterType.ACTIVE_RECORDS_ONLY.toString( ), 1 );
-
-                // filter by Directory (and state)
-                if ( nIdDirectory > 0 )
-                {
-                    filterParameters.put( RecordAssignmentFilterType.DIRECTORY_ID.toString( ), nIdDirectory );
-                    if ( nIdWorkflowState > 0 )
-                        filterParameters.put( RecordAssignmentFilterType.STATE_ID.toString( ), nIdWorkflowState );
-                }
-
-                // filter by period
-                if ( nIdPeriodParameter > 0 )
-                    filterParameters.put( RecordAssignmentFilterType.FILTER_PERIOD.toString( ), nIdPeriodParameter );
-
-                recordAssignmentList.addAll( RecordAssignmentHome.getRecordAssignmentsFiltredList( filterParameters ) );
-
-            }
+            AssignmentFilter.setDirectoryId( nIdDirectory );
+            if ( nIdWorkflowState > 0 )
+                AssignmentFilter.setStateId( nIdWorkflowState );
         }
+
+        // filter by period
+        if ( nIdPeriodParameter > 0 )
+            AssignmentFilter.setNumberOfDays( nIdPeriodParameter );
+
+
+        recordAssignmentList.addAll( AssignmentService.getRecordAssignmentFiltredList( AssignmentFilter ) );
+
 
         // get the records Id from the assigned records & prepare an hashmap for the model
         HashMap<String, RecordAssignment> recordAssignmentMap = new HashMap<>( );
