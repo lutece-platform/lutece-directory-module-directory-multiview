@@ -29,7 +29,7 @@
 				</thead>
 				<tbody>
 					<#list resource_actions_list as resource_actions>
-						<tr data-url="jsp/admin/plugins/directory/modules/multiview/DoVisualisationRecord_multi.jsp?id_directory_record=${resource_actions.record.idRecord}&id_directory=${resource_actions.record.directory.idDirectory}">
+						<tr data-url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?view=view_record_visualisation&id_directory_record=${resource_actions.record.idRecord}&id_directory=${resource_actions.record.directory.idDirectory}">
 							<td>
 								<span class="label label-info unread">
 									<#if resource_actions.workflow_state?exists>
