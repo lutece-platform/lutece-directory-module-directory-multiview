@@ -1,5 +1,7 @@
 .text-gra{ color: #0082D8 !important }
+.bg-gra-light{ background-color: #0082D8 }
 .label-record-history{ padding-top: initial !important; }
+.records-filter{ display:inline-block; }
 
 #multi-directory-history-panel{ padding: 15px 0; }
 #multi-directory-history-panel .panel{ padding: 15px; background-color: #EEE; margin-bottom: 0; margin-top: 15px }
@@ -10,8 +12,35 @@
 
 #multi-record-list{ font-family: 'Montserrat-Light','Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif; }
 
+#demand-panel{ font-family: 'Montserrat-Light','Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif; }
+
 table.table-hover thead tr th[data-field]:hover{ cursor: pointer }
 table.table-hover tbody tr:hover{ cursor: pointer }
+
+#demand-panel .nav-tabs{ margin-bottom: 0 }
+#demand-panel .nav-tabs > li:first-of-type { padding-left: 16%; margin-bottom: -1px; }
+#demand-panel .nav-tabs > li > a{ background-color: #DDD; border: 1px solid #DDD; padding:15px 30px; margin-left:15px; text-transform: uppercase; font-size: 1.5rem }
+#demand-panel .nav-tabs > li.active > a{ margin-bottom: -1px; border-bottom:1px solid #fff; background-color: #FFF }
+#demand-panel .nav-tabs > li.active > a{ font-family: 'Montserrat-Light','Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif; }
+#demand-panel .nav-tabs .dropdown-menu{ padding: 0px 26px; border: 0; min-width: 300px }
+#demand-panel .nav-tabs .dropdown-menu li{ width:281px }
+
+.nav-records{ padding-left: 140px; border-bottom: 0 }
+.box-records{ border-radius: 0; margin-bottom: 0; box-shadow: none }
+.box-records-borderless{ border-top: 0 }
+.box-records-tab-content{ border-radius: 0; margin-bottom: 0; box-shadow: none; border-top: 0 }
+
+#multi-record-list .tab-content>.tab-pane ul{ padding-left: 0 }
+#multi-record-list .tab-content>.tab-pane h3{ font-family: "Montserrat-Regular"; font-size: 2rem  }
+#multi-record-list .tab-content>.tab-pane>ul>li{ padding-left: 0; padding-bottom: 30px }
+#multi-record-list .tab-content>.tab-pane ul li ul li a{ font-family: "Montserrat-Regular";font-size: 1.25rem; text-transform: uppercase; padding:10px; border-radius: 7px }
+
+#multi-record-list.records .tab-content{ padding-left: 0 }
+#multi-record-list.records .tab-content table td{ padding: 15px 15px }
+
+#multi-record-list.records .tab-content table td:first-of-type{ min-width: 150px }
+#multi-record-list.records .tab-content table td:nth-of-type(2){ min-width: 120px }
+#multi-record-list.records .tab-content table td:last-of-type{ min-width: 130px }
 
 #multi-record-list .tab-content{ padding:10px 0 0 90px; background-color: #fff; min-height: 800px }
 
@@ -40,27 +69,70 @@ table.table-hover tbody tr:hover{ cursor: pointer }
 #info-right{ border-left: 1px solid #DDD; padding: 20px 20px  }
 #info-right h5{ color:#808179 }
 
+#filter-records{ font-size: 1rem; color:#000 }
+#filter-records h3 { color: #FFF }
+#filter-records .form-control{ border-color: #000 }
+#filter-records .input-group-btn > .btn { border: 1px solid #000; border-top-left-radius: 3px; border-bottom-left-radius: 3px }
+#filter-records span{ text-transform: uppercase }
+#filter-records select{ height:22px; font-weight:normal; padding: 1px 20px 0 2px; margin:0; background: #FFF; color:#000; border: 1px solid "000";border-radius: 3px; outline:none; display: inline-block; -webkit-appearance:none; -moz-appearance:none; appearance:none; cursor:pointer }
+#filter-records select::-ms-expand{ display: none; }
+
+#filter-records .dropdown-menu {
+	font-size: 12px;
+	border: 1px;
+	background-color: #FFFFFF;
+}
+
+#filter-records .dropdown-menu>.active>a, .dropdown-menu>.active>a:focus, .dropdown-menu>.active>a:hover {
+    background-color: #00c0ef;
+    background-image: none;
+}
+
+#filter-records .caret {
+	color: #000 ;
+}
+
+/* Targetting Webkit browsers only. FF will show the dropdown arrow with so much padding. */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	#filter-records select{padding-right: 18px} }
+	#filter-records label.select{ position:relative }
+	#filter-records label.select:last-of-type{ margin-right:0 }
+	#filter-records label.select:after{ content:'\f107'; color:#606059; font-family: 'FontAwesome'; font-size:18px; right: 5px; top: -2px; position:absolute; pointer-events:none }
+	#filter-records .btn{ color:#fff; min-width: 50px }
+	#filter-records .btn span.fa-search{ color:#000; }
+}
+
 /* Large Devices, Wide Screens */
 @media only screen and (max-width : 1200px) {
+	#demand-panel .nav-records{ padding-left: 100px }
+	#demand-panel .nav-records > li > div {	padding: 15px 15px;	margin-left: 10px;	text-transform: uppercase;	font-size: 1.3rem;}
 }
 
 /* Medium Devices, Desktops */
 @media only screen and (max-width : 992px) {
+	#demand-panel .nav-records{ padding-left: 80px }
+	#demand-panel .nav-records > li > div{ padding: 15px 5px; margin-left: 5px; font-size: 1.2rem }
 }
 
 /* Small Devices, Tablets */
 @media only screen and (max-width : 768px) {
-  #multi-record-list.records .tab-content td:nth-of-type(1):before { content: "\0000c9tat"; }
-  #multi-record-list.records .tab-content td:nth-of-type(2):before { content: "Nature"; }
-  #multi-record-list.records .tab-content td:nth-of-type(3):before { content: "Demandeur"; }
-  #multi-record-list.records .tab-content td:nth-of-type(4):before { content: "Cr\0000e9\0000e9e le"; }
+	#demand-panel .nav-records{ padding-left: 60px }
+	#multi-record-list.records .tab-content td:nth-of-type(1):before { content: "\0000c9tat"; }
+	#multi-record-list.records .tab-content td:nth-of-type(2):before { content: "Nature"; }
+	#multi-record-list.records .tab-content td:nth-of-type(3):before { content: "Demandeur"; }
+	#multi-record-list.records .tab-content td:nth-of-type(4):before { content: "Cr\0000e9\0000e9e le"; }
 }
 
 @media only screen and (max-width: 560px) {
+	#demand-panel .nav-records{ padding-left: 10px }
+	#demand-panel .nav-records > li > div { padding: 15px 2px;	margin-left: 0;	font-size: 1rem;}
 }
 
 /* Extra Small Devices, Phones */
 @media only screen and (max-width : 480px) {
+	#demand-panel .nav-records{ padding-left: 5px }
+	#demand-panel .nav-records > li > div { padding: 15px 2px;	font-size: 0.9rem }
+	#demand-panel .nav-records > li > div span.badge{ display: none}
 }
 
 /* Custom, iPhone Retina */
