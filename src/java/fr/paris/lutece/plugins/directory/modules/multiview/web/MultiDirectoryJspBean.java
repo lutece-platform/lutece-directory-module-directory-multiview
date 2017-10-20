@@ -41,10 +41,12 @@ import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.EntryHome;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
+import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.directory.business.RecordFieldFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.service.UserIdentityService;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
 import fr.paris.lutece.plugins.directory.service.DirectoryService;
 import fr.paris.lutece.plugins.directory.service.record.IRecordService;
@@ -55,11 +57,9 @@ import static fr.paris.lutece.plugins.directory.utils.DirectoryUtils.PARAMETER_I
 import fr.paris.lutece.plugins.directory.web.action.DirectoryActionResult;
 import fr.paris.lutece.plugins.directory.web.action.DirectoryAdminSearchFields;
 import fr.paris.lutece.plugins.directory.web.action.IDirectoryAction;
-import fr.paris.lutece.plugins.unittree.business.unit.Unit;
-import fr.paris.lutece.plugins.unittree.service.unit.IUnitService;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilterType;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentHome;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.service.AssignmentService;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -180,7 +180,8 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String MARK_DIRECTORY_SEARCH_ID = "search_directory_id_default";
     private static final String MARK_PERIOD_SEARCH_ID = "search_period_id_default";
     private static final String MARK_USER_FACTORY = "user_factory";
-
+    private static final String MARK_USER_ATTRIBUTES = "user_attributes";
+    
     // JSP URL
     private static final String JSP_MANAGE_DIRECTORY = "jsp/admin/plugins/directory/modules/multiview/ManageDirectory.jsp";
     private static final String JSP_TASKS_FORM_WORKFLOW = "jsp/admin/plugins/directory/modules/multiview/TasksFormWorkflow.jsp";
@@ -214,7 +215,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private List<DirectoryViewFilter> _directoryViewList = new ArrayList<>( );
     private HashMap<Integer, Directory> _directoryList = new HashMap<>( );
     private HashMap<Integer, ReferenceList> _workflowStateByDirectoryList = new HashMap<>( );
-
+    
     /**
      * Gets the DirectoryAdminSearchFields
      * 
@@ -387,47 +388,40 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         // get the records filtred list
         List<RecordAssignment> recordAssignmentList = new ArrayList<>( );
 
-        // for each unit of the user, get records :
-        IUnitService unitService = SpringContextService.getBean( IUnitService.BEAN_UNIT_SERVICE );
-        List<Unit> unitList = unitService.getUnitsByIdUser( getUser( ).getUserId( ), true );
+        RecordAssignmentFilter AssignmentFilter = new RecordAssignmentFilter( );
+        
+        AssignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( adminUser ) );
+        AssignmentFilter.setActiveRecordsOnly( true );
 
-        if ( unitList != null )
+        // filter by Directory (and state)
+        if ( nIdDirectory > 0 )
         {
-            for ( Unit unit : unitList )
-            {
-                HashMap<String, Integer> filterParameters = new HashMap<>( );
-
-                // filter by unit
-                filterParameters.put( RecordAssignmentFilterType.USER_UNIT_ID.toString( ), unit.getIdUnit( ) );
-                filterParameters.put( RecordAssignmentFilterType.RECURSIVE_SEARCH_DEPTH.toString( ), 3 );
-                filterParameters.put( RecordAssignmentFilterType.ACTIVE_RECORDS_ONLY.toString( ), 1 );
-
-                // filter by Directory (and state)
-                if ( nIdDirectory > 0 )
-                {
-                    filterParameters.put( RecordAssignmentFilterType.DIRECTORY_ID.toString( ), nIdDirectory );
-                    if ( nIdWorkflowState > 0 )
-                        filterParameters.put( RecordAssignmentFilterType.STATE_ID.toString( ), nIdWorkflowState );
-                }
-
-                // filter by period
-                if ( nIdPeriodParameter > 0 )
-                    filterParameters.put( RecordAssignmentFilterType.FILTER_PERIOD.toString( ), nIdPeriodParameter );
-
-                recordAssignmentList.addAll( RecordAssignmentHome.getRecordAssignmentsFiltredList( filterParameters, getPlugin( ) ) );
-
-            }
+            AssignmentFilter.setDirectoryId( nIdDirectory );
+            if ( nIdWorkflowState > 0 )
+                AssignmentFilter.setStateId( nIdWorkflowState );
         }
+
+        // filter by period
+        if ( nIdPeriodParameter > 0 )
+            AssignmentFilter.setNumberOfDays( nIdPeriodParameter );
+
+
+        recordAssignmentList.addAll( AssignmentService.getRecordAssignmentFiltredList( AssignmentFilter ) );
+
 
         // get the records Id from the assigned records & prepare an hashmap for the model
         HashMap<String, RecordAssignment> recordAssignmentMap = new HashMap<>( );
         for ( RecordAssignment assignedRecord : recordAssignmentList )
         {
-            listResultRecordId.add( assignedRecord.getIdRecord( ) );
-            if ( recordAssignmentMap.containsKey( String.valueOf( assignedRecord.getIdRecord( ) ) )
-                    && ( recordAssignmentMap.get( String.valueOf( assignedRecord.getIdRecord( ) ) ).getAssignmentDate( ).before( assignedRecord
-                            .getAssignmentDate( ) ) ) ) // keep only the last one
-                recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord );
+            listResultRecordId.add( assignedRecord.getIdRecord( ) ) ;
+            if ( ! recordAssignmentMap.containsKey( String.valueOf(assignedRecord.getIdRecord( ) ) ) 
+                    || recordAssignmentMap.get( String.valueOf(assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
+                    .before( assignedRecord.getAssignmentDate( ) ) ) {
+                    
+                    // keep only the last one
+                    recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord) ;
+                
+            } 
         }
 
         // Store the list of id records in session
@@ -688,6 +682,20 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         // Get asynchronous file names
         boolean bGetFileName = true;
 
+        //Get the guid
+        String strGuid = StringUtils.EMPTY;
+        for ( IEntry entry : listEntry )
+        {
+            //TODO Property for GUID
+            if ( entry.getTitle( ).equals( CONSTANT_IDENTIFYING_ENTRY_TITLE ) )
+            {
+                List<RecordField> listRecordFields = DirectoryUtils.getListRecordField( entry, nIdRecord,  getPlugin( ) );
+                strGuid = listRecordFields.get( 0 ).toString( );
+                break;
+            }
+                
+        }
+
         Map<String, Object> model = new HashMap<>( );
 
         model.put( MARK_RECORD, record );
@@ -715,6 +723,13 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
                 MARK_RESOURCE_HISTORY,
                 WorkflowService.getInstance( ).getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, directory.getIdWorkflow( ), request,
                         getLocale( ), model, TEMPLATE_RECORD_HISTORY ) );
+
+        //Add the user attributes
+        if ( !strGuid.isEmpty( ) )
+        {
+            model.put( MARK_USER_ATTRIBUTES, UserIdentityService.getUserAttributes( strGuid ) );
+        }
+
 
         HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_VIEW_DIRECTORY_RECORD, getLocale( ), model );
 

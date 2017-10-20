@@ -1,3 +1,6 @@
+
+<#include "user/user_info.html" />
+
 <#--
 -- Return true if the given entry is an entry type Image
 -- @param entry the entry to check
@@ -67,28 +70,34 @@
 </#macro>
 <div class="row">
 	<div class="col-xs-12 col-sm-12 bg-gra-light records">
-					<form class="form-horizontal" action="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" method="get">
-					<input name="page" value="directory" type="hidden" >
-					<input type="hidden" name="session" value="session">
+		<form class="form-horizontal" action="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" method="get">
+			<input name="page" value="directory" type="hidden" >
+			<input type="hidden" name="session" value="session">
 				
-					<#assign editModeValue = "ReadOnly">
-					<#assign viewNumberAttValue = "1">
+			<#assign editModeValue = "ReadOnly">
+			<#assign viewNumberAttValue = "1">
 				
-					<div class="form-group">
-						<div class="col-xs-12">
-							<button class="btn btn-default" type="submit" >
-								<i class="fa fa-arrow-left"></i>&nbsp;#i18n{directory.resource_history.buttonBack}
-							</button>
-						</div>
-					</div>
-				</form>
+			<div class="form-group">
+				<div class="col-xs-12">
+					<button class="btn btn-default" type="submit" >
+						<i class="fa fa-arrow-left"></i>&nbsp;#i18n{directory.resource_history.buttonBack}
+					</button>
+				</div>
+			</div>
+					
+			<div class="col-xs-12">
+				<div class="btn btn-default" id="info_user">
+					<i class="fa fa-eye"></i>&nbsp;#i18n{module.directory.multiview.view.record.show.user.profile}
+				</div>
+			</div>
+		</form>
 	</div>
 </div>
 
 <div class="row">
 	<div class="col-xs-12 col-sm-8">
 		<div class="box box-primary box-records-borderless">
-			<div id="directory-record-details" class="box-body">			
+			<div id="directory-record-details" class="box-body">
 				<#list entry_list as entry>
 				<#if entry.fields?? && entry.fields?has_content>
 					<#list entry.fields as field>
