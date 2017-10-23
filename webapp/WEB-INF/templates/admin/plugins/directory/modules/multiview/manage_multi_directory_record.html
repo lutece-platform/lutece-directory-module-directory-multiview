@@ -1,45 +1,11 @@
 <#include "include_multi_records_list_header.html">
-<@tform action='jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp' id='searchForm' class2='form-inline'>
+<#include "includes/manage_multi_record_directory_header.html">
 
-<@row>
-        <@columns>
-			<div class="box">
-                <div class="box-body col-sm-offset-1">
-                    <input type="hidden" name="session" value="session">
-                    <input name="page" value="directory" type="hidden">
-                    <input name="search_action" value="search_action" type="hidden">
-
-
-                    ${paginator.itemsCount} #i18n{module.directory.multiview.records_list.label_records_count} 
-
-                    <#if directory_list?has_content >
-                            <@select name='id_directory' id='id_directory' default_value='${search_directory_id_default!-1}' items=directory_list />
-                    </#if>                
-                    <#if search_state_workflow?has_content >
-                            <@select id="search_state_workflow" name="search_state_workflow" default_value='${search_state_workflow_id_default!-1}' items=search_state_workflow />
-	            </#if>
-
-                    <select id="search_open_since" name="search_open_since" class="form-control ">
-                                    <option value="-1">#i18n{module.directory.multiview.records_list.search_since_default}</option>
-                                    <option value="1" >#i18n{module.directory.multiview.records_list.search_since_last_day}</option>
-                                    <option value="7" >#i18n{module.directory.multiview.records_list.search_since_last_week}</option>
-                                    <option value="31">#i18n{module.directory.multiview.records_list.search_since_last_month}</option>
-                    </select>
-
-                    <button class="btn btn-primary btn-flat" type="submit" name="multi_search">
-                            <i class="fa fa-search"></i>&nbsp;#i18n{directory.manage_directory_record.button_search}
-                    </button>
-                
-                </div>
-                </div>
-        </@columns>
-
-        <@columns>
-                <#include "include_multi_records_list.html">
-        </@columns>
-	
-</@row>
-</@tform>
+<div class="tab-content">
+	<@columns>
+		<#include "include_multi_records_list.html">
+	</@columns>
+</div>
 
 <script >
 $( document ).ready(function() {
