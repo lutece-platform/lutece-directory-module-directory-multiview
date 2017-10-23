@@ -68,31 +68,8 @@
 </#if>
 
 </#macro>
-<div class="row">
-	<div class="col-xs-12 col-sm-12 bg-gra-light records">
-		<form class="form-horizontal" action="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" method="get">
-			<input name="page" value="directory" type="hidden" >
-			<input type="hidden" name="session" value="session">
-				
-			<#assign editModeValue = "ReadOnly">
-			<#assign viewNumberAttValue = "1">
-				
-			<div class="form-group">
-				<div class="col-xs-12">
-					<button class="btn btn-default" type="submit" >
-						<i class="fa fa-arrow-left"></i>&nbsp;#i18n{directory.resource_history.buttonBack}
-					</button>
-				</div>
-			</div>
-					
-			<div class="col-xs-12">
-				<div class="btn btn-default" id="info_user">
-					<i class="fa fa-eye"></i>&nbsp;#i18n{module.directory.multiview.view.record.show.user.profile}
-				</div>
-			</div>
-		</form>
-	</div>
-</div>
+
+<#include "includes/view_directory_record_header.html">
 
 <div class="row">
 	<div class="col-xs-12 col-sm-8">
@@ -162,8 +139,8 @@
 		<div>${resource_history}</div>
 	</div>
 	
-	<div class="col-xs-12 col-sm-4 box-records-borderless">
-		<div class="box box-primary">
+	<div class="col-xs-12 col-sm-4">
+		<div class="box box-primary box-records-borderless">
 		<div class="box-header with-border">
 			<div id="info-right">
 				<h5>#i18n{module.directory.multiview.records_list.nature}</h5>
