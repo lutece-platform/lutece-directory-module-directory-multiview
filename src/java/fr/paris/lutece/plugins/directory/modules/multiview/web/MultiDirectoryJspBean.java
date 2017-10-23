@@ -52,6 +52,7 @@ import fr.paris.lutece.plugins.directory.service.DirectoryService;
 import fr.paris.lutece.plugins.directory.service.record.IRecordService;
 import fr.paris.lutece.plugins.directory.service.record.RecordService;
 import fr.paris.lutece.plugins.directory.service.upload.DirectoryAsynchronousUploadHandler;
+import fr.paris.lutece.plugins.directory.utils.DirectoryErrorException;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import static fr.paris.lutece.plugins.directory.utils.DirectoryUtils.PARAMETER_ID_ACTION;
 import fr.paris.lutece.plugins.directory.web.action.DirectoryActionResult;
@@ -97,6 +98,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * This class provides the user interface to manage form features ( manage, create, modify, remove)
@@ -114,9 +116,12 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String TEMPLATE_RESOURCE_HISTORY = "admin/plugins/directory/modules/multiview/resource_history.html";
     private static final String TEMPLATE_VIEW_DIRECTORY_RECORD = "admin/plugins/directory/modules/multiview/view_directory_record.html";
     private static final String TEMPLATE_RECORD_HISTORY = "admin/plugins/directory/modules/multiview/record_history.html";
-
+    private static final String TEMPLATE_TASKS_FORM_WORKFLOW = "admin/plugins/directory/modules/multiview/tasks_form_workflow.html";
+    
     // Messages (I18n keys)
     private static final String MESSAGE_CONFIRM_CHANGE_STATES_RECORD = "directory.message.confirm_change_states_record";
+    private static final String MESSAGE_DIRECTORY_ERROR = DirectoryUtils.MESSAGE_DIRECTORY_ERROR;
+    private static final String MESSAGE_DIRECTORY_ERROR_MANDATORY_FIELD = DirectoryUtils.MESSAGE_DIRECTORY_ERROR_MANDATORY_FIELD;
     private static final String MESSAGE_ACCESS_DENIED = "Acces denied";
 
     // properties
@@ -127,7 +132,8 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String PROPERTY_ENTRY_TYPE_IMAGE = "directory.resource_rss.entry_type_image";
     private static final String PROPERTY_ENTRY_TYPE_MYLUTECE_USER = "directory.entry_type.mylutece_user";
     private static final String PROPERTY_ENTRY_TYPE_NUMBERING = "directory.entry_type.numbering";
-
+    private static final String PROPERTY_TASKS_FORM_WORKFLOW_PAGE_TITLE = "directory.tasks_form_workflow.page_title";
+    
     // public properties
     public static final String PROPERTY_RIGHT_MANAGE_MULTIVIEWDIRECTORY = "DIRECTORY_MULTIVIEW";
 
@@ -181,6 +187,10 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String MARK_PERIOD_SEARCH_ID = "search_period_id_default";
     private static final String MARK_USER_FACTORY = "user_factory";
     private static final String MARK_USER_ATTRIBUTES = "user_attributes";
+    private static final String MARK_TASKS_FORM = "tasks_form";
+    private static final String MARK_ID_ACTION = "id_action";
+    private static final String MARK_LIST_IDS_DIRECTORY_RECORD = "list_ids_directory_record";
+    private static final String MARK_SHOW_ACTION_RESULT = "show_action_result";
     
     // JSP URL
     private static final String JSP_MANAGE_DIRECTORY = "jsp/admin/plugins/directory/modules/multiview/ManageDirectory.jsp";
@@ -199,6 +209,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String PARAMETER_SESSION = DirectoryUtils.PARAMETER_SESSION;
     private static final String PARAMETER_RESET_SEARCH = "resetsearch";
+    private static final String PARAMETER_CANCEL = "cancel";
 
     // constants
     private static final String CONSTANT_IDENTIFYING_ENTRY_TITLE = "GUID";
@@ -1047,6 +1058,158 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             refList.add( item );
         }
         return refList;
+    }
+    
+    /**
+     * return the tasks form
+     * 
+     * @param request
+     *            the request
+     * @return the tasks form
+     */
+    public String getTasksForm( HttpServletRequest request )
+    {
+        String [ ] listIdsDirectoryRecord = request.getParameterValues( DirectoryUtils.PARAMETER_ID_DIRECTORY_RECORD );
+        String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
+
+        if ( ( listIdsDirectoryRecord != null ) && ( listIdsDirectoryRecord.length > 0 ) && StringUtils.isNotBlank( strIdAction )
+                && StringUtils.isNumeric( strIdAction ) )
+        {
+            int nIdAction = DirectoryUtils.convertStringToInt( strIdAction );
+
+            /*
+             * DIRECTORY-126 : Add new direction action : Mass Workflow action Only the first record task form is displayed because the id resource is not
+             * relevant when displaying the task form.
+             */
+            String strIdDirectoryRecord = listIdsDirectoryRecord [0];
+            int nIdRecord = DirectoryUtils.convertStringToInt( strIdDirectoryRecord );
+            String strHtmlTasksForm = WorkflowService.getInstance( ).getDisplayTasksForm( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, request,
+                    getLocale( ) );
+
+            Map<String, Object> model = new HashMap<String, Object>( );
+
+            model.put( MARK_TASKS_FORM, strHtmlTasksForm );
+            model.put( MARK_ID_ACTION, nIdAction );
+            model.put( MARK_LIST_IDS_DIRECTORY_RECORD, listIdsDirectoryRecord );
+            model.put( MARK_SHOW_ACTION_RESULT, request.getParameter( DirectoryUtils.PARAMETER_SHOW_ACTION_RESULT ) );
+
+            setPageTitleProperty( PROPERTY_TASKS_FORM_WORKFLOW_PAGE_TITLE );
+
+            HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_TASKS_FORM_WORKFLOW, getLocale( ), model );
+
+            return getAdminPage( templateList.getHtml( ) );
+        }
+
+        return MESSAGE_ACCESS_DENIED ;
+    }
+
+    /**
+     * save the tasks form
+     * 
+     * @param request
+     *            the httpRequest
+     * @return The URL to go after performing the action
+     */
+    public String doSaveTasksForm( HttpServletRequest request )
+    {
+        String [ ] listIdsDirectoryRecord = request.getParameterValues( DirectoryUtils.PARAMETER_ID_DIRECTORY_RECORD );
+
+        if ( ( listIdsDirectoryRecord != null ) && ( listIdsDirectoryRecord.length > 0 ) )
+        {
+            String strIdDirectory = request.getParameter( DirectoryUtils.PARAMETER_ID_DIRECTORY );
+
+            // If the id directory is not in the parameter, then fetch it from the first record
+            // assuming all records are from the same directory
+            if ( StringUtils.isBlank( strIdDirectory ) || !StringUtils.isNumeric( strIdDirectory ) )
+            {
+                String strIdDirectoryRecord = listIdsDirectoryRecord [0];
+                int nIdDirectoryRecord = DirectoryUtils.convertStringToInt( strIdDirectoryRecord );
+                Record record = _recordService.findByPrimaryKey( nIdDirectoryRecord, getPlugin( ) );
+                strIdDirectory = Integer.toString( record.getDirectory( ).getIdDirectory( ) );
+            }
+
+            int nIdDirectory = DirectoryUtils.convertStringToInt( strIdDirectory );
+
+            if ( request.getParameter( PARAMETER_CANCEL ) == null )
+            {
+                String strShowActionResult = request.getParameter( DirectoryUtils.PARAMETER_SHOW_ACTION_RESULT );
+                boolean bShowActionResult = StringUtils.isNotBlank( strShowActionResult );
+
+                // Case when the user is uploading a file
+                String strUploadAction = DirectoryAsynchronousUploadHandler.getHandler( ).getUploadAction( request );
+
+                if ( StringUtils.isNotBlank( strUploadAction ) )
+                {
+                    Map<String, List<RecordField>> mapRecordFields = null;
+
+                    /**
+                     * 1) Case when the user has uploaded a file, the the map is stored in the session
+                     */
+                    HttpSession session = request.getSession( );
+                    mapRecordFields = (Map<String, List<RecordField>>) session.getAttribute( DirectoryUtils.SESSION_DIRECTORY_TASKS_SUBMITTED_RECORD_FIELDS );
+
+                    /** 2) The user has not uploaded/delete a file */
+                    if ( mapRecordFields == null )
+                    {
+                        mapRecordFields = new HashMap<>( );
+                    }
+
+                    String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
+                    int nIdAction = DirectoryUtils.convertStringToInt( strIdAction );
+
+                    try
+                    {
+                        DirectoryAsynchronousUploadHandler.getHandler( ).doUploadAction( request, strUploadAction, mapRecordFields, null, getPlugin( ) );
+                    }
+                    catch( DirectoryErrorException error )
+                    {
+                        String strErrorMessage = DirectoryUtils.EMPTY_STRING;
+
+                        if ( error.isMandatoryError( ) )
+                        {
+                            Object [ ] tabRequiredFields = {
+                                error.getTitleField( )
+                            };
+                            strErrorMessage = AdminMessageService.getMessageUrl( request, MESSAGE_DIRECTORY_ERROR_MANDATORY_FIELD, tabRequiredFields,
+                                    AdminMessage.TYPE_STOP );
+                        }
+                        else
+                        {
+                            Object [ ] tabRequiredFields = {
+                                    error.getTitleField( ), error.getErrorMessage( )
+                            };
+                            strErrorMessage = AdminMessageService.getMessageUrl( request, MESSAGE_DIRECTORY_ERROR, tabRequiredFields, AdminMessage.TYPE_STOP );
+                        }
+
+                        return strErrorMessage;
+                    }
+
+                    // Store the map in the session
+                    session.setAttribute( DirectoryUtils.SESSION_DIRECTORY_TASKS_SUBMITTED_RECORD_FIELDS, mapRecordFields );
+
+                    return getJspTasksForm( request, listIdsDirectoryRecord, nIdAction, bShowActionResult );
+                }
+
+                String strIdAction = request.getParameter( DirectoryUtils.PARAMETER_ID_ACTION );
+                int nIdAction = DirectoryUtils.convertStringToInt( strIdAction );
+
+                String strError = _directoryActionResult.doSaveTaskForm( nIdDirectory, nIdAction, listIdsDirectoryRecord, getPlugin( ), getLocale( ), request );
+
+                if ( StringUtils.isNotBlank( strError ) )
+                {
+                    return strError;
+                }
+
+                if ( bShowActionResult )
+                {
+                    return getJspActionResults( request, nIdDirectory, nIdAction );
+                }
+            }
+
+            return getRedirectUrl( request );
+        }
+
+        return getJspManageDirectory( request );
     }
 
 }
