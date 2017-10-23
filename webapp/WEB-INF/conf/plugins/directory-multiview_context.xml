@@ -8,8 +8,6 @@
     <bean id="directory-multiview.directoryViewFilterActionDAO" class="fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterActionDAO" />
     <bean id="directory-multiview.directoryViewFilterConditionDAO" class="fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterConditionDAO" />
 
-    <bean id="multiDirectory.searchAction" class="fr.paris.lutece.plugins.directory.modules.multiview.web.action.SearchRecordMultiDirectoryAction" />
-
     <!-- IdentityService -->
     <bean id="directory-multiview.identitystore.httpTransport" class="fr.paris.lutece.plugins.identitystore.web.rs.service.IdentityTransportRest">
         <property name="IdentityStoreEndPoint">
