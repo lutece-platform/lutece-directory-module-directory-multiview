@@ -1,11 +1,13 @@
-<#include "include_multi_records_list_header.html">
-<#include "includes/manage_multi_record_directory_header.html">
+<@tform action='jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp' id='searchForm' class2='form-inline'>
+    <#include "include_multi_records_list_header.html">
+    <#include "includes/manage_multi_record_directory_header.html">
 
-<div class="tab-content">
-	<@columns>
-		<#include "include_multi_records_list.html">
-	</@columns>
-</div>
+    <div class="tab-content">
+            <@columns>
+                    <#include "include_multi_records_list.html">
+            </@columns>
+    </div>
+</@tform>
 
 <script >
 $( document ).ready(function() {

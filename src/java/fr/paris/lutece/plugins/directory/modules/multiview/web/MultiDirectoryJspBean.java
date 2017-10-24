@@ -210,7 +210,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_SESSION = DirectoryUtils.PARAMETER_SESSION;
     private static final String PARAMETER_RESET_SEARCH = "resetsearch";
     private static final String PARAMETER_CANCEL = "cancel";
-
+    
     // constants
     private static final String CONSTANT_IDENTIFYING_ENTRY_TITLE = "GUID";
 
@@ -226,6 +226,14 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private List<DirectoryViewFilter> _directoryViewList = new ArrayList<>( );
     private HashMap<Integer, Directory> _directoryList = new HashMap<>( );
     private HashMap<Integer, ReferenceList> _workflowStateByDirectoryList = new HashMap<>( );
+    private RecordAssignmentFilter _assignmentFilter = new RecordAssignmentFilter( );
+        
+    private List<Integer> _listResultRecordId = new ArrayList<>( );
+    private List<IEntry>  _listEntryFormMainSearch = new ArrayList<>( );
+    private List<IEntry>  _listEntryFormComplementarySearch = new ArrayList<>( );
+    private List<IEntry>  _listEntryResultSearch = new ArrayList<>( );
+    private List<IEntry>  _listEntryGeolocation = new ArrayList<>( );
+    private HashMap<String, RecordAssignment> _recordAssignmentMap = new HashMap<>( );
     
     /**
      * Gets the DirectoryAdminSearchFields
@@ -267,15 +275,18 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             return action.process( request, response, getUser( ), _searchFields );
         }
 
-        // reinit search
-        reInitDirectoryRecordFilter( );
+        // reinit search ?
+        boolean newSearch = false ;
 
-        // display could have been an action but it's the default one an will always be here...
+        // display : default action
         DefaultPluginActionResult result = new DefaultPluginActionResult( );
         String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
         String strIdWorkflowState = request.getParameter( PARAMETER_ID_STATE_WORKFLOW );
         String strIdPeriodParameter = request.getParameter( PARAMETER_ID_FILTER_PERIOD );
 
+        String strSortedAttributeName =  request.getParameter( Parameters.SORTED_ATTRIBUTE_NAME );
+        String strAscSort =  request.getParameter( Parameters.SORTED_ASC );
+        
         int nIdWorkflowState = DirectoryUtils.convertStringToInt( strIdWorkflowState );
         int nIdDirectory = DirectoryUtils.convertStringToInt( strIdDirectory );
         int nIdPeriodParameter = DirectoryUtils.convertStringToInt( strIdPeriodParameter );
@@ -283,10 +294,19 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         boolean bWorkflowServiceEnable = WorkflowService.getInstance( ).isAvailable( );
         AdminUser adminUser = getUser( );
 
-        // list of directories of the filters
-        if ( _directoryViewList == null || _directoryViewList.size( ) == 0 )
+        // see if there is a new search or if we are just paginating
+        if ( _assignmentFilter.getDirectoryId( ) != nIdDirectory 
+                || _assignmentFilter.getStateId( )!= nIdWorkflowState 
+                || _assignmentFilter.getNumberOfDays( ) != nIdPeriodParameter  )
         {
-
+            reInitDirectoryRecordFilter( );
+            newSearch = true ;
+        }
+        
+        
+        // list of directories of the filters
+        if ( newSearch && (_directoryViewList == null || _directoryViewList.size( ) == 0) )
+        {
             _directoryViewList = DirectoryViewFilterHome.getDirectoryFiltersList( );
             for ( DirectoryViewFilter dvf : _directoryViewList )
             {
@@ -320,8 +340,8 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             }
         }
 
-        // get the selected directory
-        if ( nIdDirectory > 0 )
+        // get the directory (if selected)
+        if ( newSearch && nIdDirectory > 0 )
         {
             // access by ONE directory
             Directory directory = _directoryList.get( nIdDirectory );
@@ -333,115 +353,121 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             }
         }
 
-        if ( ( request.getParameter( PARAMETER_SESSION ) == null ) || Boolean.parseBoolean( request.getParameter( PARAMETER_RESET_SEARCH ) ) )
-        {
-            reInitDirectoryRecordFilter( );
-        }
-
+        
         _searchFields.setRedirectUrl( request );
-        _searchFields.setCurrentPageIndexDirectoryRecord( Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
-                _searchFields.getCurrentPageIndexDirectoryRecord( ) ) );
-        _searchFields.setItemsPerPageDirectoryRecord( Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
-                _searchFields.getItemsPerPageDirectoryRecord( ), _searchFields.getDefaultItemsPerPage( ) ) );
+        _searchFields.setCurrentPageIndexDirectoryRecord( 
+                Paginator.getPageIndex( 
+                        request, 
+                        Paginator.PARAMETER_PAGE_INDEX,
+                        _searchFields.getCurrentPageIndexDirectoryRecord( ) ) );
+        _searchFields.setItemsPerPageDirectoryRecord( 
+                Paginator.getItemsPerPage( 
+                        request, 
+                        Paginator.PARAMETER_ITEMS_PER_PAGE,
+                        _searchFields.getItemsPerPageDirectoryRecord( ), 
+                        _searchFields.getDefaultItemsPerPage( ) ) );
 
-        List<Integer> listResultRecordId = new ArrayList<>( );
-        List<IEntry> listEntryFormMainSearch = new ArrayList<>( );
-        List<IEntry> listEntryFormComplementarySearch = new ArrayList<>( );
-        List<IEntry> listEntryResultSearch = new ArrayList<>( );
-        List<IEntry> listEntryGeolocation = new ArrayList<>( );
-
-        for ( DirectoryViewFilter dvf : _directoryViewList )
+        
+        if ( newSearch ) 
         {
-            // case of request of results of ONE directory
-            if ( nIdDirectory > 0 && nIdDirectory != dvf.getIdDirectory( ) )
-                continue;
-
-            Directory directory = _directoryList.get( dvf.getIdDirectory( ) );
-
-            // build entryFilter
-            EntryFilter entryFilter = new EntryFilter( );
-            entryFilter.setIdDirectory( directory.getIdDirectory( ) );
-            entryFilter.setIsGroup( EntryFilter.FILTER_FALSE );
-            entryFilter.setIsComment( EntryFilter.FILTER_FALSE );
-
-            // get the Entries for this directory
-
-            for ( IEntry entry : EntryHome.getEntryList( entryFilter, getPlugin( ) ) )
+            for ( DirectoryViewFilter dvf : _directoryViewList )
             {
-                IEntry entryTmp = EntryHome.findByPrimaryKey( entry.getIdEntry( ), getPlugin( ) );
+                // case of request of results of ONE directory
+                if ( nIdDirectory > 0 && nIdDirectory != dvf.getIdDirectory( ) )
+                    continue;
 
-                if ( entryTmp.isWorkgroupAssociated( ) )
+                Directory directory = _directoryList.get( dvf.getIdDirectory( ) );
+
+                // build entryFilter
+                EntryFilter entryFilter = new EntryFilter( );
+                entryFilter.setIdDirectory( directory.getIdDirectory( ) );
+                entryFilter.setIsGroup( EntryFilter.FILTER_FALSE );
+                entryFilter.setIsComment( EntryFilter.FILTER_FALSE );
+
+                // get the Entries for this directory
+
+                for ( IEntry entry : EntryHome.getEntryList( entryFilter, getPlugin( ) ) )
                 {
-                    entryTmp.setFields( DirectoryUtils.getAuthorizedFieldsByWorkgroup( entryTmp.getFields( ), getUser( ) ) );
-                }
+                    IEntry entryTmp = EntryHome.findByPrimaryKey( entry.getIdEntry( ), getPlugin( ) );
 
-                // keep only the entry of the filter (in place of : entryTmp.isIndexed( ) AND entry.isShownInAdvancedSearch() )
-                if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( ) )
-                {
-                    listEntryFormMainSearch.add( entryTmp );
-                }
-
-                // keep only the entry of the filter and the identifyer (in place of entry.isShownInResultList( ) )
-                if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( ) || CONSTANT_IDENTIFYING_ENTRY_TITLE.equals( entryTmp.getTitle( ) ) )
-                {
-                    listEntryResultSearch.add( entryTmp );
-
-                    // add geolocation entries
-                    if ( entry.getEntryType( ).getIdType( ) == AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_GEOLOCATION, 16 ) )
+                    if ( entryTmp.isWorkgroupAssociated( ) )
                     {
-                        listEntryGeolocation.add( entry );
+                        entryTmp.setFields( DirectoryUtils.getAuthorizedFieldsByWorkgroup( entryTmp.getFields( ), getUser( ) ) );
                     }
+
+                    // keep only the entry of the filter (in place of : entryTmp.isIndexed( ) AND entry.isShownInAdvancedSearch() )
+                    if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( ) )
+                    {
+                        _listEntryFormMainSearch.add( entryTmp );
+                    }
+
+                    // keep only the entry of the filter and the identifyer (in place of entry.isShownInResultList( ) )
+                    if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( ) || CONSTANT_IDENTIFYING_ENTRY_TITLE.equals( entryTmp.getTitle( ) ) )
+                    {
+                        _listEntryResultSearch.add( entryTmp );
+
+                        // add geolocation entries
+                        if ( entry.getEntryType( ).getIdType( ) == AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_GEOLOCATION, 16 ) )
+                        {
+                            _listEntryGeolocation.add( entry );
+                        }
+                    }
+                }
+
+            }
+        
+
+            // get the records filtred list
+            List<RecordAssignment> recordAssignmentList = new ArrayList<>( );
+
+            _assignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( adminUser ) );
+            _assignmentFilter.setActiveRecordsOnly( true );
+
+            // filter by Directory (and state)
+            _assignmentFilter.setDirectoryId( nIdDirectory );
+            _assignmentFilter.setStateId( nIdWorkflowState );
+            
+            // filter by period
+            _assignmentFilter.setNumberOfDays( nIdPeriodParameter );
+
+            // sort
+            if ( strSortedAttributeName != null ) 
+            {
+                _assignmentFilter.setOrderBy(  strSortedAttributeName );
+                if (strAscSort != null) 
+                {
+                    _assignmentFilter.setAsc( Boolean.valueOf( strAscSort ) );
                 }
             }
 
-        }
+            recordAssignmentList.addAll( AssignmentService.getRecordAssignmentFiltredList( _assignmentFilter ) );
 
-        // get the records filtred list
-        List<RecordAssignment> recordAssignmentList = new ArrayList<>( );
 
-        RecordAssignmentFilter AssignmentFilter = new RecordAssignmentFilter( );
+            // get the records Id from the assigned records & prepare an hashmap for the model
+            _recordAssignmentMap = new HashMap<>( );
+            for ( RecordAssignment assignedRecord : recordAssignmentList )
+            {
+                if (!_listResultRecordId.contains( assignedRecord.getIdRecord( ) ) )
+                    _listResultRecordId.add( assignedRecord.getIdRecord( ) ) ;
+
+                if ( ! _recordAssignmentMap.containsKey( String.valueOf(assignedRecord.getIdRecord( ) ) ) 
+                        || _recordAssignmentMap.get( String.valueOf(assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
+                        .before( assignedRecord.getAssignmentDate( ) ) ) {
+
+                        // keep only the last one
+                        _recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord) ;
+
+                } 
+            }
+
+            // Store the list of id records in session
+            _searchFields.setListIdsResultRecord( _listResultRecordId );
+
+        } // end if new search
         
-        AssignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( adminUser ) );
-        AssignmentFilter.setActiveRecordsOnly( true );
-
-        // filter by Directory (and state)
-        if ( nIdDirectory > 0 )
-        {
-            AssignmentFilter.setDirectoryId( nIdDirectory );
-            if ( nIdWorkflowState > 0 )
-                AssignmentFilter.setStateId( nIdWorkflowState );
-        }
-
-        // filter by period
-        if ( nIdPeriodParameter > 0 )
-            AssignmentFilter.setNumberOfDays( nIdPeriodParameter );
-
-
-        recordAssignmentList.addAll( AssignmentService.getRecordAssignmentFiltredList( AssignmentFilter ) );
-
-
-        // get the records Id from the assigned records & prepare an hashmap for the model
-        HashMap<String, RecordAssignment> recordAssignmentMap = new HashMap<>( );
-        for ( RecordAssignment assignedRecord : recordAssignmentList )
-        {
-            if (!listResultRecordId.contains( assignedRecord.getIdRecord( ) ) )
-                listResultRecordId.add( assignedRecord.getIdRecord( ) ) ;
-            
-            if ( ! recordAssignmentMap.containsKey( String.valueOf(assignedRecord.getIdRecord( ) ) ) 
-                    || recordAssignmentMap.get( String.valueOf(assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
-                    .before( assignedRecord.getAssignmentDate( ) ) ) {
-                    
-                    // keep only the last one
-                    recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord) ;
-                
-            } 
-        }
-
-        // Store the list of id records in session
-        _searchFields.setListIdsResultRecord( listResultRecordId );
-
-        // HACK : We copy the list so workflow does not clear the paginator list.
-        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( new ArrayList<>( listResultRecordId ),
+        
+        // copy the list so workflow does not clear the paginator list.
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( new ArrayList<>( _listResultRecordId ),
                 _searchFields.getItemsPerPageDirectoryRecord( ), getJspManageMultiDirectoryRecord( request ), PARAMETER_PAGE_INDEX,
                 _searchFields.getCurrentPageIndexDirectoryRecord( ), getLocale( ) );
 
@@ -480,7 +506,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
             record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
 
             // add resourceActions
-            listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), listEntryResultSearch, adminUser,
+            listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), _listEntryResultSearch, adminUser,
                     listActionsForDirectoryEnable, listActionsForDirectoryDisable, bGetFileName, getPlugin( ) ) );
         }
 
@@ -491,12 +517,12 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         model.put( MARK_ID_ENTRY_TYPE_GEOLOCATION, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_GEOLOCATION, 16 ) );
         model.put( MARK_ID_ENTRY_TYPE_MYLUTECE_USER, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_MYLUTECE_USER, 19 ) );
         model.put( MARK_ID_ENTRY_TYPE_NUMBERING, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_NUMBERING, 11 ) );
-        model.put( MARK_ENTRY_LIST_GEOLOCATION, listEntryGeolocation );
+        model.put( MARK_ENTRY_LIST_GEOLOCATION, _listEntryGeolocation );
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( _searchFields.getItemsPerPageDirectoryRecord( ) ) );
-        model.put( MARK_ENTRY_LIST_FORM_MAIN_SEARCH, listEntryFormMainSearch );
-        model.put( MARK_ENTRY_LIST_FORM_COMPLEMENTARY_SEARCH, listEntryFormComplementarySearch );
-        model.put( MARK_ENTRY_LIST_SEARCH_RESULT, listEntryResultSearch );
+        model.put( MARK_ENTRY_LIST_FORM_MAIN_SEARCH, _listEntryFormMainSearch );
+        model.put( MARK_ENTRY_LIST_FORM_COMPLEMENTARY_SEARCH, _listEntryFormComplementarySearch );
+        model.put( MARK_ENTRY_LIST_SEARCH_RESULT, _listEntryResultSearch );
 
         model.put( MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD, _searchFields.getMapQuery( ) );
         model.put( MARK_DATE_CREATION_SEARCH, _searchFields.getDateCreationRecord( ) );
@@ -506,7 +532,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         model.put( MARK_DATE_MODIFICATION_BEGIN_SEARCH, _searchFields.getDateModificationBeginRecord( ) );
         model.put( MARK_DATE_MODIFICATION_END_SEARCH, _searchFields.getDateModificationEndRecord( ) );
 
-        model.put( MARK_NUMBER_RECORD, listResultRecordId.size( ) );
+        model.put( MARK_NUMBER_RECORD, _listResultRecordId.size( ) );
         model.put( MARK_RESOURCE_ACTIONS_LIST, listResourceActions );
         model.put( MARK_HISTORY_WORKFLOW_ENABLED, bHistoryEnabled );
         model.put( MARK_PERMISSION_CREATE_RECORD,
@@ -535,7 +561,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         if ( nIdPeriodParameter > 0 )
             model.put( MARK_PERIOD_SEARCH_ID, nIdPeriodParameter );
 
-        model.put( MARK_RECORD_ASSIGNMENT_MAP, recordAssignmentMap );
+        model.put( MARK_RECORD_ASSIGNMENT_MAP, _recordAssignmentMap );
 
         PluginActionManager.fillModel( request, adminUser, model, IDirectoryAction.class, MARK_DIRECTORY_ACTIONS );
 
@@ -767,6 +793,7 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
     private void reInitDirectoryRecordFilter( )
     {
         _searchFields.setItemsPerPageDirectoryRecord( 0 );
+        _searchFields.setCurrentPageIndexDirectoryRecord( "1" );
         _searchFields.setCurrentPageIndexDirectory( null );
         _searchFields.setMapQuery( null );
         _searchFields.setItemNavigatorViewRecords( null );
@@ -774,6 +801,18 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
         _searchFields.setSortEntry( null );
         _searchFields.setSortOrder( RecordFieldFilter.ORDER_NONE );
         _searchFields.setListIdsResultRecord( new ArrayList<Integer>( ) );
+        
+         _directoryViewList = new ArrayList<>( );
+        _directoryList = new HashMap<>( );
+        _workflowStateByDirectoryList = new HashMap<>( );
+        _assignmentFilter = new RecordAssignmentFilter( );
+        
+        _listResultRecordId = new ArrayList<>( );
+        _listEntryFormMainSearch = new ArrayList<>( );
+        _listEntryFormComplementarySearch = new ArrayList<>( );
+        _listEntryResultSearch = new ArrayList<>( );
+        _listEntryGeolocation = new ArrayList<>( );
+        _recordAssignmentMap = new HashMap<>( );
     }
 
     /**
@@ -950,8 +989,6 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
      *
      * @param request
      *            The HTTP request
-     * @param directory
-     *            the directory
      * @return url of the jsp manage directory record
      */
     public static String getJspManageMultiDirectoryRecord( HttpServletRequest request )
@@ -967,7 +1004,11 @@ public class MultiDirectoryJspBean extends PluginAdminPageJspBean
 
         urlItem.addParameter( Parameters.SORTED_ATTRIBUTE_NAME, strSortedAttributeName );
         urlItem.addParameter( Parameters.SORTED_ASC, strAscSort );
-
+        
+        urlItem.addParameter( PARAMETER_ID_DIRECTORY, request.getParameter( PARAMETER_ID_DIRECTORY ) );
+        urlItem.addParameter( PARAMETER_ID_STATE_WORKFLOW,  request.getParameter( PARAMETER_ID_STATE_WORKFLOW ) ); 
+        urlItem.addParameter( PARAMETER_ID_FILTER_PERIOD, request.getParameter( PARAMETER_ID_FILTER_PERIOD ) ) ;
+        
         return urlItem.getUrl( );
     }
 

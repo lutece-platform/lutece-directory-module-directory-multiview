@@ -9,21 +9,22 @@
 			<table class="table table-hover table-striped">
 				<thead>
 					<tr>
-						<th data-field="reference">
+						<th data-field="state">
 							#i18n{module.directory.multiview.records_list.state}
-						</th>
-						<th data-field="category_label">
+                                                </th>
+						<th data-field="nature">
 							#i18n{module.directory.multiview.records_list.nature}
 						</th>
-						<th data-field="lastname">
+						<th data-field="origin">
 							#i18n{module.directory.multiview.records_list.content}
 						</th>
-						<th data-field="date_create" class="th-sort-DESC">
+						<th data-field="created" class="th-sort-DESC">
 							#i18n{module.directory.multiview.records_list.created}
-							<@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="dateCreation" />
+							<@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="created" />
 						</th>
 						<th data-field="assigned">
 							#i18n{module.directory.multiview.records_list.assigned}
+                                                        <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="assigned" />
 						</th>
 					</tr>
 				</thead>
@@ -85,7 +86,7 @@
 		</div>
 
 		<div class="col-xs-12">
-			<@paginationAdmin paginator=paginator combo=1 showcount=1 />
+			<@paginationAdmin paginator=paginator combo=1 showcount=1 form=0 />
 		</div>
 
 	</div>
