@@ -91,12 +91,18 @@ table.table-hover tbody tr:hover{ cursor: pointer }
 
 /* Targetting Webkit browsers only. FF will show the dropdown arrow with so much padding. */
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-	#filter-records select{padding-right: 18px} }
+	#filter-records select{padding-right: 18px}
 	#filter-records label.select{ position:relative }
 	#filter-records label.select:last-of-type{ margin-right:0 }
 	#filter-records label.select:after{ content:'\f107'; color:#606059; font-family: 'FontAwesome'; font-size:18px; right: 5px; top: -2px; position:absolute; pointer-events:none }
 	#filter-records .btn{ color:#fff; min-width: 50px }
 	#filter-records .btn span.fa-search{ color:#000; }
+.popover{max-width:500px;}
+#user-identity-infos{text-align:left; }
+#user-identity-infos .key{text-align:center; padding-top:0px; }
+#user-identity-infos .value{text-align:center; }
+#user-identity-infos .form-group{ margin-bottom : 0px; }
+
 .popover{max-width:500px;}
 #user-identity-infos{text-align:left; }
 #user-identity-infos .key{text-align:center; padding-top:0px; }

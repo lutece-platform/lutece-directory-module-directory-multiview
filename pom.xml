@@ -91,7 +91,7 @@
     <properties>
         <componentName>directory-multiview</componentName>
         <jiraProjectName>MULTIVIEW</jiraProjectName>
-        <jiraComponentId></jiraComponentId>
+        <jiraComponentId>13775</jiraComponentId>
     </properties> 
     
        

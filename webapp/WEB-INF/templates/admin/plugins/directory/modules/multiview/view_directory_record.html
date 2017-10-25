@@ -61,32 +61,13 @@
 <#macro display_actions resource_actions >
 <#if resource_actions.workflow_action_list?exists>
 	<#list resource_actions.workflow_action_list as action>
-		<a class="btn btn-lg btn-primary btn-block bg-gru-dark" href="jsp/admin/plugins/directory/modules/multiview/DoProcessActionWorkflow.jsp?id_action=${action.id}&amp;id_directory_record=${resource_actions.record.idRecord}&amp;id_directory=${directory.idDirectory}">
+		<a class="btn btn-lg btn-primary btn-block bg-gru-dark" href="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?action=doProcessAction&amp;id_action=${action.id}&amp;id_record=${resource_actions.record.idRecord}&amp;id_directory=${directory.idDirectory}">
 			${action.name}
 		</a>
 	</#list>
 </#if>
 
 </#macro>
-<div class="row">
-	<div class="col-xs-12 col-sm-12 bg-gra-light records">
-					<form class="form-horizontal" action="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" method="get">
-					<input name="page" value="directory" type="hidden" >
-					<input type="hidden" name="session" value="session">
-				
-					<#assign editModeValue = "ReadOnly">
-					<#assign viewNumberAttValue = "1">
-				
-					<div class="form-group">
-						<div class="col-xs-12">
-							<button class="btn btn-default" type="submit" >
-								<i class="fa fa-arrow-left"></i>&nbsp;#i18n{directory.resource_history.buttonBack}
-							</button>
-						</div>
-					</div>
-				</form>
-	</div>
-</div>
 
 <#include "includes/view_directory_record_header.html">
 
