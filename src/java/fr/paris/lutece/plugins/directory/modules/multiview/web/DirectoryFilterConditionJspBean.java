@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * This class provides the user interface to manage DirectoryViewFilterCondition features ( manage, create, modify, remove )
  */
 @Controller( controllerJsp = "ManageDirectoryFilterConditions.jsp", controllerPath = "jsp/admin/plugins/directory/modules/multiview/", right = "DIRECTORY_FILTER_MANAGEMENT" )
-public class DirectoryFilterConditionJspBean extends AbstractManageDirectoryFilterConditionJspBean
+public class DirectoryFilterConditionJspBean extends AbstractJspBean
 {
     // Templates
     private static final String TEMPLATE_MANAGE_DIRECTORYFILTERCONDITIONS = "/admin/plugins/directory/modules/multiview/manage_directoryfilterconditions.html";

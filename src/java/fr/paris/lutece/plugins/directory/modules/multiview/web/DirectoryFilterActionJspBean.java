@@ -49,7 +49,6 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
-import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -61,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * This class provides the user interface to manage DirectoryViewFilterAction features ( manage, create, modify, remove )
  */
 @Controller( controllerJsp = "ManageDirectoryFilterActions.jsp", controllerPath = "jsp/admin/plugins/directory/modules/multiview/", right = "DIRECTORY_FILTER_MANAGEMENT" )
-public class DirectoryFilterActionJspBean extends AbstractManageDirectoryFilterActionJspBean
+public class DirectoryFilterActionJspBean extends AbstractJspBean
 {
     // Templates
     private static final String TEMPLATE_MANAGE_DIRECTORYFILTERACTIONS = "/admin/plugins/directory/modules/multiview/manage_directoryfilteractions.html";

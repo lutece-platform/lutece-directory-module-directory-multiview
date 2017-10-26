@@ -2,18 +2,14 @@
 	<div class="row bg-gra-light records">
 		<@row>
         	<div class="row">
-				<div id="filter-records" class="box box-records bg-gra-light">
+                        <div id="filter-records" class="box box-records bg-gra-light">
                 	<div class="box-body col-sm-offset-1">
-                    	<input type="hidden" name="session" value="session">
-                    	<input name="page" value="directory" type="hidden">
-						<input name="search_action" value="search_action" type="hidden">
-
-                   		<#if directory_list?has_content >
-                    		<div class="records-filter">
-                    			<label class="select" for="id_directory">
-                            		<@select name='id_directory' id='id_directory' default_value='${search_directory_id_default!-1}' items=directory_list />
-                        		</label>
-                        	</div>
+                        <#if directory_list?has_content >
+                            <div class="records-filter">
+                                    <label class="select" for="id_directory">
+                                    <@select name='id_directory' id='id_directory' default_value='${search_directory_id_default!-1}' items=directory_list />
+                                    </label>
+                            </div>
                     	</#if>                
                     	<#if search_state_workflow?has_content >
                     		<div class="records-filter">
@@ -21,7 +17,7 @@
                             		<@select id="search_state_workflow" name="search_state_workflow" default_value='${search_state_workflow_id_default!-1}' items=search_state_workflow />
                         		</label>
                         	</div>
-	            		</#if>
+                        </#if>
 
                     	<div class="records-filter">
 							<label class="select" for="search_open_since">
@@ -35,7 +31,7 @@
                     	</div>
 
 						<div class="input-group-btn records-filter">
-							<button class="btn btn-xs" type="submit" name="multi_search">
+							<button class="btn btn-xs" type="submit">
                             	<span class="fa fa-search"></span>
 							</button>
 						</div>
