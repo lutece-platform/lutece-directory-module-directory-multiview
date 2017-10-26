@@ -108,7 +108,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PROPERTY_ENTRY_TYPE_IMAGE = "directory.resource_rss.entry_type_image";
     private static final String PROPERTY_ENTRY_TYPE_MYLUTECE_USER = "directory.entry_type.mylutece_user";
     private static final String PROPERTY_ENTRY_TYPE_GEOLOCATION = "directory.entry_type.geolocation";
+    private static final String PROPERTY_ENTRY_TITLE_GUID = AppPropertiesService.getProperty( "entry.guid.title" );
 
+    
     // public properties
     public static final String PROPERTY_RIGHT_MANAGE_MULTIVIEWDIRECTORY = "DIRECTORY_MULTIVIEW";
 
@@ -159,9 +161,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     //Actions
     private static final String ACTION_PROCESS_ACTION = "doProcessAction";
     private static final String ACTION_SAVE_TASK_FORM = "doSaveTaskForm";
-
-    // constants
-    private static final String CONSTANT_IDENTIFYING_ENTRY_TITLE = "GUID";
 
     // session fields
     private IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
@@ -228,7 +227,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
 
                 // keep only the entry of the filter and the identifyer (in place of entry.isShownInResultList( ) )
-                if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( ) || CONSTANT_IDENTIFYING_ENTRY_TITLE.equals( entryTmp.getTitle( ) ) )
+                if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( ) || PROPERTY_ENTRY_TITLE_GUID.equals( entryTmp.getTitle( ) ) )
                 {
                     _listEntryResultSearch.add( entryTmp );
                 }
@@ -250,11 +249,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     public String getManageDirectoryRecord( HttpServletRequest request )
             throws AccessDeniedException
     {
-        //Check if the filter (state, period, directory) has changed 
-        boolean bFilterChanged = DirectoryMultiviewService.getRecordAssignmentFilter( _assignmentFilter, request );
         
         //if filter changed, reinit several list for multiview
-        if ( bFilterChanged )
+        if ( DirectoryMultiviewService.getRecordAssignmentFilter( _assignmentFilter, request ) )
         {
             reInitDirectoryMultiview( );
         }
@@ -276,6 +273,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), _listEntryResultSearch, getUser( ),
                     null, null, false, getPlugin( ) ) );
         }
+        
+        //Populate record precisions in resource action (called "demandeur")
+        DirectoryMultiviewService.populateRecordPrecisions( _listResourceActions, _listEntryResultSearch, request.getLocale( ) );
 
         model.put( MARK_PAGINATOR, _paginator );
         model.put( MARK_NUMBER_RECORD, _listResultRecordId.size( ) );
@@ -346,18 +346,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         boolean bGetFileName = true;
 
         //Get the guid
-        String strGuid = StringUtils.EMPTY;
-        for ( IEntry entry : listEntry )
-        {
-            //TODO Property for GUID
-            if ( entry.getTitle( ).equals( CONSTANT_IDENTIFYING_ENTRY_TITLE ) )
-            {
-                List<RecordField> listRecordFields = DirectoryUtils.getListRecordField( entry, nIdRecord,  getPlugin( ) );
-                strGuid = listRecordFields.get( 0 ).toString( );
-                break;
-            }
-                
-        }
+        String strGuid = UserIdentityService.getUserGuid( listEntry, nIdRecord, getPlugin( ) );
 
         Map<String, Object> model = new HashMap<>( );
 
@@ -387,7 +376,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                         getLocale( ), model, TEMPLATE_RECORD_HISTORY ) );
 
         //Add the user attributes
-        if ( !strGuid.isEmpty( ) )
+        if ( strGuid != null)
         {
             model.put( MARK_USER_ATTRIBUTES, UserIdentityService.getUserAttributes( strGuid ) );
         }

@@ -39,37 +39,18 @@
 								</span>
 							</td>
 							<td>
-								<#if resource_actions.record.directory.title?exists>
-									${resource_actions.record.directory.title}
-								</#if>
+                                                            <#if resource_actions.record.directory.title?exists>
+                                                                    ${resource_actions.record.directory.title}
+                                                            </#if>
 							</td>
 							<td>
-								<#assign first_entry = true />
-								<#list entry_list_search_result as entry>
-									<#assign entryKey = "" + entry.idEntry>
-									<#assign listRecordField = resource_actions.map_id_entry_list_record_field[entryKey]>
-									<#if listRecordField?has_content>
-										<#list listRecordField as record_field>
-											${entry.getHtmlRecordFieldValue( locale,record_field,false )}
-											<#if record_field.record?? && record_field.record.dateCreation??>
-												<#assign date_creation = record_field.record.dateCreation>
-											<#else>
-												<#assign date_creation = "">
-											</#if>
-											<#if record_field.record?? && record_field.record.dateModification??>
-												<#assign date_modification = record_field.record.dateModification>
-											<#else>
-												<#assign date_modification = "">
-											</#if>
-											<br>
-										</#list>
-									</#if>
-								</#list>
+                                                            <#list resource_actions.precisions as precision>
+                                                                ${precision}
+                                                                <br/>
+                                                            </#list>
 							</td>
 							<td>
-								<#if date_creation??>
-									${date_creation}
-								</#if>&nbsp;
+                                                            ${(resource_actions.record.dateCreation?date)!''}
 							</td>
 							<td>
 								<#if recordAssignmentMap?? >

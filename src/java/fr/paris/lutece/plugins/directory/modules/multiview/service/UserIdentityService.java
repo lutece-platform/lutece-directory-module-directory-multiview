@@ -33,16 +33,23 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
+import fr.paris.lutece.plugins.directory.business.IEntry;
+import fr.paris.lutece.plugins.directory.business.RecordField;
+import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
+import static fr.paris.lutece.plugins.directory.utils.DirectoryUtils.getPlugin;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.web.service.IdentityService;
+import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import java.util.List;
 import java.util.Map;
 
 public class UserIdentityService
 {
     private static final String BEAN_IDENTITY_SERVICE = "directory-multiview.identitystore.service";
     private static final String PROPERTY_APPLICATION_CODE = AppPropertiesService.getProperty( "identitystore.application.code" );
+    private static final String PROPERTY_ENTRY_TITLE_GUID = AppPropertiesService.getProperty( "entry.guid.title" );
     
     /**
      * Get the identity service
@@ -61,5 +68,30 @@ public class UserIdentityService
     public static Map<String,AttributeDto> getUserAttributes ( String strGuid )
     {
         return getIdentityService().getIdentity( strGuid, "", PROPERTY_APPLICATION_CODE ).getAttributes( );
+    }
+    
+    /**
+     * Get the guid of the user
+     * @param listEntries the list of entries
+     * @param nIdRecord the id record
+     * @param plugin the plugin
+     * @return the guid of the user
+     */
+    public static String getUserGuid( List<IEntry> listEntries, int nIdRecord, Plugin plugin )
+    {
+        for ( IEntry entry : listEntries )
+        {
+            String strGuidEntryTitle = PROPERTY_ENTRY_TITLE_GUID;
+            if ( entry.getTitle( ).equals( strGuidEntryTitle ) )
+            {
+                List<RecordField> listRecordFields = DirectoryUtils.getListRecordField( entry, nIdRecord, plugin );
+                if ( listRecordFields.size( ) > 0 )
+                {
+                    return listRecordFields.get( 0 ).toString( );
+                }
+                
+            }
+        }
+        return null;
     }
 }

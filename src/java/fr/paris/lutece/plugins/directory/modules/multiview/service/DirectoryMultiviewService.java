@@ -33,9 +33,15 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
+import fr.paris.lutece.plugins.directory.business.IEntry;
+import fr.paris.lutece.plugins.directory.business.Record;
+import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewUtils;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 import fr.paris.lutece.portal.web.constants.Parameters;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,6 +55,9 @@ public class DirectoryMultiviewService
     private static final String MARK_DEFAULT_WORKFLOW_STATE_ID = "search_state_workflow_id_default";
     private static final String MARK_DEFAULT_ID_DIRECTORY = "search_directory_id_default";
     private static final String MARK_DEFAULT_PERIOD = "search_period_id_default";
+    private static final String MARK_RECORD = "record";
+    private static final String MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD = "map_id_entry_list_record_field";
+    private static final String MARK_PRECISIONS = "precisions";
     
     /**
      * Set the filter. Return true if filter changed; false otherwise
@@ -114,6 +123,35 @@ public class DirectoryMultiviewService
         if ( filter.getNumberOfDays( ) > 0 )
         {
             model.put( MARK_DEFAULT_PERIOD, filter.getNumberOfDays( ) );
+        }
+    }
+    
+    /**
+     * 
+     * @param resourceActions
+     * @param listPrecisions
+     * @param locale 
+     */
+    public static void populateRecordPrecisions( List<Map<String,Object>> resourceActions, List<IEntry> listPrecisions, Locale locale )
+    {
+        for ( Map<String,Object> mapResourceActions : resourceActions )
+        {
+            Record record = (Record)mapResourceActions.get( MARK_RECORD );
+            Map<String, List<RecordField>> mapRecordFields = (Map<String, List<RecordField>>) mapResourceActions.get( MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD );
+            List<String> precisions = new ArrayList<>();
+            for ( IEntry entry : listPrecisions )
+            {
+                
+                if ( entry.getDirectory( ).getIdDirectory( ) == record.getDirectory( ).getIdDirectory( ) )
+                {
+                    List<RecordField>  listRecordField = mapRecordFields.get( Integer.toString( entry.getIdEntry( ) ) );
+                    for ( RecordField field : listRecordField )
+                    {
+                        precisions.add( field.getValue( ) );
+                    }
+                }
+            }
+            mapResourceActions.put( MARK_PRECISIONS, precisions );
         }
     }
 }
