@@ -80,30 +80,48 @@ public class DirectoryMultiviewService
 
         if ( filter.getDirectoryId( ) != nIdDirectory 
                 || filter.getStateId( )!= nIdWorkflowState 
-                || filter.getNumberOfDays( ) != nIdPeriodParameter
-                || filter.isAsc() != Boolean.getBoolean( strAscSort )
-                || !filter.getOrderBy().equals( strSortedAttributeName ) )
+                || filter.getNumberOfDays( ) != nIdPeriodParameter )
         {
              //Construct the filter based on record assignments.
             if ( nIdDirectory > 0 )
             {
                 filter.setDirectoryId( nIdDirectory );
             }
+            else
+            {
+                filter.setDirectoryId( -1 );
+            }
             if ( nIdWorkflowState > 0 )
             {
                 filter.setStateId( nIdWorkflowState );
+            }
+            else
+            {
+                filter.setStateId( -1 );
             }
             if ( nIdPeriodParameter > 0 )
             {
                 filter.setNumberOfDays( nIdPeriodParameter );
             }
+            else
+            {
+                filter.setNumberOfDays( -1 );
+            }
             if ( strSortedAttributeName != null )
             {
                 filter.setOrderBy( strSortedAttributeName );
             }
+            else
+            {
+                filter.setOrderBy( null );
+            }
             if ( strAscSort != null )
             {
                 filter.setAsc( Boolean.valueOf( strAscSort) );
+            }
+            else
+            {
+                filter.setAsc( false );
             }
             return true;
         }

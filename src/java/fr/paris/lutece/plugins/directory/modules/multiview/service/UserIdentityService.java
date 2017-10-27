@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.directory.modules.multiview.service;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
-import static fr.paris.lutece.plugins.directory.utils.DirectoryUtils.getPlugin;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.web.service.IdentityService;
 import fr.paris.lutece.portal.service.plugin.Plugin;

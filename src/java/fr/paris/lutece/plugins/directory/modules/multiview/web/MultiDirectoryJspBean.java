@@ -42,9 +42,6 @@ import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.EntryHome;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
-import fr.paris.lutece.plugins.directory.business.RecordField;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.DirectoryViewFilterHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewService;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.UserIdentityService;
@@ -57,9 +54,8 @@ import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.service.AssignmentService;
-import fr.paris.lutece.plugins.workflowcore.business.state.State;
-import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -68,10 +64,7 @@ import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
-import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
-
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,7 +101,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PROPERTY_ENTRY_TYPE_IMAGE = "directory.resource_rss.entry_type_image";
     private static final String PROPERTY_ENTRY_TYPE_MYLUTECE_USER = "directory.entry_type.mylutece_user";
     private static final String PROPERTY_ENTRY_TYPE_GEOLOCATION = "directory.entry_type.geolocation";
-    private static final String PROPERTY_ENTRY_TITLE_GUID = AppPropertiesService.getProperty( "entry.guid.title" );
 
     
     // public properties
@@ -165,7 +157,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     // session fields
     private IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
 
-    private List<DirectoryViewFilter> _directoryViewList;
     private HashMap<Integer, Directory> _directoryList;
     private Map<Integer,ReferenceList > _workflowStateByDirectoryList;
     private RecordAssignmentFilter _assignmentFilter;
@@ -173,69 +164,60 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private List<IEntry>  _listEntryResultSearch;
     private HashMap<String, RecordAssignment> _recordAssignmentMap;
     private List<Map<String, Object> > _listResourceActions;
-
-    @Override
-    public void init( HttpServletRequest request, String strRight ) throws AccessDeniedException
+    private boolean _bIsInitialized;
+    
+    /**
+     * initialize the JspBean 
+     * @param request 
+     */
+    public void initialize( HttpServletRequest request )
     {
-        super.init( request, strRight );
- 
-        _directoryViewList = new ArrayList<>( );
-        _directoryList = new HashMap<>( );
-        _workflowStateByDirectoryList = new HashMap<>( );
-        _listEntryResultSearch = new ArrayList<>( );
-        _listResultRecordId = new ArrayList<>( );
-        _recordAssignmentMap = new HashMap<>( );
-        _listResourceActions = new ArrayList<>( );
-        
-        //init the assignment filter
-        _assignmentFilter = new RecordAssignmentFilter( );
-        _assignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( getUser( ) ) );
-
-        //Init the directory views (need a relog to reinit views)
-        _directoryViewList = DirectoryViewFilterHome.getDirectoryFiltersList( );
-        
-        AdminUser adminUser = getUser( );
-        
-        DirectoryFilter filter =  new DirectoryFilter( );
-        for ( Directory directory : DirectoryHome.getDirectoryList( filter, DirectoryUtils.getPlugin( ) ) )
+        if ( !_bIsInitialized )
         {
-            if ( directory.getIdWorkflow( ) > 0 )
-            {   
-                _directoryList.put( directory.getIdDirectory( ), directory);
-                Collection listWorkflowState =  WorkflowService.getInstance().getAllStateByWorkflow( directory.getIdWorkflow( ), adminUser );
-                ReferenceList workflowStateReferenceList =DirectoryMultiviewUtils.convert( listWorkflowState, "id", "name", true );
-                _workflowStateByDirectoryList.put( directory.getIdDirectory( ), workflowStateReferenceList );
-            }
-        }
-        
-        for ( DirectoryViewFilter dvf : _directoryViewList )
-        {
+            _directoryList = new HashMap<>( );
+            _workflowStateByDirectoryList = new HashMap<>( );
+            _listEntryResultSearch = new ArrayList<>( );
+            _listResultRecordId = new ArrayList<>( );
+            _recordAssignmentMap = new HashMap<>( );
+            _listResourceActions = new ArrayList<>( );
 
-            Directory directory = _directoryList.get( dvf.getIdDirectory( ) );
-
-            // build entryFilter
-            EntryFilter entryFilter = new EntryFilter( );
-            entryFilter.setIdDirectory( directory.getIdDirectory( ) );
-            entryFilter.setIsGroup( EntryFilter.FILTER_FALSE );
-            entryFilter.setIsComment( EntryFilter.FILTER_FALSE );
-
-            // get the Entries for this directory
-
-            for ( IEntry entry : EntryHome.getEntryList( entryFilter, getPlugin( ) ) )
+            //init the assignment filter
+            _assignmentFilter = new RecordAssignmentFilter( );
+            _assignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( AdminUserService.getAdminUser( request ) ) );
+            _assignmentFilter.setActiveDirectory( true );
+            _assignmentFilter.setDirectoryId( -1 );
+            _assignmentFilter.setStateId(-1 );
+            _assignmentFilter.setNumberOfDays( -1 );
+            DirectoryFilter filter =  new DirectoryFilter( );
+            filter.setIsDisabled( 1 );
+            for ( Directory directory : DirectoryHome.getDirectoryList( filter, DirectoryUtils.getPlugin( ) ) )
             {
-                IEntry entryTmp = EntryHome.findByPrimaryKey( entry.getIdEntry( ), getPlugin( ) );
+                if ( directory.getIdWorkflow( ) > 0 )
+                {   
+                    _directoryList.put( directory.getIdDirectory( ), directory);
+                    Collection listWorkflowState =  WorkflowService.getInstance().getAllStateByWorkflow( directory.getIdWorkflow( ), AdminUserService.getAdminUser( request ));
+                    ReferenceList workflowStateReferenceList = DirectoryMultiviewUtils.convert( listWorkflowState, "id", "name", true );
+                    _workflowStateByDirectoryList.put( directory.getIdDirectory( ), workflowStateReferenceList );
 
+                    // build set the list of entries to display in the multiview list
+                    EntryFilter entryFilter = new EntryFilter( );
+                    entryFilter.setIdDirectory( directory.getIdDirectory( ) );
+                    entryFilter.setIsGroup( EntryFilter.FILTER_FALSE );
+                    entryFilter.setIsComment( EntryFilter.FILTER_FALSE );
+                    entryFilter.setIsShownInResultList( 1 );
 
-                // keep only the entry of the filter and the identifyer (in place of entry.isShownInResultList( ) )
-                if ( entryTmp.getIdEntry( ) == dvf.getIdEntryTitle( ) || PROPERTY_ENTRY_TITLE_GUID.equals( entryTmp.getTitle( ) ) )
-                {
-                    _listEntryResultSearch.add( entryTmp );
+                    for ( IEntry entry : EntryHome.getEntryList( entryFilter, getPlugin( ) ) )
+                    {
+                        _listEntryResultSearch.add( entry );
+                    }
                 }
             }
-
+            reInitDirectoryMultiview( );
+            _bIsInitialized = true;
         }
+        
     }
-
+    
     /**
      * Return management of directory record ( list of directory record ).
      * 
@@ -249,6 +231,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     public String getManageDirectoryRecord( HttpServletRequest request )
             throws AccessDeniedException
     {
+        //Clear the resource actions list
+        _listResourceActions.clear( );
         
         //if filter changed, reinit several list for multiview
         if ( DirectoryMultiviewService.getRecordAssignmentFilter( _assignmentFilter, request ) )
@@ -265,13 +249,13 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         for ( Record record : lRecord )
         {
-            // data complement (should be done in directory plugin)
-            record.getDirectory( ).setIdWorkflow( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getIdWorkflow( ) );
-            record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
+                // data complement (should be done in directory plugin)
+                record.getDirectory( ).setIdWorkflow( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getIdWorkflow( ) );
+                record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
 
-            // add resourceActions
-            _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), _listEntryResultSearch, getUser( ),
-                    null, null, false, getPlugin( ) ) );
+                // add resourceActions
+                _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), _listEntryResultSearch, getUser( ),
+                        null, null, false, getPlugin( ) ) );
         }
         
         //Populate record precisions in resource action (called "demandeur")

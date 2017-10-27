@@ -21,14 +21,6 @@
 
     <!-- Admin features parameters -->
     <admin-features>
-        <admin-feature>
-            <feature-id>DIRECTORY_FILTER_MANAGEMENT</feature-id>
-            <feature-title>module.directory.multiview.adminFeature.ManageDirectoryFilter.name</feature-title>
-            <feature-description>module.directory.multiview.adminFeature.ManageDirectoryFilter.description</feature-description>
-            <feature-level>0</feature-level>
-            <feature-url>jsp/admin/plugins/directory/modules/multiview/ManageDirectoryFilters.jsp</feature-url>
-            <feature-icon-url></feature-icon-url>
-      </admin-feature>
       <admin-feature>
             <feature-id>DIRECTORY_MULTIVIEW</feature-id>
             <feature-title>module.directory.multiview.adminFeature.DirectoryMultiView.name</feature-title>
@@ -50,11 +42,6 @@
    
        <!-- Dashboard components -->
     <dashboard-components>
-        <dashboard-component>
-            <dashboard-component-name>DIRECTORY_FILTER</dashboard-component-name>
-            <dashboard-component-class>fr.paris.lutece.plugins.directory.modules.multiview.web.DirectoryFilterDashboardComponent</dashboard-component-class>
-            <dashboard-feature-right>DIRECTORY_MULTIVIEW</dashboard-feature-right>
-        </dashboard-component>
     </dashboard-components>
     
    <!-- Css -->

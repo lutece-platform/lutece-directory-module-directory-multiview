@@ -1,11 +1,83 @@
 <@tform action='jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp' id='searchForm' class2='form-inline'>
-<#include "include_multi_records_list_header.html">
-<#include "includes/manage_multi_record_directory_header.html">
+<#include "includes/include_multi_records_list_header.html">
+<#include "includes/include_manage_multi_record_directory_header.html">
 
 <div class="tab-content">
-	<@columns>
-		<#include "include_multi_records_list.html">
-	</@columns>
+    <@columns>
+        <div class="box box-records-tab-content">
+            <div class="box-header">
+                    <h3 class="box-title"></h3>
+            </div>
+            <div id="multi-record-list" class="box-body table-responsive records">
+                <div class="col-xs-12 col-sm-offset-1 col-sm-10 table-responsive tab-content">
+                        <table class="table table-hover table-striped">
+                                <thead>
+                                        <tr>
+                                                <th data-field="state">
+                                                        #i18n{module.directory.multiview.records_list.state}
+                                                </th>
+                                                <th data-field="nature">
+                                                        #i18n{module.directory.multiview.records_list.nature}
+                                                </th>
+                                                <th data-field="origin">
+                                                        #i18n{module.directory.multiview.records_list.content}
+                                                </th>
+                                                <th data-field="created" class="th-sort-DESC">
+                                                        #i18n{module.directory.multiview.records_list.created}
+                                                        <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="created" />
+                                                </th>
+                                                <th data-field="assigned">
+                                                        #i18n{module.directory.multiview.records_list.assigned}
+                                                        <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="assigned" />
+                                                </th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                        <#list resource_actions_list as resource_actions>
+                                                <tr data-url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?view=view_record_visualisation&id_directory_record=${resource_actions.record.idRecord}&id_directory=${resource_actions.record.directory.idDirectory}">
+                                                        <td>
+                                                                <span class="label label-info unread">
+                                                                        <#if resource_actions.workflow_state?exists>
+                                                                                ${resource_actions.workflow_state.name}
+                                                                        </#if>
+                                                                </span>
+                                                        </td>
+                                                        <td>
+                                                            <#if resource_actions.record.directory.title?exists>
+                                                                    ${resource_actions.record.directory.title}
+                                                            </#if>
+                                                        </td>
+                                                        <td>
+                                                            <#list resource_actions.precisions as precision>
+                                                                ${precision}
+                                                                <br/>
+                                                            </#list>
+                                                        </td>
+                                                        <td>
+                                                            ${(resource_actions.record.dateCreation?date)!''}
+                                                        </td>
+                                                        <td>
+                                                                <#if recordAssignmentMap?? >
+                                                                        <#if recordAssignmentMap[resource_actions.record.idRecord?string].assignorUnit.label?? >
+                                                                                ${recordAssignmentMap[resource_actions.record.idRecord?string].assignorUnit.label} &gt; 
+                                                                        </#if>
+                                                                        <strong>${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUnit.label}</strong>
+                                                                </#if>&nbsp;
+                                                        </td>
+                                                </tr>
+                                        </#list>
+                                </tbody>
+                        </table>
+                </div>
+
+                <div class="col-xs-12">
+                        <@paginationAdmin paginator=paginator combo=1 showcount=1 form=0 />
+                </div>
+
+            </div>
+        </div>
+    <script src="js/plugins/directory/modules/multiview/directory-multiview.js"></script>
+    </@columns>
 </div>
 </@tform>
 
