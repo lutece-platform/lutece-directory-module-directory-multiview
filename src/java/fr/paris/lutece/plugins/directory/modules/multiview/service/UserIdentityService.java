@@ -40,7 +40,10 @@ import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.web.service.IdentityService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +69,15 @@ public class UserIdentityService
      */
     public static Map<String,AttributeDto> getUserAttributes ( String strGuid )
     {
-        return getIdentityService().getIdentity( strGuid, "", PROPERTY_APPLICATION_CODE ).getAttributes( );
+        try
+        {
+            return getIdentityService().getIdentity( strGuid, "", PROPERTY_APPLICATION_CODE ).getAttributes( );
+        }
+        catch ( AppException e )
+        {
+            AppLogService.error( "Unable to get the identity from identity service, with guid : " + strGuid );
+            return new HashMap<>();
+        }
     }
     
     /**

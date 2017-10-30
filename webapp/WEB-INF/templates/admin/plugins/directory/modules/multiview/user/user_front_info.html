@@ -43,7 +43,9 @@
     </div>
 </div>
 <#macro attribute attributeKey>
-    ${user_attributes[attributeKey!''].value!''}
+    <#if user_attributes?? && user_attributes[attributeKey]??>
+        ${user_attributes[attributeKey!''].value!''}
+    </#if>
 </#macro>
 <script>
 $('#template-user-infos').hide();
