@@ -45,6 +45,7 @@ import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewService;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.UserIdentityService;
+import fr.paris.lutece.plugins.directory.modules.multiview.service.search.DirectoryMultiviewSearchService;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewUtils;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
 import fr.paris.lutece.plugins.directory.service.DirectoryService;
@@ -74,6 +75,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class provides the user interface to manage form features ( manage, create, modify, remove)
@@ -134,6 +136,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_ID_ACTION = "id_action";
     private static final String MARK_TASK_FORM = "tasks_form";
     private static final String MARK_RECORD_ASSIGNMENT_FILTER = "record_assignment_filter";
+    private static final String MARK_SEARCH_TEXT = "search_text";
     
     // JSP URL
     private static final String JSP_MANAGE_MULTIVIEW = "jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp";
@@ -144,6 +147,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PARAMETER_ID_ACTION = "id_action";
     private static final String PARAMETER_ID_DIRECTORY_RECORD = "id_directory_record";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
+    private static final String PARAMETER_SEARCHED_TEXT = "searched_text";
+        
+
     
     //Views 
     private static final String VIEW_MULTIVIEW = "view_multiview";
@@ -160,11 +166,11 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private HashMap<Integer, Directory> _directoryList;
     private Map<Integer,ReferenceList > _workflowStateByDirectoryList;
     private RecordAssignmentFilter _assignmentFilter;
-    private List<Integer> _listResultRecordId;
     private List<IEntry>  _listEntryResultSearch;
     private HashMap<String, RecordAssignment> _recordAssignmentMap;
     private List<Map<String, Object> > _listResourceActions;
     private boolean _bIsInitialized;
+    private String _strSearchText;
     
     /**
      * initialize the JspBean 
@@ -177,7 +183,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _directoryList = new HashMap<>( );
             _workflowStateByDirectoryList = new HashMap<>( );
             _listEntryResultSearch = new ArrayList<>( );
-            _listResultRecordId = new ArrayList<>( );
             _recordAssignmentMap = new HashMap<>( );
             _listResourceActions = new ArrayList<>( );
 
@@ -188,6 +193,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _assignmentFilter.setDirectoryId( -1 );
             _assignmentFilter.setStateId(-1 );
             _assignmentFilter.setNumberOfDays( -1 );
+            _strSearchText = StringUtils.EMPTY;
             DirectoryFilter filter =  new DirectoryFilter( );
             filter.setIsDisabled( 1 );
             for ( Directory directory : DirectoryHome.getDirectoryList( filter, DirectoryUtils.getPlugin( ) ) )
@@ -240,7 +246,12 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             reInitDirectoryMultiview( );
         }
         
-        Map<String, Object> model = getPaginatedListModel( request, PARAMETER_PAGE_INDEX,  new ArrayList<>( _recordAssignmentMap.keySet( )
+        //Perform simple full text search
+        _strSearchText = request.getParameter( PARAMETER_SEARCHED_TEXT );
+        HashMap<String,RecordAssignment> mapRecordAssignmentAfterSearch =  DirectoryMultiviewSearchService.filterBySearchedText( _recordAssignmentMap, _directoryList.values( ) ,request, getPlugin( ), _strSearchText );
+
+        
+        Map<String, Object> model = getPaginatedListModel( request, PARAMETER_PAGE_INDEX,  new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( )
                 .stream().map( key -> Integer.parseInt( key ) )
                 .collect( Collectors.toList( ) ) ), JSP_MANAGE_MULTIVIEW );
 
@@ -262,13 +273,14 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         DirectoryMultiviewService.populateRecordPrecisions( _listResourceActions, _listEntryResultSearch, request.getLocale( ) );
 
         model.put( MARK_PAGINATOR, _paginator );
-        model.put( MARK_NUMBER_RECORD, _listResultRecordId.size( ) );
+        model.put( MARK_NUMBER_RECORD, mapRecordAssignmentAfterSearch.keySet( ).size( ) );
         model.put( MARK_ENTRY_LIST_SEARCH_RESULT, _listEntryResultSearch );
         model.put( MARK_LOCALE, getLocale( ) );
         model.put( MARK_RESOURCE_ACTIONS_LIST, _listResourceActions );
         model.put( MARK_RECORD_ASSIGNMENT_FILTER, _assignmentFilter );
-        model.put( MARK_RECORD_ASSIGNMENT_MAP, _recordAssignmentMap );
+        model.put( MARK_RECORD_ASSIGNMENT_MAP, mapRecordAssignmentAfterSearch );
         model.put( MARK_DIRECTORY_LIST, DirectoryMultiviewUtils.convert( (Collection)_directoryList.values( ), "idDirectory","title", true ) );
+        model.put( MARK_SEARCH_TEXT, _strSearchText );
         if ( _assignmentFilter.getDirectoryId( ) > 0 )
         {
             model.put( MARK_SEARCH_STATE_WORKFLOW, _workflowStateByDirectoryList.get( _assignmentFilter.getDirectoryId( ) ) );
@@ -373,7 +385,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      */
     private void reInitDirectoryMultiview( )
     {
-        _listResultRecordId = new ArrayList<>( );
         _recordAssignmentMap = new HashMap<>( );
         _listResourceActions = new ArrayList<>( );
         
@@ -383,11 +394,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         // get the records Id from the assigned records & prepare an hashmap for the model
         for ( RecordAssignment assignedRecord : recordAssignmentList )
         {
-            _listResultRecordId.add( assignedRecord.getIdRecord( ) ) ;
             if ( ! _recordAssignmentMap.containsKey( String.valueOf(assignedRecord.getIdRecord( ) ) ) 
                     || _recordAssignmentMap.get( String.valueOf(assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
                         .before( assignedRecord.getAssignmentDate( ) ) ) {
-                    
                     // keep only the last one
                     _recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord) ;
                 
