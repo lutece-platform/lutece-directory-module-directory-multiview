@@ -45,12 +45,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * ManageDirectoryFilter JSP Bean abstract class for JSP Bean
+ * ManageDirectoryFilterCondition JSP Bean abstract class for JSP Bean
  */
-public abstract class AbstractManageDirectoryFilterJspBean extends MVCAdminJspBean
+public abstract class AbstractJspBean extends MVCAdminJspBean
 {
     // Rights
-    public static final String RIGHT_MANAGEDIRECTORYFILTER = "DIRECTORY_FILTER_MANAGEMENT";
+    public static final String RIGHT_MANAGEDIRECTORYFILTERCONDITION = "DIRECTORY_FILTER_MANAGEMENT";
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "directory-multiview.listItems.itemsPerPage";
@@ -66,6 +66,7 @@ public abstract class AbstractManageDirectoryFilterJspBean extends MVCAdminJspBe
     private int _nDefaultItemsPerPage;
     private String _strCurrentPageIndex;
     private int _nItemsPerPage;
+    protected LocalizedPaginator _paginator;
 
     /**
      * Return a model that contains the list and paginator infos
@@ -90,13 +91,13 @@ public abstract class AbstractManageDirectoryFilterJspBean extends MVCAdminJspBe
         String strUrl = url.getUrl( );
 
         // PAGINATOR
-        LocalizedPaginator paginator = new LocalizedPaginator( list, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
+        _paginator = new LocalizedPaginator( list, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
 
         Map<String, Object> model = getModel( );
 
         model.put( MARK_NB_ITEMS_PER_PAGE, String.valueOf( _nItemsPerPage ) );
-        model.put( MARK_PAGINATOR, paginator );
-        model.put( strBookmark, paginator.getPageItems( ) );
+        model.put( MARK_PAGINATOR, _paginator );
+        model.put( strBookmark, _paginator.getPageItems( ) );
 
         return model;
     }
