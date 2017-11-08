@@ -2,6 +2,7 @@
 .bg-gra-light{ background-color: #0082D8 }
 .label-record-history{ padding-top: initial !important; }
 .records-filter{ display:inline-block; }
+.filter-label{ color: #fff; font-size: 1.5rem; font-weight: 500; margin-left: 10px }
 
 #record-header{ color: #fff }
 #record-header > small{ color: #fff }
@@ -81,6 +82,7 @@ table.table-hover tbody tr:hover{ cursor: pointer }
 #filter-records .input-group-btn > .btn { border: 1px solid #000; border-top-left-radius: 3px; border-bottom-left-radius: 3px }
 #filter-records span{ text-transform: uppercase }
 #filter-records select{ height:22px; font-weight:normal; padding: 1px 20px 0 2px; margin:0; background: #FFF; color:#000; border: 1px solid "000";border-radius: 3px; outline:none; display: inline-block; -webkit-appearance:none; -moz-appearance:none; appearance:none; cursor:pointer }
+#filter-records input{ height:22px; font-weight:normal; padding: 1px 20px 0 2px; margin:0; background: #FFF; color:#000; border: 1px solid "000";border-radius: 3px; outline:none; display: inline-block; -webkit-appearance:none; -moz-appearance:none; appearance:none }
 #filter-records select::-ms-expand{ display: none; }
 
 #filter-records .dropdown-menu { font-size: 12px; border: 1px; background-color: #FFFFFF; }
