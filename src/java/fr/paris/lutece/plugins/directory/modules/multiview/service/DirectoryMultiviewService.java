@@ -33,17 +33,20 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
+import com.mchange.v1.lang.BooleanUtils;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.directory.business.RecordField;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewUtils;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.MultiDirectoryJspBean;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 import fr.paris.lutece.portal.web.constants.Parameters;
+import fr.paris.lutece.util.string.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang.StringUtils;
 
 
 public class DirectoryMultiviewService
@@ -60,74 +63,55 @@ public class DirectoryMultiviewService
     private static final String MARK_PRECISIONS = "precisions";
     
     /**
-     * Set the filter. Return true if filter changed; false otherwise
-     * @param filter
+     * Get the filter from the request 
+     * 
      * @param request
-     * @return true if filter changed, false otherwise
+     * @return the filter
      */
-    public static boolean getRecordAssignmentFilter ( RecordAssignmentFilter filter, HttpServletRequest request )
+    public static RecordAssignmentFilter getRecordAssignmentFilter (  HttpServletRequest request )
     {
+        RecordAssignmentFilter filter = new RecordAssignmentFilter( ) ;
+        
         //Parameters for filtering
         String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
         String strIdWorkflowState = request.getParameter( PARAMETER_ID_STATE_WORKFLOW );
         String strIdPeriodParameter = request.getParameter( PARAMETER_ID_FILTER_PERIOD );
-        String strSortedAttributeName =  request.getParameter( Parameters.SORTED_ATTRIBUTE_NAME );
-        String strAscSort = request.getParameter( Parameters.SORTED_ASC );
         
-        int nIdWorkflowState = DirectoryMultiviewUtils.convertStringToInt( strIdWorkflowState );
-        int nIdDirectory = DirectoryMultiviewUtils.convertStringToInt( strIdDirectory );
-        int nIdPeriodParameter = DirectoryMultiviewUtils.convertStringToInt( strIdPeriodParameter );
-
-        if ( filter.getDirectoryId( ) != nIdDirectory 
-                || filter.getStateId( )!= nIdWorkflowState 
-                || filter.getNumberOfDays( ) != nIdPeriodParameter )
-        {
-             //Construct the filter based on record assignments.
-            if ( nIdDirectory > 0 )
-            {
-                filter.setDirectoryId( nIdDirectory );
-            }
-            else
-            {
-                filter.setDirectoryId( -1 );
-            }
-            if ( nIdWorkflowState > 0 )
-            {
-                filter.setStateId( nIdWorkflowState );
-            }
-            else
-            {
-                filter.setStateId( -1 );
-            }
-            if ( nIdPeriodParameter > 0 )
-            {
-                filter.setNumberOfDays( nIdPeriodParameter );
-            }
-            else
-            {
-                filter.setNumberOfDays( -1 );
-            }
-            if ( strSortedAttributeName != null )
-            {
-                filter.setOrderBy( strSortedAttributeName );
-            }
-            else
-            {
-                filter.setOrderBy( null );
-            }
-            if ( strAscSort != null )
-            {
-                filter.setAsc( Boolean.valueOf( strAscSort) );
-            }
-            else
-            {
-                filter.setAsc( false );
-            }
-            return true;
-        }
-        return false;
+        filter.setStateId( StringUtil.getIntValue( strIdWorkflowState, -1) );
+        filter.setDirectoryId( StringUtil.getIntValue( strIdDirectory, -1 ) );
+        filter.setNumberOfDays( StringUtil.getIntValue( strIdPeriodParameter, -1 ) );
+                
+        return filter;
     }
-    
+      
+    /**
+     * test If Filter Has Changed
+     * 
+     * @param oldFilter
+     * @param newFilter
+     * @return true if the filter has changed
+     */
+    public static boolean testIfFilterHasChanged ( RecordAssignmentFilter oldFilter , RecordAssignmentFilter newFilter )
+    {
+        
+        if ( oldFilter.getDirectoryId( ) != newFilter.getDirectoryId( )
+                || oldFilter.getStateId( ) != newFilter.getStateId( )
+                || oldFilter.getNumberOfDays( ) != newFilter.getNumberOfDays( ) ) 
+        { 
+            return true ;
+        } 
+        else
+        {
+            return false;
+        }
+    }
+            
+    /**
+     * populate Default Filter Markers
+     * 
+     * @param filter
+     * @param model 
+     */
     public static void populateDefaultFilterMarkers( RecordAssignmentFilter filter, Map<String, Object> model )
     {
         if ( filter.getDirectoryId( ) > 0 )
@@ -145,6 +129,7 @@ public class DirectoryMultiviewService
     }
     
     /**
+     * populate Record Precisions
      * 
      * @param resourceActions
      * @param listPrecisions

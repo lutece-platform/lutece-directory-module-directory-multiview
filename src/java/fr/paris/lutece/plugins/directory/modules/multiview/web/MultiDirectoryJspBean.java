@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web;
 
+import com.mchange.v1.lang.BooleanUtils;
 import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.DirectoryAction;
 import fr.paris.lutece.plugins.directory.business.DirectoryActionHome;
@@ -69,13 +70,16 @@ import fr.paris.lutece.util.ReferenceList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.helper.StringUtil;
 
 /**
  * This class provides the user interface to manage form features ( manage, create, modify, remove)
@@ -147,10 +151,10 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PARAMETER_ID_ACTION = "id_action";
     private static final String PARAMETER_ID_DIRECTORY_RECORD = "id_directory_record";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
-    private static final String PARAMETER_SEARCHED_TEXT = "searched_text";
+    public static final String PARAMETER_SORTED_ATTRIBUTE_NAME = "sorted_attribute_name";
+    public static final String PARAMETER_SORTED_ATTRIBUTE_ASC = "asc_sort";
+    public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
         
-
-    
     //Views 
     private static final String VIEW_MULTIVIEW = "view_multiview";
     private static final String VIEW_RECORD_VISUALISATION = "view_record_visualisation";
@@ -167,7 +171,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private Map<Integer,ReferenceList > _workflowStateByDirectoryList;
     private RecordAssignmentFilter _assignmentFilter;
     private List<IEntry>  _listEntryResultSearch;
-    private HashMap<String, RecordAssignment> _recordAssignmentMap;
+    private LinkedHashMap<String, RecordAssignment> _recordAssignmentMap;
     private List<Map<String, Object> > _listResourceActions;
     private boolean _bIsInitialized;
     private String _strSearchText;
@@ -183,7 +187,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _directoryList = new HashMap<>( );
             _workflowStateByDirectoryList = new HashMap<>( );
             _listEntryResultSearch = new ArrayList<>( );
-            _recordAssignmentMap = new HashMap<>( );
+            _recordAssignmentMap = new LinkedHashMap<>( );
             _listResourceActions = new ArrayList<>( );
 
             //init the assignment filter
@@ -218,7 +222,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                     }
                 }
             }
-            reInitDirectoryMultiview( );
+            reInitDirectoryMultiview( null );
             _bIsInitialized = true;
         }
         
@@ -237,30 +241,57 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     public String getManageDirectoryRecord( HttpServletRequest request )
             throws AccessDeniedException
     {
-        //Clear the resource actions list
+        // Clear the resource actions list
         _listResourceActions.clear( );
         
-        //if filter changed, reinit several list for multiview
-        if ( DirectoryMultiviewService.getRecordAssignmentFilter( _assignmentFilter, request ) )
+        // test if we are paginating or sorting OR if there is a new search request
+        if (request.getParameter( PARAMETER_PAGE_INDEX ) == null ) 
         {
-            reInitDirectoryMultiview( );
-        }
-        
-        //Perform simple full text search
+            if (request.getParameter( PARAMETER_SORTED_ATTRIBUTE_NAME ) != null)
+            {
+                // new SORT
+                _assignmentFilter.setOrderBy( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_NAME ) );
+                _assignmentFilter.setAsc( BooleanUtils.parseBoolean( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_ASC ) ) );
+                
+                // get the new records assigments
+                getRecordAssigments( );
+            } 
+            else
+            {
+                // new SEARCH ?
+                RecordAssignmentFilter newFilter = DirectoryMultiviewService.getRecordAssignmentFilter( request );
+
+                // test if filter has changed OR new sort criteria
+                if (DirectoryMultiviewService.testIfFilterHasChanged( _assignmentFilter , newFilter) ) 
+                {
+                    // if filter changed, reinit several list for multiview
+                    reInitDirectoryMultiview( newFilter );
+
+                    // get the new records assigments
+                    getRecordAssigments( );
+                }
+            }
+        }             
+       
+        // Perform simple full text search 
         _strSearchText = request.getParameter( PARAMETER_SEARCHED_TEXT );
-        HashMap<String,RecordAssignment> mapRecordAssignmentAfterSearch =  DirectoryMultiviewSearchService.filterBySearchedText( _recordAssignmentMap, _directoryList.values( ) ,request, getPlugin( ), _strSearchText );
-
+        LinkedHashMap<String,RecordAssignment> mapRecordAssignmentAfterSearch =
+                DirectoryMultiviewSearchService.filterBySearchedText( _recordAssignmentMap, _directoryList.values( ) ,request, getPlugin( ), _strSearchText );
         
-        Map<String, Object> model = getPaginatedListModel( request, PARAMETER_PAGE_INDEX,  new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( )
-                .stream().map( key -> Integer.parseInt( key ) )
-                .collect( Collectors.toList( ) ) ), JSP_MANAGE_MULTIVIEW );
+        // Paginate
+        Map<String, Object> model = getPaginatedListModel( request, PARAMETER_PAGE_INDEX,  
+                new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( )
+                                                                .stream( )
+                                                                .map( key -> Integer.parseInt( key ) )
+                                                                .collect( Collectors.toList( ) ) ), 
+                JSP_MANAGE_MULTIVIEW );
 
-        // get only record for page items.
+        // get only records for page items.
         List<Record> lRecord = _recordService.loadListByListId( _paginator.getPageItems( ), getPlugin( ) );
 
         for ( Record record : lRecord )
         {
-                // data complement (should be done in directory plugin)
+                // data complement (not done by directory plugin)
                 record.getDirectory( ).setIdWorkflow( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getIdWorkflow( ) );
                 record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
 
@@ -381,16 +412,42 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     }
     
     /**
-     * reinit directory recordFilter
+     * reinit multiview context
+     * 
+     * @param newFilter 
      */
-    private void reInitDirectoryMultiview( )
+    private void reInitDirectoryMultiview( RecordAssignmentFilter newFilter )
     {
-        _recordAssignmentMap = new HashMap<>( );
+        _recordAssignmentMap = new LinkedHashMap<>( );
         _listResourceActions = new ArrayList<>( );
         
+        if (newFilter != null) 
+        {
+            _assignmentFilter.setDirectoryId( newFilter.getDirectoryId( ) );
+            _assignmentFilter.setStateId( newFilter.getStateId( ));
+            _assignmentFilter.setNumberOfDays( newFilter.getNumberOfDays( ));
+            _assignmentFilter.setOrderBy( newFilter.getOrderBy( ) );
+            _assignmentFilter.setAsc( newFilter.isAsc( ) );
+        }
+        else 
+        {        
+            _assignmentFilter.setOrderBy( StringUtils.EMPTY );
+            _assignmentFilter.setAsc( true );
+        }
+        
+        resetCurrentPaginatorPageIndex( );        
+    }
+    
+    /**
+     * get the recordAssignment filtred list
+     */
+    private void getRecordAssigments( )
+    {
         // get the records filtred list
         List<RecordAssignment> recordAssignmentList = AssignmentService.getRecordAssignmentFiltredList( _assignmentFilter );
 
+        _recordAssignmentMap.clear( );
+        
         // get the records Id from the assigned records & prepare an hashmap for the model
         for ( RecordAssignment assignedRecord : recordAssignmentList )
         {
@@ -402,7 +459,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 
             } 
         }
-        
     }
     
     /**

@@ -40,24 +40,6 @@ import java.util.Collection;
 
 public class DirectoryMultiviewUtils
 {
-    /**
-     * Convert string id to int
-     * @param strId
-     * @return the int conversion on given String
-     */
-    public static int convertStringToInt( String strId )
-    {
-        try 
-        {
-            int nReturn = Integer.parseInt( strId );
-            return nReturn;
-        }
-        catch ( NumberFormatException e )
-        {
-            AppLogService.error( "Unable to convert given id to int", e);
-            return -1;
-        }
-    }
     
     public static ReferenceList convert( Collection<Object> list, String strCodeAttr, String strValueAttr, boolean bNumericalCode )
     {
