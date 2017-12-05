@@ -154,7 +154,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     public static final String PARAMETER_SORTED_ATTRIBUTE_NAME = "sorted_attribute_name";
     public static final String PARAMETER_SORTED_ATTRIBUTE_ASC = "asc_sort";
     public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
-        
+    private static final String PARAMETER_BUTTON_REFRESH = "refresh" ;
     //Views 
     private static final String VIEW_MULTIVIEW = "view_multiview";
     private static final String VIEW_RECORD_VISUALISATION = "view_record_visualisation";
@@ -194,9 +194,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _assignmentFilter = new RecordAssignmentFilter( );
             _assignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( AdminUserService.getAdminUser( request ) ) );
             _assignmentFilter.setActiveDirectory( true );
-            _assignmentFilter.setDirectoryId( -1 );
-            _assignmentFilter.setStateId(-1 );
-            _assignmentFilter.setNumberOfDays( -1 );
+            _assignmentFilter.setDirectoryId( -2 );
+            _assignmentFilter.setStateId(-2 );
+            _assignmentFilter.setNumberOfDays( -2 );
             _strSearchText = StringUtils.EMPTY;
             DirectoryFilter filter =  new DirectoryFilter( );
             filter.setIsDisabled( 1 );
@@ -243,6 +243,13 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     {
         // Clear the resource actions list
         _listResourceActions.clear( );
+        
+        // force refresh ?
+        if (request.getParameter( PARAMETER_BUTTON_REFRESH ) != null ) 
+        {
+            _bIsInitialized = false;
+            initialize( request );
+        }
         
         // test if we are paginating or sorting OR if there is a new search request
         if (request.getParameter( PARAMETER_PAGE_INDEX ) == null ) 
