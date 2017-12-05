@@ -38,18 +38,18 @@
                                                         <td>
                                                                 <span class="label label-info unread">
                                                                         <#if resource_actions.workflow_state?exists>
-                                                                                ${resource_actions.workflow_state.name}
+                                                                                ${(resource_actions.workflow_state.name)!''}
                                                                         </#if>
                                                                 </span>
                                                         </td>
                                                         <td>
                                                             <#if resource_actions.record.directory.title?exists>
-                                                                    ${resource_actions.record.directory.title}
+                                                                    ${(resource_actions.record.directory.title)!}
                                                             </#if>
                                                         </td>
                                                         <td>
                                                             <#list resource_actions.precisions as precision>
-                                                                ${precision}
+                                                                ${precision!''}
                                                                 <br/>
                                                             </#list>
                                                         </td>
