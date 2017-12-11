@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.directory.business.DirectoryAction;
 import fr.paris.lutece.plugins.directory.business.DirectoryActionHome;
 import fr.paris.lutece.plugins.directory.business.DirectoryFilter;
 import fr.paris.lutece.plugins.directory.business.DirectoryHome;
+import fr.paris.lutece.plugins.directory.business.Entry;
 import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.EntryHome;
 import fr.paris.lutece.plugins.directory.business.IEntry;
@@ -70,16 +71,16 @@ import fr.paris.lutece.util.ReferenceList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.helper.StringUtil;
 
 /**
  * This class provides the user interface to manage form features ( manage, create, modify, remove)
@@ -107,7 +108,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PROPERTY_ENTRY_TYPE_IMAGE = "directory.resource_rss.entry_type_image";
     private static final String PROPERTY_ENTRY_TYPE_MYLUTECE_USER = "directory.entry_type.mylutece_user";
     private static final String PROPERTY_ENTRY_TYPE_GEOLOCATION = "directory.entry_type.geolocation";
-
+    private static final String PROPERTY_DISPLAY_ENTRY_LABEL_LIST = "directory-multiview.entry_name_list";
     
     // public properties
     public static final String PROPERTY_RIGHT_MANAGE_MULTIVIEWDIRECTORY = "DIRECTORY_MULTIVIEW";
@@ -194,6 +195,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _assignmentFilter = new RecordAssignmentFilter( );
             _assignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( AdminUserService.getAdminUser( request ) ) );
             _assignmentFilter.setActiveDirectory( true );
+            _assignmentFilter.setActiveAssignmentRecordsOnly( true );
+            _assignmentFilter.setLastActiveAssignmentRecordsOnly( true );
             _assignmentFilter.setDirectoryId( -2 );
             _assignmentFilter.setStateId(-2 );
             _assignmentFilter.setNumberOfDays( -2 );
@@ -214,12 +217,19 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                     entryFilter.setIdDirectory( directory.getIdDirectory( ) );
                     entryFilter.setIsGroup( EntryFilter.FILTER_FALSE );
                     entryFilter.setIsComment( EntryFilter.FILTER_FALSE );
-                    entryFilter.setIsShownInResultList( 1 );
+                    //entryFilter.setIsShownInResultList( 1 );
 
-                    for ( IEntry entry : EntryHome.getEntryList( entryFilter, getPlugin( ) ) )
-                    {
-                        _listEntryResultSearch.add( entry );
+                    String entryNameList = AppPropertiesService.getProperty( PROPERTY_DISPLAY_ENTRY_LABEL_LIST );
+                    String[] entryNameTab = entryNameList.split(",");
+                    List<IEntry> entryList = EntryHome.getEntryList( entryFilter, getPlugin( ) );
+                    
+                    for (String entryTitle : entryNameTab ) {
+                        entryList.stream()
+                            .filter( e -> entryTitle.equals( e.getTitle( ) ))
+                            .forEachOrdered(_listEntryResultSearch::add);                            
                     }
+                            
+                    
                 }
             }
             reInitDirectoryMultiview( null );

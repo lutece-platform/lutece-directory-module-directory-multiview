@@ -33,20 +33,16 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
-import com.mchange.v1.lang.BooleanUtils;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.directory.business.RecordField;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.MultiDirectoryJspBean;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
-import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.string.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang.StringUtils;
 
 
 public class DirectoryMultiviewService
