@@ -275,18 +275,15 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             } 
             else
             {
-                // new SEARCH ?
+                // new SEARCH 
                 RecordAssignmentFilter newFilter = DirectoryMultiviewService.getRecordAssignmentFilter( request );
 
-                // test if filter has changed OR new sort criteria
-                if (DirectoryMultiviewService.testIfFilterHasChanged( _assignmentFilter , newFilter) ) 
-                {
-                    // if filter changed, reinit several list for multiview
-                    reInitDirectoryMultiview( newFilter );
+                // if filter changed, reinit several list for multiview
+                reInitDirectoryMultiview( newFilter );
 
-                    // get the new records assigments
-                    getRecordAssigments( );
-                }
+                // get the new records assigments
+                getRecordAssigments( );
+                
             }
         }             
        
