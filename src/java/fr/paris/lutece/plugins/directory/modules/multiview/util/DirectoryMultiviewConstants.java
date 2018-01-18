@@ -42,7 +42,7 @@ public class DirectoryMultiviewConstants
 {
     // Marks
     public static final String MARK_RECORD = "record";
-    
+
     // Constants
     public static final String REFERENCE_ITEM_DEFAULT_CODE = "-1";
     public static final String REFERENCE_ITEM_DEFAULT_NAME = "-";

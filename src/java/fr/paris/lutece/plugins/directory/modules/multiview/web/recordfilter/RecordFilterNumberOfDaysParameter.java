@@ -46,16 +46,16 @@ public class RecordFilterNumberOfDaysParameter implements IRecordFilterParameter
     // Constants
     private static final String PARAMETER_NUMBER_OF_DAYS_FILTER = "search_open_since";
     private static final String MARK_NUMBER_OF_DAYS_FILTER = "number_of_days";
-    
+
     // Variables
     private RecordFilterNumberOfDaysItem _recordFilterNumberOfDaysItem;
-    
+
     // Constructor
     public RecordFilterNumberOfDaysParameter( )
     {
         _recordFilterNumberOfDaysItem = new RecordFilterNumberOfDaysItem( );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -73,7 +73,7 @@ public class RecordFilterNumberOfDaysParameter implements IRecordFilterParameter
     {
         return _recordFilterNumberOfDaysItem;
     }
-    
+
     /**
      * {@inheritDoc}
      */

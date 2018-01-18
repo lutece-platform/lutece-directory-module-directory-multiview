@@ -119,7 +119,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PROPERTY_ENTRY_TYPE_MYLUTECE_USER = "directory.entry_type.mylutece_user";
     private static final String PROPERTY_ENTRY_TYPE_GEOLOCATION = "directory.entry_type.geolocation";
     private static final String PROPERTY_DISPLAY_ENTRY_LABEL_LIST = "directory-multiview.entry_name_list";
-    
+
     // Public properties
     public static final String PROPERTY_RIGHT_MANAGE_MULTIVIEWDIRECTORY = "DIRECTORY_MULTIVIEW";
 
@@ -153,7 +153,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_RECORD_ASSIGNMENT_FILTER = "record_assignment_filter";
     private static final String MARK_SEARCH_TEXT = "search_text";
     private static final String MARK_ASSIGNED_UNIT_LIST = "assigned_unit_list";
-    
+
     // JSP URL
     private static final String JSP_MANAGE_MULTIVIEW = "jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp";
 
@@ -166,13 +166,13 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PARAMETER_SORTED_ATTRIBUTE_NAME = "sorted_attribute_name";
     private static final String PARAMETER_SORTED_ATTRIBUTE_ASC = "asc_sort";
     private static final String PARAMETER_SEARCHED_TEXT = "searched_text";
-    private static final String PARAMETER_BUTTON_REFRESH = "refresh" ;
-    
-    // Views 
+    private static final String PARAMETER_BUTTON_REFRESH = "refresh";
+
+    // Views
     private static final String VIEW_MULTIVIEW = "view_multiview";
     private static final String VIEW_RECORD_VISUALISATION = "view_record_visualisation";
     private static final String VIEW_TASKS_FORM = "view_tasksForm";
-    
+
     // Actions
     private static final String ACTION_PROCESS_ACTION = "doProcessAction";
     private static final String ACTION_SAVE_TASK_FORM = "doSaveTaskForm";
@@ -180,7 +180,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     // Session fields
     private IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
     private IDirectoryMultiviewService _directoryMultiviewService = SpringContextService.getBean( IDirectoryMultiviewService.BEAN_NAME );
-    
+
     // Constants
     private static final String STATE_CODE_ATTRIBUTE = "id";
     private static final String STATE_NAME_ATTRIBUTE = "name";
@@ -191,19 +191,20 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
     // Variables
     private HashMap<Integer, Directory> _directoryList;
-    private Map<Integer,ReferenceList > _workflowStateByDirectoryList;
+    private Map<Integer, ReferenceList> _workflowStateByDirectoryList;
     private RecordAssignmentFilter _assignmentFilter;
     private List<Unit> _listAssignedUnit;
-    private List<IEntry>  _listEntryResultSearch;
+    private List<IEntry> _listEntryResultSearch;
     private List<IRecordFilterParameter> _listRecordFilterParameter;
     private LinkedHashMap<String, RecordAssignment> _recordAssignmentMap;
-    private List<Map<String, Object> > _listResourceActions;
+    private List<Map<String, Object>> _listResourceActions;
     private boolean _bIsInitialized;
     private String _strSearchText;
-    
+
     /**
-     * initialize the JspBean 
-     * @param request 
+     * initialize the JspBean
+     * 
+     * @param request
      */
     public void initialize( HttpServletRequest request )
     {
@@ -216,30 +217,31 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _listResourceActions = new ArrayList<>( );
             _listAssignedUnit = new ArrayList<>( );
 
-            //init the assignment filter
+            // init the assignment filter
             _assignmentFilter = new RecordAssignmentFilter( );
             _assignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( AdminUserService.getAdminUser( request ) ) );
             _assignmentFilter.setActiveDirectory( true );
             _assignmentFilter.setActiveAssignmentRecordsOnly( true );
             _assignmentFilter.setLastActiveAssignmentRecordsOnly( true );
-            
+
             // Set the default values on the filter
             populateRecordFilterItemList( );
             for ( IRecordFilterParameter recordFilterParameter : _listRecordFilterParameter )
             {
                 recordFilterParameter.getRecordFilterItem( ).setItemDefaultValue( _assignmentFilter );
             }
-            
+
             _strSearchText = StringUtils.EMPTY;
-            DirectoryFilter filter =  new DirectoryFilter( );
+            DirectoryFilter filter = new DirectoryFilter( );
             filter.setIsDisabled( 1 );
             for ( Directory directory : DirectoryHome.getDirectoryList( filter, DirectoryUtils.getPlugin( ) ) )
             {
                 if ( directory.getIdWorkflow( ) > 0 )
-                {   
-                    _directoryList.put( directory.getIdDirectory( ), directory);
-                    Collection<State> listWorkflowState =  WorkflowService.getInstance().getAllStateByWorkflow( directory.getIdWorkflow( ), AdminUserService.getAdminUser( request ));
-                    
+                {
+                    _directoryList.put( directory.getIdDirectory( ), directory );
+                    Collection<State> listWorkflowState = WorkflowService.getInstance( ).getAllStateByWorkflow( directory.getIdWorkflow( ),
+                            AdminUserService.getAdminUser( request ) );
+
                     ReferenceListFactory referenceListParameter = new ReferenceListFactory( listWorkflowState, STATE_CODE_ATTRIBUTE, STATE_NAME_ATTRIBUTE );
                     _workflowStateByDirectoryList.put( directory.getIdDirectory( ), referenceListParameter.createReferenceList( ) );
 
@@ -248,34 +250,32 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                     entryFilter.setIdDirectory( directory.getIdDirectory( ) );
                     entryFilter.setIsGroup( EntryFilter.FILTER_FALSE );
                     entryFilter.setIsComment( EntryFilter.FILTER_FALSE );
-                    //entryFilter.setIsShownInResultList( 1 );
+                    // entryFilter.setIsShownInResultList( 1 );
 
                     String entryNameList = AppPropertiesService.getProperty( PROPERTY_DISPLAY_ENTRY_LABEL_LIST );
-                    String[] entryNameTab = entryNameList.split(",");
+                    String [ ] entryNameTab = entryNameList.split( "," );
                     List<IEntry> entryList = EntryHome.getEntryList( entryFilter, getPlugin( ) );
 
                     for ( String entryTitle : entryNameTab )
                     {
-                        entryList.stream( )
-                            .filter( e -> entryTitle.equals( e.getTitle( ) ) )
-                            .forEachOrdered( _listEntryResultSearch::add );
+                        entryList.stream( ).filter( e -> entryTitle.equals( e.getTitle( ) ) ).forEachOrdered( _listEntryResultSearch::add );
                     }
                 }
-                
+
                 // Populate the initialize list of all Assigned Unit
                 populateAssignedUnitList( request );
             }
             reInitDirectoryMultiview( null );
             _bIsInitialized = true;
         }
-        
+
     }
 
     /**
      * Populate the list of Assigned Unit for a directory
      * 
      * @param nIdDirectory
-     *          The identifier of the Directory to retrieve the data from
+     *            The identifier of the Directory to retrieve the data from
      */
     private void populateAssignedUnitList( HttpServletRequest request )
     {
@@ -285,22 +285,22 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         recordAssignmentFilter.setActiveDirectory( true );
         recordAssignmentFilter.setActiveAssignmentRecordsOnly( true );
         recordAssignmentFilter.setLastActiveAssignmentRecordsOnly( true );
-        
+
         List<RecordAssignment> recordAssignmentList = AssignmentService.getRecordAssignmentFiltredList( recordAssignmentFilter );
-        
+
         // Populate the map with the last AssignmentRecord for each Record
         Map<Integer, RecordAssignment> recordAssignmentMap = new LinkedHashMap<>( );
         for ( RecordAssignment assignedRecord : recordAssignmentList )
         {
-            if ( !recordAssignmentMap.containsKey( assignedRecord.getIdRecord( ) ) 
-                    || recordAssignmentMap.get( assignedRecord.getIdRecord( ) ).getAssignmentDate( )
-                        .before( assignedRecord.getAssignmentDate( ) ) ) {
-                    // Keep only the last one
-                    recordAssignmentMap.put( assignedRecord.getIdRecord( ), assignedRecord) ;
-                
-            } 
+            if ( !recordAssignmentMap.containsKey( assignedRecord.getIdRecord( ) )
+                    || recordAssignmentMap.get( assignedRecord.getIdRecord( ) ).getAssignmentDate( ).before( assignedRecord.getAssignmentDate( ) ) )
+            {
+                // Keep only the last one
+                recordAssignmentMap.put( assignedRecord.getIdRecord( ), assignedRecord );
+
+            }
         }
-        
+
         // Retrieve the Resource Action associated to the Record of each RecordAssignment
         for ( RecordAssignment recordAssignment : recordAssignmentMap.values( ) )
         {
@@ -322,35 +322,34 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      *             the {@link AccessDeniedException}
      * @return IPluginActionResult
      */
-    @View( value= VIEW_MULTIVIEW, defaultView=true )
-    public String getManageDirectoryRecord( HttpServletRequest request )
-            throws AccessDeniedException
+    @View( value = VIEW_MULTIVIEW, defaultView = true )
+    public String getManageDirectoryRecord( HttpServletRequest request ) throws AccessDeniedException
     {
         // Clear the resource actions list
         _listResourceActions.clear( );
-        
+
         // force refresh ?
-        if (request.getParameter( PARAMETER_BUTTON_REFRESH ) != null ) 
+        if ( request.getParameter( PARAMETER_BUTTON_REFRESH ) != null )
         {
             _bIsInitialized = false;
             initialize( request );
         }
-        
+
         // test if we are paginating or sorting OR if there is a new search request
-        if (request.getParameter( PARAMETER_PAGE_INDEX ) == null ) 
+        if ( request.getParameter( PARAMETER_PAGE_INDEX ) == null )
         {
-            if (request.getParameter( PARAMETER_SORTED_ATTRIBUTE_NAME ) != null)
+            if ( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_NAME ) != null )
             {
                 // new SORT
                 _assignmentFilter.setOrderBy( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_NAME ) );
                 _assignmentFilter.setAsc( BooleanUtils.parseBoolean( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_ASC ) ) );
-                
+
                 // get the new records assigments
                 getRecordAssigments( );
-            } 
+            }
             else
             {
-                // new SEARCH 
+                // new SEARCH
                 RecordAssignmentFilter newFilter = _directoryMultiviewService.getRecordAssignmentFilter( request, _listRecordFilterParameter );
 
                 // if filter changed, reinit several list for multiview
@@ -358,40 +357,36 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
                 // get the new records assigments
                 getRecordAssigments( );
-                
+
             }
-        }             
-       
-        // Perform simple full text search 
+        }
+
+        // Perform simple full text search
         _strSearchText = request.getParameter( PARAMETER_SEARCHED_TEXT );
-        LinkedHashMap<String,RecordAssignment> mapRecordAssignmentAfterSearch =
-                DirectoryMultiviewSearchService.filterBySearchedText( _recordAssignmentMap, _directoryList.values( ) ,request, getPlugin( ), _strSearchText );
-        
+        LinkedHashMap<String, RecordAssignment> mapRecordAssignmentAfterSearch = DirectoryMultiviewSearchService.filterBySearchedText( _recordAssignmentMap,
+                _directoryList.values( ), request, getPlugin( ), _strSearchText );
+
         // Paginate
-        Map<String, Object> model = getPaginatedListModel( request, PARAMETER_PAGE_INDEX,  
-                new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( )
-                                                                .stream( )
-                                                                .map( key -> Integer.parseInt( key ) )
-                                                                .collect( Collectors.toList( ) ) ), 
-                JSP_MANAGE_MULTIVIEW );
+        Map<String, Object> model = getPaginatedListModel( request, PARAMETER_PAGE_INDEX, new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( ).stream( )
+                .map( key -> Integer.parseInt( key ) ).collect( Collectors.toList( ) ) ), JSP_MANAGE_MULTIVIEW );
 
         // get only records for page items.
         List<Record> lRecord = _recordService.loadListByListId( _paginator.getPageItems( ), getPlugin( ) );
 
         for ( Record record : lRecord )
         {
-                // data complement (not done by directory plugin)
-                record.getDirectory( ).setIdWorkflow( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getIdWorkflow( ) );
-                record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
+            // data complement (not done by directory plugin)
+            record.getDirectory( ).setIdWorkflow( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getIdWorkflow( ) );
+            record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
 
-                // add resourceActions
-                _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), _listEntryResultSearch, getUser( ),
-                        null, null, false, getPlugin( ) ) );
+            // add resourceActions
+            _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), _listEntryResultSearch, getUser( ),
+                    null, null, false, getPlugin( ) ) );
         }
-        
+
         // Populate record precisions in resource action (called "demandeur")
         _directoryMultiviewService.populateRecordPrecisions( _listResourceActions, _listEntryResultSearch, request.getLocale( ) );
-               
+
         // Create the ReferenceList of all Assigned Unit
         ReferenceListFactory referenceListParameterUnitAssigned = new ReferenceListFactory( _listAssignedUnit, UNIT_CODE_ATTRIBUTE, UNIT_NAME_ATTRIBUTE );
         referenceListParameterUnitAssigned.setDefaultName( I18nService.getLocalizedString( MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME, request.getLocale( ) ) );
@@ -404,17 +399,17 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         model.put( MARK_RECORD_ASSIGNMENT_FILTER, _assignmentFilter );
         model.put( MARK_RECORD_ASSIGNMENT_MAP, mapRecordAssignmentAfterSearch );
         model.put( MARK_ASSIGNED_UNIT_LIST, referenceListParameterUnitAssigned.createReferenceList( ) );
-        
+
         ReferenceListFactory referenceListParameter = new ReferenceListFactory( _directoryList.values( ), DIRECTORY_CODE_ATTRIBUTE, DIRECTORY_NAME_ATTRIBUTE );
         model.put( MARK_DIRECTORY_LIST, referenceListParameter.createReferenceList( ) );
-        
+
         model.put( MARK_SEARCH_TEXT, _strSearchText );
         if ( _assignmentFilter.getDirectoryId( ) > 0 )
         {
             model.put( MARK_SEARCH_STATE_WORKFLOW, _workflowStateByDirectoryList.get( _assignmentFilter.getDirectoryId( ) ) );
         }
-        
-        _directoryMultiviewService.populateDefaultFilterMarkers ( _assignmentFilter, _listRecordFilterParameter, model );
+
+        _directoryMultiviewService.populateDefaultFilterMarkers( _assignmentFilter, _listRecordFilterParameter, model );
         return getPage( PROPERTY_MANAGE_DIRECTORY_RECORD_PAGE_TITLE, TEMPLATE_MANAGE_MULTI_DIRECTORY_RECORD, model );
     }
 
@@ -469,7 +464,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         // Get asynchronous file names
         boolean bGetFileName = true;
 
-        //Get the guid
+        // Get the guid
         String strGuid = UserIdentityService.getUserGuid( listEntry, nIdRecord, getPlugin( ) );
 
         Map<String, Object> model = new HashMap<>( );
@@ -499,26 +494,26 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 WorkflowService.getInstance( ).getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, directory.getIdWorkflow( ), request,
                         getLocale( ), model, TEMPLATE_RECORD_HISTORY ) );
 
-        //Add the user attributes
-        if ( strGuid != null)
+        // Add the user attributes
+        if ( strGuid != null )
         {
             model.put( MARK_USER_ATTRIBUTES, UserIdentityService.getUserAttributes( strGuid ) );
         }
 
-       return getPage( MESSAGE_MULTIVIEW_TITLE, TEMPLATE_VIEW_DIRECTORY_RECORD, model );
+        return getPage( MESSAGE_MULTIVIEW_TITLE, TEMPLATE_VIEW_DIRECTORY_RECORD, model );
     }
-    
+
     /**
      * reinit multiview context
      * 
-     * @param newFilter 
+     * @param newFilter
      */
     private void reInitDirectoryMultiview( RecordAssignmentFilter newFilter )
     {
         _recordAssignmentMap = new LinkedHashMap<>( );
         _listResourceActions = new ArrayList<>( );
-        
-        if (newFilter != null) 
+
+        if ( newFilter != null )
         {
             // Set the values on the filter
             for ( IRecordFilterParameter recordFilterParameter : _listRecordFilterParameter )
@@ -526,19 +521,19 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 IRecordFilterItem recordFilterItem = recordFilterParameter.getRecordFilterItem( );
                 recordFilterItem.setItemValue( _assignmentFilter, recordFilterItem.getItemValue( newFilter ) );
             }
-            
+
             _assignmentFilter.setOrderBy( newFilter.getOrderBy( ) );
             _assignmentFilter.setAsc( newFilter.isAsc( ) );
         }
-        else 
-        {        
+        else
+        {
             _assignmentFilter.setOrderBy( StringUtils.EMPTY );
             _assignmentFilter.setAsc( true );
         }
-        
-        resetCurrentPaginatorPageIndex( );        
+
+        resetCurrentPaginatorPageIndex( );
     }
-    
+
     /**
      * get the recordAssignment filtred list
      */
@@ -548,48 +543,50 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         List<RecordAssignment> recordAssignmentList = AssignmentService.getRecordAssignmentFiltredList( _assignmentFilter );
 
         _recordAssignmentMap.clear( );
-        
+
         // get the records Id from the assigned records & prepare an hashmap for the model
         for ( RecordAssignment assignedRecord : recordAssignmentList )
         {
-            if ( ! _recordAssignmentMap.containsKey( String.valueOf(assignedRecord.getIdRecord( ) ) ) 
-                    || _recordAssignmentMap.get( String.valueOf(assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
-                        .before( assignedRecord.getAssignmentDate( ) ) ) {
-                    // keep only the last one
-                    _recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord) ;
-                
-            } 
+            if ( !_recordAssignmentMap.containsKey( String.valueOf( assignedRecord.getIdRecord( ) ) )
+                    || _recordAssignmentMap.get( String.valueOf( assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
+                            .before( assignedRecord.getAssignmentDate( ) ) )
+            {
+                // keep only the last one
+                _recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord );
+
+            }
         }
     }
-    
+
     /**
      * Process workflow action on record
-     * @param request the HttpServletRequest
+     * 
+     * @param request
+     *            the HttpServletRequest
      * @return the task form if exists, or the manage record view otherwise.
      */
     @Action( value = ACTION_PROCESS_ACTION )
     public String doProcessWorkflowAction( HttpServletRequest request )
     {
-        //Get parameters from request
+        // Get parameters from request
         int nIdRecord = Integer.parseInt( request.getParameter( PARAMETER_ID_RECORD ) );
         int nIdAction = Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) );
         int nIdDirectory = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY ) );
-        
+
         IRecordService recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
-       
-        
+
         if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( ) ) )
         {
             return redirect( request, VIEW_TASKS_FORM, PARAMETER_ID_DIRECTORY_RECORD, nIdRecord, PARAMETER_ID_ACTION, nIdAction );
         }
-        
+
         boolean bHasSucceed = false;
-        
+
         try
         {
-            
-            WorkflowService.getInstance( ).doProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request,
-                    request.getLocale( ), false );
+
+            WorkflowService.getInstance( ).doProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, request.getLocale( ),
+                    false );
             bHasSucceed = true;
         }
         catch( Exception e )
@@ -597,17 +594,16 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             AppLogService.error( "Error processing action for id record '" + nIdRecord + "' - cause : " + e.getMessage( ), e );
         }
 
-
         if ( bHasSucceed )
         {
             // Update record modification date (for directory plugin)
             Record record = recordService.findByPrimaryKey( nIdRecord, getPlugin( ) );
             recordService.update( record, getPlugin( ) );
         }
-        
+
         return redirectView( request, VIEW_MULTIVIEW );
     }
-    
+
     /**
      * Returns the task form associate to the workflow action
      *
@@ -618,7 +614,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     @View( value = VIEW_TASKS_FORM )
     public String getTaskForm( HttpServletRequest request )
     {
-        Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
+        Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
+                .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
         Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
 
         if ( nIdAction == null || nIdRecord == null )
@@ -626,7 +623,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             return redirectView( request, VIEW_RECORD_VISUALISATION );
 
         }
-        
+
         String strHtmlTasksForm = WorkflowService.getInstance( )
                 .getDisplayTasksForm( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, request, getLocale( ) );
 
@@ -637,7 +634,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         return getPage( MESSAGE_MULTIVIEW_TITLE, TEMPLATE_TASK_FORM, model );
     }
-    
+
     /**
      * Process workflow action
      *
@@ -649,28 +646,29 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     public String doSaveTaskForm( HttpServletRequest request )
     {
 
-        Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
+        Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
+                .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
         Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
 
         if ( WorkflowService.getInstance( ).canProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, -1, request, false ) )
         {
 
-	        try
-	        {
-	            String strError = WorkflowService.getInstance( ).doSaveTasksForm( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, -1,
-	                    request, getLocale() );
-	            if(strError != null)
-	            {
-	            	addError( strError );
-	            	return redirect(request, VIEW_TASKS_FORM, PARAMETER_ID_DIRECTORY_RECORD, nIdRecord, PARAMETER_ID_ACTION, nIdAction);
-	            }
-	          
-	        }
-	        catch( Exception e )
-	        {
-	             AppLogService.error( "Error processing action for record '" + nIdRecord , e );
-	         
-	        }
+            try
+            {
+                String strError = WorkflowService.getInstance( )
+                        .doSaveTasksForm( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, -1, request, getLocale( ) );
+                if ( strError != null )
+                {
+                    addError( strError );
+                    return redirect( request, VIEW_TASKS_FORM, PARAMETER_ID_DIRECTORY_RECORD, nIdRecord, PARAMETER_ID_ACTION, nIdAction );
+                }
+
+            }
+            catch( Exception e )
+            {
+                AppLogService.error( "Error processing action for record '" + nIdRecord, e );
+
+            }
         }
         else
         {
@@ -679,14 +677,14 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         return redirectView( request, VIEW_MULTIVIEW );
     }
-    
+
     /**
      * Populate the list of all Record Filter Item on which we can filter the records
      */
     private void populateRecordFilterItemList( )
     {
         _listRecordFilterParameter = new ArrayList<>( );
-        
+
         _listRecordFilterParameter.add( new RecordFilterDirectoryParameter( ) );
         _listRecordFilterParameter.add( new RecordFilterNumberOfDaysParameter( ) );
         _listRecordFilterParameter.add( new RecordFilterWorkflowStateParameter( ) );

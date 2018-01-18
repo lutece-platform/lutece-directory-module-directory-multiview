@@ -46,16 +46,16 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
     // Constants
     private static final String PARAMETER_ASSIGNED_UNIT_FILTER = "search_assigned_unit";
     private static final String MARK_ASSIGNED_UNIT_FILTER = "id_assigned_unit";
-    
+
     // Variables
     private RecordFilterAssignedUnitItem _recordFilterAssignedUnitItem;
-    
+
     // Constructor
     public RecordFilterAssignedUnitParameter( )
     {
         _recordFilterAssignedUnitItem = new RecordFilterAssignedUnitItem( );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -73,7 +73,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
     {
         return _recordFilterAssignedUnitItem;
     }
-    
+
     /**
      * {@inheritDoc}
      */

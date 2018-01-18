@@ -40,13 +40,13 @@ import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.Record
  * Implementation of IRecordFilterItem for the Directory id filter
  */
 public class RecordFilterDirectoryItem implements IRecordFilterItem
-{  
+{
     // Constructor
     public RecordFilterDirectoryItem( )
     {
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */

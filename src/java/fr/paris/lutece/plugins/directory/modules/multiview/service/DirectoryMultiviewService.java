@@ -52,34 +52,34 @@ import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.Record
  * Service for the module-directory-multiview
  */
 public class DirectoryMultiviewService implements IDirectoryMultiviewService
-{    
+{
     // Marks
     private static final String MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD = "map_id_entry_list_record_field";
     private static final String MARK_PRECISIONS = "precisions";
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public RecordAssignmentFilter getRecordAssignmentFilter ( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter )
+    public RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter )
     {
-        RecordAssignmentFilter filter = new RecordAssignmentFilter( ) ;
+        RecordAssignmentFilter filter = new RecordAssignmentFilter( );
 
         for ( IRecordFilterParameter recordFilterParameter : listRecordFilterParameter )
         {
             IRecordFilterItem recordFilterItem = recordFilterParameter.getRecordFilterItem( );
             recordFilterItem.setItemValue( filter, recordFilterParameter.getValueFromRequest( request ) );
         }
-        
+
         return filter;
     }
-            
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void populateDefaultFilterMarkers( RecordAssignmentFilter filter, List<IRecordFilterParameter> listRecordFilterParameter, Map<String, Object> model )
-    {        
+    {
         for ( IRecordFilterParameter recordFilterParameter : listRecordFilterParameter )
         {
             IRecordFilterItem recordFilterItem = recordFilterParameter.getRecordFilterItem( );
@@ -88,23 +88,23 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
             model.put( recordFilterParameter.getRecordFilterModelMark( ), objectFilterValue );
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void populateRecordPrecisions( List<Map<String,Object>> resourceActions, List<IEntry> listPrecisions, Locale locale )
+    public void populateRecordPrecisions( List<Map<String, Object>> resourceActions, List<IEntry> listPrecisions, Locale locale )
     {
-        for ( Map<String,Object> mapResourceActions : resourceActions )
+        for ( Map<String, Object> mapResourceActions : resourceActions )
         {
-            Record record = (Record)mapResourceActions.get( DirectoryMultiviewConstants.MARK_RECORD );
+            Record record = (Record) mapResourceActions.get( DirectoryMultiviewConstants.MARK_RECORD );
             Map<String, List<RecordField>> mapRecordFields = (Map<String, List<RecordField>>) mapResourceActions.get( MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD );
-            List<String> precisions = new ArrayList<>();
+            List<String> precisions = new ArrayList<>( );
             for ( IEntry entry : listPrecisions )
             {
                 if ( entry.getDirectory( ).getIdDirectory( ) == record.getDirectory( ).getIdDirectory( ) )
                 {
-                    List<RecordField>  listRecordField = mapRecordFields.get( Integer.toString( entry.getIdEntry( ) ) );
+                    List<RecordField> listRecordField = mapRecordFields.get( Integer.toString( entry.getIdEntry( ) ) );
                     for ( RecordField field : listRecordField )
                     {
                         precisions.add( field.getValue( ) );

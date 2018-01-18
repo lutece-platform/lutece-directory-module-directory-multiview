@@ -44,14 +44,14 @@ public class RecordFilterNumberOfDaysItem implements IRecordFilterItem
     // Constructor
     public RecordFilterNumberOfDaysItem( )
     {
-        
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Integer getItemValue(RecordAssignmentFilter filter  )
+    public Integer getItemValue( RecordAssignmentFilter filter )
     {
         return filter.getNumberOfDays( );
     }
@@ -71,7 +71,7 @@ public class RecordFilterNumberOfDaysItem implements IRecordFilterItem
             filter.setNumberOfDays( Integer.parseInt( String.valueOf( objValue ) ) );
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

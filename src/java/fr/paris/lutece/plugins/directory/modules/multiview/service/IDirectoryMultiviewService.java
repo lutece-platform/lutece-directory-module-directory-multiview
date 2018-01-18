@@ -49,36 +49,35 @@ import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.Record
 public interface IDirectoryMultiviewService
 {
     /**
-    * Name of the bean of the service
-    */
+     * Name of the bean of the service
+     */
     String BEAN_NAME = "directory-multiview.directoryMultiviewService";
-    
+
     /**
-     * Fill the filter value from the request 
+     * Fill the filter value from the request
      * 
      * @param request
-     *          The HttpServletRequest to retrieve the value from
-     * @return the filter
-     *          The filter to set the value on
+     *            The HttpServletRequest to retrieve the value from
+     * @return the filter The filter to set the value on
      */
-    public RecordAssignmentFilter getRecordAssignmentFilter ( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter );
-    
+    public RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter );
+
     /**
      * Populate the model values with the filter data
      * 
      * @param filter
-     *          The filter to retrieve the value from
+     *            The filter to retrieve the value from
      * @param model
-     *          The model to populate
+     *            The model to populate
      */
     public void populateDefaultFilterMarkers( RecordAssignmentFilter filter, List<IRecordFilterParameter> listRecordFilterParameter, Map<String, Object> model );
-    
+
     /**
      * Populate Record Precisions
      * 
      * @param resourceActions
      * @param listPrecisions
-     * @param locale 
+     * @param locale
      */
-    public void populateRecordPrecisions( List<Map<String,Object>> resourceActions, List<IEntry> listPrecisions, Locale locale );
+    public void populateRecordPrecisions( List<Map<String, Object>> resourceActions, List<IEntry> listPrecisions, Locale locale );
 }

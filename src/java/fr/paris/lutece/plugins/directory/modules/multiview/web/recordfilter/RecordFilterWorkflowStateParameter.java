@@ -46,16 +46,16 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
     // Constants
     private static final String PARAMETER_WORKFLOW_STATE_FILTER = "search_state_workflow";
     private static final String MARK_WORKFLOW_STATE_FILTER = "id_workflow_state";
-    
+
     // Variables
     private RecordFilterWorkflowStateItem _recordFilterWorkflowStateItem;
-    
+
     // Constructor
     public RecordFilterWorkflowStateParameter( )
     {
         _recordFilterWorkflowStateItem = new RecordFilterWorkflowStateItem( );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -73,7 +73,7 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
     {
         return _recordFilterWorkflowStateItem;
     }
-    
+
     /**
      * {@inheritDoc}
      */

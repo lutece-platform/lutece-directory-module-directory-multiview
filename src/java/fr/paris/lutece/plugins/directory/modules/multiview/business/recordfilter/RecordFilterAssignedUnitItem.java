@@ -44,7 +44,7 @@ public class RecordFilterAssignedUnitItem implements IRecordFilterItem
     // Constructor
     public RecordFilterAssignedUnitItem( )
     {
-        
+
     }
 
     /**
@@ -71,7 +71,7 @@ public class RecordFilterAssignedUnitItem implements IRecordFilterItem
             filter.setAssignedUnitId( Integer.parseInt( String.valueOf( objValue ) ) );
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

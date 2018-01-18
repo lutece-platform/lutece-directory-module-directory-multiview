@@ -46,20 +46,20 @@ public interface IRecordFilterItem
      * @return the value of the item
      */
     public Object getItemValue( RecordAssignmentFilter filter );
-    
+
     /**
      * Set the value of the item
      * 
      * @param object
-     *          The value of the item to set
+     *            The value of the item to set
      */
     public void setItemValue( RecordAssignmentFilter filter, Object object );
-    
+
     /**
      * Set the default value of the item
      * 
      * @param filter
-     *          The filter to set the default value
+     *            The filter to set the default value
      */
     public void setItemDefaultValue( RecordAssignmentFilter filter );
 }

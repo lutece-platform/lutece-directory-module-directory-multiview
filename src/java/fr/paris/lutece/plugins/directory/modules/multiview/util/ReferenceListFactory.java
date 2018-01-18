@@ -51,7 +51,7 @@ public class ReferenceListFactory
     private boolean _bNumerical = Boolean.TRUE;
     private String _strDefaultCode = DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_CODE;
     private String _strDefaultName = DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_NAME;
-    
+
     // Constructor
     public ReferenceListFactory( Collection<?> collectionItem, String strCodeAttr, String strNameAttribute )
     {
@@ -59,7 +59,7 @@ public class ReferenceListFactory
         _strCodeAttr = strCodeAttr;
         _strNameAttribute = strNameAttribute;
     }
-    
+
     // Constructor
     public ReferenceListFactory( Collection<?> collectionItem, String strCodeAttr, String strNameAttribute, boolean bNumerical )
     {
@@ -67,7 +67,7 @@ public class ReferenceListFactory
         _strCodeAttr = strCodeAttr;
         _strNameAttribute = strNameAttribute;
         _bNumerical = bNumerical;
-    }    
+    }
 
     /**
      * Create the ReferenceList with the parameter values
@@ -77,20 +77,20 @@ public class ReferenceListFactory
     public ReferenceList createReferenceList( )
     {
         ReferenceList referenceListResult = new ReferenceList( );
-        
+
         // Add the default ReferenceItem if necessary
         referenceListResult.addItem( _strDefaultCode, _strDefaultName );
-        
+
         if ( _collectionItem != null && !_collectionItem.isEmpty( ) )
         {
             ReferenceList referenceList = ReferenceList.convert( _collectionItem, _strCodeAttr, _strNameAttribute, _bNumerical );
-            
+
             if ( referenceList != null && !referenceList.isEmpty( ) )
             {
                 referenceListResult.addAll( filterDuplicatesReferenceItem( referenceList ) );
             }
         }
-        
+
         return referenceListResult;
     }
 
@@ -98,7 +98,7 @@ public class ReferenceListFactory
      * Remove the duplicates of referenceItem. Two ReferenceItems are considered as duplicates if they have the same code value.
      * 
      * @param referenceList
-     *          The ReferenceList to remove the duplicates from
+     *            The ReferenceList to remove the duplicates from
      */
     private ReferenceList filterDuplicatesReferenceItem( ReferenceList referenceList )
     {
@@ -123,7 +123,7 @@ public class ReferenceListFactory
      * Set the default name of the default ReferenceItem
      * 
      * @param strDefaultName
-     *          The strDefaultName to set
+     *            The strDefaultName to set
      */
     public void setDefaultName( String strDefaultName )
     {

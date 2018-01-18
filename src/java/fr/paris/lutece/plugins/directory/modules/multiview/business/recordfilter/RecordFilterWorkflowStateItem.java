@@ -71,7 +71,7 @@ public class RecordFilterWorkflowStateItem implements IRecordFilterItem
             filter.setStateId( Integer.parseInt( String.valueOf( objValue ) ) );
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
