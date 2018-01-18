@@ -53,40 +53,41 @@ import javax.servlet.http.HttpServletRequest;
 
 public class DirectoryMultiviewSearchService
 {
-    public static LinkedHashMap<String, RecordAssignment> filterBySearchedText( LinkedHashMap<String, RecordAssignment> mapRecordAssignment, Collection<Directory> listDirectories , HttpServletRequest request, Plugin plugin, String strSearchText )
+    public static LinkedHashMap<String, RecordAssignment> filterBySearchedText( LinkedHashMap<String, RecordAssignment> mapRecordAssignment,
+            Collection<Directory> listDirectories, HttpServletRequest request, Plugin plugin, String strSearchText )
     {
-        
-        //No search text
+
+        // No search text
         if ( StringUtils.isBlank( strSearchText ) )
         {
             return mapRecordAssignment;
         }
         else
         {
-            LinkedHashMap<String, RecordAssignment> mapReturn = new LinkedHashMap<>(mapRecordAssignment);
+            LinkedHashMap<String, RecordAssignment> mapReturn = new LinkedHashMap<>( mapRecordAssignment );
             List<String> listIdRecord = new ArrayList<>( );
-            
-            //For each directory, compute the plain text search;
+
+            // For each directory, compute the plain text search;
             for ( Directory directory : listDirectories )
             {
-                //Set the operator OR for search
+                // Set the operator OR for search
                 directory.setSearchOperatorOr( true );
-                
-                //Compute the search fields
+
+                // Compute the search fields
                 DirectoryAdminSearchFields searchFields = new DirectoryAdminSearchFields( );
                 EntryFilter filter = new EntryFilter( );
                 filter.setIdDirectory( directory.getIdDirectory( ) );
                 filter.setIsIndexedAsSummary( 1 );
                 List<IEntry> listEntry = DirectoryUtils.getFormEntriesByFilter( filter, plugin );
-                
-                //Set id directory
+
+                // Set id directory
                 searchFields.setIdDirectory( directory.getIdDirectory( ) );
-                
-                //Set the queries map
-                HashMap<String, List<RecordField> > mapSearchRecordField = new HashMap<>();
+
+                // Set the queries map
+                HashMap<String, List<RecordField>> mapSearchRecordField = new HashMap<>( );
                 for ( IEntry entry : listEntry )
                 {
-                    List<RecordField> listRecordFields = new ArrayList<>();
+                    List<RecordField> listRecordFields = new ArrayList<>( );
                     RecordField recordField = new RecordField( );
                     recordField.setEntry( entry );
                     recordField.setValue( strSearchText );
@@ -94,15 +95,14 @@ public class DirectoryMultiviewSearchService
                     mapSearchRecordField.put( Integer.toString( entry.getIdEntry( ) ), listRecordFields );
                 }
                 searchFields.setMapQuery( mapSearchRecordField );
-                
-                //Compute the search
-                listIdRecord.addAll( DirectoryUtils.getListResults( request, directory, true, true, searchFields , AdminUserService.getAdminUser( request ), request.getLocale( ) )
-                        .stream()
-                        .map( nId -> nId.toString() )
-                        .collect( Collectors.toList( ) ) );
+
+                // Compute the search
+                listIdRecord.addAll( DirectoryUtils
+                        .getListResults( request, directory, true, true, searchFields, AdminUserService.getAdminUser( request ), request.getLocale( ) )
+                        .stream( ).map( nId -> nId.toString( ) ).collect( Collectors.toList( ) ) );
             }
-            
-            mapReturn.keySet().retainAll( listIdRecord );
+
+            mapReturn.keySet( ).retainAll( listIdRecord );
             return mapReturn;
         }
     }

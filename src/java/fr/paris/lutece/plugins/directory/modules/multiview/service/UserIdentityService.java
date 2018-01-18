@@ -52,39 +52,46 @@ public class UserIdentityService
     private static final String BEAN_IDENTITY_SERVICE = "directory-multiview.identitystore.service";
     private static final String PROPERTY_APPLICATION_CODE = AppPropertiesService.getProperty( "identitystore.application.code" );
     private static final String PROPERTY_ENTRY_TITLE_GUID = AppPropertiesService.getProperty( "entry.guid.title" );
-    
+
     /**
      * Get the identity service
+     * 
      * @return the identity service
      */
     private static IdentityService getIdentityService( )
     {
         return SpringContextService.getBean( BEAN_IDENTITY_SERVICE );
     }
-    
+
     /**
      * Get the user attributes from given GUID
-     * @param strGuid the guid
+     * 
+     * @param strGuid
+     *            the guid
      * @return the user attributes for given guid
      */
-    public static Map<String,AttributeDto> getUserAttributes ( String strGuid )
+    public static Map<String, AttributeDto> getUserAttributes( String strGuid )
     {
         try
         {
-            return getIdentityService().getIdentity( strGuid, "", PROPERTY_APPLICATION_CODE ).getAttributes( );
+            return getIdentityService( ).getIdentity( strGuid, "", PROPERTY_APPLICATION_CODE ).getAttributes( );
         }
-        catch ( AppException e )
+        catch( AppException e )
         {
             AppLogService.error( "Unable to get the identity from identity service, with guid : " + strGuid );
-            return new HashMap<>();
+            return new HashMap<>( );
         }
     }
-    
+
     /**
      * Get the guid of the user
-     * @param listEntries the list of entries
-     * @param nIdRecord the id record
-     * @param plugin the plugin
+     * 
+     * @param listEntries
+     *            the list of entries
+     * @param nIdRecord
+     *            the id record
+     * @param plugin
+     *            the plugin
      * @return the guid of the user
      */
     public static String getUserGuid( List<IEntry> listEntries, int nIdRecord, Plugin plugin )
@@ -99,7 +106,7 @@ public class UserIdentityService
                 {
                     return listRecordFields.get( 0 ).toString( );
                 }
-                
+
             }
         }
         return null;
