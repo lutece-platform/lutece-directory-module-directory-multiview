@@ -33,32 +33,54 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.mchange.v1.lang.BooleanUtils;
+
 import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.DirectoryAction;
 import fr.paris.lutece.plugins.directory.business.DirectoryActionHome;
 import fr.paris.lutece.plugins.directory.business.DirectoryFilter;
 import fr.paris.lutece.plugins.directory.business.DirectoryHome;
-import fr.paris.lutece.plugins.directory.business.Entry;
 import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.EntryHome;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
-import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewService;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
+import fr.paris.lutece.plugins.directory.business.RecordHome;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.IRecordFilterItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.UserIdentityService;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.search.DirectoryMultiviewSearchService;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewUtils;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.IRecordFilterParameter;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterDirectoryParameter;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterNumberOfDaysParameter;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterAssignedUnitParameter;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterWorkflowStateParameter;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
 import fr.paris.lutece.plugins.directory.service.DirectoryService;
 import fr.paris.lutece.plugins.directory.service.record.IRecordService;
 import fr.paris.lutece.plugins.directory.service.record.RecordService;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
+import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.service.AssignmentService;
+import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -68,19 +90,6 @@ import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceList;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class provides the user interface to manage form features ( manage, create, modify, remove)
@@ -102,15 +111,16 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     // Messages (I18n keys)
     private static final String MESSAGE_ACCESS_DENIED = "Acces denied";
     private static final String MESSAGE_MULTIVIEW_TITLE = "module.directory.multiview.pageTitle";
+    private static final String MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME = "module.directory.multiview.manage_directory_multirecord.unit.attribute.defaultName";
 
-    // properties
+    // Properties
     private static final String PROPERTY_MANAGE_DIRECTORY_RECORD_PAGE_TITLE = "module.directory.multiview.manage_directory_multirecord.pageTitle.label";
     private static final String PROPERTY_ENTRY_TYPE_IMAGE = "directory.resource_rss.entry_type_image";
     private static final String PROPERTY_ENTRY_TYPE_MYLUTECE_USER = "directory.entry_type.mylutece_user";
     private static final String PROPERTY_ENTRY_TYPE_GEOLOCATION = "directory.entry_type.geolocation";
     private static final String PROPERTY_DISPLAY_ENTRY_LABEL_LIST = "directory-multiview.entry_name_list";
     
-    // public properties
+    // Public properties
     public static final String PROPERTY_RIGHT_MANAGE_MULTIVIEWDIRECTORY = "DIRECTORY_MULTIVIEW";
 
     // Markers
@@ -142,6 +152,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_TASK_FORM = "tasks_form";
     private static final String MARK_RECORD_ASSIGNMENT_FILTER = "record_assignment_filter";
     private static final String MARK_SEARCH_TEXT = "search_text";
+    private static final String MARK_ASSIGNED_UNIT_LIST = "assigned_unit_list";
     
     // JSP URL
     private static final String JSP_MANAGE_MULTIVIEW = "jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp";
@@ -152,26 +163,39 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PARAMETER_ID_ACTION = "id_action";
     private static final String PARAMETER_ID_DIRECTORY_RECORD = "id_directory_record";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
-    public static final String PARAMETER_SORTED_ATTRIBUTE_NAME = "sorted_attribute_name";
-    public static final String PARAMETER_SORTED_ATTRIBUTE_ASC = "asc_sort";
-    public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
+    private static final String PARAMETER_SORTED_ATTRIBUTE_NAME = "sorted_attribute_name";
+    private static final String PARAMETER_SORTED_ATTRIBUTE_ASC = "asc_sort";
+    private static final String PARAMETER_SEARCHED_TEXT = "searched_text";
     private static final String PARAMETER_BUTTON_REFRESH = "refresh" ;
-    //Views 
+    
+    // Views 
     private static final String VIEW_MULTIVIEW = "view_multiview";
     private static final String VIEW_RECORD_VISUALISATION = "view_record_visualisation";
     private static final String VIEW_TASKS_FORM = "view_tasksForm";
     
-    //Actions
+    // Actions
     private static final String ACTION_PROCESS_ACTION = "doProcessAction";
     private static final String ACTION_SAVE_TASK_FORM = "doSaveTaskForm";
 
-    // session fields
+    // Session fields
     private IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
+    private IDirectoryMultiviewService _directoryMultiviewService = SpringContextService.getBean( IDirectoryMultiviewService.BEAN_NAME );
+    
+    // Constants
+    private static final String STATE_CODE_ATTRIBUTE = "id";
+    private static final String STATE_NAME_ATTRIBUTE = "name";
+    private static final String DIRECTORY_CODE_ATTRIBUTE = "idDirectory";
+    private static final String DIRECTORY_NAME_ATTRIBUTE = "title";
+    private static final String UNIT_CODE_ATTRIBUTE = "idUnit";
+    private static final String UNIT_NAME_ATTRIBUTE = "label";
 
+    // Variables
     private HashMap<Integer, Directory> _directoryList;
     private Map<Integer,ReferenceList > _workflowStateByDirectoryList;
     private RecordAssignmentFilter _assignmentFilter;
+    private List<Unit> _listAssignedUnit;
     private List<IEntry>  _listEntryResultSearch;
+    private List<IRecordFilterParameter> _listRecordFilterParameter;
     private LinkedHashMap<String, RecordAssignment> _recordAssignmentMap;
     private List<Map<String, Object> > _listResourceActions;
     private boolean _bIsInitialized;
@@ -190,6 +214,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _listEntryResultSearch = new ArrayList<>( );
             _recordAssignmentMap = new LinkedHashMap<>( );
             _listResourceActions = new ArrayList<>( );
+            _listAssignedUnit = new ArrayList<>( );
 
             //init the assignment filter
             _assignmentFilter = new RecordAssignmentFilter( );
@@ -197,9 +222,14 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _assignmentFilter.setActiveDirectory( true );
             _assignmentFilter.setActiveAssignmentRecordsOnly( true );
             _assignmentFilter.setLastActiveAssignmentRecordsOnly( true );
-            _assignmentFilter.setDirectoryId( -2 );
-            _assignmentFilter.setStateId(-2 );
-            _assignmentFilter.setNumberOfDays( -2 );
+            
+            // Set the default values on the filter
+            populateRecordFilterItemList( );
+            for ( IRecordFilterParameter recordFilterParameter : _listRecordFilterParameter )
+            {
+                recordFilterParameter.getRecordFilterItem( ).setItemDefaultValue( _assignmentFilter );
+            }
+            
             _strSearchText = StringUtils.EMPTY;
             DirectoryFilter filter =  new DirectoryFilter( );
             filter.setIsDisabled( 1 );
@@ -208,9 +238,10 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 if ( directory.getIdWorkflow( ) > 0 )
                 {   
                     _directoryList.put( directory.getIdDirectory( ), directory);
-                    Collection listWorkflowState =  WorkflowService.getInstance().getAllStateByWorkflow( directory.getIdWorkflow( ), AdminUserService.getAdminUser( request ));
-                    ReferenceList workflowStateReferenceList = DirectoryMultiviewUtils.convert( listWorkflowState, "id", "name", true );
-                    _workflowStateByDirectoryList.put( directory.getIdDirectory( ), workflowStateReferenceList );
+                    Collection<State> listWorkflowState =  WorkflowService.getInstance().getAllStateByWorkflow( directory.getIdWorkflow( ), AdminUserService.getAdminUser( request ));
+                    
+                    ReferenceListFactory referenceListParameter = new ReferenceListFactory( listWorkflowState, STATE_CODE_ATTRIBUTE, STATE_NAME_ATTRIBUTE );
+                    _workflowStateByDirectoryList.put( directory.getIdDirectory( ), referenceListParameter.createReferenceList( ) );
 
                     // build set the list of entries to display in the multiview list
                     EntryFilter entryFilter = new EntryFilter( );
@@ -222,22 +253,66 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                     String entryNameList = AppPropertiesService.getProperty( PROPERTY_DISPLAY_ENTRY_LABEL_LIST );
                     String[] entryNameTab = entryNameList.split(",");
                     List<IEntry> entryList = EntryHome.getEntryList( entryFilter, getPlugin( ) );
-                    
-                    for (String entryTitle : entryNameTab ) {
-                        entryList.stream()
-                            .filter( e -> entryTitle.equals( e.getTitle( ) ))
-                            .forEachOrdered(_listEntryResultSearch::add);                            
+
+                    for ( String entryTitle : entryNameTab )
+                    {
+                        entryList.stream( )
+                            .filter( e -> entryTitle.equals( e.getTitle( ) ) )
+                            .forEachOrdered( _listEntryResultSearch::add );
                     }
-                            
-                    
                 }
+                
+                // Populate the initialize list of all Assigned Unit
+                populateAssignedUnitList( request );
             }
             reInitDirectoryMultiview( null );
             _bIsInitialized = true;
         }
         
     }
-    
+
+    /**
+     * Populate the list of Assigned Unit for a directory
+     * 
+     * @param nIdDirectory
+     *          The identifier of the Directory to retrieve the data from
+     */
+    private void populateAssignedUnitList( HttpServletRequest request )
+    {
+        // Retrieve the list of all RecordAssignment
+        RecordAssignmentFilter recordAssignmentFilter = new RecordAssignmentFilter( );
+        recordAssignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( AdminUserService.getAdminUser( request ) ) );
+        recordAssignmentFilter.setActiveDirectory( true );
+        recordAssignmentFilter.setActiveAssignmentRecordsOnly( true );
+        recordAssignmentFilter.setLastActiveAssignmentRecordsOnly( true );
+        
+        List<RecordAssignment> recordAssignmentList = AssignmentService.getRecordAssignmentFiltredList( recordAssignmentFilter );
+        
+        // Populate the map with the last AssignmentRecord for each Record
+        Map<Integer, RecordAssignment> recordAssignmentMap = new LinkedHashMap<>( );
+        for ( RecordAssignment assignedRecord : recordAssignmentList )
+        {
+            if ( !recordAssignmentMap.containsKey( assignedRecord.getIdRecord( ) ) 
+                    || recordAssignmentMap.get( assignedRecord.getIdRecord( ) ).getAssignmentDate( )
+                        .before( assignedRecord.getAssignmentDate( ) ) ) {
+                    // Keep only the last one
+                    recordAssignmentMap.put( assignedRecord.getIdRecord( ), assignedRecord) ;
+                
+            } 
+        }
+        
+        // Retrieve the Resource Action associated to the Record of each RecordAssignment
+        for ( RecordAssignment recordAssignment : recordAssignmentMap.values( ) )
+        {
+            Record record = RecordHome.findByPrimaryKey( recordAssignment.getIdRecord( ), getPlugin( ) );
+            if ( record != null && recordAssignmentMap.get( record.getIdRecord( ) ) != null )
+            {
+                RecordAssignment recordAssignmentFromRecord = recordAssignmentMap.get( record.getIdRecord( ) );
+                _listAssignedUnit.add( recordAssignmentFromRecord.getAssignedUnit( ) );
+            }
+        }
+    }
+
     /**
      * Return management of directory record ( list of directory record ).
      * 
@@ -276,7 +351,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             else
             {
                 // new SEARCH 
-                RecordAssignmentFilter newFilter = DirectoryMultiviewService.getRecordAssignmentFilter( request );
+                RecordAssignmentFilter newFilter = _directoryMultiviewService.getRecordAssignmentFilter( request, _listRecordFilterParameter );
 
                 // if filter changed, reinit several list for multiview
                 reInitDirectoryMultiview( newFilter );
@@ -314,8 +389,12 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                         null, null, false, getPlugin( ) ) );
         }
         
-        //Populate record precisions in resource action (called "demandeur")
-        DirectoryMultiviewService.populateRecordPrecisions( _listResourceActions, _listEntryResultSearch, request.getLocale( ) );
+        // Populate record precisions in resource action (called "demandeur")
+        _directoryMultiviewService.populateRecordPrecisions( _listResourceActions, _listEntryResultSearch, request.getLocale( ) );
+               
+        // Create the ReferenceList of all Assigned Unit
+        ReferenceListFactory referenceListParameterUnitAssigned = new ReferenceListFactory( _listAssignedUnit, UNIT_CODE_ATTRIBUTE, UNIT_NAME_ATTRIBUTE );
+        referenceListParameterUnitAssigned.setDefaultName( I18nService.getLocalizedString( MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME, request.getLocale( ) ) );
 
         model.put( MARK_PAGINATOR, _paginator );
         model.put( MARK_NUMBER_RECORD, mapRecordAssignmentAfterSearch.keySet( ).size( ) );
@@ -324,14 +403,18 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         model.put( MARK_RESOURCE_ACTIONS_LIST, _listResourceActions );
         model.put( MARK_RECORD_ASSIGNMENT_FILTER, _assignmentFilter );
         model.put( MARK_RECORD_ASSIGNMENT_MAP, mapRecordAssignmentAfterSearch );
-        model.put( MARK_DIRECTORY_LIST, DirectoryMultiviewUtils.convert( (Collection)_directoryList.values( ), "idDirectory","title", true ) );
+        model.put( MARK_ASSIGNED_UNIT_LIST, referenceListParameterUnitAssigned.createReferenceList( ) );
+        
+        ReferenceListFactory referenceListParameter = new ReferenceListFactory( _directoryList.values( ), DIRECTORY_CODE_ATTRIBUTE, DIRECTORY_NAME_ATTRIBUTE );
+        model.put( MARK_DIRECTORY_LIST, referenceListParameter.createReferenceList( ) );
+        
         model.put( MARK_SEARCH_TEXT, _strSearchText );
         if ( _assignmentFilter.getDirectoryId( ) > 0 )
         {
             model.put( MARK_SEARCH_STATE_WORKFLOW, _workflowStateByDirectoryList.get( _assignmentFilter.getDirectoryId( ) ) );
         }
         
-        DirectoryMultiviewService.populateDefaultFilterMarkers ( _assignmentFilter, model );
+        _directoryMultiviewService.populateDefaultFilterMarkers ( _assignmentFilter, _listRecordFilterParameter, model );
         return getPage( PROPERTY_MANAGE_DIRECTORY_RECORD_PAGE_TITLE, TEMPLATE_MANAGE_MULTI_DIRECTORY_RECORD, model );
     }
 
@@ -437,9 +520,13 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         
         if (newFilter != null) 
         {
-            _assignmentFilter.setDirectoryId( newFilter.getDirectoryId( ) );
-            _assignmentFilter.setStateId( newFilter.getStateId( ));
-            _assignmentFilter.setNumberOfDays( newFilter.getNumberOfDays( ));
+            // Set the values on the filter
+            for ( IRecordFilterParameter recordFilterParameter : _listRecordFilterParameter )
+            {
+                IRecordFilterItem recordFilterItem = recordFilterParameter.getRecordFilterItem( );
+                recordFilterItem.setItemValue( _assignmentFilter, recordFilterItem.getItemValue( newFilter ) );
+            }
+            
             _assignmentFilter.setOrderBy( newFilter.getOrderBy( ) );
             _assignmentFilter.setAsc( newFilter.isAsc( ) );
         }
@@ -591,5 +678,18 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         }
 
         return redirectView( request, VIEW_MULTIVIEW );
+    }
+    
+    /**
+     * Populate the list of all Record Filter Item on which we can filter the records
+     */
+    private void populateRecordFilterItemList( )
+    {
+        _listRecordFilterParameter = new ArrayList<>( );
+        
+        _listRecordFilterParameter.add( new RecordFilterDirectoryParameter( ) );
+        _listRecordFilterParameter.add( new RecordFilterNumberOfDaysParameter( ) );
+        _listRecordFilterParameter.add( new RecordFilterWorkflowStateParameter( ) );
+        _listRecordFilterParameter.add( new RecordFilterAssignedUnitParameter( ) );
     }
 }

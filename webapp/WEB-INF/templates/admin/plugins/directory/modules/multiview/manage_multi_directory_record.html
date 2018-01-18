@@ -83,27 +83,16 @@
 
 <script >
 $( document ).ready(function() {
-    $( "#id_directory" ).change( function( ) 
+    $( "#search_directory" ).change( function( ) 
     {
         // reinit workflow states 
         $( "#search_state_workflow" ).find( "option" ).remove( );
 
         // submit to get new states
         $( "#searchForm" ).submit( ) ;
-    });
+    });    
 
-    $( "#search_state_workflow" ).change( function( ) 
-    {
-        $( "#searchForm" ).submit( ) ;
-    });
-    
-    $( "#search_open_since" ).change( function( ) 
-    {
-        $( "#searchForm" ).submit( ) ;
-    });
-    
-
-    $( "#search_open_since").val("${search_period_id_default!-1}");
+    $( "#search_open_since").val("${number_of_days!-1}");
 });
 </script>
 

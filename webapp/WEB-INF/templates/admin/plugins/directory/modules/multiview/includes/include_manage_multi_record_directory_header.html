@@ -4,24 +4,30 @@
         	<div class="row">
                         <div id="filter-records" class="box box-records bg-gra-light">
                 	<div class="box-body col-sm-offset-1">
-                        <#if directory_list?has_content >
+                        <#if directory_list?has_content>
                             <div class="records-filter">
-                                    <label class="select" for="id_directory">
-                                    <@select name='id_directory' id='id_directory' default_value='${search_directory_id_default!-1}' items=directory_list />
+                                    <label class="select" for="search_directory">
+                                    <@select name='search_directory' id='search_directory' default_value='${id_directory!-1}' items=directory_list/>
                                     </label>
                             </div>
                     	</#if>                
-                    	<#if search_state_workflow?has_content >
+                    	<#if search_state_workflow?has_content>
                     		<div class="records-filter">
                     			<label class="select" for="search_state_workflow">
-                            		<@select id="search_state_workflow" name="search_state_workflow" default_value='${search_state_workflow_id_default!-1}' items=search_state_workflow />
+                            		<@select id="search_state_workflow" name="search_state_workflow" default_value='${id_workflow_state!-1}' items=search_state_workflow params='onchange="this.form.submit()"'/>
                         		</label>
                         	</div>
                         </#if>
-
+                        <#if assigned_unit_list?has_content>
+                    		<div class="records-filter">
+                    			<label class="select" for="search_assigned_unit">
+                            		<@select id="search_assigned_unit" name="search_assigned_unit" default_value='${id_assigned_unit!-1}' items=assigned_unit_list params='onchange="this.form.submit()"'/>
+                        		</label>
+                        	</div>
+                        </#if>
                     	<div class="records-filter">
 							<label class="select" for="search_open_since">
-                    			<select id="search_open_since" name="search_open_since" class="form-control ">
+                    			<select id="search_open_since" name="search_open_since" class="form-control " onchange="this.form.submit()">
                         			<option value="-1">#i18n{module.directory.multiview.records_list.search_since_default}</option>
 									<option value="1" >#i18n{module.directory.multiview.records_list.search_since_last_day}</option>
 									<option value="7" >#i18n{module.directory.multiview.records_list.search_since_last_week}</option>

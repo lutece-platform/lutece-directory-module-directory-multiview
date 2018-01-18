@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,25 +31,53 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.util;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter;
 
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.util.ReferenceItem;
-import fr.paris.lutece.util.ReferenceList;
-import java.util.Collection;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 
-public class DirectoryMultiviewUtils
+/**
+ * Implementation of IRecordFilterItem for the Assigned Unit id filter
+ */
+public class RecordFilterAssignedUnitItem implements IRecordFilterItem
 {
-    
-    public static ReferenceList convert( Collection<Object> list, String strCodeAttr, String strValueAttr, boolean bNumericalCode )
+    // Constructor
+    public RecordFilterAssignedUnitItem( )
     {
-        ReferenceList refListReturn = new ReferenceList( );
-        ReferenceItem item = new ReferenceItem( );
-        item.setCode( "-1" );
-        item.setName( "-" );
-        refListReturn.add( item );
-        ReferenceList refList = ReferenceList.convert( list, strCodeAttr, strValueAttr, bNumericalCode );
-        refListReturn.addAll( refList );
-        return refListReturn;
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer getItemValue( RecordAssignmentFilter filter )
+    {
+        return filter.getAssignedUnitId( );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setItemValue( RecordAssignmentFilter filter, Object objValue )
+    {
+        if ( objValue == null )
+        {
+            setItemDefaultValue( filter );
+        }
+        else
+        {
+            filter.setAssignedUnitId( Integer.parseInt( String.valueOf( objValue ) ) );
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setItemDefaultValue( RecordAssignmentFilter filter )
+    {
+        filter.setAssignedUnitId( DirectoryMultiviewConstants.DEFAULT_FILTER_VALUE );
     }
 }
