@@ -110,7 +110,7 @@ public class UserIdentityService
             }
             else
             {
-                if ( entry.getChildren().size() > 0 )
+                if ( entry.getChildren( ).size( ) > 0 )
                 {
                     return getUserGuid( entry.getChildren( ), nIdRecord, plugin );
                 }
