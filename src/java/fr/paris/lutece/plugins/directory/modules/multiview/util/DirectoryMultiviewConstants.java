@@ -47,12 +47,12 @@ public final class DirectoryMultiviewConstants
     public static final String REFERENCE_ITEM_DEFAULT_CODE = "-1";
     public static final String REFERENCE_ITEM_DEFAULT_NAME = "-";
     public static final int DEFAULT_FILTER_VALUE = NumberUtils.INTEGER_MINUS_ONE;
-    
+
     /**
      * Private constructor - never call
      */
     private DirectoryMultiviewConstants( )
     {
-        
+
     }
 }

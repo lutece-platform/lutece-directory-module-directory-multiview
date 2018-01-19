@@ -99,12 +99,12 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 {
     // Public properties
     public static final String PROPERTY_RIGHT_MANAGE_MULTIVIEWDIRECTORY = "DIRECTORY_MULTIVIEW";
-    
+
     /**
      * Generated serial version UID
      */
     private static final long serialVersionUID = -8417121042985481292L;
-    
+
     // Templates
     private static final String TEMPLATE_MANAGE_MULTI_DIRECTORY_RECORD = "admin/plugins/directory/modules/multiview/manage_multi_directory_record.html";
     private static final String TEMPLATE_VIEW_DIRECTORY_RECORD = "admin/plugins/directory/modules/multiview/view_directory_record.html";
@@ -176,7 +176,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     // Actions
     private static final String ACTION_PROCESS_ACTION = "doProcessAction";
     private static final String ACTION_SAVE_TASK_FORM = "doSaveTaskForm";
-    
+
     // Constants
     private static final String STATE_CODE_ATTRIBUTE = "id";
     private static final String STATE_NAME_ATTRIBUTE = "name";
@@ -184,7 +184,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String DIRECTORY_NAME_ATTRIBUTE = "title";
     private static final String UNIT_CODE_ATTRIBUTE = "idUnit";
     private static final String UNIT_NAME_ATTRIBUTE = "label";
-    
+
     // Session fields
     private final IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
     private final transient IDirectoryMultiviewService _directoryMultiviewService = SpringContextService.getBean( IDirectoryMultiviewService.BEAN_NAME );
@@ -205,7 +205,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      * initialize the JspBean
      * 
      * @param request
-     *          The HttpServletRequest
+     *            The HttpServletRequest
      */
     public void initialize( HttpServletRequest request )
     {
@@ -508,7 +508,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      * reinit multiview context
      * 
      * @param newFilter
-     *          The new filter on which to base
+     *            The new filter on which to base
      */
     private void reInitDirectoryMultiview( RecordAssignmentFilter newFilter )
     {

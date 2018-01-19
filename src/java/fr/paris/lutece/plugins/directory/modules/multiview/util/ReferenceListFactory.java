@@ -56,11 +56,11 @@ public class ReferenceListFactory
      * Constructor
      * 
      * @param collectionItem
-     *          The collection of items to create the ReferenceList from
+     *            The collection of items to create the ReferenceList from
      * @param strCodeAttr
-     *          The name of the code attribute to retrieve the data from the item
+     *            The name of the code attribute to retrieve the data from the item
      * @param strNameAttribute
-     *          The name of the name of attribute to retrieve the data from the item
+     *            The name of the name of attribute to retrieve the data from the item
      */
     public ReferenceListFactory( Collection<?> collectionItem, String strCodeAttr, String strNameAttribute )
     {
@@ -73,13 +73,13 @@ public class ReferenceListFactory
      * Constructor
      * 
      * @param collectionItem
-     *          The collection of items to create the ReferenceList from
+     *            The collection of items to create the ReferenceList from
      * @param strCodeAttr
-     *          The name of the code attribute to retrieve the data from the item
+     *            The name of the code attribute to retrieve the data from the item
      * @param strNameAttribute
-     *          The name of the name of attribute to retrieve the data from the item
+     *            The name of the name of attribute to retrieve the data from the item
      * @param bNumerical
-     *          The boolean which tell if the code of the item is of type numeric or not
+     *            The boolean which tell if the code of the item is of type numeric or not
      */
     public ReferenceListFactory( Collection<?> collectionItem, String strCodeAttr, String strNameAttribute, boolean bNumerical )
     {

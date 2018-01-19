@@ -59,7 +59,7 @@ public interface IDirectoryMultiviewService
      * @param request
      *            The HttpServletRequest to retrieve the value from
      * @param listRecordFilterParameter
-     *          The list of all IRecordFilterParameter use for filter the records
+     *            The list of all IRecordFilterParameter use for filter the records
      * @return the filter The filter to set the value on
      */
     RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter );
@@ -70,7 +70,7 @@ public interface IDirectoryMultiviewService
      * @param filter
      *            The filter to retrieve the value from
      * @param listRecordFilterParameter
-     *          The list of all IRecordFilterParameter use for filter the records
+     *            The list of all IRecordFilterParameter use for filter the records
      * @param model
      *            The model to populate
      */
@@ -80,11 +80,11 @@ public interface IDirectoryMultiviewService
      * Populate Record Precisions
      * 
      * @param resourceActions
-     *          The list of all Resources Actions
+     *            The list of all Resources Actions
      * @param listPrecisions
-     *          The list of all precisions
+     *            The list of all precisions
      * @param locale
-     *          The locale
+     *            The locale
      */
     void populateRecordPrecisions( List<Map<String, Object>> resourceActions, List<IEntry> listPrecisions, Locale locale );
 }
