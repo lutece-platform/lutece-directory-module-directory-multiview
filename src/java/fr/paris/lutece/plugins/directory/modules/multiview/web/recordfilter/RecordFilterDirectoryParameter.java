@@ -48,9 +48,11 @@ public class RecordFilterDirectoryParameter implements IRecordFilterParameter
     private static final String MARK_DIRECTORY_FILTER = "id_directory";
 
     // Variables
-    private RecordFilterDirectoryItem _recordFilterDirectoryItem;
+    private final RecordFilterDirectoryItem _recordFilterDirectoryItem;
 
-    // Constructor
+    /**
+     * Constructor
+     */
     public RecordFilterDirectoryParameter( )
     {
         _recordFilterDirectoryItem = new RecordFilterDirectoryItem( );

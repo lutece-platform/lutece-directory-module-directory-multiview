@@ -48,9 +48,11 @@ public class RecordFilterNumberOfDaysParameter implements IRecordFilterParameter
     private static final String MARK_NUMBER_OF_DAYS_FILTER = "number_of_days";
 
     // Variables
-    private RecordFilterNumberOfDaysItem _recordFilterNumberOfDaysItem;
+    private final RecordFilterNumberOfDaysItem _recordFilterNumberOfDaysItem;
 
-    // Constructor
+    /**
+     * Constructor
+     */
     public RecordFilterNumberOfDaysParameter( )
     {
         _recordFilterNumberOfDaysItem = new RecordFilterNumberOfDaysItem( );

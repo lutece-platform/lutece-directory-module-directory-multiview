@@ -38,7 +38,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 /**
  * Constant class for the module
  */
-public class DirectoryMultiviewConstants
+public final class DirectoryMultiviewConstants
 {
     // Marks
     public static final String MARK_RECORD = "record";
@@ -47,4 +47,12 @@ public class DirectoryMultiviewConstants
     public static final String REFERENCE_ITEM_DEFAULT_CODE = "-1";
     public static final String REFERENCE_ITEM_DEFAULT_NAME = "-";
     public static final int DEFAULT_FILTER_VALUE = NumberUtils.INTEGER_MINUS_ONE;
+    
+    /**
+     * Private constructor - never call
+     */
+    private DirectoryMultiviewConstants( )
+    {
+        
+    }
 }

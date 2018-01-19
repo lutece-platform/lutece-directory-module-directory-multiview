@@ -63,9 +63,9 @@ import fr.paris.lutece.plugins.directory.modules.multiview.service.UserIdentityS
 import fr.paris.lutece.plugins.directory.modules.multiview.service.search.DirectoryMultiviewSearchService;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.IRecordFilterParameter;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterAssignedUnitParameter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterDirectoryParameter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterNumberOfDaysParameter;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterAssignedUnitParameter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterWorkflowStateParameter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
@@ -97,11 +97,14 @@ import fr.paris.lutece.util.ReferenceList;
 @Controller( controllerJsp = "ManageMultiDirectoryRecords.jsp", controllerPath = "jsp/admin/plugins/directory/modules/multiview/", right = "DIRECTORY_MULTIVIEW" )
 public class MultiDirectoryJspBean extends AbstractJspBean
 {
+    // Public properties
+    public static final String PROPERTY_RIGHT_MANAGE_MULTIVIEWDIRECTORY = "DIRECTORY_MULTIVIEW";
+    
     /**
      * Generated serial version UID
      */
     private static final long serialVersionUID = -8417121042985481292L;
-
+    
     // Templates
     private static final String TEMPLATE_MANAGE_MULTI_DIRECTORY_RECORD = "admin/plugins/directory/modules/multiview/manage_multi_directory_record.html";
     private static final String TEMPLATE_VIEW_DIRECTORY_RECORD = "admin/plugins/directory/modules/multiview/view_directory_record.html";
@@ -119,9 +122,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PROPERTY_ENTRY_TYPE_MYLUTECE_USER = "directory.entry_type.mylutece_user";
     private static final String PROPERTY_ENTRY_TYPE_GEOLOCATION = "directory.entry_type.geolocation";
     private static final String PROPERTY_DISPLAY_ENTRY_LABEL_LIST = "directory-multiview.entry_name_list";
-
-    // Public properties
-    public static final String PROPERTY_RIGHT_MANAGE_MULTIVIEWDIRECTORY = "DIRECTORY_MULTIVIEW";
 
     // Markers
     private static final String MARK_LOCALE = "locale";
@@ -176,11 +176,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     // Actions
     private static final String ACTION_PROCESS_ACTION = "doProcessAction";
     private static final String ACTION_SAVE_TASK_FORM = "doSaveTaskForm";
-
-    // Session fields
-    private IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
-    private IDirectoryMultiviewService _directoryMultiviewService = SpringContextService.getBean( IDirectoryMultiviewService.BEAN_NAME );
-
+    
     // Constants
     private static final String STATE_CODE_ATTRIBUTE = "id";
     private static final String STATE_NAME_ATTRIBUTE = "name";
@@ -188,14 +184,18 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String DIRECTORY_NAME_ATTRIBUTE = "title";
     private static final String UNIT_CODE_ATTRIBUTE = "idUnit";
     private static final String UNIT_NAME_ATTRIBUTE = "label";
+    
+    // Session fields
+    private final IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
+    private final transient IDirectoryMultiviewService _directoryMultiviewService = SpringContextService.getBean( IDirectoryMultiviewService.BEAN_NAME );
 
     // Variables
     private HashMap<Integer, Directory> _directoryList;
     private Map<Integer, ReferenceList> _workflowStateByDirectoryList;
     private RecordAssignmentFilter _assignmentFilter;
-    private List<Unit> _listAssignedUnit;
+    private transient List<Unit> _listAssignedUnit;
     private List<IEntry> _listEntryResultSearch;
-    private List<IRecordFilterParameter> _listRecordFilterParameter;
+    private transient List<IRecordFilterParameter> _listRecordFilterParameter;
     private LinkedHashMap<String, RecordAssignment> _recordAssignmentMap;
     private List<Map<String, Object>> _listResourceActions;
     private boolean _bIsInitialized;
@@ -205,6 +205,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      * initialize the JspBean
      * 
      * @param request
+     *          The HttpServletRequest
      */
     public void initialize( HttpServletRequest request )
     {
@@ -274,8 +275,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     /**
      * Populate the list of Assigned Unit for a directory
      * 
-     * @param nIdDirectory
-     *            The identifier of the Directory to retrieve the data from
+     * @param request
+     *            The HttpServletRequest to retrieve the user from
      */
     private void populateAssignedUnitList( HttpServletRequest request )
     {
@@ -363,7 +364,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         // Perform simple full text search
         _strSearchText = request.getParameter( PARAMETER_SEARCHED_TEXT );
-        LinkedHashMap<String, RecordAssignment> mapRecordAssignmentAfterSearch = DirectoryMultiviewSearchService.filterBySearchedText( _recordAssignmentMap,
+        Map<String, RecordAssignment> mapRecordAssignmentAfterSearch = DirectoryMultiviewSearchService.filterBySearchedText( _recordAssignmentMap,
                 _directoryList.values( ), request, getPlugin( ), _strSearchText );
 
         // Paginate
@@ -507,6 +508,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      * reinit multiview context
      * 
      * @param newFilter
+     *          The new filter on which to base
      */
     private void reInitDirectoryMultiview( RecordAssignmentFilter newFilter )
     {

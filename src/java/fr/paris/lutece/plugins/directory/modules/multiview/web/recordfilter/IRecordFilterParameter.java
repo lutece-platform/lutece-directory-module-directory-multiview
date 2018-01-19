@@ -49,19 +49,19 @@ public interface IRecordFilterParameter
      *            The request to retrieve the parameter value from
      * @return the value of the parameter from the request
      */
-    public String getValueFromRequest( HttpServletRequest request );
+    String getValueFromRequest( HttpServletRequest request );
 
     /**
      * Return the mark of the RecordFilter for the model
      * 
      * @return the mark of the RecordFilter for the model
      */
-    public String getRecordFilterModelMark( );
+    String getRecordFilterModelMark( );
 
     /**
      * Return the IRecordFilterItem associated to the to the IRecordFilterParameter
      * 
      * @return the IRecordFilterItem associated to the to the IRecordFilterParameter
      */
-    public IRecordFilterItem getRecordFilterItem( );
+    IRecordFilterItem getRecordFilterItem( );
 }

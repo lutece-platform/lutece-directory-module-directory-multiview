@@ -48,9 +48,11 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
     private static final String MARK_ASSIGNED_UNIT_FILTER = "id_assigned_unit";
 
     // Variables
-    private RecordFilterAssignedUnitItem _recordFilterAssignedUnitItem;
+    private final RecordFilterAssignedUnitItem _recordFilterAssignedUnitItem;
 
-    // Constructor
+    /**
+     * Constructor
+     */
     public RecordFilterAssignedUnitParameter( )
     {
         _recordFilterAssignedUnitItem = new RecordFilterAssignedUnitItem( );

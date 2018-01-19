@@ -58,26 +58,33 @@ public interface IDirectoryMultiviewService
      * 
      * @param request
      *            The HttpServletRequest to retrieve the value from
+     * @param listRecordFilterParameter
+     *          The list of all IRecordFilterParameter use for filter the records
      * @return the filter The filter to set the value on
      */
-    public RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter );
+    RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter );
 
     /**
      * Populate the model values with the filter data
      * 
      * @param filter
      *            The filter to retrieve the value from
+     * @param listRecordFilterParameter
+     *          The list of all IRecordFilterParameter use for filter the records
      * @param model
      *            The model to populate
      */
-    public void populateDefaultFilterMarkers( RecordAssignmentFilter filter, List<IRecordFilterParameter> listRecordFilterParameter, Map<String, Object> model );
+    void populateDefaultFilterMarkers( RecordAssignmentFilter filter, List<IRecordFilterParameter> listRecordFilterParameter, Map<String, Object> model );
 
     /**
      * Populate Record Precisions
      * 
      * @param resourceActions
+     *          The list of all Resources Actions
      * @param listPrecisions
+     *          The list of all precisions
      * @param locale
+     *          The locale
      */
-    public void populateRecordPrecisions( List<Map<String, Object>> resourceActions, List<IEntry> listPrecisions, Locale locale );
+    void populateRecordPrecisions( List<Map<String, Object>> resourceActions, List<IEntry> listPrecisions, Locale locale );
 }

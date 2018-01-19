@@ -41,12 +41,6 @@ import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.Record
  */
 public class RecordFilterAssignedUnitItem implements IRecordFilterItem
 {
-    // Constructor
-    public RecordFilterAssignedUnitItem( )
-    {
-
-    }
-
     /**
      * {@inheritDoc}
      */

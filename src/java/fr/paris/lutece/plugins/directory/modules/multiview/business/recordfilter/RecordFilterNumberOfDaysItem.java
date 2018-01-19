@@ -41,12 +41,6 @@ import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.Record
  */
 public class RecordFilterNumberOfDaysItem implements IRecordFilterItem
 {
-    // Constructor
-    public RecordFilterNumberOfDaysItem( )
-    {
-
-    }
-
     /**
      * {@inheritDoc}
      */

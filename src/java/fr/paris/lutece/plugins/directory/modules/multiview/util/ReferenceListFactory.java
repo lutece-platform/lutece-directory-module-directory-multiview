@@ -45,14 +45,23 @@ import fr.paris.lutece.util.ReferenceList;
  */
 public class ReferenceListFactory
 {
-    private Collection<?> _collectionItem;
-    private String _strCodeAttr;
-    private String _strNameAttribute;
+    private final Collection<?> _collectionItem;
+    private final String _strCodeAttr;
+    private final String _strNameAttribute;
     private boolean _bNumerical = Boolean.TRUE;
-    private String _strDefaultCode = DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_CODE;
+    private final String _strDefaultCode = DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_CODE;
     private String _strDefaultName = DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_NAME;
 
-    // Constructor
+    /**
+     * Constructor
+     * 
+     * @param collectionItem
+     *          The collection of items to create the ReferenceList from
+     * @param strCodeAttr
+     *          The name of the code attribute to retrieve the data from the item
+     * @param strNameAttribute
+     *          The name of the name of attribute to retrieve the data from the item
+     */
     public ReferenceListFactory( Collection<?> collectionItem, String strCodeAttr, String strNameAttribute )
     {
         _collectionItem = collectionItem;
@@ -60,7 +69,18 @@ public class ReferenceListFactory
         _strNameAttribute = strNameAttribute;
     }
 
-    // Constructor
+    /**
+     * Constructor
+     * 
+     * @param collectionItem
+     *          The collection of items to create the ReferenceList from
+     * @param strCodeAttr
+     *          The name of the code attribute to retrieve the data from the item
+     * @param strNameAttribute
+     *          The name of the name of attribute to retrieve the data from the item
+     * @param bNumerical
+     *          The boolean which tell if the code of the item is of type numeric or not
+     */
     public ReferenceListFactory( Collection<?> collectionItem, String strCodeAttr, String strNameAttribute, boolean bNumerical )
     {
         _collectionItem = collectionItem;
@@ -99,6 +119,7 @@ public class ReferenceListFactory
      * 
      * @param referenceList
      *            The ReferenceList to remove the duplicates from
+     * @return the list without the duplicates
      */
     private ReferenceList filterDuplicatesReferenceItem( ReferenceList referenceList )
     {
