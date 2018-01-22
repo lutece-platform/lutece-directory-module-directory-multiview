@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +54,6 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
 {
     // Marks
     private static final String MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD = "map_id_entry_list_record_field";
-    private static final String MARK_PRECISIONS = "precisions";
 
     /**
      * {@inheritDoc}
@@ -93,25 +91,28 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
      * {@inheritDoc}
      */
     @Override
-    public void populateRecordPrecisions( List<Map<String, Object>> resourceActions, List<IEntry> listPrecisions, Locale locale )
+    public void populateRecord( List<Map<String, Object>> resourceActions, List<IEntry> listEntry, String strMarkName )
     {
         for ( Map<String, Object> mapResourceActions : resourceActions )
         {
             Record record = (Record) mapResourceActions.get( DirectoryMultiviewConstants.MARK_RECORD );
             Map<String, List<RecordField>> mapRecordFields = (Map<String, List<RecordField>>) mapResourceActions.get( MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD );
-            List<String> precisions = new ArrayList<>( );
-            for ( IEntry entry : listPrecisions )
+            List<String> listFieldResult = new ArrayList<>( );
+            for ( IEntry entry : listEntry )
             {
                 if ( entry.getDirectory( ).getIdDirectory( ) == record.getDirectory( ).getIdDirectory( ) )
                 {
                     List<RecordField> listRecordField = mapRecordFields.get( Integer.toString( entry.getIdEntry( ) ) );
-                    for ( RecordField field : listRecordField )
+                    if ( listRecordField != null && !listRecordField.isEmpty( ) )
                     {
-                        precisions.add( field.getValue( ) );
+                        for ( RecordField field : listRecordField )
+                        {
+                            listFieldResult.add( field.getValue( ) );
+                        }
                     }
                 }
             }
-            mapResourceActions.put( MARK_PRECISIONS, precisions );
+            mapResourceActions.put( strMarkName, listFieldResult );
         }
     }
 }

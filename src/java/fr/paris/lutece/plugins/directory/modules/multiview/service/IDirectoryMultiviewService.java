@@ -34,7 +34,6 @@
 package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -81,10 +80,10 @@ public interface IDirectoryMultiviewService
      * 
      * @param resourceActions
      *            The list of all Resources Actions
-     * @param listPrecisions
-     *            The list of all precisions
-     * @param locale
-     *            The locale
+     * @param listEntry
+     *            The list of IEntry to retrieve data from
+     * @param strMarkName
+     *          The name of the mark to store the value inside
      */
-    void populateRecordPrecisions( List<Map<String, Object>> resourceActions, List<IEntry> listPrecisions, Locale locale );
+    void populateRecord( List<Map<String, Object>> resourceActions, List<IEntry> listEntry, String strMarkName );
 }

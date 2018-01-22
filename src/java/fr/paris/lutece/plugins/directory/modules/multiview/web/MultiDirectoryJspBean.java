@@ -121,7 +121,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PROPERTY_ENTRY_TYPE_IMAGE = "directory.resource_rss.entry_type_image";
     private static final String PROPERTY_ENTRY_TYPE_MYLUTECE_USER = "directory.entry_type.mylutece_user";
     private static final String PROPERTY_ENTRY_TYPE_GEOLOCATION = "directory.entry_type.geolocation";
-    private static final String PROPERTY_DISPLAY_ENTRY_LABEL_LIST = "directory-multiview.entry_name_list";
+    private static final String PROPERTY_DISPLAY_ENTRY_LABEL_LIST_CUSTOMIZED_COLUMN_1 = "directory-multiview.entry_name_list.customized_column_1";
+    private static final String PROPERTY_DISPLAY_ENTRY_LABEL_LIST_CUSTOMIZED_COLUMN_2 = "directory-multiview.entry_name_list.customized_column_2";
 
     // Markers
     private static final String MARK_LOCALE = "locale";
@@ -153,6 +154,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_RECORD_ASSIGNMENT_FILTER = "record_assignment_filter";
     private static final String MARK_SEARCH_TEXT = "search_text";
     private static final String MARK_ASSIGNED_UNIT_LIST = "assigned_unit_list";
+    private static final String MARK_CUSTOMIZED_COLUMN_ONE = "customized_column_1";
+    private static final String MARK_CUSTOMIZED_COLUMN_TWO = "customized_column_2";
 
     // JSP URL
     private static final String JSP_MANAGE_MULTIVIEW = "jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp";
@@ -184,6 +187,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String DIRECTORY_NAME_ATTRIBUTE = "title";
     private static final String UNIT_CODE_ATTRIBUTE = "idUnit";
     private static final String UNIT_NAME_ATTRIBUTE = "label";
+    private static final String PROPERTY_KEY_VALUES_SEPARATOR = ",";
 
     // Session fields
     private final IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
@@ -194,7 +198,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private Map<Integer, ReferenceList> _workflowStateByDirectoryList;
     private RecordAssignmentFilter _assignmentFilter;
     private transient List<Unit> _listAssignedUnit;
-    private List<IEntry> _listEntryResultSearch;
+    private List<IEntry> _listEntryCustomizedColumnOne;
+    private List<IEntry> _listEntryCustomizedColumnTwo;
     private transient List<IRecordFilterParameter> _listRecordFilterParameter;
     private LinkedHashMap<String, RecordAssignment> _recordAssignmentMap;
     private List<Map<String, Object>> _listResourceActions;
@@ -213,7 +218,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         {
             _directoryList = new HashMap<>( );
             _workflowStateByDirectoryList = new HashMap<>( );
-            _listEntryResultSearch = new ArrayList<>( );
+            _listEntryCustomizedColumnOne = new ArrayList<>( );
+            _listEntryCustomizedColumnTwo = new ArrayList<>( );
             _recordAssignmentMap = new LinkedHashMap<>( );
             _listResourceActions = new ArrayList<>( );
             _listAssignedUnit = new ArrayList<>( );
@@ -239,28 +245,17 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             {
                 if ( directory.getIdWorkflow( ) > 0 )
                 {
-                    _directoryList.put( directory.getIdDirectory( ), directory );
+                    int nIdDirectory = directory.getIdDirectory( );
+                    _directoryList.put( nIdDirectory, directory );
                     Collection<State> listWorkflowState = WorkflowService.getInstance( ).getAllStateByWorkflow( directory.getIdWorkflow( ),
                             AdminUserService.getAdminUser( request ) );
 
                     ReferenceListFactory referenceListParameter = new ReferenceListFactory( listWorkflowState, STATE_CODE_ATTRIBUTE, STATE_NAME_ATTRIBUTE );
-                    _workflowStateByDirectoryList.put( directory.getIdDirectory( ), referenceListParameter.createReferenceList( ) );
+                    _workflowStateByDirectoryList.put( nIdDirectory, referenceListParameter.createReferenceList( ) );
 
                     // build set the list of entries to display in the multiview list
-                    EntryFilter entryFilter = new EntryFilter( );
-                    entryFilter.setIdDirectory( directory.getIdDirectory( ) );
-                    entryFilter.setIsGroup( EntryFilter.FILTER_FALSE );
-                    entryFilter.setIsComment( EntryFilter.FILTER_FALSE );
-                    // entryFilter.setIsShownInResultList( 1 );
-
-                    String entryNameList = AppPropertiesService.getProperty( PROPERTY_DISPLAY_ENTRY_LABEL_LIST );
-                    String [ ] entryNameTab = entryNameList.split( "," );
-                    List<IEntry> entryList = EntryHome.getEntryList( entryFilter, getPlugin( ) );
-
-                    for ( String entryTitle : entryNameTab )
-                    {
-                        entryList.stream( ).filter( e -> entryTitle.equals( e.getTitle( ) ) ).forEachOrdered( _listEntryResultSearch::add );
-                    }
+                    fillEntryListFromTitle( _listEntryCustomizedColumnOne, nIdDirectory, PROPERTY_DISPLAY_ENTRY_LABEL_LIST_CUSTOMIZED_COLUMN_1 );
+                    fillEntryListFromTitle( _listEntryCustomizedColumnTwo, nIdDirectory, PROPERTY_DISPLAY_ENTRY_LABEL_LIST_CUSTOMIZED_COLUMN_2 );
                 }
 
                 // Populate the initialize list of all Assigned Unit
@@ -270,6 +265,34 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _bIsInitialized = true;
         }
 
+    }
+
+    /**
+     * Fill the given list with all the IEntry of the specified directory which have the same title than
+     * the value of the property.
+     * 
+     * @param listIEntry
+     *          The list of IEntry to fill up
+     * @param nIdDirectory
+     *          The identifier of the directory to retrieve the IEntry from
+     * @param strPropertyEntryName
+     *          The property key to retrieve the IEntry title value from
+     */
+    private void fillEntryListFromTitle( List<IEntry> listIEntry, int nIdDirectory, String strPropertyEntryName )
+    {
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdDirectory( nIdDirectory );
+        entryFilter.setIsGroup( EntryFilter.FILTER_FALSE );
+        entryFilter.setIsComment( EntryFilter.FILTER_FALSE );
+
+        String entryNameList = AppPropertiesService.getProperty( strPropertyEntryName );
+        String [ ] entryNameTab = entryNameList.split( PROPERTY_KEY_VALUES_SEPARATOR );
+        List<IEntry> entryList = EntryHome.getEntryList( entryFilter, getPlugin( ) );
+
+        for ( String entryTitle : entryNameTab )
+        {
+            entryList.stream( ).filter( e -> entryTitle.equals( e.getTitle( ) ) ).forEachOrdered( listIEntry::add );
+        }        
     }
 
     /**
@@ -374,19 +397,27 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         // get only records for page items.
         List<Record> lRecord = _recordService.loadListByListId( _paginator.getPageItems( ), getPlugin( ) );
 
+        // Create the global list of IEntry
+        List<IEntry> listIEntryToSearch = new ArrayList<>( );
+        listIEntryToSearch.addAll( _listEntryCustomizedColumnOne );
+        listIEntryToSearch.addAll( _listEntryCustomizedColumnTwo );
+        
         for ( Record record : lRecord )
         {
             // data complement (not done by directory plugin)
             record.getDirectory( ).setIdWorkflow( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getIdWorkflow( ) );
             record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
-
+            
             // add resourceActions
-            _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), _listEntryResultSearch, getUser( ),
+            _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), listIEntryToSearch, getUser( ),
                     null, null, false, getPlugin( ) ) );
         }
 
         // Populate record precisions in resource action (called "demandeur")
-        _directoryMultiviewService.populateRecordPrecisions( _listResourceActions, _listEntryResultSearch, request.getLocale( ) );
+        _directoryMultiviewService.populateRecord( _listResourceActions, _listEntryCustomizedColumnOne, MARK_CUSTOMIZED_COLUMN_ONE );
+        
+        // Populate the record
+        _directoryMultiviewService.populateRecord( _listResourceActions, _listEntryCustomizedColumnTwo, MARK_CUSTOMIZED_COLUMN_TWO );
 
         // Create the ReferenceList of all Assigned Unit
         ReferenceListFactory referenceListParameterUnitAssigned = new ReferenceListFactory( _listAssignedUnit, UNIT_CODE_ATTRIBUTE, UNIT_NAME_ATTRIBUTE );
@@ -394,7 +425,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         model.put( MARK_PAGINATOR, _paginator );
         model.put( MARK_NUMBER_RECORD, mapRecordAssignmentAfterSearch.keySet( ).size( ) );
-        model.put( MARK_ENTRY_LIST_SEARCH_RESULT, _listEntryResultSearch );
+        model.put( MARK_ENTRY_LIST_SEARCH_RESULT, _listEntryCustomizedColumnOne );
         model.put( MARK_LOCALE, getLocale( ) );
         model.put( MARK_RESOURCE_ACTIONS_LIST, _listResourceActions );
         model.put( MARK_RECORD_ASSIGNMENT_FILTER, _assignmentFilter );

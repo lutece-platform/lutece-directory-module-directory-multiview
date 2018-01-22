@@ -19,13 +19,16 @@
                                                 <th data-field="nature">
                                                         #i18n{module.directory.multiview.records_list.nature}
                                                 </th>
-                                                <th data-field="origin">
-                                                        #i18n{module.directory.multiview.records_list.content}
+                                                <th data-field="customized_column_1">
+                                                        #i18n{module.directory.multiview.records_list.customized_column_1}
                                                 </th>
                                                 <th data-field="created" class="th-sort-DESC">
                                                         #i18n{module.directory.multiview.records_list.created}
                                                         <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="created" />
                                                 </th>
+                                               	<th data-field="customized_column_2">
+                                                        #i18n{module.directory.multiview.records_list.customized_column_2}
+                                                </th>                                                
                                                 <th data-field="assigned">
                                                         #i18n{module.directory.multiview.records_list.assigned}
                                                         <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="assigned" />
@@ -48,14 +51,20 @@
                                                             </#if>
                                                         </td>
                                                         <td>
-                                                            <#list resource_actions.precisions as precision>
-                                                                ${precision!''}
+                                                            <#list resource_actions.customized_column_1 as customized_column_1_value>
+                                                                ${customized_column_1_value!''}
                                                                 <br/>
                                                             </#list>
                                                         </td>
                                                         <td>
                                                             ${(resource_actions.record.dateCreation?date)!''}
                                                         </td>
+                                                        <td>
+                                                            <#list resource_actions.customized_column_2 as customized_column_2_value>
+                                                                ${customized_column_2_value!''}
+                                                                <br/>
+                                                            </#list>
+                                                        </td>                                                       
                                                         <td>
                                                                 <#if recordAssignmentMap?? >
                                                                         <#if recordAssignmentMap[resource_actions.record.idRecord?string].assignorUnit.label?? >
