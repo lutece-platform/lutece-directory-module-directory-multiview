@@ -83,7 +83,7 @@ public interface IDirectoryMultiviewService
      * @param listEntry
      *            The list of IEntry to retrieve data from
      * @param strMarkName
-     *          The name of the mark to store the value inside
+     *            The name of the mark to store the value inside
      */
     void populateRecord( List<Map<String, Object>> resourceActions, List<IEntry> listEntry, String strMarkName );
 }

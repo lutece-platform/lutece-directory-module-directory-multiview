@@ -268,15 +268,14 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     }
 
     /**
-     * Fill the given list with all the IEntry of the specified directory which have the same title than
-     * the value of the property.
+     * Fill the given list with all the IEntry of the specified directory which have the same title than the value of the property.
      * 
      * @param listIEntry
-     *          The list of IEntry to fill up
+     *            The list of IEntry to fill up
      * @param nIdDirectory
-     *          The identifier of the directory to retrieve the IEntry from
+     *            The identifier of the directory to retrieve the IEntry from
      * @param strPropertyEntryName
-     *          The property key to retrieve the IEntry title value from
+     *            The property key to retrieve the IEntry title value from
      */
     private void fillEntryListFromTitle( List<IEntry> listIEntry, int nIdDirectory, String strPropertyEntryName )
     {
@@ -292,7 +291,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         for ( String entryTitle : entryNameTab )
         {
             entryList.stream( ).filter( e -> entryTitle.equals( e.getTitle( ) ) ).forEachOrdered( listIEntry::add );
-        }        
+        }
     }
 
     /**
@@ -401,21 +400,21 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         List<IEntry> listIEntryToSearch = new ArrayList<>( );
         listIEntryToSearch.addAll( _listEntryCustomizedColumnOne );
         listIEntryToSearch.addAll( _listEntryCustomizedColumnTwo );
-        
+
         for ( Record record : lRecord )
         {
             // data complement (not done by directory plugin)
             record.getDirectory( ).setIdWorkflow( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getIdWorkflow( ) );
             record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
-            
+
             // add resourceActions
-            _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), listIEntryToSearch, getUser( ),
-                    null, null, false, getPlugin( ) ) );
+            _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), listIEntryToSearch, getUser( ), null,
+                    null, false, getPlugin( ) ) );
         }
 
         // Populate record precisions in resource action (called "demandeur")
         _directoryMultiviewService.populateRecord( _listResourceActions, _listEntryCustomizedColumnOne, MARK_CUSTOMIZED_COLUMN_ONE );
-        
+
         // Populate the record
         _directoryMultiviewService.populateRecord( _listResourceActions, _listEntryCustomizedColumnTwo, MARK_CUSTOMIZED_COLUMN_TWO );
 
