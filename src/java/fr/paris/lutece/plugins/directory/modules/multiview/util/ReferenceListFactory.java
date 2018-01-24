@@ -37,6 +37,8 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -45,6 +47,10 @@ import fr.paris.lutece.util.ReferenceList;
  */
 public class ReferenceListFactory
 {
+    // Constants
+    private static final String DEFAULT_NAME = StringUtils.EMPTY;
+    
+    // Variables
     private final Collection<?> _collectionItem;
     private final String _strCodeAttr;
     private final String _strNameAttribute;
@@ -109,6 +115,8 @@ public class ReferenceListFactory
             {
                 referenceListResult.addAll( filterDuplicatesReferenceItem( referenceList ) );
             }
+            
+            manageItemName( referenceListResult );
         }
 
         return referenceListResult;
@@ -138,6 +146,23 @@ public class ReferenceListFactory
         }
 
         return referenceListCleaned;
+    }
+    
+    /**
+     * Check if the name is null or not and if it is true replace it with {@link ReferenceListFactory.DEFAULT_NAME}
+     * 
+     * @param referenceListResult
+     *          The ReferenceList to analyze
+     */
+    private void manageItemName( ReferenceList referenceListResult )
+    {
+        for ( ReferenceItem referenceItem : referenceListResult )
+        {
+            if ( referenceItem.getName( ) == null )
+            {
+                referenceItem.setName( DEFAULT_NAME );
+            }
+        }
     }
 
     /**
