@@ -62,13 +62,14 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
      * {@inheritDoc}
      */
     @Override
-    public RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter, CustomizedColumnFactory customizedColumnFactory )
+    public RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter,
+            CustomizedColumnFactory customizedColumnFactory )
     {
         RecordAssignmentFilter filter = new RecordAssignmentFilter( );
-        
+
         List<RecordFieldItem> listRecordFieldItem = customizedColumnFactory.createRecordFieldItemList( );
         filter.setListRecordFieldItem( listRecordFieldItem );
-        
+
         for ( IRecordFilterParameter recordFilterParameter : listRecordFilterParameter )
         {
             IRecordFilterItem recordFilterItem = recordFilterParameter.getRecordFilterItem( );
@@ -77,7 +78,7 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
 
         return filter;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -85,12 +86,12 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
     public void populateResourceActionList( List<Map<String, Object>> listResourceActions, CustomizedColumnFactory customizedColumnFactory )
     {
         List<CustomizedColumn> listcustomizedColumn = customizedColumnFactory.createCustomizedColumnList( );
-        
+
         for ( CustomizedColumn customizedColumn : listcustomizedColumn )
         {
             List<IEntry> listCustomizedColumnEntry = customizedColumn.getListEntryCustomizedColumn( );
             String strCustomizedColumnName = customizedColumn.getCustomizedColumnName( );
-            
+
             populateRecord( listResourceActions, listCustomizedColumnEntry, strCustomizedColumnName );
         }
     }

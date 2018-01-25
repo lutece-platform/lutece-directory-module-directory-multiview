@@ -103,7 +103,7 @@ public class RecordFilterDirectoryParameter implements IRecordFilterParameter
     {
         return MARK_DIRECTORY_FILTER;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -112,7 +112,7 @@ public class RecordFilterDirectoryParameter implements IRecordFilterParameter
     {
         return _directoryColumnFilter;
     }
-    
+
     /**
      * Implementation of the IColumnFilter interface for the Directory
      */
@@ -123,11 +123,11 @@ public class RecordFilterDirectoryParameter implements IRecordFilterParameter
         private static final String DIRECTORY_NAME_ATTRIBUTE = "title";
         private static final int DIRECTORY_DISABLED_FILTER_VALUE = 1;
         private static final int ID_WORKFLOW_UNSET = 0;
-        
+
         // Variables
         private final List<Directory> _listDirectory;
         private String _strFilterTemplate;
-        
+
         /**
          * Constructor
          */
@@ -135,7 +135,7 @@ public class RecordFilterDirectoryParameter implements IRecordFilterParameter
         {
             _listDirectory = new ArrayList<>( );
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -160,7 +160,7 @@ public class RecordFilterDirectoryParameter implements IRecordFilterParameter
         public ReferenceList createReferenceList( )
         {
             ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listDirectory, DIRECTORY_CODE_ATTRIBUTE, DIRECTORY_NAME_ATTRIBUTE );
-            
+
             return referenceListFactory.createReferenceList( );
         }
 
@@ -171,21 +171,21 @@ public class RecordFilterDirectoryParameter implements IRecordFilterParameter
         public void buildTemplate( RecordAssignmentFilter filter, HttpServletRequest request )
         {
             String strTemplateResult = StringUtils.EMPTY;
-            
+
             Map<String, Object> model = new LinkedHashMap<>( );
             model.put( MARK_FILTER_LIST, createReferenceList( ) );
             model.put( MARK_FILTER_LIST_VALUE, getRecordFilterItem( ).getItemValue( filter ) );
             model.put( MARK_FILTER_NAME, PARAMETER_DIRECTORY_FILTER );
-            
+
             HtmlTemplate htmlTemplate = AppTemplateService.getTemplate( FILTER_TEMPLATE_NAME, request.getLocale( ), model );
             if ( htmlTemplate != null )
             {
                 strTemplateResult = htmlTemplate.getHtml( );
             }
-            
+
             _strFilterTemplate = strTemplateResult;
         }
-        
+
         /**
          * {@inheritDoc}
          */

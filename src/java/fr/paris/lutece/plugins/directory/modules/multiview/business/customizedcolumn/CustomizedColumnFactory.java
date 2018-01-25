@@ -59,45 +59,45 @@ public class CustomizedColumnFactory
     private static final int DEFAULT_CUSTOMIZED_COLUMN_NUMBER = NumberUtils.INTEGER_MINUS_ONE;
     private static final int FIRST_COLUMN_NUMBER = NumberUtils.INTEGER_ONE;
     private static final String DEFAULT_RECORD_FIELD_VALUE = StringUtils.EMPTY;
-    
+
     // Property
     private static final String PROPERTY_COLUMN_NUMBER = "directory-multiview.entry_name_list.customized_column_number";
-    
+
     // Pattern
     private static final String PROPERTY_COLUMN_VALUE_KEY_PATTERN = "directory-multiview.entry_name_list.customized_column_%s";
     private static final String PROPERTY_FILTER_COLUMN_KEY_PATTERN = "directory-multiview.entry_name_list.customized_column_%s_filter";
-    
+
     // Variables
     private final Plugin _plugin;
     private final int _nColumnNumber;
     private final List<CustomizedColumn> _listCustomizedColumn;
-    
+
     /**
      * Constructor
      * 
      * @param listDirectory
-     *          The list of Directory to construct the list of CustomizedColumn with
+     *            The list of Directory to construct the list of CustomizedColumn with
      * @param plugin
-     *          The Plugin to use for retrieving values
+     *            The Plugin to use for retrieving values
      * @param locale
-     *          The locale to used for retrieving the title of the column
+     *            The locale to used for retrieving the title of the column
      */
     public CustomizedColumnFactory( List<Directory> listDirectory, Plugin plugin, Locale locale )
     {
         _plugin = plugin;
         _nColumnNumber = NumberUtils.toInt( AppPropertiesService.getProperty( PROPERTY_COLUMN_NUMBER ), DEFAULT_CUSTOMIZED_COLUMN_NUMBER );
-        
+
         // Create the list of CustomizedColumn
         _listCustomizedColumn = new ArrayList<>( );
         if ( _nColumnNumber != DEFAULT_CUSTOMIZED_COLUMN_NUMBER )
         {
-            for ( int nColumnNumber = FIRST_COLUMN_NUMBER ; nColumnNumber <= _nColumnNumber ; nColumnNumber++ )
+            for ( int nColumnNumber = FIRST_COLUMN_NUMBER; nColumnNumber <= _nColumnNumber; nColumnNumber++ )
             {
                 boolean isFiltered = isCustomizedColumnFilterAuthorized( nColumnNumber );
                 _listCustomizedColumn.add( new CustomizedColumn( nColumnNumber, isFiltered, locale ) );
             }
         }
-        
+
         // Populate the list of CustomizedColumn
         if ( listDirectory != null && !listDirectory.isEmpty( ) )
         {
@@ -107,12 +107,12 @@ public class CustomizedColumnFactory
             }
         }
     }
-    
+
     /**
      * Check if the CustomizedColumn with the specified number can be filtered or not
      * 
      * @param nCustomizedColumnNumber
-     *          The number of the CustomizedColumn to analyze
+     *            The number of the CustomizedColumn to analyze
      * @return true if the CustomizedColumn with the given number can be filtered false otherwise
      */
     private boolean isCustomizedColumnFilterAuthorized( int nCustomizedColumnNumber )
@@ -120,17 +120,17 @@ public class CustomizedColumnFactory
         String strFilterColumnPropertyKey = String.format( PROPERTY_FILTER_COLUMN_KEY_PATTERN, nCustomizedColumnNumber );
         String strFiltercolumnPropertyValue = AppPropertiesService.getProperty( strFilterColumnPropertyKey );
         Integer nFilterProperty = NumberUtils.toInt( strFiltercolumnPropertyValue, NumberUtils.INTEGER_MINUS_ONE );
-        
+
         boolean isFiltered = Boolean.FALSE;
         try
         {
             isFiltered = BooleanUtils.toBoolean( nFilterProperty, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO );
         }
-        catch ( IllegalArgumentException exception )
+        catch( IllegalArgumentException exception )
         {
             isFiltered = Boolean.FALSE;
         }
-        
+
         return isFiltered;
     }
 
@@ -138,23 +138,23 @@ public class CustomizedColumnFactory
      * Populate the list of CustomizedColumn of the factory for a specified Directory identifier
      * 
      * @param nIdDirectory
-     *          The identifier of the Directory to populate the list of Entry from
+     *            The identifier of the Directory to populate the list of Entry from
      */
     private void populateCustomizedColumnLists( int nIdDirectory )
     {
         if ( _nColumnNumber != DEFAULT_CUSTOMIZED_COLUMN_NUMBER )
         {
-            for ( int nColumnNumber = FIRST_COLUMN_NUMBER ; nColumnNumber <= _nColumnNumber ; nColumnNumber++ )
+            for ( int nColumnNumber = FIRST_COLUMN_NUMBER; nColumnNumber <= _nColumnNumber; nColumnNumber++ )
             {
                 String strPropertyColumnKey = String.format( PROPERTY_COLUMN_VALUE_KEY_PATTERN, nColumnNumber );
                 List<IEntry> listEntry = fillEntryListFromTitle( nIdDirectory, strPropertyColumnKey );
-                
+
                 CustomizedColumn customizedColumn = findCustomizedColumnByNumber( nColumnNumber );
                 customizedColumn.addColumnListEntry( listEntry );
             }
         }
     }
-    
+
     /**
      * Fill the given list with all the IEntry of the specified directory which have the same title than the value of the property.
      * 
@@ -167,7 +167,7 @@ public class CustomizedColumnFactory
     private List<IEntry> fillEntryListFromTitle( int nIdDirectory, String strPropertyEntryName )
     {
         List<IEntry> listIEntry = new ArrayList<>( );
-        
+
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdDirectory( nIdDirectory );
         entryFilter.setIsGroup( EntryFilter.FILTER_FALSE );
@@ -181,35 +181,34 @@ public class CustomizedColumnFactory
         {
             entryList.stream( ).filter( entry -> entryTitle.equals( entry.getTitle( ) ) ).forEachOrdered( listIEntry::add );
         }
-        
+
         return listIEntry;
     }
-    
+
     /**
-     * Return the CustomizedColumn from the list of CustomizedColumn of the factory
-     * from a specific number
+     * Return the CustomizedColumn from the list of CustomizedColumn of the factory from a specific number
      * 
      * @param nColumnNumber
-     *          The number of the column to retrieve the CustomizedColumn from the list 
+     *            The number of the column to retrieve the CustomizedColumn from the list
      * @return the CustomizedColumn associate to the specified column number
      */
     private CustomizedColumn findCustomizedColumnByNumber( int nColumnNumber )
     {
         CustomizedColumn customizedColumnResult = null;
-        
+
         for ( CustomizedColumn customizedColumn : _listCustomizedColumn )
         {
             if ( customizedColumn.getCustomizedColumnNumber( ) == nColumnNumber )
             {
                 customizedColumnResult = customizedColumn;
-                
+
                 break;
             }
         }
-        
+
         return customizedColumnResult;
     }
-    
+
     /**
      * Create the list of RecordFieldItem associated the list of CustomizedColumn
      * 
@@ -218,7 +217,7 @@ public class CustomizedColumnFactory
     public List<RecordFieldItem> createRecordFieldItemList( )
     {
         List<RecordFieldItem> listRecordFieldItem = new ArrayList<>( );
-        
+
         for ( CustomizedColumn customizedColumn : _listCustomizedColumn )
         {
             if ( customizedColumn.isFilterAuthorized( ) )
@@ -226,10 +225,10 @@ public class CustomizedColumnFactory
                 RecordFieldItem recordFieldItem = new RecordFieldItem( customizedColumn.getCustomizedColumnNumber( ) );
                 recordFieldItem.setRecordFieldValue( DEFAULT_RECORD_FIELD_VALUE );
 
-                listRecordFieldItem.add( recordFieldItem );                
+                listRecordFieldItem.add( recordFieldItem );
             }
         }
-        
+
         return listRecordFieldItem;
     }
 

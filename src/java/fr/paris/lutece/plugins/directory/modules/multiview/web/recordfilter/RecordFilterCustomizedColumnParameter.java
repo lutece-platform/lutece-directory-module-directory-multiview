@@ -80,11 +80,11 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
      * Constructor
      * 
      * @param request
-     *          The HttpServletRequest to set
+     *            The HttpServletRequest to set
      * @param listEntry
-     *          The list of Entry to retrieve the value for the filter list
+     *            The list of Entry to retrieve the value for the filter list
      * @param nColumnNumber
-     *          The column number of the CustomizedColumn
+     *            The column number of the CustomizedColumn
      */
     public RecordFilterCustomizedColumnParameter( HttpServletRequest request, List<IEntry> listEntry, int nColumnNumber )
     {
@@ -93,7 +93,7 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
         _recordFilterCustomizedColumnItem = new RecordFilterCustomizedColumnItem( nColumnNumber );
         _customizedColumnColumnFilter = new CustomizedColumnColumnFilter( request, listEntry );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -111,7 +111,7 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
     {
         return _strCustomizedColumnMark;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -120,7 +120,7 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
     {
         return _recordFilterCustomizedColumnItem;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -129,7 +129,7 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
     {
         return _customizedColumnColumnFilter;
     }
-    
+
     /**
      * Implementation of the IColumnFilter interface for the Directory
      */
@@ -137,24 +137,24 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
     {
         // Constants
         private static final String RECORDFIELD_VALUE_ATTRIBUTE = "value";
-        
+
         // Messages
         private static final String MESSAGE_RECORDFIELD_ATTRIBUTE_DEFAULT_NAME = "module.directory.multiview.manage_directory_multirecord.recordfield.attribute.defaultName";
-        
+
         // Variables
         private final List<RecordField> _listCustomizedColumnRecordField;
         private final List<IEntry> _listIEntryToRetrieveValueFrom;
         private final Map<Integer, RecordAssignment> _mapRecordAssignment;
         private final HttpServletRequest _request;
         private String _strFilterTemplate;
-        
+
         /**
          * Constructor
          * 
          * @param request
-         *              The HttpServletRequest
+         *            The HttpServletRequest
          * @param listEntry
-         *          The list of Entry to retrieve the value from
+         *            The list of Entry to retrieve the value from
          */
         CustomizedColumnColumnFilter( HttpServletRequest request, List<IEntry> listEntry )
         {
@@ -162,9 +162,9 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
             _request = request;
             _listCustomizedColumnRecordField = new ArrayList<>( );
             _listIEntryToRetrieveValueFrom = listEntry;
-            _mapRecordAssignment = createRecordAssignmentFilerMap( request ); 
+            _mapRecordAssignment = createRecordAssignmentFilerMap( request );
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -181,19 +181,19 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
                 }
             }
         }
-        
+
         /**
-         * Retrieve the list of RecordField associated to the record and check if we must
-         * collect the RecordField which are linked to an entry which we want to filter the values.
+         * Retrieve the list of RecordField associated to the record and check if we must collect the RecordField which are linked to an entry which we want to
+         * filter the values.
          * 
          * @param record
-         *          The Record to retrieve the RecordField from
+         *            The Record to retrieve the RecordField from
          */
         private void manageRecordField( Record record )
         {
             RecordFieldFilter recordFieldFilter = new RecordFieldFilter( );
             recordFieldFilter.setIdRecord( record.getIdRecord( ) );
-            
+
             List<RecordField> listRecordField = RecordFieldHome.getRecordFieldList( recordFieldFilter, DirectoryUtils.getPlugin( ) );
             if ( listRecordField != null && !listRecordField.isEmpty( ) )
             {
@@ -201,15 +201,15 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
                 {
                     checkIfRecordFieldBelongToEntryInList( recordField );
                 }
-            }            
+            }
         }
-        
+
         /**
-         * Check if a RecordField belong to an entry of the list of Entry which we want
-         * to gather values. If it's true the RecordField is added to the filter list.
+         * Check if a RecordField belong to an entry of the list of Entry which we want to gather values. If it's true the RecordField is added to the filter
+         * list.
          * 
          * @param recordField
-         *          The RecordField to analyze
+         *            The RecordField to analyze
          */
         private void checkIfRecordFieldBelongToEntryInList( RecordField recordField )
         {
@@ -219,7 +219,7 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
                 {
                     _listCustomizedColumnRecordField.add( recordField );
                 }
-            }            
+            }
         }
 
         /**
@@ -228,9 +228,10 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
         @Override
         public ReferenceList createReferenceList( )
         {
-            ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listCustomizedColumnRecordField, RECORDFIELD_VALUE_ATTRIBUTE, RECORDFIELD_VALUE_ATTRIBUTE, Boolean.FALSE );
+            ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listCustomizedColumnRecordField, RECORDFIELD_VALUE_ATTRIBUTE,
+                    RECORDFIELD_VALUE_ATTRIBUTE, Boolean.FALSE );
             referenceListFactory.setDefaultName( I18nService.getLocalizedString( MESSAGE_RECORDFIELD_ATTRIBUTE_DEFAULT_NAME, _request.getLocale( ) ) );
-            
+
             return referenceListFactory.createReferenceList( );
         }
 
@@ -255,7 +256,7 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
 
             _strFilterTemplate = strTemplateResult;
         }
-        
+
         /**
          * {@inheritDoc}
          */

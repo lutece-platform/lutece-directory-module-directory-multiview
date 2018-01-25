@@ -61,21 +61,22 @@ public interface IDirectoryMultiviewService
      * @param listRecordFilterParameter
      *            The list of all IRecordFilterParameter use for filter the records
      * @param customizedColumnFactory
-     *          The factory to use for creating the new RecordFieldItem list for the new filter
+     *            The factory to use for creating the new RecordFieldItem list for the new filter
      * @return the filter The filter to set the value on
      */
-    RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter, CustomizedColumnFactory customizedColumnFactory );
+    RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter,
+            CustomizedColumnFactory customizedColumnFactory );
 
     /**
      * Populate the list of ResourcesActions with the value containing in the the list of the customizedColumn inside the Factory
      * 
      * @param resourceActions
-     *              The list of ResourceActions to populate
+     *            The list of ResourceActions to populate
      * @param customizedColumnFactory
-     *              The Factory which contains the list of CustomizedColumn to retrieve the data from
+     *            The Factory which contains the list of CustomizedColumn to retrieve the data from
      */
     void populateResourceActionList( List<Map<String, Object>> resourceActions, CustomizedColumnFactory customizedColumnFactory );
-    
+
     /**
      * Populate Record Precisions
      * 

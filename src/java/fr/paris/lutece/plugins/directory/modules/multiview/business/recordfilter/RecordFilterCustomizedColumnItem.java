@@ -47,21 +47,21 @@ public class RecordFilterCustomizedColumnItem implements IRecordFilterItem
 {
     // Constants
     private static final String DEFAULT_ITEM_VALUE = StringUtils.EMPTY;
-    
+
     // Variables
     private final int _nCustomizedColumnNumber;
-    
+
     /**
      * Constructor
      * 
      * @param nCustomizedColumnNumber
-     *          The CustomizedColumn number
+     *            The CustomizedColumn number
      */
     public RecordFilterCustomizedColumnItem( int nCustomizedColumnNumber )
     {
         _nCustomizedColumnNumber = nCustomizedColumnNumber;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -69,13 +69,13 @@ public class RecordFilterCustomizedColumnItem implements IRecordFilterItem
     public Object getItemValue( RecordAssignmentFilter filter )
     {
         String strItemValue = DEFAULT_ITEM_VALUE;
-        
+
         RecordFieldItem recordFieldItem = retrieveRecordFieldItemFromFilter( filter );
         if ( recordFieldItem != null )
         {
             strItemValue = recordFieldItem.getRecordFieldValue( );
         }
-        
+
         return strItemValue;
     }
 
@@ -108,13 +108,13 @@ public class RecordFilterCustomizedColumnItem implements IRecordFilterItem
      * Return the RecordFieldItem from the given filter
      * 
      * @param filter
-     *          The filter to retrieve the RecordFilterItem from
+     *            The filter to retrieve the RecordFilterItem from
      * @return the RecordFilterItem associated to the current CustomiedColumnItem
      */
     private RecordFieldItem retrieveRecordFieldItemFromFilter( RecordAssignmentFilter filter )
     {
         RecordFieldItem recordFieldItemResult = null;
-        
+
         List<RecordFieldItem> listRecordFieldItem = filter.getListRecordFieldItem( );
         for ( RecordFieldItem recordFieldItem : listRecordFieldItem )
         {
@@ -124,17 +124,17 @@ public class RecordFilterCustomizedColumnItem implements IRecordFilterItem
                 break;
             }
         }
-        
+
         return recordFieldItemResult;
     }
-    
+
     /**
      * Set the given value to the RecordFieldItem in the given filter
      * 
      * @param filter
-     *          The filter to retrieve the RecordFiedItem to set the value on
+     *            The filter to retrieve the RecordFiedItem to set the value on
      * @param strRecordFieldValue
-     *          The value to set
+     *            The value to set
      */
     private void setRecordFieldItemValue( RecordAssignmentFilter filter, String strRecordFieldValue )
     {
@@ -142,6 +142,6 @@ public class RecordFilterCustomizedColumnItem implements IRecordFilterItem
         if ( recordFieldItem != null )
         {
             recordFieldItem.setRecordFieldValue( strRecordFieldValue );
-        }        
+        }
     }
 }

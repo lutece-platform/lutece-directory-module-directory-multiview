@@ -216,14 +216,14 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                     _directoryList.put( nIdDirectory, directory );
                 }
             }
-            
+
             // Create the CustomizedColumnFactory
             _customizedColumnFactory = new CustomizedColumnFactory( listDirectory, getPlugin( ), request.getLocale( ) );
-            
+
             // Set the list of the RecordFieldItem to the filter
             List<RecordFieldItem> listRecordFieldItem = _customizedColumnFactory.createRecordFieldItemList( );
             _assignmentFilter.setListRecordFieldItem( listRecordFieldItem );
-            
+
             // Set the default values on the filter
             populateRecordFilterItemList( request );
             for ( IRecordFilterParameter recordFilterParameter : _listRecordFilterParameter )
@@ -231,7 +231,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 recordFilterParameter.getRecordFilterItem( ).setItemDefaultValue( _assignmentFilter );
                 recordFilterParameter.getColumnFilter( ).populateListValue( );
             }
-            
+
             reInitDirectoryMultiview( null );
             _bIsInitialized = true;
         }
@@ -275,7 +275,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             else
             {
                 // new SEARCH
-                RecordAssignmentFilter newFilter = _directoryMultiviewService.getRecordAssignmentFilter( request, _listRecordFilterParameter, _customizedColumnFactory );
+                RecordAssignmentFilter newFilter = _directoryMultiviewService.getRecordAssignmentFilter( request, _listRecordFilterParameter,
+                        _customizedColumnFactory );
 
                 // if filter changed, reinit several list for multiview
                 reInitDirectoryMultiview( newFilter );
@@ -319,7 +320,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         // Populate the list of ResourceActions with the list of entry containing in the list of the CustomizedColumn of the Factory
         _directoryMultiviewService.populateResourceActionList( _listResourceActions, _customizedColumnFactory );
-        
+
         model.put( MARK_PAGINATOR, _paginator );
         model.put( MARK_NUMBER_RECORD, mapRecordAssignmentAfterSearch.keySet( ).size( ) );
         model.put( MARK_LOCALE, getLocale( ) );
@@ -328,14 +329,14 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         model.put( MARK_RECORD_ASSIGNMENT_MAP, mapRecordAssignmentAfterSearch );
         model.put( MARK_SEARCH_TEXT, _strSearchText );
         model.put( MARK_CUSTOMIZED_COLUMN_LIST, _customizedColumnFactory.createCustomizedColumnList( ) );
-        
+
         // Build the template for each filter
         for ( IRecordFilterParameter recordFilterParameter : _listRecordFilterParameter )
         {
             recordFilterParameter.getColumnFilter( ).buildTemplate( _assignmentFilter, request );
         }
         model.put( MARK_RECORD_FIELD_FILTER_LIST, _listRecordFilterParameter );
-        
+
         return getPage( PROPERTY_MANAGE_DIRECTORY_RECORD_PAGE_TITLE, TEMPLATE_MANAGE_MULTI_DIRECTORY_RECORD, model );
     }
 
@@ -609,7 +610,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      * Populate the list of all Record Filter Item on which we can filter the records
      * 
      * @param request
-     *          The HttpServletRequest
+     *            The HttpServletRequest
      */
     private void populateRecordFilterItemList( HttpServletRequest request )
     {
@@ -626,7 +627,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             {
                 List<IEntry> listEntry = customizedColumn.getListEntryCustomizedColumn( );
                 int nColumnNumber = customizedColumn.getCustomizedColumnNumber( );
-                
+
                 _listRecordFilterParameter.add( new RecordFilterCustomizedColumnParameter( request, listEntry, nColumnNumber ) );
             }
         }

@@ -53,7 +53,7 @@ public class RecordFieldHelperColumnFilter
      * Create the map which associate for each id record its RecordAssignement
      * 
      * @param request
-     *          The HttpServletRequest to retrieve the user data from
+     *            The HttpServletRequest to retrieve the user data from
      * @return the map which associate for each id record its RecordAssignement
      */
     public Map<Integer, RecordAssignment> createRecordAssignmentFilerMap( HttpServletRequest request )
@@ -79,7 +79,7 @@ public class RecordFieldHelperColumnFilter
 
             }
         }
-        
+
         return recordAssignmentMap;
     }
 }

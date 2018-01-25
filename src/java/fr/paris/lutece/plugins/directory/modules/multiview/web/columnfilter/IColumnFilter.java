@@ -45,34 +45,34 @@ public interface IColumnFilter
 {
     // Template
     String FILTER_TEMPLATE_NAME = "admin/plugins/directory/modules/multiview/record_filter.html";
-    
+
     // Marks
     String MARK_FILTER_LIST = "filter_list";
     String MARK_FILTER_NAME = "filter_name";
     String MARK_FILTER_LIST_VALUE = "filter_list_value";
-    
+
     /**
      * Populate the list of object to filter on
      */
     void populateListValue( );
-    
+
     /**
      * Create the ReferenceList of the filter object list
      * 
      * @return the ReferenceList object created from the list of object of the filter
      */
     ReferenceList createReferenceList( );
-    
+
     /**
      * Build the HtmlTemplate from the filter value with the given request
      * 
      * @param filter
-     *          The RecordAssignmentFilter to retrieve the value from
+     *            The RecordAssignmentFilter to retrieve the value from
      * @param request
-     *          The HttpServletRequest
+     *            The HttpServletRequest
      */
     void buildTemplate( RecordAssignmentFilter filter, HttpServletRequest request );
-    
+
     /**
      * Return the template of the Filter
      * 

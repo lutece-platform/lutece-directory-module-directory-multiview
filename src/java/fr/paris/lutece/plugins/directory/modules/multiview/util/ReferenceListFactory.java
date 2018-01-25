@@ -49,7 +49,7 @@ public class ReferenceListFactory
 {
     // Constants
     private static final String DEFAULT_NAME = StringUtils.EMPTY;
-    
+
     // Variables
     private final Collection<?> _collectionItem;
     private final String _strCodeAttr;
@@ -115,7 +115,7 @@ public class ReferenceListFactory
             {
                 referenceListResult.addAll( filterDuplicatesReferenceItem( referenceList ) );
             }
-            
+
             manageItemName( referenceListResult );
         }
 
@@ -147,12 +147,12 @@ public class ReferenceListFactory
 
         return referenceListCleaned;
     }
-    
+
     /**
      * Check if the name is null or not and if it is true replace it with {@link ReferenceListFactory.DEFAULT_NAME}
      * 
      * @param referenceListResult
-     *          The ReferenceList to analyze
+     *            The ReferenceList to analyze
      */
     private void manageItemName( ReferenceList referenceListResult )
     {

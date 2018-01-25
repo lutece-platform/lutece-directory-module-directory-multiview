@@ -65,7 +65,7 @@ public interface IRecordFilterParameter
      * @return the IRecordFilterItem associated to the to the IRecordFilterParameter
      */
     IRecordFilterItem getRecordFilterItem( );
-    
+
     /**
      * Return the ColumnFilter of the RecordFieldParameter
      * 

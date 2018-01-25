@@ -99,15 +99,16 @@ public class RecordFilterNumberOfDaysParameter implements IRecordFilterParameter
     {
         return MARK_NUMBER_OF_DAYS_FILTER;
     }
+
     /**
      * {@inheritDoc}
-     */    
+     */
     @Override
     public IColumnFilter getColumnFilter( )
     {
         return _numberOfDaysColumnFilter;
     }
-    
+
     /**
      * Implementation of the IColumnFilter interface for the Directory
      */
@@ -117,17 +118,17 @@ public class RecordFilterNumberOfDaysParameter implements IRecordFilterParameter
         private static final int LAST_DAY_VALUE = 1;
         private static final int LAST_WEEK_VALUE = 7;
         private static final int LAST_MONTH_VALUE = 31;
-        
+
         // Messages keys
         private static final String DEFAULT_DAY_MESSAGE_KEY = "module.directory.multiview.records_list.search_since_default";
         private static final String LAST_DAY_MESSAGE_KEY = "module.directory.multiview.records_list.search_since_last_day";
         private static final String LAST_WEEK_MESSAGE_KEY = "module.directory.multiview.records_list.search_since_last_week";
         private static final String LAST_MONTH_MESSAGE_KEY = "module.directory.multiview.records_list.search_since_last_month";
-        
+
         // Variables
         private String _strFilterTemplate;
         private Locale _locale;
-        
+
         /**
          * {@inheritDoc}
          */
@@ -144,23 +145,23 @@ public class RecordFilterNumberOfDaysParameter implements IRecordFilterParameter
         public ReferenceList createReferenceList( )
         {
             ReferenceList referenceList = new ReferenceList( );
-            
+
             // Default value
             String strDefaultDayItemName = I18nService.getLocalizedString( DEFAULT_DAY_MESSAGE_KEY, _locale );
             referenceList.addItem( DirectoryMultiviewConstants.DEFAULT_FILTER_VALUE, strDefaultDayItemName );
-            
+
             // Last day filter
             String strLastDayItemName = I18nService.getLocalizedString( LAST_DAY_MESSAGE_KEY, _locale );
             referenceList.addItem( LAST_DAY_VALUE, strLastDayItemName );
-            
+
             // Last week filter
             String strLastWeekItemName = I18nService.getLocalizedString( LAST_WEEK_MESSAGE_KEY, _locale );
             referenceList.addItem( LAST_WEEK_VALUE, strLastWeekItemName );
-            
+
             // Last month filter
             String strLastMonthItemName = I18nService.getLocalizedString( LAST_MONTH_MESSAGE_KEY, _locale );
             referenceList.addItem( LAST_MONTH_VALUE, strLastMonthItemName );
-            
+
             return referenceList;
         }
 
@@ -172,19 +173,19 @@ public class RecordFilterNumberOfDaysParameter implements IRecordFilterParameter
         {
             String strTemplateResult = StringUtils.EMPTY;
             _locale = request.getLocale( );
-            
+
             Map<String, Object> model = new LinkedHashMap<>( );
             model.put( MARK_FILTER_LIST, createReferenceList( ) );
             model.put( MARK_FILTER_LIST_VALUE, getRecordFilterItem( ).getItemValue( filter ) );
             model.put( MARK_FILTER_NAME, PARAMETER_NUMBER_OF_DAYS_FILTER );
-            
+
             HtmlTemplate htmlTemplate = AppTemplateService.getTemplate( FILTER_TEMPLATE_NAME, request.getLocale( ), model );
             if ( htmlTemplate != null )
             {
                 strTemplateResult = htmlTemplate.getHtml( );
             }
-            
-            _strFilterTemplate = strTemplateResult; 
+
+            _strFilterTemplate = strTemplateResult;
         }
 
         /**

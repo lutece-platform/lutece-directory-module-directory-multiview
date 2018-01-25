@@ -75,7 +75,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
      * Constructor
      * 
      * @param request
-     *          The HttpServletRequest to set
+     *            The HttpServletRequest to set
      */
     public RecordFilterAssignedUnitParameter( HttpServletRequest request )
     {
@@ -109,7 +109,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
     {
         return MARK_ASSIGNED_UNIT_FILTER;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -118,7 +118,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
     {
         return _assignedUnitColumnFilter;
     }
-    
+
     /**
      * Implementation of the IColumnFilter interface for the AssignedUnit
      */
@@ -127,30 +127,30 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         // Constants
         private static final String UNIT_CODE_ATTRIBUTE = "idUnit";
         private static final String UNIT_NAME_ATTRIBUTE = "label";
-        
+
         // Messages
         private static final String MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME = "module.directory.multiview.manage_directory_multirecord.unit.attribute.defaultName";
-        
+
         // Variables
         private final List<Unit> _listAssignedUnitFilter;
         private final Map<Integer, RecordAssignment> _mapRecordAssignment;
         private final HttpServletRequest _request;
         private String _strFilterTemplate;
-        
+
         /**
          * Constructor
          * 
          * @param request
-         *          The HttpServletRequest to set
+         *            The HttpServletRequest to set
          */
         AssignedUnitColumnFilter( HttpServletRequest request )
         {
             super( );
             _request = request;
             _listAssignedUnitFilter = new ArrayList<>( );
-            _mapRecordAssignment = createRecordAssignmentFilerMap( request );        
+            _mapRecordAssignment = createRecordAssignmentFilerMap( request );
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -177,7 +177,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         {
             ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listAssignedUnitFilter, UNIT_CODE_ATTRIBUTE, UNIT_NAME_ATTRIBUTE );
             referenceListFactory.setDefaultName( I18nService.getLocalizedString( MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME, _request.getLocale( ) ) );
-            
+
             return referenceListFactory.createReferenceList( );
         }
 
@@ -202,7 +202,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
 
             _strFilterTemplate = strTemplateResult;
         }
-        
+
         /**
          * {@inheritDoc}
          */

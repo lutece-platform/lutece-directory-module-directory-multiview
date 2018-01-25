@@ -75,7 +75,7 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
      * Constructor
      * 
      * @param request
-     *          The HttpServletRequest
+     *            The HttpServletRequest
      */
     public RecordFilterWorkflowStateParameter( HttpServletRequest request )
     {
@@ -109,7 +109,7 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
     {
         return MARK_WORKFLOW_STATE_FILTER;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -118,7 +118,7 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
     {
         return _workflowStateColumnFilter;
     }
-    
+
     /**
      * Implementation of the IColumnFilter interface for the AssignedUnit
      */
@@ -128,18 +128,18 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
         private static final String STATE_CODE_ATTRIBUTE = "id";
         private static final String STATE_NAME_ATTRIBUTE = "name";
         private static final int DEFAULT_DIRECTORY_VALUE = -1;
-        
+
         // Variables
         private final List<State> _listWorkflowState;
         private int _nIdDirectory = NumberUtils.INTEGER_MINUS_ONE;
         private HttpServletRequest _request;
         private String _strFilterTemplate;
-        
+
         /**
          * Constructor
          * 
          * @param request
-         *          The HttpServletRequest
+         *            The HttpServletRequest
          */
         WorkflowStateColumnFilter( HttpServletRequest request )
         {
@@ -154,14 +154,14 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
         public void populateListValue( )
         {
             Directory directory = DirectoryHome.findByPrimaryKey( _nIdDirectory, DirectoryUtils.getPlugin( ) );
-            
+
             if ( directory != null )
             {
                 _listWorkflowState.addAll( WorkflowService.getInstance( ).getAllStateByWorkflow( directory.getIdWorkflow( ),
                         AdminUserService.getAdminUser( _request ) ) );
             }
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -169,7 +169,7 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
         public ReferenceList createReferenceList( )
         {
             ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listWorkflowState, STATE_CODE_ATTRIBUTE, STATE_NAME_ATTRIBUTE );
-            
+
             return referenceListFactory.createReferenceList( );
         }
 
@@ -180,14 +180,14 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
         public void buildTemplate( RecordAssignmentFilter filter, HttpServletRequest request )
         {
             String strTemplateResult = StringUtils.EMPTY;
-            
+
             // For the list of workflow state we will based it on the directory of the filter
             _nIdDirectory = filter.getDirectoryId( );
-            
+
             // We will overwrite the request of the object for retrieve the RBAC right of the user
             _request = request;
             populateListValue( );
-            
+
             // If no directory has been selected we will return an empty list
             ReferenceList referenceList = new ReferenceList( );
             if ( _nIdDirectory != DEFAULT_DIRECTORY_VALUE )
@@ -208,7 +208,7 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
 
             _strFilterTemplate = strTemplateResult;
         }
-        
+
         /**
          * {@inheritDoc}
          */

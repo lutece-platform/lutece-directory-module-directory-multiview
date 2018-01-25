@@ -48,36 +48,36 @@ public class CustomizedColumn
     // Pattern
     private static final String PATTERN_CUSTOMIZED_COLUMN_NAME = "customized_column_%s";
     private static final String PATTERN_CUSTOMIZED_COLUMN_TITLE = "module.directory.multiview.records_list.customized_column_%s";
-    
+
     // Variables
     private final int _nCustomizedColumnNumber;
     private final boolean _bFilter;
     private final String _strCustomizedColumnName;
     private final String _strCustomizedColumnTitle;
     private final List<IEntry> _listEntryCustomizedColumn;
-    
+
     /**
      * Constructor
      * 
      * @param nCustomizedColumnNumber
-     *          The number of the column of the CustomizedColumn
+     *            The number of the column of the CustomizedColumn
      * @param bFilter
-     *          The boolean which tell if the CustomizedColumn can be filtered or not
+     *            The boolean which tell if the CustomizedColumn can be filtered or not
      * @param locale
-     *          The Locale for retrieveing the title of the column
+     *            The Locale for retrieveing the title of the column
      */
     public CustomizedColumn( int nCustomizedColumnNumber, boolean bFilter, Locale locale )
     {
         _nCustomizedColumnNumber = nCustomizedColumnNumber;
         _bFilter = bFilter;
         _listEntryCustomizedColumn = new ArrayList<>( );
-        
+
         String strCustomizedColumnTitleKey = String.format( PATTERN_CUSTOMIZED_COLUMN_TITLE, nCustomizedColumnNumber );
-         _strCustomizedColumnTitle = I18nService.getLocalizedString( strCustomizedColumnTitleKey, locale );
-                 
+        _strCustomizedColumnTitle = I18nService.getLocalizedString( strCustomizedColumnTitleKey, locale );
+
         _strCustomizedColumnName = String.format( PATTERN_CUSTOMIZED_COLUMN_NAME, nCustomizedColumnNumber );
     }
-    
+
     /**
      * Return the Customized Column number
      * 
@@ -87,7 +87,7 @@ public class CustomizedColumn
     {
         return _nCustomizedColumnNumber;
     }
-    
+
     /**
      * Return the boolean which tell if the CustomizedColumn can be filtered or not
      * 
@@ -132,7 +132,7 @@ public class CustomizedColumn
      * Add a list of Entry to the CustomizedColumn list
      * 
      * @param listEntry
-     *          The list of Entry to ad to the CustomizedColumn list
+     *            The list of Entry to ad to the CustomizedColumn list
      */
     public void addColumnListEntry( List<IEntry> listEntry )
     {
