@@ -42,15 +42,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
+import fr.paris.lutece.plugins.directory.business.RecordField;
+import fr.paris.lutece.plugins.directory.business.RecordFieldFilter;
+import fr.paris.lutece.plugins.directory.business.RecordFieldHome;
 import fr.paris.lutece.plugins.directory.business.RecordHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.IRecordFilterItem;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.RecordFilterAssignedUnitItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.RecordFilterCustomizedColumnItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.columnfilter.IColumnFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.columnfilter.RecordFieldHelperColumnFilter;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
-import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -59,46 +62,45 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
- * Implementation of IRecordFilterParameter for the Assigned Unit id filter
+ * Implementation of IRecordFilterParameter for the Customized Column Two filter
  */
-public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
+public class RecordFilterCustomizedColumnParameter implements IRecordFilterParameter
 {
-    // Constants
-    private static final String PARAMETER_ASSIGNED_UNIT_FILTER = "search_assigned_unit";
-    private static final String MARK_ASSIGNED_UNIT_FILTER = "id_assigned_unit";
+    // Patterns
+    private static final String PATTERN_CUSTOMIZED_COLUMN_PARAMETER = "search_customized_column_%s";
+    private static final String PATTERN_CUSTOMIZED_COLUMN_MARK = "customized_column_%s_value";
 
     // Variables
-    private final RecordFilterAssignedUnitItem _recordFilterAssignedUnitItem;
-    private final AssignedUnitColumnFilter _assignedUnitColumnFilter;
+    private final RecordFilterCustomizedColumnItem _recordFilterCustomizedColumnItem;
+    private final CustomizedColumnColumnFilter _customizedColumnColumnFilter;
+    private final String _strCustomizedColumnParameter;
+    private final String _strCustomizedColumnMark;
 
     /**
      * Constructor
      * 
      * @param request
      *          The HttpServletRequest to set
+     * @param listEntry
+     *          The list of Entry to retrieve the value for the filter list
+     * @param nColumnNumber
+     *          The column number of the CustomizedColumn
      */
-    public RecordFilterAssignedUnitParameter( HttpServletRequest request )
+    public RecordFilterCustomizedColumnParameter( HttpServletRequest request, List<IEntry> listEntry, int nColumnNumber )
     {
-        _recordFilterAssignedUnitItem = new RecordFilterAssignedUnitItem( );
-        _assignedUnitColumnFilter = new AssignedUnitColumnFilter( request );
+        _strCustomizedColumnParameter = String.format( PATTERN_CUSTOMIZED_COLUMN_PARAMETER, nColumnNumber );
+        _strCustomizedColumnMark = String.format( PATTERN_CUSTOMIZED_COLUMN_MARK, nColumnNumber );
+        _recordFilterCustomizedColumnItem = new RecordFilterCustomizedColumnItem( nColumnNumber );
+        _customizedColumnColumnFilter = new CustomizedColumnColumnFilter( request, listEntry );
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public String getValueFromRequest( HttpServletRequest request )
     {
-        return request.getParameter( PARAMETER_ASSIGNED_UNIT_FILTER );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IRecordFilterItem getRecordFilterItem( )
-    {
-        return _recordFilterAssignedUnitItem;
+        return request.getParameter( _strCustomizedColumnParameter );
     }
 
     /**
@@ -107,7 +109,16 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
     @Override
     public String getRecordFilterModelMark( )
     {
-        return MARK_ASSIGNED_UNIT_FILTER;
+        return _strCustomizedColumnMark;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRecordFilterItem getRecordFilterItem( )
+    {
+        return _recordFilterCustomizedColumnItem;
     }
     
     /**
@@ -116,23 +127,23 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
     @Override
     public IColumnFilter getColumnFilter( )
     {
-        return _assignedUnitColumnFilter;
+        return _customizedColumnColumnFilter;
     }
     
     /**
-     * Implementation of the IColumnFilter interface for the AssignedUnit
+     * Implementation of the IColumnFilter interface for the Directory
      */
-    private final class AssignedUnitColumnFilter extends RecordFieldHelperColumnFilter implements IColumnFilter
+    private final class CustomizedColumnColumnFilter extends RecordFieldHelperColumnFilter implements IColumnFilter
     {
         // Constants
-        private static final String UNIT_CODE_ATTRIBUTE = "idUnit";
-        private static final String UNIT_NAME_ATTRIBUTE = "label";
+        private static final String RECORDFIELD_VALUE_ATTRIBUTE = "value";
         
         // Messages
-        private static final String MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME = "module.directory.multiview.manage_directory_multirecord.unit.attribute.defaultName";
+        private static final String MESSAGE_RECORDFIELD_ATTRIBUTE_DEFAULT_NAME = "module.directory.multiview.manage_directory_multirecord.recordfield.attribute.defaultName";
         
         // Variables
-        private final List<Unit> _listAssignedUnitFilter;
+        private final List<RecordField> _listCustomizedColumnRecordField;
+        private final List<IEntry> _listIEntryToRetrieveValueFrom;
         private final Map<Integer, RecordAssignment> _mapRecordAssignment;
         private final HttpServletRequest _request;
         private String _strFilterTemplate;
@@ -141,14 +152,17 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
          * Constructor
          * 
          * @param request
-         *          The HttpServletRequest to set
+         *              The HttpServletRequest
+         * @param listEntry
+         *          The list of Entry to retrieve the value from
          */
-        AssignedUnitColumnFilter( HttpServletRequest request )
+        CustomizedColumnColumnFilter( HttpServletRequest request, List<IEntry> listEntry )
         {
             super( );
             _request = request;
-            _listAssignedUnitFilter = new ArrayList<>( );
-            _mapRecordAssignment = createRecordAssignmentFilerMap( request );        
+            _listCustomizedColumnRecordField = new ArrayList<>( );
+            _listIEntryToRetrieveValueFrom = listEntry;
+            _mapRecordAssignment = createRecordAssignmentFilerMap( request ); 
         }
         
         /**
@@ -163,10 +177,49 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
                 Record record = RecordHome.findByPrimaryKey( recordAssignment.getIdRecord( ), DirectoryUtils.getPlugin( ) );
                 if ( record != null && _mapRecordAssignment.get( record.getIdRecord( ) ) != null )
                 {
-                    RecordAssignment recordAssignmentFromRecord = _mapRecordAssignment.get( record.getIdRecord( ) );
-                    _listAssignedUnitFilter.add( recordAssignmentFromRecord.getAssignedUnit( ) );
+                    manageRecordField( record );
                 }
             }
+        }
+        
+        /**
+         * Retrieve the list of RecordField associated to the record and check if we must
+         * collect the RecordField which are linked to an entry which we want to filter the values.
+         * 
+         * @param record
+         *          The Record to retrieve the RecordField from
+         */
+        private void manageRecordField( Record record )
+        {
+            RecordFieldFilter recordFieldFilter = new RecordFieldFilter( );
+            recordFieldFilter.setIdRecord( record.getIdRecord( ) );
+            
+            List<RecordField> listRecordField = RecordFieldHome.getRecordFieldList( recordFieldFilter, DirectoryUtils.getPlugin( ) );
+            if ( listRecordField != null && !listRecordField.isEmpty( ) )
+            {
+                for ( RecordField recordField : listRecordField )
+                {
+                    checkIfRecordFieldBelongToEntryInList( recordField );
+                }
+            }            
+        }
+        
+        /**
+         * Check if a RecordField belong to an entry of the list of Entry which we want
+         * to gather values. If it's true the RecordField is added to the filter list.
+         * 
+         * @param recordField
+         *          The RecordField to analyze
+         */
+        private void checkIfRecordFieldBelongToEntryInList( RecordField recordField )
+        {
+            for ( IEntry entry : _listIEntryToRetrieveValueFrom )
+            {
+                if ( entry.getIdEntry( ) == recordField.getEntry( ).getIdEntry( ) )
+                {
+                    _listCustomizedColumnRecordField.add( recordField );
+                }
+            }            
         }
 
         /**
@@ -175,8 +228,8 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         @Override
         public ReferenceList createReferenceList( )
         {
-            ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listAssignedUnitFilter, UNIT_CODE_ATTRIBUTE, UNIT_NAME_ATTRIBUTE );
-            referenceListFactory.setDefaultName( I18nService.getLocalizedString( MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME, _request.getLocale( ) ) );
+            ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listCustomizedColumnRecordField, RECORDFIELD_VALUE_ATTRIBUTE, RECORDFIELD_VALUE_ATTRIBUTE, Boolean.FALSE );
+            referenceListFactory.setDefaultName( I18nService.getLocalizedString( MESSAGE_RECORDFIELD_ATTRIBUTE_DEFAULT_NAME, _request.getLocale( ) ) );
             
             return referenceListFactory.createReferenceList( );
         }
@@ -192,7 +245,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
             Map<String, Object> model = new LinkedHashMap<>( );
             model.put( MARK_FILTER_LIST, createReferenceList( ) );
             model.put( MARK_FILTER_LIST_VALUE, getRecordFilterItem( ).getItemValue( filter ) );
-            model.put( MARK_FILTER_NAME, PARAMETER_ASSIGNED_UNIT_FILTER );
+            model.put( MARK_FILTER_NAME, _strCustomizedColumnParameter );
 
             HtmlTemplate htmlTemplate = AppTemplateService.getTemplate( FILTER_TEMPLATE_NAME, request.getLocale( ), model );
             if ( htmlTemplate != null )
@@ -212,4 +265,5 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
             return _strFilterTemplate;
         }
     }
+
 }

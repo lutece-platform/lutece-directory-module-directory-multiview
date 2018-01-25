@@ -42,10 +42,13 @@ import javax.servlet.http.HttpServletRequest;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.directory.business.RecordField;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.customizedcolumn.CustomizedColumn;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.customizedcolumn.CustomizedColumnFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.IRecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.IRecordFilterParameter;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordFieldItem;
 
 /**
  * Service for the module-directory-multiview
@@ -59,10 +62,13 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
      * {@inheritDoc}
      */
     @Override
-    public RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter )
+    public RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter, CustomizedColumnFactory customizedColumnFactory )
     {
         RecordAssignmentFilter filter = new RecordAssignmentFilter( );
-
+        
+        List<RecordFieldItem> listRecordFieldItem = customizedColumnFactory.createRecordFieldItemList( );
+        filter.setListRecordFieldItem( listRecordFieldItem );
+        
         for ( IRecordFilterParameter recordFilterParameter : listRecordFilterParameter )
         {
             IRecordFilterItem recordFilterItem = recordFilterParameter.getRecordFilterItem( );
@@ -71,19 +77,21 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
 
         return filter;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void populateDefaultFilterMarkers( RecordAssignmentFilter filter, List<IRecordFilterParameter> listRecordFilterParameter, Map<String, Object> model )
+    public void populateResourceActionList( List<Map<String, Object>> listResourceActions, CustomizedColumnFactory customizedColumnFactory )
     {
-        for ( IRecordFilterParameter recordFilterParameter : listRecordFilterParameter )
+        List<CustomizedColumn> listcustomizedColumn = customizedColumnFactory.createCustomizedColumnList( );
+        
+        for ( CustomizedColumn customizedColumn : listcustomizedColumn )
         {
-            IRecordFilterItem recordFilterItem = recordFilterParameter.getRecordFilterItem( );
-
-            Object objectFilterValue = recordFilterItem.getItemValue( filter );
-            model.put( recordFilterParameter.getRecordFilterModelMark( ), objectFilterValue );
+            List<IEntry> listCustomizedColumnEntry = customizedColumn.getListEntryCustomizedColumn( );
+            String strCustomizedColumnName = customizedColumn.getCustomizedColumnName( );
+            
+            populateRecord( listResourceActions, listCustomizedColumnEntry, strCustomizedColumnName );
         }
     }
 

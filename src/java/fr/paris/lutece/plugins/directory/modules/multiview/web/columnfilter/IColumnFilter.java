@@ -31,45 +31,52 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.columnfilter;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.IRecordFilterItem;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.columnfilter.IColumnFilter;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
+import fr.paris.lutece.util.ReferenceList;
 
 /**
- * Interface for RecordFilter
+ * Interface for the ColumnFilter Object
  */
-public interface IRecordFilterParameter
+public interface IColumnFilter
 {
-    /**
-     * Return the value of the parameter from the request
-     * 
-     * @param request
-     *            The request to retrieve the parameter value from
-     * @return the value of the parameter from the request
-     */
-    String getValueFromRequest( HttpServletRequest request );
-
-    /**
-     * Return the mark of the RecordFilter for the model
-     * 
-     * @return the mark of the RecordFilter for the model
-     */
-    String getRecordFilterModelMark( );
-
-    /**
-     * Return the IRecordFilterItem associated to the to the IRecordFilterParameter
-     * 
-     * @return the IRecordFilterItem associated to the to the IRecordFilterParameter
-     */
-    IRecordFilterItem getRecordFilterItem( );
+    // Template
+    String FILTER_TEMPLATE_NAME = "admin/plugins/directory/modules/multiview/record_filter.html";
+    
+    // Marks
+    String MARK_FILTER_LIST = "filter_list";
+    String MARK_FILTER_NAME = "filter_name";
+    String MARK_FILTER_LIST_VALUE = "filter_list_value";
     
     /**
-     * Return the ColumnFilter of the RecordFieldParameter
-     * 
-     * @return the IColumnFilter associated to the RecordFieldParameter
+     * Populate the list of object to filter on
      */
-    IColumnFilter getColumnFilter( );
+    void populateListValue( );
+    
+    /**
+     * Create the ReferenceList of the filter object list
+     * 
+     * @return the ReferenceList object created from the list of object of the filter
+     */
+    ReferenceList createReferenceList( );
+    
+    /**
+     * Build the HtmlTemplate from the filter value with the given request
+     * 
+     * @param filter
+     *          The RecordAssignmentFilter to retrieve the value from
+     * @param request
+     *          The HttpServletRequest
+     */
+    void buildTemplate( RecordAssignmentFilter filter, HttpServletRequest request );
+    
+    /**
+     * Return the template of the Filter
+     * 
+     * @return the template of the filter
+     */
+    String getTemplate( );
 }

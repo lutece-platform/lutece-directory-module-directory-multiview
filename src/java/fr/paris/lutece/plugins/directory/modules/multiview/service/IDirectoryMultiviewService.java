@@ -39,6 +39,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.directory.business.IEntry;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.customizedcolumn.CustomizedColumnFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.IRecordFilterParameter;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 
@@ -59,22 +60,22 @@ public interface IDirectoryMultiviewService
      *            The HttpServletRequest to retrieve the value from
      * @param listRecordFilterParameter
      *            The list of all IRecordFilterParameter use for filter the records
+     * @param customizedColumnFactory
+     *          The factory to use for creating the new RecordFieldItem list for the new filter
      * @return the filter The filter to set the value on
      */
-    RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter );
+    RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter, CustomizedColumnFactory customizedColumnFactory );
 
     /**
-     * Populate the model values with the filter data
+     * Populate the list of ResourcesActions with the value containing in the the list of the customizedColumn inside the Factory
      * 
-     * @param filter
-     *            The filter to retrieve the value from
-     * @param listRecordFilterParameter
-     *            The list of all IRecordFilterParameter use for filter the records
-     * @param model
-     *            The model to populate
+     * @param resourceActions
+     *              The list of ResourceActions to populate
+     * @param customizedColumnFactory
+     *              The Factory which contains the list of CustomizedColumn to retrieve the data from
      */
-    void populateDefaultFilterMarkers( RecordAssignmentFilter filter, List<IRecordFilterParameter> listRecordFilterParameter, Map<String, Object> model );
-
+    void populateResourceActionList( List<Map<String, Object>> resourceActions, CustomizedColumnFactory customizedColumnFactory );
+    
     /**
      * Populate Record Precisions
      * 

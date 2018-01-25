@@ -33,10 +33,30 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import fr.paris.lutece.plugins.directory.business.Directory;
+import fr.paris.lutece.plugins.directory.business.DirectoryHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.IRecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.RecordFilterWorkflowStateItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.columnfilter.IColumnFilter;
+import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
+import fr.paris.lutece.plugins.workflowcore.business.state.State;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.workflow.WorkflowService;
+import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
  * Implementation of IRecordFilterParameter for the workflow state filter
@@ -49,13 +69,18 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
 
     // Variables
     private final RecordFilterWorkflowStateItem _recordFilterWorkflowStateItem;
+    private final WorkflowStateColumnFilter _workflowStateColumnFilter;
 
     /**
      * Constructor
+     * 
+     * @param request
+     *          The HttpServletRequest
      */
-    public RecordFilterWorkflowStateParameter( )
+    public RecordFilterWorkflowStateParameter( HttpServletRequest request )
     {
         _recordFilterWorkflowStateItem = new RecordFilterWorkflowStateItem( );
+        _workflowStateColumnFilter = new WorkflowStateColumnFilter( request );
     }
 
     /**
@@ -83,5 +108,114 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
     public String getRecordFilterModelMark( )
     {
         return MARK_WORKFLOW_STATE_FILTER;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IColumnFilter getColumnFilter( )
+    {
+        return _workflowStateColumnFilter;
+    }
+    
+    /**
+     * Implementation of the IColumnFilter interface for the AssignedUnit
+     */
+    private final class WorkflowStateColumnFilter implements IColumnFilter
+    {
+        // Constants
+        private static final String STATE_CODE_ATTRIBUTE = "id";
+        private static final String STATE_NAME_ATTRIBUTE = "name";
+        private static final int DEFAULT_DIRECTORY_VALUE = -1;
+        
+        // Variables
+        private final List<State> _listWorkflowState;
+        private int _nIdDirectory = NumberUtils.INTEGER_MINUS_ONE;
+        private HttpServletRequest _request;
+        private String _strFilterTemplate;
+        
+        /**
+         * Constructor
+         * 
+         * @param request
+         *          The HttpServletRequest
+         */
+        WorkflowStateColumnFilter( HttpServletRequest request )
+        {
+            _request = request;
+            _listWorkflowState = new ArrayList<>( );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void populateListValue( )
+        {
+            Directory directory = DirectoryHome.findByPrimaryKey( _nIdDirectory, DirectoryUtils.getPlugin( ) );
+            
+            if ( directory != null )
+            {
+                _listWorkflowState.addAll( WorkflowService.getInstance( ).getAllStateByWorkflow( directory.getIdWorkflow( ),
+                        AdminUserService.getAdminUser( _request ) ) );
+            }
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public ReferenceList createReferenceList( )
+        {
+            ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listWorkflowState, STATE_CODE_ATTRIBUTE, STATE_NAME_ATTRIBUTE );
+            
+            return referenceListFactory.createReferenceList( );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void buildTemplate( RecordAssignmentFilter filter, HttpServletRequest request )
+        {
+            String strTemplateResult = StringUtils.EMPTY;
+            
+            // For the list of workflow state we will based it on the directory of the filter
+            _nIdDirectory = filter.getDirectoryId( );
+            
+            // We will overwrite the request of the object for retrieve the RBAC right of the user
+            _request = request;
+            populateListValue( );
+            
+            // If no directory has been selected we will return an empty list
+            ReferenceList referenceList = new ReferenceList( );
+            if ( _nIdDirectory != DEFAULT_DIRECTORY_VALUE )
+            {
+                referenceList = createReferenceList( );
+            }
+
+            Map<String, Object> model = new LinkedHashMap<>( );
+            model.put( MARK_FILTER_LIST, referenceList );
+            model.put( MARK_FILTER_LIST_VALUE, getRecordFilterItem( ).getItemValue( filter ) );
+            model.put( MARK_FILTER_NAME, PARAMETER_WORKFLOW_STATE_FILTER );
+
+            HtmlTemplate htmlTemplate = AppTemplateService.getTemplate( FILTER_TEMPLATE_NAME, request.getLocale( ), model );
+            if ( htmlTemplate != null )
+            {
+                strTemplateResult = htmlTemplate.getHtml( );
+            }
+
+            _strFilterTemplate = strTemplateResult;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getTemplate( )
+        {
+            return _strFilterTemplate;
+        }
     }
 }
