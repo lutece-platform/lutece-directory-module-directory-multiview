@@ -155,7 +155,7 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
         {
             // Clean the previous list of workflow state
             _listWorkflowState = new ArrayList<>( );
-            
+
             Directory directory = DirectoryHome.findByPrimaryKey( _nIdDirectory, DirectoryUtils.getPlugin( ) );
 
             if ( directory != null )
