@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -119,19 +118,8 @@ public class CustomizedColumnFactory
     {
         String strFilterColumnPropertyKey = String.format( PROPERTY_FILTER_COLUMN_KEY_PATTERN, nCustomizedColumnNumber );
         String strFiltercolumnPropertyValue = AppPropertiesService.getProperty( strFilterColumnPropertyKey );
-        Integer nFilterProperty = NumberUtils.toInt( strFiltercolumnPropertyValue, NumberUtils.INTEGER_MINUS_ONE );
-
-        boolean isFiltered = Boolean.FALSE;
-        try
-        {
-            isFiltered = BooleanUtils.toBoolean( nFilterProperty, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO );
-        }
-        catch( IllegalArgumentException exception )
-        {
-            isFiltered = Boolean.FALSE;
-        }
-
-        return isFiltered;
+        
+        return Boolean.parseBoolean( strFiltercolumnPropertyValue );
     }
 
     /**
