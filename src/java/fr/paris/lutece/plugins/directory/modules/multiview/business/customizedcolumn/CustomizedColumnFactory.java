@@ -118,7 +118,7 @@ public class CustomizedColumnFactory
     {
         String strFilterColumnPropertyKey = String.format( PROPERTY_FILTER_COLUMN_KEY_PATTERN, nCustomizedColumnNumber );
         String strFiltercolumnPropertyValue = AppPropertiesService.getProperty( strFilterColumnPropertyKey );
-        
+
         return Boolean.parseBoolean( strFiltercolumnPropertyValue );
     }
 
