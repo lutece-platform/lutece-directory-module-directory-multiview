@@ -130,7 +130,7 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
         private static final int DEFAULT_DIRECTORY_VALUE = -1;
 
         // Variables
-        private final List<State> _listWorkflowState;
+        private List<State> _listWorkflowState;
         private int _nIdDirectory = NumberUtils.INTEGER_MINUS_ONE;
         private HttpServletRequest _request;
         private String _strFilterTemplate;
@@ -153,6 +153,9 @@ public class RecordFilterWorkflowStateParameter implements IRecordFilterParamete
         @Override
         public void populateListValue( )
         {
+            // Clean the previous list of workflow state
+            _listWorkflowState = new ArrayList<>( );
+            
             Directory directory = DirectoryHome.findByPrimaryKey( _nIdDirectory, DirectoryUtils.getPlugin( ) );
 
             if ( directory != null )
