@@ -167,7 +167,7 @@ public class CustomizedColumnFactory
 
         for ( String entryTitle : entryNameTab )
         {
-            entryList.stream( ).filter( entry -> entryTitle.equals( entry.getTitle( ) ) ).forEachOrdered( listIEntry::add );
+            entryList.stream( ).filter( entry -> entryTitle.trim( ).equals( entry.getTitle( ) ) ).forEachOrdered( listIEntry::add );
         }
 
         return listIEntry;
