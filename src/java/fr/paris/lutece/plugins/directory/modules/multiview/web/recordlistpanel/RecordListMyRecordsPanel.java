@@ -53,7 +53,7 @@ public class RecordListMyRecordsPanel extends AbstractRecordListPanel
     private static final String MY_RECORDS_PANEL_NAME = "my_records";
     private static final String PROPERTY_MY_RECORDS_PANEL_TITLE = "module.directory.multiview.records_list.label_my_records_panel";
     private static final int DEFAULT_USER_IDENTIFIER_VALUE = NumberUtils.INTEGER_MINUS_ONE;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -62,32 +62,32 @@ public class RecordListMyRecordsPanel extends AbstractRecordListPanel
     {
         // Retrieve the id of the user from the request
         int nUserIdentifier = getAdminUserIdFromRequest( request );
-        
+
         // Create the filter used for the search of the records
         RecordAssignmentFilter recordAssignmentFilterClone = recordAssignmentFilter.clone( );
         recordAssignmentFilterClone.setAssignedUserId( nUserIdentifier );
-        
+
         // Initialization of the panel
         initPanel( request, collectionDirectory, MY_RECORDS_PANEL_NAME, PROPERTY_MY_RECORDS_PANEL_TITLE, recordAssignmentFilterClone );
     }
-    
+
     /**
      * Return the identifier of the AdminUser from the request
      * 
      * @param request
-     *          The request to retrieve the user from
+     *            The request to retrieve the user from
      * @return the identifier of the AdminUser from the request
      */
     private int getAdminUserIdFromRequest( HttpServletRequest request )
     {
         int nUserIdentifier = DEFAULT_USER_IDENTIFIER_VALUE;
-        
+
         AdminUser adminUser = AdminUserService.getAdminUser( request );
         if ( adminUser != null )
         {
             nUserIdentifier = adminUser.getUserId( );
         }
-        
+
         return nUserIdentifier;
     }
 }

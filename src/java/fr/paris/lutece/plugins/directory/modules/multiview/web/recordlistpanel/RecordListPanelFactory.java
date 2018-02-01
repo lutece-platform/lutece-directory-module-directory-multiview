@@ -50,36 +50,37 @@ public final class RecordListPanelFactory
 {
     // Variables
     private static final List<IRecordListPanel> _listRecordListPanel = SpringContextService.getBeansOfType( IRecordListPanel.class );
-    
+
     /**
      * Constructor
      */
     private RecordListPanelFactory( )
     {
-        
+
     }
-    
+
     /**
      * Create the list of RecordListPanel of the factory
      * 
      * @param request
-     *          The HttpServletRequest to retrieve the parameter values from
+     *            The HttpServletRequest to retrieve the parameter values from
      * @param recordAssignmentfilter
-     *          The filter to use for filtering the records
+     *            The filter to use for filtering the records
      * @param collectionDirectory
-     *          The collection of Directory to retrieve the records from
+     *            The collection of Directory to retrieve the records from
      * @return the list of RecordListPanel
      */
-    public static List<IRecordListPanel> createRecordListPanelList( HttpServletRequest request, RecordAssignmentFilter recordAssignmentfilter, Collection<Directory> collectionDirectory )
+    public static List<IRecordListPanel> createRecordListPanelList( HttpServletRequest request, RecordAssignmentFilter recordAssignmentfilter,
+            Collection<Directory> collectionDirectory )
     {
         for ( IRecordListPanel recordListPanel : _listRecordListPanel )
         {
             recordListPanel.configureRecordListPanel( request, recordAssignmentfilter, collectionDirectory );
         }
-        
+
         // Sort the list of panel by their position
         Collections.sort( _listRecordListPanel, new RecordListPanelComparator( ) );
-        
+
         return _listRecordListPanel;
     }
 }

@@ -57,8 +57,8 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 public class DirectoryMultiviewSearchService
 {
-    public static Map<String, RecordAssignment> filterBySearchedText( Map<String, RecordAssignment> mapRecordAssignment,
-            Collection<Directory> listDirectories, HttpServletRequest request, Plugin plugin, String strSearchText )
+    public static Map<String, RecordAssignment> filterBySearchedText( Map<String, RecordAssignment> mapRecordAssignment, Collection<Directory> listDirectories,
+            HttpServletRequest request, Plugin plugin, String strSearchText )
     {
 
         // No search text

@@ -39,10 +39,10 @@ import org.apache.commons.lang3.math.NumberUtils;
  * Constant class for the module
  */
 public final class DirectoryMultiviewConstants
-{    
+{
     // Marks
     public static final String MARK_RECORD = "record";
-    
+
     // Parameters
     public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
     public static final String PARAMETER_CURRENT_SELECTED_PANEL = "current_selected_panel";

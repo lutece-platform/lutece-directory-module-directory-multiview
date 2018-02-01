@@ -51,7 +51,7 @@ public interface IDirectoryMultiviewService
 {
     // Constants
     String BEAN_NAME = "directory-multiview.directoryMultiviewService";
-    
+
     /**
      * Fill the filter value from the request
      * 
@@ -92,7 +92,7 @@ public interface IDirectoryMultiviewService
      * Populate the Map which associate for each id record its last RecordAssignment
      * 
      * @param listRecordAssignment
-     *          The list of RecordAssignment to populate the map from
+     *            The list of RecordAssignment to populate the map from
      * @return the Map which associate for each id record its last RecordAssignment
      */
     Map<String, RecordAssignment> populateRecordAssignmentMap( List<RecordAssignment> listRecordAssignment );

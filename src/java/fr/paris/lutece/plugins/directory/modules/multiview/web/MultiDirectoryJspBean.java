@@ -279,14 +279,14 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 reInitDirectoryMultiview( newFilter );
             }
         }
-        
+
         // Create the list of RecordListPanel
         List<IRecordListPanel> listRecordListPanel = RecordListPanelFactory.createRecordListPanelList( request, _assignmentFilter, _directoryList.values( ) );
 
         // Retrieve the Map which contains the records result of the search of the active panel
         Map<String, RecordAssignment> mapRecordAssignmentAfterSearch = new LinkedHashMap<>( );
         String strSelectedPanelName = request.getParameter( DirectoryMultiviewConstants.PARAMETER_CURRENT_SELECTED_PANEL );
-        
+
         IRecordListPanel activePanel = RecordListPanelUtil.findActiveRecordListPanel( listRecordListPanel );
         if ( activePanel != null )
         {
@@ -295,8 +295,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         }
 
         // Paginate
-        Map<String, Object> model = getPaginatedListModel( request, Paginator.PARAMETER_PAGE_INDEX, new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( ).stream( )
-                .map( key -> Integer.parseInt( key ) ).collect( Collectors.toList( ) ) ), JSP_MANAGE_MULTIVIEW );
+        Map<String, Object> model = getPaginatedListModel( request, Paginator.PARAMETER_PAGE_INDEX, new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( )
+                .stream( ).map( key -> Integer.parseInt( key ) ).collect( Collectors.toList( ) ) ), JSP_MANAGE_MULTIVIEW );
 
         // get only records for page items.
         List<Record> lRecord = _recordService.loadListByListId( _paginator.getPageItems( ), getPlugin( ) );
@@ -338,7 +338,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             recordFilterParameter.getColumnFilter( ).buildTemplate( _assignmentFilter, request );
         }
         model.put( MARK_RECORD_FIELD_FILTER_LIST, _listRecordFilterParameter );
-        
+
         // Add the list of all record panel
         model.put( MARK_RECORD_PANEL_LIST, listRecordListPanel );
         model.put( MARK_CURRENT_SELECTED_PANEL, strSelectedPanelName );

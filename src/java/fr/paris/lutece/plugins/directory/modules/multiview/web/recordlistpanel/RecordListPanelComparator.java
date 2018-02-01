@@ -55,7 +55,7 @@ public class RecordListPanelComparator implements Comparator<IRecordListPanel>, 
     public int compare( IRecordListPanel recordListPanelOne, IRecordListPanel recordListPanelTwo )
     {
         int nCompareResult = NumberUtils.INTEGER_ZERO;
-        
+
         if ( recordListPanelOne == null )
         {
             if ( recordListPanelTwo != null )
@@ -73,11 +73,11 @@ public class RecordListPanelComparator implements Comparator<IRecordListPanel>, 
             {
                 Integer nPositionPanelOne = recordListPanelOne.getPosition( );
                 Integer nPositionPanelTwo = recordListPanelTwo.getPosition( );
-                
+
                 nCompareResult = nPositionPanelOne.compareTo( nPositionPanelTwo );
             }
         }
-        
+
         return nCompareResult;
     }
 }

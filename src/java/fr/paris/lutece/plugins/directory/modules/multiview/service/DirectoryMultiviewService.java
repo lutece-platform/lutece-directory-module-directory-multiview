@@ -126,7 +126,7 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
             mapResourceActions.put( strMarkName, listFieldResult );
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -134,14 +134,14 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
     public Map<String, RecordAssignment> populateRecordAssignmentMap( List<RecordAssignment> listRecordAssignment )
     {
         Map<String, RecordAssignment> recordAssignmentMap = new LinkedHashMap<>( );
-        
-        if ( listRecordAssignment != null &&  !listRecordAssignment.isEmpty( ) )
+
+        if ( listRecordAssignment != null && !listRecordAssignment.isEmpty( ) )
         {
             for ( RecordAssignment assignedRecord : listRecordAssignment )
             {
                 if ( !recordAssignmentMap.containsKey( String.valueOf( assignedRecord.getIdRecord( ) ) )
                         || recordAssignmentMap.get( String.valueOf( assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
-                        .before( assignedRecord.getAssignmentDate( ) ) )
+                                .before( assignedRecord.getAssignmentDate( ) ) )
                 {
                     // keep only the last one
                     recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord );
@@ -149,7 +149,7 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
                 }
             }
         }
-        
+
         return recordAssignmentMap;
     }
 }

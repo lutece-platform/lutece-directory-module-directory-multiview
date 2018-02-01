@@ -61,14 +61,14 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
 {
     // Constants
     protected static final int DEFAULT_RECORD_NUMBER = NumberUtils.INTEGER_ZERO;
-    
+
     // Parameters
     protected static final String PARAMETER_SELECTED_PANEL = "selected_panel";
-    
+
     // Service
     @Inject
     private transient IDirectoryMultiviewService _directoryMultiviewService;
-    
+
     // Variables
     private String _strTitle;
     private String _strName;
@@ -76,7 +76,7 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     private boolean _bIsActive = Boolean.FALSE;
     private int _nRecordNumber = DEFAULT_RECORD_NUMBER;
     private Map<String, RecordAssignment> _mapRecordAssignment = new LinkedHashMap<>( );
-    
+
     /**
      * {@inheritDoc}
      */
@@ -85,18 +85,18 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     {
         return _strTitle;
     }
-    
+
     /**
      * Set the title of the panel
      * 
      * @param strTitle
-     *          The title of the panel
+     *            The title of the panel
      */
     protected void setTitle( String strTitle )
     {
         _strTitle = strTitle;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -105,18 +105,18 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     {
         return _strName;
     }
-    
+
     /**
      * Set the name of the panel
      * 
      * @param strName
-     *          The name of the panel to set
+     *            The name of the panel to set
      */
     protected void setName( String strName )
     {
         _strName = strName;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -125,7 +125,7 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     {
         return _nPosition;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -143,7 +143,7 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     {
         return _bIsActive;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -152,7 +152,7 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     {
         _bIsActive = bActive;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -170,7 +170,7 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     {
         _nRecordNumber = nRecordNumber;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -179,42 +179,43 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     {
         return _mapRecordAssignment;
     }
-    
+
     /**
      * Set the RecordAssignmentMap for the panel
      * 
      * @param mapRecordAssignment
-     *          The RecordAssignmentMap to set
+     *            The RecordAssignmentMap to set
      */
     protected void setRecordAssignmentMap( Map<String, RecordAssignment> mapRecordAssignment )
     {
         _mapRecordAssignment = mapRecordAssignment;
     }
-    
+
     /**
      * Initialize a Panel with all its attributes
      * 
      * @param request
-     *          The request to retrieve the parameter values from
+     *            The request to retrieve the parameter values from
      * @param collectionDirectory
-     *          The collection of directory which contain the records to associate to the panel
+     *            The collection of directory which contain the records to associate to the panel
      * @param strPanelName
-     *          The name of the panel
+     *            The name of the panel
      * @param strPanelKeyTitle
-     *          The key of the title of the panel
+     *            The key of the title of the panel
      * @param recordAssignmentFilter
-     *          The filter to use to retrieve the records for the panel
+     *            The filter to use to retrieve the records for the panel
      */
-    protected void initPanel( HttpServletRequest request,  Collection<Directory> collectionDirectory, String strPanelName, String strPanelKeyTitle, RecordAssignmentFilter recordAssignmentFilter )
+    protected void initPanel( HttpServletRequest request, Collection<Directory> collectionDirectory, String strPanelName, String strPanelKeyTitle,
+            RecordAssignmentFilter recordAssignmentFilter )
     {
         // set the name of the panel
         setName( strPanelName );
-        
+
         // Set the title of the panel
         setTitle( I18nService.getLocalizedString( strPanelKeyTitle, request.getLocale( ) ) );
-        
+
         // Check if its the active panel
-        boolean bIsSelectedPanel = isSelectedPanel( request, strPanelName ); 
+        boolean bIsSelectedPanel = isSelectedPanel( request, strPanelName );
         setActive( bIsSelectedPanel );
 
         // Create the RecordAssignmentMap of the panel and calculate the number of records
@@ -222,40 +223,42 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
         setRecordAssignmentMap( mapRecordAssignment );
         setRecordNumber( mapRecordAssignment.size( ) );
     }
-    
+
     /**
      * Make the record search with the given filter for the specified list of Directory and return the number of records that the search result returns.
      * 
      * @param request
-     *          The request to retrieve the parameters from
+     *            The request to retrieve the parameters from
      * @param filter
-     *          The filter to use for the search
+     *            The filter to use for the search
      * @param collectionDirectory
-     *          The list of Directory to search on
+     *            The list of Directory to search on
      * @return the number of records of the result of the search
      */
-    protected Map<String, RecordAssignment> createRecordAssignmentMap( HttpServletRequest request, RecordAssignmentFilter filter, Collection<Directory> collectionDirectory )
+    protected Map<String, RecordAssignment> createRecordAssignmentMap( HttpServletRequest request, RecordAssignmentFilter filter,
+            Collection<Directory> collectionDirectory )
     {
         String strSearchText = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT );
         List<RecordAssignment> recordAssignmentList = AssignmentService.getRecordAssignmentFiltredList( filter );
         Map<String, RecordAssignment> recordAssignmentMap = _directoryMultiviewService.populateRecordAssignmentMap( recordAssignmentList );
-        
-        return DirectoryMultiviewSearchService.filterBySearchedText( recordAssignmentMap, collectionDirectory, request, DirectoryUtils.getPlugin( ), strSearchText );
+
+        return DirectoryMultiviewSearchService.filterBySearchedText( recordAssignmentMap, collectionDirectory, request, DirectoryUtils.getPlugin( ),
+                strSearchText );
     }
-    
+
     /**
      * Check if the panel is the selected panel or not. Activate the default panel if not found
      * 
      * @param request
-     *          The HttpServletRequest to retrieve the information from
+     *            The HttpServletRequest to retrieve the information from
      * @param strPanelName
-     *          The name of the panel to analyze
+     *            The name of the panel to analyze
      * @return true if the panel of the given name is the panel to analyze false otherwise
      */
     protected boolean isSelectedPanel( HttpServletRequest request, String strPanelName )
     {
         boolean bIsSelectedPanel = Boolean.FALSE;
-        
+
         // We will retrieve the name of the current selected panel
         String strRecordListPanelSelected = request.getParameter( PARAMETER_SELECTED_PANEL );
         if ( StringUtils.isNotBlank( strRecordListPanelSelected ) )
@@ -271,7 +274,7 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
                 bIsSelectedPanel = strPanelName.equals( strPreviousRecordListPanelSelected );
             }
         }
-        
+
         return bIsSelectedPanel;
     }
 }

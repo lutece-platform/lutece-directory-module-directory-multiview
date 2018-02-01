@@ -53,26 +53,26 @@ public interface IRecordListPanel
      * @return the name of the panel
      */
     String getName( );
-    
+
     /**
      * Return the title of the panel
      * 
      * @return the title of the panel
      */
     String getTitle( );
-    
+
     /**
      * Return the position of the panel
      * 
      * @return the position of the panel
      */
     int getPosition( );
-    
+
     /**
      * Set the position of the panel
      * 
      * @param nPosition
-     *          The position of the panel to set
+     *            The position of the panel to set
      */
     void setPosition( int nPosition );
 
@@ -87,41 +87,41 @@ public interface IRecordListPanel
      * Set the boolean which tell if the panel is active or not
      * 
      * @param bActive
-     *          The boolean which tell if the panel is active or not
+     *            The boolean which tell if the panel is active or not
      */
     void setActive( boolean bActive );
-    
+
     /**
      * Return the number of records of the panel
      * 
      * @return the number of records of the panel
      */
     int getRecordNumber( );
-    
+
     /**
      * Set the number of records of the panel
      * 
      * @param nRecordNumber
-     *          The number of records of the panel
+     *            The number of records of the panel
      */
     void setRecordNumber( int nRecordNumber );
-    
+
     /**
      * Return the Map which associate for each record is RecordAssignement
      * 
      * @return the map of all RecordAssignment
      */
     Map<String, RecordAssignment> getRecordAssignmentMap( );
-    
+
     /**
      * Process the RecordAssignmentFilter for the RecordListPanel
      * 
      * @param request
-     *          The request to retrieve the data from
+     *            The request to retrieve the data from
      * @param recordAssignmentFilter
-     *          The filter to process for the panel
+     *            The filter to process for the panel
      * @param collectionDirectory
-     *          The collection of Directory used to configure the panel
+     *            The collection of Directory used to configure the panel
      */
     void configureRecordListPanel( HttpServletRequest request, RecordAssignmentFilter recordAssignmentFilter, Collection<Directory> collectionDirectory );
 }

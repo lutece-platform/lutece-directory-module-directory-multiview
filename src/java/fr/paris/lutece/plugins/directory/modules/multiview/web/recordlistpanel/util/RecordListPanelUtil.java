@@ -49,20 +49,20 @@ public final class RecordListPanelUtil
      */
     private RecordListPanelUtil( )
     {
-        
+
     }
-    
+
     /**
      * Find the RecordListPanel which is active in the given list
      * 
      * @param listRecordListPanel
-     *          The list to retrieve the active RecordListPanel
+     *            The list to retrieve the active RecordListPanel
      * @return the RecordListPanel which is active or null if not found
      */
     public static IRecordListPanel findActiveRecordListPanel( List<IRecordListPanel> listRecordListPanel )
     {
         IRecordListPanel recordListPanelActive = null;
-        
+
         if ( listRecordListPanel != null && !listRecordListPanel.isEmpty( ) )
         {
             for ( IRecordListPanel recordListPanel : listRecordListPanel )
@@ -73,7 +73,7 @@ public final class RecordListPanelUtil
                     break;
                 }
             }
-            
+
             // If there is no active panel we will select the first panel of the list (which must have the first position)
             if ( recordListPanelActive == null )
             {
@@ -81,7 +81,7 @@ public final class RecordListPanelUtil
                 recordListPanelActive.setActive( Boolean.TRUE );
             }
         }
-        
+
         return recordListPanelActive;
     }
 }
