@@ -31,32 +31,31 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.util;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel;
 
-import org.apache.commons.lang3.math.NumberUtils;
+import java.util.Collection;
+
+import javax.servlet.http.HttpServletRequest;
+
+import fr.paris.lutece.plugins.directory.business.Directory;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 
 /**
- * Constant class for the module
+ * Implementation of the IRecordListPanel interface for the Procedures panel. This panel is the default panel.
  */
-public final class DirectoryMultiviewConstants
-{    
-    // Marks
-    public static final String MARK_RECORD = "record";
-    
-    // Parameters
-    public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
-    public static final String PARAMETER_CURRENT_SELECTED_PANEL = "current_selected_panel";
-
+public class RecordListRecordsPanel extends AbstractRecordListPanel
+{
     // Constants
-    public static final String REFERENCE_ITEM_DEFAULT_CODE = "-1";
-    public static final String REFERENCE_ITEM_DEFAULT_NAME = "-";
-    public static final int DEFAULT_FILTER_VALUE = NumberUtils.INTEGER_MINUS_ONE;
+    private static final String RECORDS_PANEL_NAME = "records";
+    private static final String PROPERTY_RECORDS_PANEL_TITLE = "module.directory.multiview.records_list.label_records_panel";
 
     /**
-     * Private constructor - never call
+     * {@inheritDoc}
      */
-    private DirectoryMultiviewConstants( )
+    @Override
+    public void configureRecordListPanel( HttpServletRequest request, RecordAssignmentFilter recordAssignmentFilter, Collection<Directory> collectionDirectory )
     {
-
+        // Initialization of the panel
+        initPanel( request, collectionDirectory, RECORDS_PANEL_NAME, PROPERTY_RECORDS_PANEL_TITLE, recordAssignmentFilter );
     }
 }

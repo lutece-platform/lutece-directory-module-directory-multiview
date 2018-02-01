@@ -33,6 +33,18 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service.search;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.IEntry;
@@ -42,18 +54,10 @@ import fr.paris.lutece.plugins.directory.web.action.DirectoryAdminSearchFields;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import org.apache.commons.lang.StringUtils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 
 public class DirectoryMultiviewSearchService
 {
-    public static LinkedHashMap<String, RecordAssignment> filterBySearchedText( LinkedHashMap<String, RecordAssignment> mapRecordAssignment,
+    public static Map<String, RecordAssignment> filterBySearchedText( Map<String, RecordAssignment> mapRecordAssignment,
             Collection<Directory> listDirectories, HttpServletRequest request, Plugin plugin, String strSearchText )
     {
 

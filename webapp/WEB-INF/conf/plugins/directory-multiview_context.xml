@@ -7,6 +7,13 @@
 	<!-- Directory-Multiview Service -->
 	<bean id="directory-multiview.directoryMultiviewService" class="fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewService"/>
 	
+	<bean id="directory-multiview.recordsPanel" class="fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.RecordListRecordsPanel">
+		<property name="position" value="1"></property>
+	</bean>
+	<bean id="directory-multiview.myRecordsPanel" class="fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.RecordListMyRecordsPanel">
+		<property name="position" value="2"></property>
+	</bean>
+		
     <!-- IdentityService -->
     <bean id="directory-multiview.identitystore.httpTransport" class="fr.paris.lutece.plugins.identitystore.web.rs.service.IdentityTransportRest">
         <property name="IdentityStoreEndPoint">

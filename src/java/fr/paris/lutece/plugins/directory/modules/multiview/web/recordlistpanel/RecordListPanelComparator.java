@@ -31,32 +31,53 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.util;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel;
+
+import java.io.Serializable;
+import java.util.Comparator;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
- * Constant class for the module
+ * Comparator for IRecordListPanel implementation
  */
-public final class DirectoryMultiviewConstants
-{    
-    // Marks
-    public static final String MARK_RECORD = "record";
-    
-    // Parameters
-    public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
-    public static final String PARAMETER_CURRENT_SELECTED_PANEL = "current_selected_panel";
-
-    // Constants
-    public static final String REFERENCE_ITEM_DEFAULT_CODE = "-1";
-    public static final String REFERENCE_ITEM_DEFAULT_NAME = "-";
-    public static final int DEFAULT_FILTER_VALUE = NumberUtils.INTEGER_MINUS_ONE;
+public class RecordListPanelComparator implements Comparator<IRecordListPanel>, Serializable
+{
+    /**
+     * Serial UID
+     */
+    private static final long serialVersionUID = -3710184421474776162L;
 
     /**
-     * Private constructor - never call
+     * {@inheritDoc}
      */
-    private DirectoryMultiviewConstants( )
+    @Override
+    public int compare( IRecordListPanel recordListPanelOne, IRecordListPanel recordListPanelTwo )
     {
-
+        int nCompareResult = NumberUtils.INTEGER_ZERO;
+        
+        if ( recordListPanelOne == null )
+        {
+            if ( recordListPanelTwo != null )
+            {
+                nCompareResult = NumberUtils.INTEGER_MINUS_ONE;
+            }
+        }
+        else
+        {
+            if ( recordListPanelTwo == null )
+            {
+                nCompareResult = NumberUtils.INTEGER_ONE;
+            }
+            else
+            {
+                Integer nPositionPanelOne = recordListPanelOne.getPosition( );
+                Integer nPositionPanelTwo = recordListPanelTwo.getPosition( );
+                
+                nCompareResult = nPositionPanelOne.compareTo( nPositionPanelTwo );
+            }
+        }
+        
+        return nCompareResult;
     }
 }

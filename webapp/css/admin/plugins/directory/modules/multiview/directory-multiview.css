@@ -30,11 +30,18 @@ table.table-hover tbody tr:hover{ cursor:pointer }
 
 #multi-record-panel .nav-tabs{ margin-bottom:0 }
 #multi-record-panel .nav-tabs > li:first-of-type {/*  padding-left:16%; margin-bottom:-1px;  */}
-#multi-record-panel .nav-tabs > li > a{ background-color:#ddd; border:1px solid #ddd; padding:15px 30px; text-transform:uppercase; font-size:1.5rem;}
-#multi-record-panel .nav-tabs > li.active > a {margin-bottom:-1px; border-bottom:1px solid #fff; background-color:#fff}
-#multi-record-panel .nav-tabs > li.active > a {font-family:'Montserrat-Light','Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif; }
+#multi-record-panel .nav-tabs > li > button{ background-color:#ddd; border:1px solid #ddd; padding:15px 30px; text-transform:uppercase; font-size:1.5rem;}
+#multi-record-panel .nav-tabs > li.active > button {margin-bottom:-1px; border-bottom:1px solid #fff; background-color:#fff}
+#multi-record-panel .nav-tabs > li.active > button {font-family:'Montserrat-Light','Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif; }
 #multi-record-panel .nav-tabs .dropdown-menu {padding:0px 26px; border:0; min-width:300px}
 #multi-record-panel .nav-tabs .dropdown-menu li {width:281px}
+
+#multi-record-panel .nav-tabs > li.active > button:hover, .nav-tabs > li.active > button:focus, .nav-tabs > li.active > button:hover { color: #555; cursor: default }
+#multi-record-panel .nav > li > button:hover, .nav > li > button:active, .nav > li > button:focus { background: #f7f7f7 }
+#multi-record-panel .nav > li > button:focus, .nav > li > button:hover { text-decoration: none }
+#multi-record-panel .nav-tabs > li > button { margin-right: 2px; border-radius: 4px 4px 0 0 }
+#multi-record-panel .nav > li > button { position: relative; display: block }
+#multi-record-panel button:hover, button:active, button:focus { outline: none }
 
 .nav-records {/* padding-left:140px; */ border-bottom:0}
 .btn-records {padding:15px; margin-left:15px}

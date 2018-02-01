@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.customizedco
 import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.IRecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.IRecordFilterParameter;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordFieldItem;
 
@@ -123,5 +125,31 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
             }
             mapResourceActions.put( strMarkName, listFieldResult );
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, RecordAssignment> populateRecordAssignmentMap( List<RecordAssignment> listRecordAssignment )
+    {
+        Map<String, RecordAssignment> recordAssignmentMap = new LinkedHashMap<>( );
+        
+        if ( listRecordAssignment != null &&  !listRecordAssignment.isEmpty( ) )
+        {
+            for ( RecordAssignment assignedRecord : listRecordAssignment )
+            {
+                if ( !recordAssignmentMap.containsKey( String.valueOf( assignedRecord.getIdRecord( ) ) )
+                        || recordAssignmentMap.get( String.valueOf( assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
+                        .before( assignedRecord.getAssignmentDate( ) ) )
+                {
+                    // keep only the last one
+                    recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord );
+
+                }
+            }
+        }
+        
+        return recordAssignmentMap;
     }
 }

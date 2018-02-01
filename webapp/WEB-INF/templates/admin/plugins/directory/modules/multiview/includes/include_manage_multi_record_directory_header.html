@@ -4,6 +4,7 @@
         	<div class="row">
             	<div id="filter-records" class="box box-records bg-gra-light">
                 	<div class="box-body col-sm-offset-1">
+                		<input type="hidden" name="current_selected_panel" value="${current_selected_panel!''}"/>
 						<#if recordfield_filter_list?has_content>
 							<#list recordfield_filter_list as recordfield_filter>
 								<#if (recordfield_filter.columnFilter)??>
@@ -36,11 +37,15 @@
 			<div id="multi-record-panel" class="row bg-gra-light records">
 				<div class="row">
 					<ul class="nav nav-tabs nav-records">
-						<li class="active" role="presentation">
-							<a>
-								<i class="fa fa-inbox"></i> #i18n{module.directory.multiview.records_list.label_records_count} <span class="badge">${paginator.itemsCount}</span>
-							</a>
-						</li>
+						<#if record_panel_list?has_content>
+							<#list record_panel_list as record_panel>
+								<li class="<#if record_panel.active>active</#if>" role="presentation">
+									<button type="submit" name="selected_panel" value="${record_panel.name}">
+										<i class="fa fa-inbox"></i> ${record_panel.title} <span class="badge">${record_panel.recordNumber}</span>
+									</button>
+								</li>
+							</#list>
+						</#if>
 					</ul>
 				</div>
 			</div>	

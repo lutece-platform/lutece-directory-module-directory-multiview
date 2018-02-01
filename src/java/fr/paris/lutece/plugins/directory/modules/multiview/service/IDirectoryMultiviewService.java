@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.customizedcolumn.CustomizedColumnFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.IRecordFilterParameter;
+import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 
 /**
@@ -48,11 +49,9 @@ import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.Record
  */
 public interface IDirectoryMultiviewService
 {
-    /**
-     * Name of the bean of the service
-     */
+    // Constants
     String BEAN_NAME = "directory-multiview.directoryMultiviewService";
-
+    
     /**
      * Fill the filter value from the request
      * 
@@ -88,4 +87,13 @@ public interface IDirectoryMultiviewService
      *            The name of the mark to store the value inside
      */
     void populateRecord( List<Map<String, Object>> resourceActions, List<IEntry> listEntry, String strMarkName );
+
+    /**
+     * Populate the Map which associate for each id record its last RecordAssignment
+     * 
+     * @param listRecordAssignment
+     *          The list of RecordAssignment to populate the map from
+     * @return the Map which associate for each id record its last RecordAssignment
+     */
+    Map<String, RecordAssignment> populateRecordAssignmentMap( List<RecordAssignment> listRecordAssignment );
 }

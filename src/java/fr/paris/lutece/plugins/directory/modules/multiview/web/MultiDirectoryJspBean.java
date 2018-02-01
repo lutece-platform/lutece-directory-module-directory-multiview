@@ -59,13 +59,16 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.customizedco
 import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.IRecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.UserIdentityService;
-import fr.paris.lutece.plugins.directory.modules.multiview.service.search.DirectoryMultiviewSearchService;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.IRecordFilterParameter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterAssignedUnitParameter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterCustomizedColumnParameter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterDirectoryParameter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterNumberOfDaysParameter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterWorkflowStateParameter;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.IRecordListPanel;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.RecordListPanelFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.util.RecordListPanelUtil;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
 import fr.paris.lutece.plugins.directory.service.DirectoryService;
@@ -86,6 +89,7 @@ import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.util.html.Paginator;
 
 /**
  * This class provides the user interface to manage form features ( manage, create, modify, remove)
@@ -145,6 +149,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_SEARCH_TEXT = "search_text";
     private static final String MARK_RECORD_FIELD_FILTER_LIST = "recordfield_filter_list";
     private static final String MARK_CUSTOMIZED_COLUMN_LIST = "customized_column_list";
+    private static final String MARK_RECORD_PANEL_LIST = "record_panel_list";
+    private static final String MARK_CURRENT_SELECTED_PANEL = "current_selected_panel";
 
     // JSP URL
     private static final String JSP_MANAGE_MULTIVIEW = "jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp";
@@ -154,10 +160,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PARAMETER_ID_RECORD = "id_record";
     private static final String PARAMETER_ID_ACTION = "id_action";
     private static final String PARAMETER_ID_DIRECTORY_RECORD = "id_directory_record";
-    private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String PARAMETER_SORTED_ATTRIBUTE_NAME = "sorted_attribute_name";
     private static final String PARAMETER_SORTED_ATTRIBUTE_ASC = "asc_sort";
-    private static final String PARAMETER_SEARCHED_TEXT = "searched_text";
     private static final String PARAMETER_BUTTON_REFRESH = "refresh";
 
     // Views
@@ -177,10 +181,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private HashMap<Integer, Directory> _directoryList;
     private RecordAssignmentFilter _assignmentFilter;
     private transient List<IRecordFilterParameter> _listRecordFilterParameter;
-    private LinkedHashMap<String, RecordAssignment> _recordAssignmentMap;
     private List<Map<String, Object>> _listResourceActions;
     private boolean _bIsInitialized;
-    private String _strSearchText;
     private transient CustomizedColumnFactory _customizedColumnFactory;
 
     /**
@@ -194,7 +196,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         if ( !_bIsInitialized )
         {
             _directoryList = new HashMap<>( );
-            _recordAssignmentMap = new LinkedHashMap<>( );
             _listResourceActions = new ArrayList<>( );
 
             // init the assignment filter
@@ -204,7 +205,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             _assignmentFilter.setActiveAssignmentRecordsOnly( true );
             _assignmentFilter.setLastActiveAssignmentRecordsOnly( true );
 
-            _strSearchText = StringUtils.EMPTY;
             DirectoryFilter filter = new DirectoryFilter( );
             filter.setIsDisabled( 1 );
             List<Directory> listDirectory = DirectoryHome.getDirectoryList( filter, DirectoryUtils.getPlugin( ) );
@@ -261,16 +261,13 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         }
 
         // test if we are paginating or sorting OR if there is a new search request
-        if ( request.getParameter( PARAMETER_PAGE_INDEX ) == null )
+        if ( request.getParameter( Paginator.PARAMETER_PAGE_INDEX ) == null )
         {
             if ( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_NAME ) != null )
             {
                 // new SORT
                 _assignmentFilter.setOrderBy( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_NAME ) );
                 _assignmentFilter.setAsc( BooleanUtils.parseBoolean( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_ASC ) ) );
-
-                // get the new records assigments
-                getRecordAssigments( );
             }
             else
             {
@@ -280,20 +277,25 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
                 // if filter changed, reinit several list for multiview
                 reInitDirectoryMultiview( newFilter );
-
-                // get the new records assigments
-                getRecordAssigments( );
-
             }
         }
+        
+        // Create the list of RecordListPanel
+        List<IRecordListPanel> listRecordListPanel = RecordListPanelFactory.createRecordListPanelList( request, _assignmentFilter, _directoryList.values( ) );
 
-        // Perform simple full text search
-        _strSearchText = request.getParameter( PARAMETER_SEARCHED_TEXT );
-        Map<String, RecordAssignment> mapRecordAssignmentAfterSearch = DirectoryMultiviewSearchService.filterBySearchedText( _recordAssignmentMap,
-                _directoryList.values( ), request, getPlugin( ), _strSearchText );
+        // Retrieve the Map which contains the records result of the search of the active panel
+        Map<String, RecordAssignment> mapRecordAssignmentAfterSearch = new LinkedHashMap<>( );
+        String strSelectedPanelName = request.getParameter( DirectoryMultiviewConstants.PARAMETER_CURRENT_SELECTED_PANEL );
+        
+        IRecordListPanel activePanel = RecordListPanelUtil.findActiveRecordListPanel( listRecordListPanel );
+        if ( activePanel != null )
+        {
+            mapRecordAssignmentAfterSearch = activePanel.getRecordAssignmentMap( );
+            strSelectedPanelName = activePanel.getName( );
+        }
 
         // Paginate
-        Map<String, Object> model = getPaginatedListModel( request, PARAMETER_PAGE_INDEX, new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( ).stream( )
+        Map<String, Object> model = getPaginatedListModel( request, Paginator.PARAMETER_PAGE_INDEX, new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( ).stream( )
                 .map( key -> Integer.parseInt( key ) ).collect( Collectors.toList( ) ) ), JSP_MANAGE_MULTIVIEW );
 
         // get only records for page items.
@@ -327,7 +329,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         model.put( MARK_RESOURCE_ACTIONS_LIST, _listResourceActions );
         model.put( MARK_RECORD_ASSIGNMENT_FILTER, _assignmentFilter );
         model.put( MARK_RECORD_ASSIGNMENT_MAP, mapRecordAssignmentAfterSearch );
-        model.put( MARK_SEARCH_TEXT, _strSearchText );
+        model.put( MARK_SEARCH_TEXT, request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT ) );
         model.put( MARK_CUSTOMIZED_COLUMN_LIST, _customizedColumnFactory.createCustomizedColumnList( ) );
 
         // Build the template for each filter
@@ -336,6 +338,10 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             recordFilterParameter.getColumnFilter( ).buildTemplate( _assignmentFilter, request );
         }
         model.put( MARK_RECORD_FIELD_FILTER_LIST, _listRecordFilterParameter );
+        
+        // Add the list of all record panel
+        model.put( MARK_RECORD_PANEL_LIST, listRecordListPanel );
+        model.put( MARK_CURRENT_SELECTED_PANEL, strSelectedPanelName );
 
         return getPage( PROPERTY_MANAGE_DIRECTORY_RECORD_PAGE_TITLE, TEMPLATE_MANAGE_MULTI_DIRECTORY_RECORD, model );
     }
@@ -438,7 +444,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      */
     private void reInitDirectoryMultiview( RecordAssignmentFilter newFilter )
     {
-        _recordAssignmentMap = new LinkedHashMap<>( );
         _listResourceActions = new ArrayList<>( );
 
         if ( newFilter != null )
@@ -460,30 +465,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         }
 
         resetCurrentPaginatorPageIndex( );
-    }
-
-    /**
-     * get the recordAssignment filtred list
-     */
-    private void getRecordAssigments( )
-    {
-        // get the records filtred list
-        List<RecordAssignment> recordAssignmentList = AssignmentService.getRecordAssignmentFiltredList( _assignmentFilter );
-
-        _recordAssignmentMap.clear( );
-
-        // get the records Id from the assigned records & prepare an hashmap for the model
-        for ( RecordAssignment assignedRecord : recordAssignmentList )
-        {
-            if ( !_recordAssignmentMap.containsKey( String.valueOf( assignedRecord.getIdRecord( ) ) )
-                    || _recordAssignmentMap.get( String.valueOf( assignedRecord.getIdRecord( ) ) ).getAssignmentDate( )
-                            .before( assignedRecord.getAssignmentDate( ) ) )
-            {
-                // keep only the last one
-                _recordAssignmentMap.put( String.valueOf( assignedRecord.getIdRecord( ) ), assignedRecord );
-
-            }
-        }
     }
 
     /**

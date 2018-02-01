@@ -31,32 +31,57 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.util;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.util;
+
+import java.util.List;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.IRecordListPanel;
+
 /**
- * Constant class for the module
+ * Utility class for RecordListPanel
  */
-public final class DirectoryMultiviewConstants
-{    
-    // Marks
-    public static final String MARK_RECORD = "record";
-    
-    // Parameters
-    public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
-    public static final String PARAMETER_CURRENT_SELECTED_PANEL = "current_selected_panel";
-
-    // Constants
-    public static final String REFERENCE_ITEM_DEFAULT_CODE = "-1";
-    public static final String REFERENCE_ITEM_DEFAULT_NAME = "-";
-    public static final int DEFAULT_FILTER_VALUE = NumberUtils.INTEGER_MINUS_ONE;
-
+public final class RecordListPanelUtil
+{
     /**
-     * Private constructor - never call
+     * Constructor - Never called
      */
-    private DirectoryMultiviewConstants( )
+    private RecordListPanelUtil( )
     {
-
+        
+    }
+    
+    /**
+     * Find the RecordListPanel which is active in the given list
+     * 
+     * @param listRecordListPanel
+     *          The list to retrieve the active RecordListPanel
+     * @return the RecordListPanel which is active or null if not found
+     */
+    public static IRecordListPanel findActiveRecordListPanel( List<IRecordListPanel> listRecordListPanel )
+    {
+        IRecordListPanel recordListPanelActive = null;
+        
+        if ( listRecordListPanel != null && !listRecordListPanel.isEmpty( ) )
+        {
+            for ( IRecordListPanel recordListPanel : listRecordListPanel )
+            {
+                if ( recordListPanel.isActive( ) )
+                {
+                    recordListPanelActive = recordListPanel;
+                    break;
+                }
+            }
+            
+            // If there is no active panel we will select the first panel of the list (which must have the first position)
+            if ( recordListPanelActive == null )
+            {
+                recordListPanelActive = listRecordListPanel.get( NumberUtils.INTEGER_ZERO );
+                recordListPanelActive.setActive( Boolean.TRUE );
+            }
+        }
+        
+        return recordListPanelActive;
     }
 }
