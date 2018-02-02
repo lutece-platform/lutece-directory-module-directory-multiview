@@ -45,6 +45,7 @@ public final class DirectoryMultiviewConstants
 
     // Parameters
     public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
+    public static final String PARAMETER_SELECTED_PANEL = "selected_panel";
     public static final String PARAMETER_CURRENT_SELECTED_PANEL = "current_selected_panel";
 
     // Constants

@@ -296,7 +296,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         // Paginate
         Map<String, Object> model = getPaginatedListModel( request, Paginator.PARAMETER_PAGE_INDEX, new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( )
-                .stream( ).map( key -> Integer.parseInt( key ) ).collect( Collectors.toList( ) ) ), JSP_MANAGE_MULTIVIEW );
+                .stream( ).map( key -> Integer.parseInt( key ) ).collect( Collectors.toList( ) ) ), JSP_MANAGE_MULTIVIEW, strSelectedPanelName );
 
         // get only records for page items.
         List<Record> lRecord = _recordService.loadListByListId( _paginator.getPageItems( ), getPlugin( ) );

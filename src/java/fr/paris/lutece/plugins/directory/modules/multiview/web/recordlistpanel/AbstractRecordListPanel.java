@@ -62,9 +62,6 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     // Constants
     protected static final int DEFAULT_RECORD_NUMBER = NumberUtils.INTEGER_ZERO;
 
-    // Parameters
-    protected static final String PARAMETER_SELECTED_PANEL = "selected_panel";
-
     // Service
     @Inject
     private transient IDirectoryMultiviewService _directoryMultiviewService;
@@ -260,7 +257,7 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
         boolean bIsSelectedPanel = Boolean.FALSE;
 
         // We will retrieve the name of the current selected panel
-        String strRecordListPanelSelected = request.getParameter( PARAMETER_SELECTED_PANEL );
+        String strRecordListPanelSelected = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SELECTED_PANEL );
         if ( StringUtils.isNotBlank( strRecordListPanelSelected ) )
         {
             bIsSelectedPanel = strPanelName.equals( strRecordListPanelSelected );
