@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -134,7 +135,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         // Variables
         private final List<Unit> _listAssignedUnitFilter;
         private final Map<Integer, RecordAssignment> _mapRecordAssignment;
-        private final HttpServletRequest _request;
+        private Locale _locale;
         private String _strFilterTemplate;
 
         /**
@@ -146,7 +147,6 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         AssignedUnitColumnFilter( HttpServletRequest request )
         {
             super( );
-            _request = request;
             _listAssignedUnitFilter = new ArrayList<>( );
             _mapRecordAssignment = createRecordAssignmentFilterMap( request );
         }
@@ -176,7 +176,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         public ReferenceList createReferenceList( )
         {
             ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listAssignedUnitFilter, UNIT_CODE_ATTRIBUTE, UNIT_NAME_ATTRIBUTE );
-            referenceListFactory.setDefaultName( I18nService.getLocalizedString( MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME, _request.getLocale( ) ) );
+            referenceListFactory.setDefaultName( I18nService.getLocalizedString( MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME, _locale ) );
 
             return referenceListFactory.createReferenceList( );
         }
@@ -188,13 +188,14 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         public void buildTemplate( RecordAssignmentFilter filter, HttpServletRequest request )
         {
             String strTemplateResult = StringUtils.EMPTY;
+            _locale = request.getLocale( );
 
             Map<String, Object> model = new LinkedHashMap<>( );
             model.put( MARK_FILTER_LIST, createReferenceList( ) );
             model.put( MARK_FILTER_LIST_VALUE, getRecordFilterItem( ).getItemValue( filter ) );
             model.put( MARK_FILTER_NAME, PARAMETER_ASSIGNED_UNIT_FILTER );
 
-            HtmlTemplate htmlTemplate = AppTemplateService.getTemplate( FILTER_TEMPLATE_NAME, request.getLocale( ), model );
+            HtmlTemplate htmlTemplate = AppTemplateService.getTemplate( FILTER_TEMPLATE_NAME, _locale, model );
             if ( htmlTemplate != null )
             {
                 strTemplateResult = htmlTemplate.getHtml( );
