@@ -92,6 +92,7 @@ public abstract class AbstractJspBean extends MVCAdminJspBean
 
         UrlItem url = new UrlItem( strManageJsp );
         url.addParameter( DirectoryMultiviewConstants.PARAMETER_CURRENT_SELECTED_PANEL, strActivePanelName );
+        url.addParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT, request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT ) );
         String strUrl = url.getUrl( );
 
         // PAGINATOR
