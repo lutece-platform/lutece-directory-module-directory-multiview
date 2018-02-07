@@ -148,7 +148,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
             super( );
             _request = request;
             _listAssignedUnitFilter = new ArrayList<>( );
-            _mapRecordAssignment = createRecordAssignmentFilerMap( request );
+            _mapRecordAssignment = createRecordAssignmentFilterMap( request );
         }
 
         /**

@@ -162,7 +162,7 @@ public class RecordFilterCustomizedColumnParameter implements IRecordFilterParam
             _request = request;
             _listCustomizedColumnRecordField = new ArrayList<>( );
             _listIEntryToRetrieveValueFrom = listEntry;
-            _mapRecordAssignment = createRecordAssignmentFilerMap( request );
+            _mapRecordAssignment = createRecordAssignmentFilterMap( request );
         }
 
         /**

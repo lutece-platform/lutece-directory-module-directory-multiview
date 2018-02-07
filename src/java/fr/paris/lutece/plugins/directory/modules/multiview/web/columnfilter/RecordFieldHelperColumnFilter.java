@@ -56,7 +56,7 @@ public class RecordFieldHelperColumnFilter
      *            The HttpServletRequest to retrieve the user data from
      * @return the map which associate for each id record its RecordAssignement
      */
-    public Map<Integer, RecordAssignment> createRecordAssignmentFilerMap( HttpServletRequest request )
+    public Map<Integer, RecordAssignment> createRecordAssignmentFilterMap( HttpServletRequest request )
     {
         // Retrieve the list of all RecordAssignment
         RecordAssignmentFilter recordAssignmentFilter = new RecordAssignmentFilter( );
