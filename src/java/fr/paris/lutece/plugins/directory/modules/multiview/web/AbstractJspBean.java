@@ -39,6 +39,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
@@ -81,6 +83,8 @@ public abstract class AbstractJspBean extends MVCAdminJspBean
      *            The list of item
      * @param strManageJsp
      *            The JSP
+     * @param strActivePanelName
+     *            The name of the active panel
      * @return The model
      */
     protected Map<String, Object> getPaginatedListModel( HttpServletRequest request, String strBookmark, List<Integer> list, String strManageJsp,
@@ -92,7 +96,8 @@ public abstract class AbstractJspBean extends MVCAdminJspBean
 
         UrlItem url = new UrlItem( strManageJsp );
         url.addParameter( DirectoryMultiviewConstants.PARAMETER_CURRENT_SELECTED_PANEL, strActivePanelName );
-        url.addParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT, request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT ) );
+        String strSearchText = StringUtils.defaultString( request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT ), StringUtils.EMPTY );
+        url.addParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT, strSearchText );
         String strUrl = url.getUrl( );
 
         // PAGINATOR
