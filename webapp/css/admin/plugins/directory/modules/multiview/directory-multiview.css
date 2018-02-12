@@ -10,6 +10,16 @@
 .record-wrapper > .content{ padding:25px; margin:10px }
 .record-wrapper .jumbotron {margin-bottom:0;}
 
+#assignmentLevel {
+	/* background-color:rgba(0,0,0,0.1);
+	border:1px solid rgba(0,0,0,0.1);
+	padding:10px;
+	border-radius:5px; */
+	margin:20px 0px;
+	color:#fff;
+}
+#assignmentLevel p {font-size:1.3rem; margin:0 0 10px;}
+
 #multi-directory-history-panel{ padding:15px 0; }
 #multi-directory-history-panel .panel{ padding:15px; background-color:rgba(29,152,246,0.3); margin-bottom:0; margin-top:15px }
 #multi-directory-history-panel .timeline::before {background:#1db8bb;}
@@ -29,7 +39,8 @@ table.table-hover thead tr th[data-field]:hover{ cursor:pointer }
 table.table-hover tbody tr:hover{ cursor:pointer }
 
 #multi-record-panel .nav-tabs{ margin-bottom:0 }
-#multi-record-panel .nav-tabs > li:first-of-type {/*  padding-left:16%; margin-bottom:-1px;  */}
+#multi-record-panel .nav-tabs > li:first-of-type {margin-left:0;}
+#multi-record-panel .nav-tabs > li {margin-left:15px;}
 #multi-record-panel .nav-tabs > li > button{ background-color:#ddd; border:1px solid #ddd; padding:15px 30px; text-transform:uppercase; font-size:1.5rem;}
 #multi-record-panel .nav-tabs > li.active > button {margin-bottom:-1px; border-bottom:1px solid #fff; background-color:#fff}
 #multi-record-panel .nav-tabs > li.active > button {font-family:'Montserrat-Light','Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif; }
