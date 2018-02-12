@@ -46,12 +46,14 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService;
-import fr.paris.lutece.plugins.directory.modules.multiview.service.search.DirectoryMultiviewSearchService;
+import fr.paris.lutece.plugins.directory.modules.multiview.service.search.IDirectoryMultiviewSearchService;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.service.AssignmentService;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 
 /**
@@ -65,6 +67,8 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
     // Service
     @Inject
     private transient IDirectoryMultiviewService _directoryMultiviewService;
+    @Inject
+    private transient IDirectoryMultiviewSearchService _directoryMultiviewSearchService;
 
     // Variables
     private String _strTitle;
@@ -236,11 +240,12 @@ public abstract class AbstractRecordListPanel implements IRecordListPanel
             Collection<Directory> collectionDirectory )
     {
         String strSearchText = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT );
+        AdminUser adminUser = AdminUserService.getAdminUser( request );
         List<RecordAssignment> recordAssignmentList = AssignmentService.getRecordAssignmentFiltredList( filter );
         Map<String, RecordAssignment> recordAssignmentMap = _directoryMultiviewService.populateRecordAssignmentMap( recordAssignmentList );
 
-        return DirectoryMultiviewSearchService.filterBySearchedText( recordAssignmentMap, collectionDirectory, request, DirectoryUtils.getPlugin( ),
-                strSearchText );
+        return _directoryMultiviewSearchService.filterBySearchedText( recordAssignmentMap, collectionDirectory, adminUser, DirectoryUtils.getPlugin( ),
+                strSearchText, request.getLocale( ) );
     }
 
     /**

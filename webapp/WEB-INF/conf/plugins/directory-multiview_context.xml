@@ -7,6 +7,10 @@
 	<!-- Directory-Multiview Service -->
 	<bean id="directory-multiview.directoryMultiviewService" class="fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewService"/>
 	
+	<!-- Directory-Multiview Search Service -->
+	<bean id="directory-multiview.directoryMultiviewSearchService" class="fr.paris.lutece.plugins.directory.modules.multiview.service.search.DirectoryMultiviewSearchService"/>
+	
+	<!-- Panels -->
 	<bean id="directory-multiview.recordsPanel" class="fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.RecordListRecordsPanel">
 		<property name="position" value="1"></property>
 	</bean>
