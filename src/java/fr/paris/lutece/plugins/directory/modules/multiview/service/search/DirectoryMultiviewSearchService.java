@@ -169,15 +169,12 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
         {
             for ( IEntry entry : listEntry )
             {
-                if ( entry.isIndexedAsSummary( ) )
-                {
-                    List<RecordField> listRecordFields = new ArrayList<>( );
-                    RecordField recordField = new RecordField( );
-                    recordField.setEntry( entry );
-                    recordField.setValue( strSearchText );
-                    listRecordFields.add( recordField );
-                    mapSearchRecordField.put( Integer.toString( entry.getIdEntry( ) ), listRecordFields );
-                }
+                List<RecordField> listRecordFields = new ArrayList<>( );
+                RecordField recordField = new RecordField( );
+                recordField.setEntry( entry );
+                recordField.setValue( strSearchText );
+                listRecordFields.add( recordField );
+                mapSearchRecordField.put( Integer.toString( entry.getIdEntry( ) ), listRecordFields );
             }
         }
 
