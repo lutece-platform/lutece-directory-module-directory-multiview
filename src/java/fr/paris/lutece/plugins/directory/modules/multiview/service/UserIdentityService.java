@@ -97,7 +97,7 @@ public class UserIdentityService
     public static String getUserGuid( List<IEntry> listEntries, int nIdRecord, Plugin plugin )
     {
         String strUserGuid = null;
-        
+
         for ( IEntry entry : listEntries )
         {
             String strGuidEntryTitle = PROPERTY_ENTRY_TITLE_GUID;
@@ -123,7 +123,7 @@ public class UserIdentityService
                 }
             }
         }
-        
+
         return strUserGuid;
     }
 }
