@@ -96,13 +96,15 @@ public class UserIdentityService
      */
     public static String getUserGuid( List<IEntry> listEntries, int nIdRecord, Plugin plugin )
     {
+        String strUserGuid = null;
+        
         for ( IEntry entry : listEntries )
         {
             String strGuidEntryTitle = PROPERTY_ENTRY_TITLE_GUID;
             if ( entry.getTitle( ).equals( strGuidEntryTitle ) )
             {
                 List<RecordField> listRecordFields = DirectoryUtils.getListRecordField( entry, nIdRecord, plugin );
-                if ( listRecordFields.size( ) > 0 )
+                if ( !listRecordFields.isEmpty( ) )
                 {
                     return listRecordFields.get( 0 ).toString( );
                 }
@@ -110,12 +112,18 @@ public class UserIdentityService
             }
             else
             {
-                if ( entry.getChildren( ).size( ) > 0 )
+                List<IEntry> listChildrenEntry = entry.getChildren( );
+                if ( listChildrenEntry != null && !listChildrenEntry.isEmpty( ) )
                 {
-                    return getUserGuid( entry.getChildren( ), nIdRecord, plugin );
+                    strUserGuid = getUserGuid( listChildrenEntry, nIdRecord, plugin );
+                    if ( strUserGuid != null )
+                    {
+                        break;
+                    }
                 }
             }
         }
-        return null;
+        
+        return strUserGuid;
     }
 }
