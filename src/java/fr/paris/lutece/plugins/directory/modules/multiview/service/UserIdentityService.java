@@ -100,8 +100,7 @@ public class UserIdentityService
 
         for ( IEntry entry : listEntries )
         {
-            String strGuidEntryTitle = PROPERTY_ENTRY_TITLE_GUID;
-            if ( entry.getTitle( ).equals( strGuidEntryTitle ) )
+            if ( PROPERTY_ENTRY_TITLE_GUID.equals( entry.getTitle( ) ) )
             {
                 List<RecordField> listRecordFields = DirectoryUtils.getListRecordField( entry, nIdRecord, plugin );
                 if ( !listRecordFields.isEmpty( ) )
