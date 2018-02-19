@@ -28,11 +28,11 @@
                                                 </#if>
                                                 <th data-field="created" class="th-sort-DESC">
                                                         #i18n{module.directory.multiview.records_list.created}
-                                                        <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="created" />
+                                                        <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?current_selected_panel="+current_selected_panel attribute="created" />
                                                 </th>                                               
                                                 <th data-field="assigned">
                                                         #i18n{module.directory.multiview.records_list.assigned}
-                                                        <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp" attribute="assigned" />
+                                                        <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?current_selected_panel="+current_selected_panel attribute="assigned" />
                                                 </th>
                                         </tr>
                                 </thead>
