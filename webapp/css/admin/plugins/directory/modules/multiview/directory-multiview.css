@@ -72,7 +72,7 @@ table.table-hover tbody tr:hover{ cursor:pointer }
 #multi-record-list.records .tab-content table td:nth-of-type(2){min-width:120px}
 #multi-record-list.records .tab-content table td:last-of-type {min-width:130px}
 
-#multi-record-list .tab-content{ padding:10px 0 0 90px; background-color:#fff; min-height:800px }
+#multi-record-list .tab-content{ padding:10px 0 0 90px; background-color:#fff }
 
 #multi-record-list .tab-content table {color:#bebebe}
 #multi-record-list .tab-content table thead{ background-color:#fff; color:#000  }
