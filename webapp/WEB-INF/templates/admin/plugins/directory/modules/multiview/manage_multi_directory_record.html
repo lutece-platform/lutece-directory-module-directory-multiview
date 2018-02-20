@@ -67,15 +67,17 @@
                                                             ${(resource_actions.record.dateCreation?date)!''}
                                                         </td>                                                    
                                                         <td>
-                                                                <#if recordAssignmentMap?? >
-                                                                        <#if (recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.firstName)?has_content >
-                                                                                <strong><i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.firstName} ${(recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.lastName)!''}</strong>
-                                                                        <#elseif recordAssignmentMap[resource_actions.record.idRecord?string].assignorUnit.label?? >
-                                                                                ${recordAssignmentMap[resource_actions.record.idRecord?string].assignorUnit.label} &gt; 
-									<#else>
-                                                                                <strong><i class="fa fa-sitemap"></i>&nbsp;&nbsp;&nbsp;${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUnit.label}</strong>
-                                                                        </#if>
-                                                                </#if>&nbsp;
+                                                            <#if recordAssignmentMap?? >
+                                                                <#if (recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.firstName)?has_content >
+                                                                    <strong>
+                                                                        <i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.firstName} ${(recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.lastName)!''}
+                                                                    </strong>
+                                                                <#else>
+                                                                    <strong>
+                                                                        <i class="fa fa-sitemap"></i>&nbsp;&nbsp;&nbsp;${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUnit.label}
+                                                                    </strong>
+                                                                </#if>
+                                                            </#if>&nbsp;
                                                         </td>
                                                 </tr>
                                         </#list>
