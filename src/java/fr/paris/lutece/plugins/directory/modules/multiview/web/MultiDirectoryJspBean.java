@@ -172,6 +172,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     // Actions
     private static final String ACTION_PROCESS_ACTION = "doProcessAction";
     private static final String ACTION_SAVE_TASK_FORM = "doSaveTaskForm";
+    private static final String ACTION_CANCEL_TASK_FORM = "doCancelTaskForm";
 
     // Session fields
     private final IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
@@ -510,7 +511,10 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             recordService.update( record, getPlugin( ) );
         }
 
-        return redirectView( request, VIEW_MULTIVIEW );
+        Map<String,String> mapParameters = new LinkedHashMap<>( );
+        mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
+        
+        return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
     }
 
     /**
@@ -554,7 +558,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     @Action( value = ACTION_SAVE_TASK_FORM )
     public String doSaveTaskForm( HttpServletRequest request )
     {
-
         Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
                 .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
         Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
@@ -583,8 +586,27 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         {
             return redirectView( request, VIEW_TASKS_FORM );
         }
-
-        return redirectView( request, VIEW_MULTIVIEW );
+        
+        Map<String,String> mapParameters = new LinkedHashMap<>( );
+        mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
+        
+        return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
+    }
+    
+    /**
+     * Cancel an action of the workflow
+     * 
+     * @param request
+     *          The HttpServletRequest
+     * @return the Jsp URL to return
+     */
+    @Action( value = ACTION_CANCEL_TASK_FORM )
+    public String doCancelTaskForm( HttpServletRequest request )
+    {
+        Map<String,String> mapParameters = new LinkedHashMap<>( );
+        mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) );
+        
+        return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
     }
 
     /**
