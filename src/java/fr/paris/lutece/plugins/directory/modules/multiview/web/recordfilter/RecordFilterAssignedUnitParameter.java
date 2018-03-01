@@ -35,9 +35,11 @@ package fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,15 +49,18 @@ import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.directory.business.RecordHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.IRecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.RecordFilterAssignedUnitItem;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceItemComparator;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.columnfilter.IColumnFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.columnfilter.RecordFieldHelperColumnFilter;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.unittree.business.unit.Unit;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
+import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
@@ -125,15 +130,12 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
      */
     private final class AssignedUnitColumnFilter extends RecordFieldHelperColumnFilter implements IColumnFilter
     {
-        // Constants
-        private static final String UNIT_CODE_ATTRIBUTE = "idUnit";
-        private static final String UNIT_NAME_ATTRIBUTE = "label";
-
         // Messages
         private static final String MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME = "module.directory.multiview.manage_directory_multirecord.unit.attribute.defaultName";
 
         // Variables
         private final List<Unit> _listAssignedUnitFilter;
+        private final List<AdminUser> _listAssignedUserFilter;
         private final Map<Integer, RecordAssignment> _mapRecordAssignment;
         private Locale _locale;
         private String _strFilterTemplate;
@@ -148,6 +150,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         {
             super( );
             _listAssignedUnitFilter = new ArrayList<>( );
+            _listAssignedUserFilter = new ArrayList<>( );
             _mapRecordAssignment = createRecordAssignmentFilterMap( request );
         }
 
@@ -165,6 +168,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
                 {
                     RecordAssignment recordAssignmentFromRecord = _mapRecordAssignment.get( record.getIdRecord( ) );
                     _listAssignedUnitFilter.add( recordAssignmentFromRecord.getAssignedUnit( ) );
+                    _listAssignedUserFilter.add( recordAssignmentFromRecord.getAssignedUser( ) );
                 }
             }
         }
@@ -175,10 +179,20 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         @Override
         public ReferenceList createReferenceList( )
         {
-            ReferenceListFactory referenceListFactory = new ReferenceListFactory( _listAssignedUnitFilter, UNIT_CODE_ATTRIBUTE, UNIT_NAME_ATTRIBUTE );
-            referenceListFactory.setDefaultName( I18nService.getLocalizedString( MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME, _locale ) );
-
-            return referenceListFactory.createReferenceList( );
+            ReferenceList referenceListAssignedUnit = createAssignedUnitReferenceList( );            
+            ReferenceList referenceListAssignedUser = createAdminUserReferenceList( );
+            
+            ReferenceList referenceListGlobal = new ReferenceList( );
+            
+            ReferenceItem referenceItemDefault = new ReferenceItem( );
+            referenceItemDefault.setCode( DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_CODE );
+            referenceItemDefault.setName( I18nService.getLocalizedString( MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME, _locale ) );
+            
+            referenceListGlobal.add( referenceItemDefault );
+            referenceListGlobal.addAll( referenceListAssignedUnit );
+            referenceListGlobal.addAll( referenceListAssignedUser );
+            
+            return referenceListGlobal;
         }
 
         /**
@@ -211,6 +225,71 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         public String getTemplate( )
         {
             return _strFilterTemplate;
+        }
+        
+        /**
+         * Create the ReferenceList of all AssignedUnit
+         * 
+         * @return the ReferenceList of all AssignedUnit
+         */
+        private ReferenceList createAssignedUnitReferenceList( )
+        {
+            ReferenceList referenceListAssignedUnit = new ReferenceList( );
+            if ( _listAssignedUnitFilter != null && !_listAssignedUnitFilter.isEmpty( ) )
+            {
+                Set<Integer> setAssignedUnitId = new LinkedHashSet<>( );
+                for ( Unit unitAssignedUnit : _listAssignedUnitFilter )
+                {
+                    String strAssignedUnitLabel = unitAssignedUnit.getLabel( );
+                    Integer nAssignedUnitId = unitAssignedUnit.getIdUnit( );
+                    if ( StringUtils.isNotBlank( strAssignedUnitLabel ) && !setAssignedUnitId.contains( nAssignedUnitId ) )
+                    {
+                        ReferenceItem referenceItemAssignedUnit = new ReferenceItem( );
+                        referenceItemAssignedUnit.setCode( DirectoryMultiviewConstants.PREFIX_UNIT + nAssignedUnitId );
+                        referenceItemAssignedUnit.setName( strAssignedUnitLabel );
+
+                        referenceListAssignedUnit.add( referenceItemAssignedUnit );
+                        setAssignedUnitId.add( nAssignedUnitId );
+                    }
+                }
+                
+                referenceListAssignedUnit.sort( new ReferenceItemComparator( ) );
+            }
+            
+            return referenceListAssignedUnit;
+        }
+        
+        /**
+         * Create the ReferenceList of all AssignedUser
+         * 
+         * @return the ReferenceList of all AssignedUser
+         */
+        private ReferenceList createAdminUserReferenceList( )
+        {
+            ReferenceList referenceListAssignedUser = new ReferenceList( );
+            if ( _listAssignedUserFilter != null && !_listAssignedUserFilter.isEmpty( ) )
+            {
+                Set<Integer> setAssignedAdminUserId = new LinkedHashSet<>( );
+                for ( AdminUser adminUser : _listAssignedUserFilter )
+                {
+                    Integer nAssignedAdminUserId = adminUser.getUserId( );
+                    String strAssignedAdminUserFirstName = adminUser.getFirstName( );
+                    String strAssignedAdminUserLastName = adminUser.getLastName( );
+                    if ( ( StringUtils.isNotBlank( strAssignedAdminUserFirstName ) || StringUtils.isNotBlank( strAssignedAdminUserLastName ) ) && !setAssignedAdminUserId.contains( nAssignedAdminUserId ) )
+                    {
+                        ReferenceItem referenceItemAssignedUser = new ReferenceItem( );
+                        referenceItemAssignedUser.setCode( DirectoryMultiviewConstants.PREFIX_ADMIN_USER + nAssignedAdminUserId );
+                        referenceItemAssignedUser.setName( adminUser.getFirstName( ) + " " + adminUser.getLastName( ) );
+
+                        referenceListAssignedUser.add( referenceItemAssignedUser );
+                        setAssignedAdminUserId.add( nAssignedAdminUserId );
+                    }
+                }
+                
+                referenceListAssignedUser.sort( new ReferenceItemComparator( ) );
+            }
+            
+            return referenceListAssignedUser;
         }
     }
 }

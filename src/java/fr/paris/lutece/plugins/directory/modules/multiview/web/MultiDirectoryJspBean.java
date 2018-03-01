@@ -253,6 +253,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     {
         // Clear the resource actions list
         _listResourceActions.clear( );
+        
+        // Clear the list of assigned user id
+        _assignmentFilter.setListAssignedUserId( new ArrayList<>( ) );
 
         // force refresh ?
         if ( request.getParameter( PARAMETER_BUTTON_REFRESH ) != null )

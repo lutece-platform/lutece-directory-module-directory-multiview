@@ -70,6 +70,8 @@
                                                             <#if recordAssignmentMap?? >
                                                                 <#if (recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.firstName)?has_content >
                                                                     <strong>
+                                                                    	<i class="fa fa-sitemap"></i>&nbsp;&nbsp;&nbsp;${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUnit.label}
+                                                                    	<br />
                                                                         <i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.firstName} ${(recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.lastName)!''}
                                                                     </strong>
                                                                 <#else>

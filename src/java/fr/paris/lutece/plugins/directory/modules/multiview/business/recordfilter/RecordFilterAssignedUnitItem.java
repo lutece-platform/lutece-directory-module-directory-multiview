@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
 import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
 
@@ -41,13 +44,16 @@ import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.Record
  */
 public class RecordFilterAssignedUnitItem implements IRecordFilterItem
 {
+    // Variables
+    private String _strAssignedUnitItemValue = StringUtils.EMPTY;
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public Integer getItemValue( RecordAssignmentFilter filter )
+    public String getItemValue( RecordAssignmentFilter filter )
     {
-        return filter.getAssignedUnitId( );
+        return _strAssignedUnitItemValue;
     }
 
     /**
@@ -56,13 +62,26 @@ public class RecordFilterAssignedUnitItem implements IRecordFilterItem
     @Override
     public void setItemValue( RecordAssignmentFilter filter, Object objValue )
     {
+        filter.getListAssignedUserId( ).clear( );
+        
         if ( objValue == null )
         {
             setItemDefaultValue( filter );
         }
         else
         {
-            filter.setAssignedUnitId( Integer.parseInt( String.valueOf( objValue ) ) );
+            _strAssignedUnitItemValue = String.valueOf( objValue );
+            if ( _strAssignedUnitItemValue.contains( DirectoryMultiviewConstants.PREFIX_ADMIN_USER ) )
+            {
+                String strAssignedUserId = _strAssignedUnitItemValue.replace( DirectoryMultiviewConstants.PREFIX_ADMIN_USER, StringUtils.EMPTY );
+                filter.getListAssignedUserId( ).add( NumberUtils.toInt( strAssignedUserId, DirectoryMultiviewConstants.DEFAULT_FILTER_VALUE ) );
+                filter.setAssignedUnitId( DirectoryMultiviewConstants.DEFAULT_FILTER_VALUE );
+            }
+            else
+            {
+                String strAssignedUnit = _strAssignedUnitItemValue.replace( DirectoryMultiviewConstants.PREFIX_UNIT, StringUtils.EMPTY );
+                filter.setAssignedUnitId( NumberUtils.toInt( strAssignedUnit, DirectoryMultiviewConstants.DEFAULT_FILTER_VALUE ) );
+            }
         }
     }
 

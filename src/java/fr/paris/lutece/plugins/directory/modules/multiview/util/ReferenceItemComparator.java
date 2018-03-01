@@ -33,33 +33,44 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.util;
 
+import java.util.Comparator;
+
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fr.paris.lutece.util.ReferenceItem;
+
 /**
- * Constant class for the module
+ * Comparator for ReferenceItem
  */
-public final class DirectoryMultiviewConstants
+public class ReferenceItemComparator implements Comparator<ReferenceItem>
 {
-    // Marks
-    public static final String MARK_RECORD = "record";
-
-    // Parameters
-    public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
-    public static final String PARAMETER_SELECTED_PANEL = "selected_panel";
-    public static final String PARAMETER_CURRENT_SELECTED_PANEL = "current_selected_panel";
-
-    // Constants
-    public static final String PREFIX_UNIT = "unit_";
-    public static final String PREFIX_ADMIN_USER = "user_";
-    public static final String REFERENCE_ITEM_DEFAULT_CODE = "-1";
-    public static final String REFERENCE_ITEM_DEFAULT_NAME = "-";
-    public static final int DEFAULT_FILTER_VALUE = NumberUtils.INTEGER_MINUS_ONE;
-
     /**
-     * Private constructor - never call
+     * {@inheritDoc}
      */
-    private DirectoryMultiviewConstants( )
+    @Override
+    public int compare( ReferenceItem referenceItemOne, ReferenceItem referenceItemTwo )
     {
-
+        if ( referenceItemOne != null )
+        {
+            if( referenceItemTwo != null )
+            {
+                return referenceItemOne.getName( ).compareTo( referenceItemTwo.getName( ) );
+            }
+            else
+            {
+                return NumberUtils.INTEGER_ONE;
+            }
+        }
+        else
+        {
+            if ( referenceItemTwo != null )
+            {
+                return NumberUtils.INTEGER_MINUS_ONE;
+            }
+            else
+            {
+                return NumberUtils.INTEGER_ZERO;
+            }
+        }
     }
 }
