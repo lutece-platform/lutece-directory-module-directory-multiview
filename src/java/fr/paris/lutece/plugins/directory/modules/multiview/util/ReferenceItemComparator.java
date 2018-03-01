@@ -52,7 +52,7 @@ public class ReferenceItemComparator implements Comparator<ReferenceItem>
     {
         if ( referenceItemOne != null )
         {
-            if( referenceItemTwo != null )
+            if ( referenceItemTwo != null )
             {
                 return referenceItemOne.getName( ).compareTo( referenceItemTwo.getName( ) );
             }

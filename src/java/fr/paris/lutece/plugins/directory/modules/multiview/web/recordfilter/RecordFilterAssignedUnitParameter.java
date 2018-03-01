@@ -179,19 +179,19 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         @Override
         public ReferenceList createReferenceList( )
         {
-            ReferenceList referenceListAssignedUnit = createAssignedUnitReferenceList( );            
+            ReferenceList referenceListAssignedUnit = createAssignedUnitReferenceList( );
             ReferenceList referenceListAssignedUser = createAdminUserReferenceList( );
-            
+
             ReferenceList referenceListGlobal = new ReferenceList( );
-            
+
             ReferenceItem referenceItemDefault = new ReferenceItem( );
             referenceItemDefault.setCode( DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_CODE );
             referenceItemDefault.setName( I18nService.getLocalizedString( MESSAGE_UNIT_ATTRIBUTE_DEFAULT_NAME, _locale ) );
-            
+
             referenceListGlobal.add( referenceItemDefault );
             referenceListGlobal.addAll( referenceListAssignedUnit );
             referenceListGlobal.addAll( referenceListAssignedUser );
-            
+
             return referenceListGlobal;
         }
 
@@ -226,7 +226,7 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
         {
             return _strFilterTemplate;
         }
-        
+
         /**
          * Create the ReferenceList of all AssignedUnit
          * 
@@ -252,13 +252,13 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
                         setAssignedUnitId.add( nAssignedUnitId );
                     }
                 }
-                
+
                 referenceListAssignedUnit.sort( new ReferenceItemComparator( ) );
             }
-            
+
             return referenceListAssignedUnit;
         }
-        
+
         /**
          * Create the ReferenceList of all AssignedUser
          * 
@@ -275,7 +275,8 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
                     Integer nAssignedAdminUserId = adminUser.getUserId( );
                     String strAssignedAdminUserFirstName = adminUser.getFirstName( );
                     String strAssignedAdminUserLastName = adminUser.getLastName( );
-                    if ( ( StringUtils.isNotBlank( strAssignedAdminUserFirstName ) || StringUtils.isNotBlank( strAssignedAdminUserLastName ) ) && !setAssignedAdminUserId.contains( nAssignedAdminUserId ) )
+                    if ( ( StringUtils.isNotBlank( strAssignedAdminUserFirstName ) || StringUtils.isNotBlank( strAssignedAdminUserLastName ) )
+                            && !setAssignedAdminUserId.contains( nAssignedAdminUserId ) )
                     {
                         ReferenceItem referenceItemAssignedUser = new ReferenceItem( );
                         referenceItemAssignedUser.setCode( DirectoryMultiviewConstants.PREFIX_ADMIN_USER + nAssignedAdminUserId );
@@ -285,10 +286,10 @@ public class RecordFilterAssignedUnitParameter implements IRecordFilterParameter
                         setAssignedAdminUserId.add( nAssignedAdminUserId );
                     }
                 }
-                
+
                 referenceListAssignedUser.sort( new ReferenceItemComparator( ) );
             }
-            
+
             return referenceListAssignedUser;
         }
     }

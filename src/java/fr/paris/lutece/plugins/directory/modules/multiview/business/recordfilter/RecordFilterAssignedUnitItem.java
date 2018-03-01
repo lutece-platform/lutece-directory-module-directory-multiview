@@ -46,7 +46,7 @@ public class RecordFilterAssignedUnitItem implements IRecordFilterItem
 {
     // Variables
     private String _strAssignedUnitItemValue = StringUtils.EMPTY;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -63,7 +63,7 @@ public class RecordFilterAssignedUnitItem implements IRecordFilterItem
     public void setItemValue( RecordAssignmentFilter filter, Object objValue )
     {
         filter.getListAssignedUserId( ).clear( );
-        
+
         if ( objValue == null )
         {
             setItemDefaultValue( filter );
