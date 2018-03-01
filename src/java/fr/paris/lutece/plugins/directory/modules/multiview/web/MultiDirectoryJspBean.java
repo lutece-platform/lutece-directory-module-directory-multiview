@@ -511,9 +511,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             recordService.update( record, getPlugin( ) );
         }
 
-        Map<String,String> mapParameters = new LinkedHashMap<>( );
+        Map<String, String> mapParameters = new LinkedHashMap<>( );
         mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
-        
+
         return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
     }
 
@@ -586,26 +586,26 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         {
             return redirectView( request, VIEW_TASKS_FORM );
         }
-        
-        Map<String,String> mapParameters = new LinkedHashMap<>( );
+
+        Map<String, String> mapParameters = new LinkedHashMap<>( );
         mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
-        
+
         return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
     }
-    
+
     /**
      * Cancel an action of the workflow
      * 
      * @param request
-     *          The HttpServletRequest
+     *            The HttpServletRequest
      * @return the Jsp URL to return
      */
     @Action( value = ACTION_CANCEL_TASK_FORM )
     public String doCancelTaskForm( HttpServletRequest request )
     {
-        Map<String,String> mapParameters = new LinkedHashMap<>( );
+        Map<String, String> mapParameters = new LinkedHashMap<>( );
         mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) );
-        
+
         return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
     }
 
