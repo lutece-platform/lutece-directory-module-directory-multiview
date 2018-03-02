@@ -64,7 +64,7 @@ public class RecordListMyRecordsPanel extends AbstractRecordListPanel
         int nUserIdentifier = getAdminUserIdFromRequest( request );
 
         // Create the filter used for the search of the records
-        RecordAssignmentFilter recordAssignmentFilterClone = recordAssignmentFilter.clone( );
+        RecordAssignmentFilter recordAssignmentFilterClone = new RecordAssignmentFilter( recordAssignmentFilter );
         recordAssignmentFilterClone.getListAssignedUserId( ).add( nUserIdentifier );
 
         // Initialization of the panel

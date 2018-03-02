@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter;
 
+import java.util.ArrayList;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -81,6 +83,7 @@ public class RecordFilterAssignedUnitItem implements IRecordFilterItem
             {
                 String strAssignedUnit = _strAssignedUnitItemValue.replace( DirectoryMultiviewConstants.PREFIX_UNIT, StringUtils.EMPTY );
                 filter.setAssignedUnitId( NumberUtils.toInt( strAssignedUnit, DirectoryMultiviewConstants.DEFAULT_FILTER_VALUE ) );
+                filter.setListAssignedUserId( new ArrayList<>( ) );
             }
         }
     }
