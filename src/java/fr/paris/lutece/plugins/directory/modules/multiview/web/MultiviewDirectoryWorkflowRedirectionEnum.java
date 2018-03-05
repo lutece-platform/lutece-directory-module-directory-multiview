@@ -41,14 +41,12 @@ import java.util.Map;
  */
 public enum MultiviewDirectoryWorkflowRedirectionEnum
 {
-    LIST( "list" ),
-    DETAILS( "details" ),
-    DEFAULT( "default" );
-    
+    LIST( "list" ), DETAILS( "details" ), DEFAULT( "default" );
+
     // Variables
-    private static final Map<String,MultiviewDirectoryWorkflowRedirectionEnum> _mapValueNames = new LinkedHashMap<>( );
+    private static final Map<String, MultiviewDirectoryWorkflowRedirectionEnum> _mapValueNames = new LinkedHashMap<>( );
     private String _strValue;
-    
+
     static
     {
         for ( MultiviewDirectoryWorkflowRedirectionEnum workflowRedirectionEnum : MultiviewDirectoryWorkflowRedirectionEnum.values( ) )
@@ -56,18 +54,18 @@ public enum MultiviewDirectoryWorkflowRedirectionEnum
             _mapValueNames.put( workflowRedirectionEnum.getValue( ), workflowRedirectionEnum );
         }
     }
-    
+
     /**
      * Constructor - never called
      * 
      * @param strValue
-     *          The value of the enumeration
+     *            The value of the enumeration
      */
     MultiviewDirectoryWorkflowRedirectionEnum( String strValue )
     {
         _strValue = strValue;
     }
-    
+
     /**
      * Return the value of the enumeration
      * 
@@ -77,23 +75,23 @@ public enum MultiviewDirectoryWorkflowRedirectionEnum
     {
         return _strValue;
     }
-    
+
     /**
      * Return the name of the enumeration by its value or the default if not found
      * 
      * @param strEnumValue
-     *          The value of the enumeration to retrieve the name from
+     *            The value of the enumeration to retrieve the name from
      * @return the name of the enumeration by its value or the default if not found
      */
     public static MultiviewDirectoryWorkflowRedirectionEnum getEnumNameByValue( String strEnumValue )
     {
         MultiviewDirectoryWorkflowRedirectionEnum workflowRedirectionEnum = _mapValueNames.get( strEnumValue );
-        
+
         if ( workflowRedirectionEnum == null )
         {
             workflowRedirectionEnum = MultiviewDirectoryWorkflowRedirectionEnum.DEFAULT;
         }
-        
+
         return workflowRedirectionEnum;
     }
 }
