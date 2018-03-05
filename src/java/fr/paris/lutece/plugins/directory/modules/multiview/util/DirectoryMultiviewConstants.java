@@ -47,6 +47,7 @@ public final class DirectoryMultiviewConstants
     public static final String PARAMETER_SEARCHED_TEXT = "searched_text";
     public static final String PARAMETER_SELECTED_PANEL = "selected_panel";
     public static final String PARAMETER_CURRENT_SELECTED_PANEL = "current_selected_panel";
+    public static final String PARAMETER_WORKFLOW_ACTION_REDIRECTION = "workflow_action_redirection";
 
     // Constants
     public static final String PREFIX_UNIT = "unit_";

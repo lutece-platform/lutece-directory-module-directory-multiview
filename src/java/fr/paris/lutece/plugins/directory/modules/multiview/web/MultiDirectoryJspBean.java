@@ -511,10 +511,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             recordService.update( record, getPlugin( ) );
         }
 
-        Map<String, String> mapParameters = new LinkedHashMap<>( );
-        mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
-
-        return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
+        // Redirect to the correct view
+        return manageRedirection( request );
     }
 
     /**
@@ -587,10 +585,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             return redirectView( request, VIEW_TASKS_FORM );
         }
 
-        Map<String, String> mapParameters = new LinkedHashMap<>( );
-        mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
-
-        return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
+        return manageRedirection( request );
     }
 
     /**
@@ -637,5 +632,84 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         _listRecordFilterParameter.add( new RecordFilterAssignedUnitParameter( request ) );
         _listRecordFilterParameter.add( new RecordFilterNumberOfDaysParameter( ) );
+    }
+    
+    /**
+     * Redirect to the appropriate view
+     * 
+     * @param request
+     *          The HttpServletRequest to retrieve data from
+     * @return redirect to the appropriate view
+     */
+    private String manageRedirection( HttpServletRequest request )
+    {
+        String strWorkflowActionRedirection = request.getParameter( DirectoryMultiviewConstants.PARAMETER_WORKFLOW_ACTION_REDIRECTION );
+        if ( StringUtils.isNotBlank( strWorkflowActionRedirection ) )
+        {
+            MultiviewDirectoryWorkflowRedirectionEnum workflowActionRedirectionEnum = MultiviewDirectoryWorkflowRedirectionEnum.getEnumNameByValue( strWorkflowActionRedirection );
+            switch ( workflowActionRedirectionEnum )
+            {
+                case LIST:
+                    return redirectToRecordList( request );
+                case DETAILS:
+                    return redirectToRecordView( request );
+                default :
+                    return defaultRedirection( request );
+            }
+        }
+        else
+        {
+            return defaultRedirection( request );
+        }
+    }
+    
+    /**
+     * Redirect to the page of the list of all records
+     * 
+     * @param request
+     *          The HttpServletRequest to retrieve data from
+     * @return redirect to the page with the list of all records
+     */
+    private String redirectToRecordList( HttpServletRequest request )
+    {
+        return redirectView( request, VIEW_MULTIVIEW );
+    }
+    
+    /**
+     * Redirect to the page of a record
+     * 
+     * @param request
+     *          The HttpServletRequest to retrieve data from
+     * @return redirect to the page of the record
+     */
+    private String redirectToRecordView( HttpServletRequest request )
+    {
+        return defaultRedirection( request );
+    }
+    
+    /**
+     * Return to the default view which is the page of the record
+     * 
+     * @param request
+     *          The HttpServletRequest to retrieve data from
+     * @return redirect to the default view which is the page of the record 
+     */
+    private String defaultRedirection( HttpServletRequest request )
+    {
+        try
+        {
+            int nIdRecord = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) );
+            
+            Map<String, String> mapParameters = new LinkedHashMap<>( );
+            mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
+
+            return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
+        }
+        catch( NumberFormatException exception )
+        {
+            AppLogService.error( "The given id directory record is not valid !" );
+            
+            return redirectView( request, VIEW_MULTIVIEW );
+        }
     }
 }
