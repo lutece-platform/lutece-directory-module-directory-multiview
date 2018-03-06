@@ -47,6 +47,11 @@
                             </ul>
                     
                 </p>
+                <p>
+                    Il est possible de modifier les templates des tâches pour une action du workflow afin de lui indiquer s'il
+                    faut revenir sur la page de la fiche de l'annuaire ou sur la liste de toutes les fiches une fois l'action exécutée.
+                    La page de retour de l'action par défaut sera la page de la fiche sur laquelle l'action a été faite.
+                </p>
             </subsection>
             <subsection name="Configuration">
                 <p>Prérequis : la configuration des Workflow, Directory et Unittree</p>
@@ -54,6 +59,16 @@
             </subsection>
             <subsection name="Usage">
                  <p>/!\ L'entrée de l'annuaire contenant l'unité à comparer doit être indexée !</p>
+                 <p>
+                     Pour faire la redirection vers la page souhaitée une fois l'action du workflow terminée, il suffit de rajouter la ligne suivante
+                     dans le template de la tâche:
+                             <code>&lt;input type="hidden" name="workflow_action_redirection" value="list"/&gt;</code>
+                     Il existe deux valeurs possibles pour ce paramètre:
+                     <ul>
+                         <li><code>list</code>: permet de rediriger vers la page affichant toutes les fiches disponibles</li>
+                         <li><code>details</code>: permet de rediriger vers la fiche de l'annuaire sur laquelle a été faite l'action</li>
+                     </ul>
+                 </p>
             </subsection>
         </section>
     </body>

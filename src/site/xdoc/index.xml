@@ -47,6 +47,12 @@
                             </ul>
                     
                 </p>
+                <p>
+                    It is possible to modify task templates for an action of a workflow to indicate if it must be redirected
+                    to the page of the directory record or on the page of the list of all records when the action has been done.
+                    The default page of the redirection when the action is done is the page of the record of the directory on
+                    which the action has been made.
+                </p>
             </subsection>
             <subsection name="Configuration">
                 <p>requires at least  a form / workflow / directory complete configuration</p>
@@ -54,6 +60,16 @@
             </subsection>
             <subsection name="Usage">
                  <p>/!\ the directory entry containing the unitTree value should be indexed !</p>
+                 <p>
+                     To allow the redirection on the wanted page when the action of the workflow is done you simply need to put the following
+                     line on the template of the task:
+                             <code>&lt;input type="hidden" name="workflow_action_redirection" value="list"/&gt;</code>
+                     There are two possible values for this parameter:
+                     <ul>
+                         <li><code>list</code>: allow to redirect on the page with the list of all records</li>
+                         <li><code>details</code>: allow to redirect on the page of the record on which the action has been made</li>
+                     </ul>
+                 </p>
             </subsection>
         </section>
     </body>

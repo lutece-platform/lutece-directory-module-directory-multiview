@@ -29,6 +29,8 @@ The ViewFilter action has different properties :
 * The maximum of item to display in result lists (not used yet)
 
 
+It is possible to modify task templates for an action of a workflow to indicate if it must be redirected to the page of the directory record or on the page of the list of all records when the action has been done.The default page of the redirection when the action is done is the page of the record of the directory on which the action has been made.
+
 ## Configuration
 
 requires at least a form / workflow / directory complete configuration
@@ -38,6 +40,12 @@ requires the conditions and actions filter configuration
 ## Usage
 
 /!\ the directory entry containing the unitTree value should be indexed !
+
+To allow the redirection on the wanted page when the action of the workflow is done you simply need to put the following line on the template of the task: `<input type="hidden" name="workflow_action_redirection" value="list"/>` There are two possible values for this parameter:
+ 
+*  `list` : allow to redirect on the page with the list of all records
+*  `details` : allow to redirect on the page of the record on which the action has been made
+
 
 
 [Maven documentation and reports](http://dev.lutece.paris.fr/plugins/module-directory-multiview/)
