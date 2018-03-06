@@ -157,7 +157,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
     // Parameters
     private static final String PARAMETER_ID_DIRECTORY = "id_directory";
-    private static final String PARAMETER_ID_RECORD = "id_record";
     private static final String PARAMETER_ID_ACTION = "id_action";
     private static final String PARAMETER_ID_DIRECTORY_RECORD = "id_directory_record";
     private static final String PARAMETER_SORTED_ATTRIBUTE_NAME = "sorted_attribute_name";
@@ -479,7 +478,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     public String doProcessWorkflowAction( HttpServletRequest request )
     {
         // Get parameters from request
-        int nIdRecord = Integer.parseInt( request.getParameter( PARAMETER_ID_RECORD ) );
+        int nIdRecord = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) );
         int nIdAction = Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) );
         int nIdDirectory = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY ) );
 
