@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.mchange.v1.lang.BooleanUtils;
 
@@ -144,6 +145,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_USER_ATTRIBUTES = "user_attributes";
     private static final String MARK_ID_DIRECTORY_RECORD = "id_directory_record";
     private static final String MARK_ID_ACTION = "id_action";
+    private static final String MARK_ID_DIRECTORY = "id_directory";
     private static final String MARK_TASK_FORM = "tasks_form";
     private static final String MARK_RECORD_ASSIGNMENT_FILTER = "record_assignment_filter";
     private static final String MARK_SEARCH_TEXT = "search_text";
@@ -486,7 +488,12 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( ) ) )
         {
-            return redirect( request, VIEW_TASKS_FORM, PARAMETER_ID_DIRECTORY_RECORD, nIdRecord, PARAMETER_ID_ACTION, nIdAction );
+            Map<String,String> model = new LinkedHashMap<>( );
+            model.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
+            model.put( PARAMETER_ID_ACTION, String.valueOf( nIdAction ) );
+            model.put( PARAMETER_ID_DIRECTORY, String.valueOf( nIdDirectory ) );
+            
+            return redirect( request, VIEW_TASKS_FORM, model );
         }
 
         boolean bHasSucceed = false;
@@ -526,7 +533,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     {
         Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
                 .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
-        Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
+        Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;        
+        int nIdDirectory = NumberUtils.toInt( request.getParameter( MARK_ID_DIRECTORY ), NumberUtils.INTEGER_MINUS_ONE );
+        
 
         if ( nIdAction == null || nIdRecord == null )
         {
@@ -540,6 +549,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         Map<String, Object> model = getModel( );
         model.put( MARK_ID_DIRECTORY_RECORD, nIdRecord );
         model.put( MARK_ID_ACTION, nIdAction );
+        model.put( MARK_ID_DIRECTORY, nIdDirectory );
         model.put( MARK_TASK_FORM, strHtmlTasksForm );
 
         return getPage( MESSAGE_MULTIVIEW_TITLE, TEMPLATE_TASK_FORM, model );
@@ -555,17 +565,19 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     @Action( value = ACTION_SAVE_TASK_FORM )
     public String doSaveTaskForm( HttpServletRequest request )
     {
+
         Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
                 .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
         Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
-
-        if ( WorkflowService.getInstance( ).canProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, -1, request, false ) )
+        int nIdDirectory = NumberUtils.toInt( request.getParameter( MARK_ID_DIRECTORY ), NumberUtils.INTEGER_MINUS_ONE );
+        
+        if ( WorkflowService.getInstance( ).canProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, false ) )
         {
 
             try
             {
                 String strError = WorkflowService.getInstance( )
-                        .doSaveTasksForm( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, -1, request, getLocale( ) );
+                        .doSaveTasksForm( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, getLocale( ) );
                 if ( strError != null )
                 {
                     addError( strError );
