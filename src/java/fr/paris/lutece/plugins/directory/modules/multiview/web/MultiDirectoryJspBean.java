@@ -488,11 +488,11 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( ) ) )
         {
-            Map<String,String> model = new LinkedHashMap<>( );
+            Map<String, String> model = new LinkedHashMap<>( );
             model.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
             model.put( PARAMETER_ID_ACTION, String.valueOf( nIdAction ) );
             model.put( PARAMETER_ID_DIRECTORY, String.valueOf( nIdDirectory ) );
-            
+
             return redirect( request, VIEW_TASKS_FORM, model );
         }
 
@@ -533,9 +533,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     {
         Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
                 .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
-        Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;        
+        Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
         int nIdDirectory = NumberUtils.toInt( request.getParameter( MARK_ID_DIRECTORY ), NumberUtils.INTEGER_MINUS_ONE );
-        
 
         if ( nIdAction == null || nIdRecord == null )
         {
@@ -570,14 +569,14 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
         Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
         int nIdDirectory = NumberUtils.toInt( request.getParameter( MARK_ID_DIRECTORY ), NumberUtils.INTEGER_MINUS_ONE );
-        
+
         if ( WorkflowService.getInstance( ).canProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, false ) )
         {
 
             try
             {
-                String strError = WorkflowService.getInstance( )
-                        .doSaveTasksForm( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, getLocale( ) );
+                String strError = WorkflowService.getInstance( ).doSaveTasksForm( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request,
+                        getLocale( ) );
                 if ( strError != null )
                 {
                     addError( strError );
