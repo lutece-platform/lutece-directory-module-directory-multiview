@@ -25,7 +25,7 @@
             <feature-id>DIRECTORY_MULTIVIEW</feature-id>
             <feature-title>module.directory.multiview.adminFeature.DirectoryMultiView.name</feature-title>
             <feature-description>module.directory.multiview.adminFeature.DirectoryMultiView.description</feature-description>
-            <feature-level>0</feature-level>
+            <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp</feature-url>
             <feature-icon-url></feature-icon-url>
       </admin-feature>
