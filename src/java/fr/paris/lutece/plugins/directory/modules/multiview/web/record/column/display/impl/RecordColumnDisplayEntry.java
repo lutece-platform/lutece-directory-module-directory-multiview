@@ -84,8 +84,7 @@ public class RecordColumnDisplayEntry extends AbstractRecordColumnDisplay
         String strEntryValue = StringUtils.EMPTY;
         if ( recordColumnCell != null )
         {
-            String strEntryValueName = String
-                    .format( RecordFilterColumnNameConstants.COLUMN_ENTRY_VALUE_PATTERN, getRecordColumnPosition( ) );
+            String strEntryValueName = String.format( RecordFilterColumnNameConstants.COLUMN_ENTRY_VALUE_PATTERN, getRecordColumnPosition( ) );
             Object objEntryValue = recordColumnCell.getRecordColumnCellValueByName( strEntryValueName );
             if ( objEntryValue != null )
             {

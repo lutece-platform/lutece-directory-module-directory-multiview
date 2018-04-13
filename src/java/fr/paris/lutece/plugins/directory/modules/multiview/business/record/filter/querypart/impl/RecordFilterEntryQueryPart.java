@@ -99,8 +99,7 @@ public class RecordFilterEntryQueryPart extends AbstractRecordFilterQueryPart
         {
             if ( strFilterName.startsWith( RecordFilterColumnNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN ) )
             {
-                String strColumnNumber = strFilterName.replaceFirst( RecordFilterColumnNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN,
-                        StringUtils.EMPTY );
+                String strColumnNumber = strFilterName.replaceFirst( RecordFilterColumnNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN, StringUtils.EMPTY );
                 nPosition = NumberUtils.toInt( strColumnNumber, NumberUtils.INTEGER_MINUS_ONE );
                 break;
             }

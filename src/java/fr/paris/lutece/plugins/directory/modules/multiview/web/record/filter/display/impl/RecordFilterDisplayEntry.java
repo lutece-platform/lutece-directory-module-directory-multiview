@@ -131,8 +131,7 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
 
         // Build the list of RecordFilter to use for the filter from the list of entry to search on
         List<RecordField> listRecordField = getRecordFieldList( listIEntryToRetrieveValueFrom );
-        ReferenceListFactory referenceListFactory = new ReferenceListFactory( listRecordField, ENTRY_VALUE_ATTRIBUTE, ENTRY_VALUE_ATTRIBUTE,
-                Boolean.FALSE );
+        ReferenceListFactory referenceListFactory = new ReferenceListFactory( listRecordField, ENTRY_VALUE_ATTRIBUTE, ENTRY_VALUE_ATTRIBUTE, Boolean.FALSE );
 
         String strDefaultReferenceListName = getRecordFilterDisplayLabel( );
         referenceListFactory.setDefaultName( strDefaultReferenceListName );
