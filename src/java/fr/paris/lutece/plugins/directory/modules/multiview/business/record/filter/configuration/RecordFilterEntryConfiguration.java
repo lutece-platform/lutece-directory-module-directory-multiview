@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filt
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 
 /**
- * Specific configuration for the Filter of the Entry
+ * Specific configuration for the Filter of an Entry
  */
 public class RecordFilterEntryConfiguration extends RecordFilterConfiguration
 {

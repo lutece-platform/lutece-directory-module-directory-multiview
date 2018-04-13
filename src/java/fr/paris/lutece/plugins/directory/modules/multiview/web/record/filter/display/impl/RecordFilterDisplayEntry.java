@@ -63,14 +63,14 @@ import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFac
 import fr.paris.lutece.util.ReferenceList;
 
 /**
- * Implementation of the IRecordFilterDisplay interface for the filter on the user who have created the record
+ * Implementation of the IRecordFilterDisplay interface for the filter on the Entry column
  */
-public class RecordFilterDisplayEntryRecordField extends AbstractRecordFilterDisplay
+public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
 {
     // Constants
-    private static final String DEFAULT_RECORD_FIELD_VALUE = StringUtils.EMPTY;
-    private static final String PARAMETER_RECORD_FIELD_VALUE_PATTERN = "multiview_record_field_value_%s";
-    private static final String RECORD_FIELD_VALUE_ATTRIBUTE = "value";
+    private static final String DEFAULT_ENTRY_VALUE = StringUtils.EMPTY;
+    private static final String PARAMETER_ENTRY_VALUE_PATTERN = "multiview_entry_value_%s";
+    private static final String ENTRY_VALUE_ATTRIBUTE = "value";
 
     /**
      * {@inheritDoc}
@@ -78,12 +78,12 @@ public class RecordFilterDisplayEntryRecordField extends AbstractRecordFilterDis
     @Override
     public Map<String, Object> getFilterDisplayMapValues( HttpServletRequest request )
     {
-        String strRecordFieldValue = DEFAULT_RECORD_FIELD_VALUE;
+        String strEntryValue = DEFAULT_ENTRY_VALUE;
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
 
-        String strParameterName = buildElementName( PARAMETER_RECORD_FIELD_VALUE_PATTERN );
-        String strRecordFieldParameterValue = request.getParameter( strParameterName );
-        if ( StringUtils.isNotBlank( strRecordFieldParameterValue ) )
+        String strParameterName = buildElementName( PARAMETER_ENTRY_VALUE_PATTERN );
+        String strEntryParameterValue = request.getParameter( strParameterName );
+        if ( StringUtils.isNotBlank( strEntryParameterValue ) )
         {
             int nRecordColumnPosition = NumberUtils.INTEGER_MINUS_ONE;
             IRecordColumn recordColumn = retrieveRecordColumn( );
@@ -92,12 +92,12 @@ public class RecordFilterDisplayEntryRecordField extends AbstractRecordFilterDis
                 nRecordColumnPosition = recordColumn.getRecordColumnPosition( );
             }
 
-            String strRecordFieldValueColumnName = RecordFilterColumnNameConstants.FILTER_ENTRY_RECORD_FIELD_BASE_NAME_PATTERN + nRecordColumnPosition;
-            mapFilterNameValues.put( strRecordFieldValueColumnName, strRecordFieldParameterValue );
-            strRecordFieldValue = strRecordFieldParameterValue;
+            String strEntryValueColumnName = RecordFilterColumnNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN + nRecordColumnPosition;
+            mapFilterNameValues.put( strEntryValueColumnName, strEntryParameterValue );
+            strEntryValue = strEntryParameterValue;
         }
 
-        setValue( strRecordFieldValue );
+        setValue( strEntryValue );
 
         return mapFilterNameValues;
     }
@@ -108,14 +108,14 @@ public class RecordFilterDisplayEntryRecordField extends AbstractRecordFilterDis
     @Override
     public void buildTemplate( HttpServletRequest request )
     {
-        String strParameterName = buildElementName( PARAMETER_RECORD_FIELD_VALUE_PATTERN );
+        String strParameterName = buildElementName( PARAMETER_ENTRY_VALUE_PATTERN );
         manageFilterTemplate( request, createReferenceList( ), strParameterName );
     }
 
     /**
-     * Create the ReferenceList of the available record user creator on which we can filter
+     * Create the ReferenceList based on the value of the Entry for an Entry column
      * 
-     * @return the ReferenceList of all record user creator on which we can filter
+     * @return the ReferenceList with all values of the Entry for an Entry column
      */
     private ReferenceList createReferenceList( )
     {
@@ -124,14 +124,14 @@ public class RecordFilterDisplayEntryRecordField extends AbstractRecordFilterDis
         IRecordColumn recordColumn = retrieveRecordColumn( );
         if ( recordColumn instanceof RecordColumnEntry )
         {
-            RecordColumnEntry recordColumnEntryRecordField = (RecordColumnEntry) recordColumn;
-            List<String> listEntryTitle = recordColumnEntryRecordField.getListEntryTitle( );
+            RecordColumnEntry recordColumnEntry = (RecordColumnEntry) recordColumn;
+            List<String> listEntryTitle = recordColumnEntry.getListEntryTitle( );
             listIEntryToRetrieveValueFrom = getEntryListFromTitle( listEntryTitle );
         }
 
         // Build the list of RecordFilter to use for the filter from the list of entry to search on
         List<RecordField> listRecordField = getRecordFieldList( listIEntryToRetrieveValueFrom );
-        ReferenceListFactory referenceListFactory = new ReferenceListFactory( listRecordField, RECORD_FIELD_VALUE_ATTRIBUTE, RECORD_FIELD_VALUE_ATTRIBUTE,
+        ReferenceListFactory referenceListFactory = new ReferenceListFactory( listRecordField, ENTRY_VALUE_ATTRIBUTE, ENTRY_VALUE_ATTRIBUTE,
                 Boolean.FALSE );
 
         String strDefaultReferenceListName = getRecordFilterDisplayLabel( );
@@ -142,7 +142,7 @@ public class RecordFilterDisplayEntryRecordField extends AbstractRecordFilterDis
     }
 
     /**
-     * Return the list of entry built from the name of the entry which are stored in properties
+     * Return the list of entry built from the name of the entry which are stored in configuration of the column
      * 
      * @param listEntryTitle
      *            The list of title of entry to retrieve the value from
@@ -171,7 +171,7 @@ public class RecordFilterDisplayEntryRecordField extends AbstractRecordFilterDis
     }
 
     /**
-     * Return the list of all the IEntry of the specified directory which have the same title than the value of the property.
+     * Return the list of all the IEntry of the specified directory which have the same title than the value in the given list.
      * 
      * @param nIdDirectory
      *            The identifier of the directory to retrieve the IEntry from

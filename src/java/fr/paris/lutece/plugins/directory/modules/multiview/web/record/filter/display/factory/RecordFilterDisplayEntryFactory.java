@@ -36,12 +36,12 @@ package fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.di
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterEntry;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.IRecordFilterDisplay;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.impl.RecordFilterDisplayEntryRecordField;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.impl.RecordFilterDisplayEntry;
 
 /**
- * Implementation of the IRecordFilterDisplayFactory for a Factory on a EntryRecordField filter
+ * Implementation of the IRecordFilterDisplayFactory for a Factory on an Entry filter
  */
-public class RecordFilterDisplayEntryRecordFieldFactory implements IRecordFilterDisplayFactory
+public class RecordFilterDisplayEntryFactory implements IRecordFilterDisplayFactory
 {
     /**
      * {@inheritDoc}
@@ -49,14 +49,14 @@ public class RecordFilterDisplayEntryRecordFieldFactory implements IRecordFilter
     @Override
     public IRecordFilterDisplay buildFilterDisplay( IRecordFilter recordFilter )
     {
-        RecordFilterDisplayEntryRecordField recordFilterDisplayEntryRecordField = null;
+        RecordFilterDisplayEntry recordFilterDisplayEntry = null;
 
         if ( recordFilter instanceof RecordFilterEntry )
         {
-            recordFilterDisplayEntryRecordField = new RecordFilterDisplayEntryRecordField( );
-            recordFilterDisplayEntryRecordField.setRecordFilter( recordFilter );
+            recordFilterDisplayEntry = new RecordFilterDisplayEntry( );
+            recordFilterDisplayEntry.setRecordFilter( recordFilter );
         }
 
-        return recordFilterDisplayEntryRecordField;
+        return recordFilterDisplayEntry;
     }
 }

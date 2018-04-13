@@ -50,13 +50,13 @@ public class RecordColumnEntryQueryPartFactory implements IRecordColumnQueryPart
     @Override
     public IRecordColumnQueryPart buildRecordColumnQueryPart( IRecordColumn recordColumn )
     {
-        IRecordColumnQueryPart recordColumnEntryRecordFieldQueryPart = null;
+        IRecordColumnQueryPart recordColumnEntryQueryPart = null;
 
         if ( recordColumn instanceof RecordColumnEntry )
         {
-            recordColumnEntryRecordFieldQueryPart = new RecordColumnEntryQueryPart( );
+            recordColumnEntryQueryPart = new RecordColumnEntryQueryPart( );
         }
 
-        return recordColumnEntryRecordFieldQueryPart;
+        return recordColumnEntryQueryPart;
     }
 }

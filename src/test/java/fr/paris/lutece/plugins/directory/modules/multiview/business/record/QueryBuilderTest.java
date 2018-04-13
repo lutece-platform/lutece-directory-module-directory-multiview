@@ -59,7 +59,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.RecordFilterDirectoryQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.RecordFilterWorkflowStateQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterDirectoryQueryPart;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterEntryRecordFieldQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterEntryQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterWorkflowStateQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
 import fr.paris.lutece.test.LuteceTestCase;
@@ -319,7 +319,7 @@ public class QueryBuilderTest extends LuteceTestCase
         mapFilterNameValues.put( "column_5", "test colonne 5" );
         recordFilterItemEntryRecordField.setMapFilterNameValues( mapFilterNameValues );
 
-        IRecordFilterQueryPart recordFilterEntryRecordFieldQueryPart = new RecordFilterEntryRecordFieldQueryPart( );
+        IRecordFilterQueryPart recordFilterEntryRecordFieldQueryPart = new RecordFilterEntryQueryPart( );
         recordFilterEntryRecordFieldQueryPart.buildRecordFilterQuery( recordFilterItemEntryRecordField );
         _listRecordFilterQueryPart.add( recordFilterEntryRecordFieldQueryPart );
 

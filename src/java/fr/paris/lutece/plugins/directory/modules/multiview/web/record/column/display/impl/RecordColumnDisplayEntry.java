@@ -46,18 +46,18 @@ import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColu
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 
 /**
- * Implementation of the IRecordColumnDisplay for the column based on record field value
+ * Implementation of the IRecordColumnDisplay for the Entry column
  */
-public class RecordColumnDisplayEntryRecordField extends AbstractRecordColumnDisplay
+public class RecordColumnDisplayEntry extends AbstractRecordColumnDisplay
 {
     // Templates
-    private static final String RECORD_COLUMN_HEADER_TEMPLATE = "admin/plugins/directory/modules/multiview/column/header/record_column_entry_record_field_header.html";
-    private static final String RECORD_COLUMN_CELL_TEMPLATE = "admin/plugins/directory/modules/multiview/column/cell/record_column_entry_record_field_cell.html";
+    private static final String RECORD_COLUMN_HEADER_TEMPLATE = "admin/plugins/directory/modules/multiview/column/header/record_column_entry_header.html";
+    private static final String RECORD_COLUMN_CELL_TEMPLATE = "admin/plugins/directory/modules/multiview/column/cell/record_column_entry_cell.html";
 
     // Marks
-    private static final String MARK_ENTRY_RECORD_FIELD_VALUE_COLUMN_TITLE = "column_title";
-    private static final String MARK_ENTRY_RECORD_FIELD_VALUE_COLUMN_POSITION = "record_field_column_position";
-    private static final String MARK_ENTRY_RECORD_FIELD_VALUE = "record_field_value";
+    private static final String MARK_ENTRY_VALUE_COLUMN_TITLE = "column_title";
+    private static final String MARK_ENTRY_VALUE_COLUMN_POSITION = "entry_column_position";
+    private static final String MARK_ENTRY_VALUE = "entry_value";
 
     /**
      * {@inheritDoc}
@@ -66,8 +66,8 @@ public class RecordColumnDisplayEntryRecordField extends AbstractRecordColumnDis
     public String buildRecordColumnHeaderTemplate( String strSortUrl, Locale locale )
     {
         Map<String, Object> model = new LinkedHashMap<>( );
-        model.put( MARK_ENTRY_RECORD_FIELD_VALUE_COLUMN_TITLE, getRecordColumnTitle( ) );
-        model.put( MARK_ENTRY_RECORD_FIELD_VALUE_COLUMN_POSITION, getPosition( ) );
+        model.put( MARK_ENTRY_VALUE_COLUMN_TITLE, getRecordColumnTitle( ) );
+        model.put( MARK_ENTRY_VALUE_COLUMN_POSITION, getPosition( ) );
 
         String strColumnHeaderTemplate = AppTemplateService.getTemplate( RECORD_COLUMN_HEADER_TEMPLATE, locale, model ).getHtml( );
         setRecordColumnHeaderTemplate( strColumnHeaderTemplate );
@@ -81,24 +81,24 @@ public class RecordColumnDisplayEntryRecordField extends AbstractRecordColumnDis
     @Override
     public String buildRecordColumnCellTemplate( RecordColumnCell recordColumnCell, Locale locale )
     {
-        String strEntryRecordFieldValue = StringUtils.EMPTY;
+        String strEntryValue = StringUtils.EMPTY;
         if ( recordColumnCell != null )
         {
-            String strRecordFieldValueName = String
-                    .format( RecordFilterColumnNameConstants.COLUMN_ENTRY_RECORD_FIELD_VALUE_PATTERN, getRecordColumnPosition( ) );
-            Object objRecordFieldValue = recordColumnCell.getRecordColumnCellValueByName( strRecordFieldValueName );
-            if ( objRecordFieldValue != null )
+            String strEntryValueName = String
+                    .format( RecordFilterColumnNameConstants.COLUMN_ENTRY_VALUE_PATTERN, getRecordColumnPosition( ) );
+            Object objEntryValue = recordColumnCell.getRecordColumnCellValueByName( strEntryValueName );
+            if ( objEntryValue != null )
             {
-                strEntryRecordFieldValue = String.valueOf( objRecordFieldValue );
+                strEntryValue = String.valueOf( objEntryValue );
             }
         }
 
         Map<String, Object> model = new LinkedHashMap<>( );
-        model.put( MARK_ENTRY_RECORD_FIELD_VALUE, strEntryRecordFieldValue );
+        model.put( MARK_ENTRY_VALUE, strEntryValue );
 
-        String strRecordColumnDirectoryTemplate = AppTemplateService.getTemplate( RECORD_COLUMN_CELL_TEMPLATE, locale, model ).getHtml( );
+        String strRecordColumnEntryTemplate = AppTemplateService.getTemplate( RECORD_COLUMN_CELL_TEMPLATE, locale, model ).getHtml( );
 
-        return strRecordColumnDirectoryTemplate;
+        return strRecordColumnEntryTemplate;
     }
 
     /**

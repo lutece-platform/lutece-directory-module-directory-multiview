@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementation of the RecordColumn for the column on the record field of entry
+ * Implementation of the RecordColumn for the Entry column
  */
 public class RecordColumnEntry extends AbstractRecordColumn
 {
@@ -50,7 +50,7 @@ public class RecordColumnEntry extends AbstractRecordColumn
      * @param nRecordColumnPosition
      *            The position of the RecordColumn
      * @param strRecordColumnTitle
-     *            The title of the RecrdColumn
+     *            The title of the RecrodColumn
      * @param listEntryTitle
      *            The list of Entry title on which the RecordColumn must be filter on
      */

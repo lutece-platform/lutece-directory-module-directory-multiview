@@ -53,14 +53,14 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class RecordColumnEntryQueryPart extends AbstractRecordColumnQueryPart
 {
     // Constants
-    private static final String ENTRY_RECORD_FIELD_SELECT_QUERY_PART = "column_%1$s.column_%1$s_value";
-    private static final String ENTRY_RECORD_FIELD_FORM_QUERY_PART = StringUtils.EMPTY;
-    private static final String ENTRY_RECORD_FIELD_JOIN_SELECT_QUERY_PART = "LEFT JOIN ( SELECT record_%1$s.id_record AS id_record_%1$s, record_field_%1$s.record_field_value AS column_%1$s_value ";
-    private static final String ENTRY_RECORD_FIELD_JOIN_FROM_QUERY_PART = " FROM directory_record_field AS record_field_%s ";
-    private static final String ENTRY_RECORD_FIELD_JOIN_RECORD_QUERY_PART = " INNER JOIN directory_record AS record_%1$s ON record_field_%1$s.id_record = record_%1$s.id_record ";
-    private static final String ENTRY_RECORD_FIELD_JOIN_ENTRY_QUERY_PART = " INNER JOIN directory_entry AS entry_%1$s ON entry_%1$s.id_entry = record_field_%1$s.id_entry ";
-    private static final String ENTRY_RECORD_FIELD_JOIN_WHERE_QUERY_PART = " WHERE entry_%1$s.title IN ( %2$s ) ";
-    private static final String ENTRY_RECORD_FIELD_JOIN_QUERY_PART = " AS column_%1$s ON column_%1$s.id_record_%1$s = record.id_record";
+    private static final String ENTRY_SELECT_QUERY_PART = "column_%1$s.column_%1$s_value";
+    private static final String ENTRY_FROM_QUERY_PART = StringUtils.EMPTY;
+    private static final String ENTRY_JOIN_SELECT_QUERY_PART = "LEFT JOIN ( SELECT record_%1$s.id_record AS id_record_%1$s, record_field_%1$s.record_field_value AS column_%1$s_value ";
+    private static final String ENTRY_JOIN_FROM_QUERY_PART = " FROM directory_record_field AS record_field_%s ";
+    private static final String ENTRY_JOIN_RECORD_QUERY_PART = " INNER JOIN directory_record AS record_%1$s ON record_field_%1$s.id_record = record_%1$s.id_record ";
+    private static final String ENTRY_JOIN_ENTRY_QUERY_PART = " INNER JOIN directory_entry AS entry_%1$s ON entry_%1$s.id_entry = record_field_%1$s.id_entry ";
+    private static final String ENTRY_JOIN_WHERE_QUERY_PART = " WHERE entry_%1$s.title IN ( %2$s ) ";
+    private static final String ENTRY_JOIN_QUERY_PART = " AS column_%1$s ON column_%1$s.id_record_%1$s = record.id_record";
 
     /**
      * {@inheritDoc}
@@ -69,7 +69,7 @@ public class RecordColumnEntryQueryPart extends AbstractRecordColumnQueryPart
     public String getRecordColumnSelectQuery( )
     {
         int nRecordColumnPosition = getRecordColumnPosition( );
-        String strRecordColumnSelectQuery = String.format( ENTRY_RECORD_FIELD_SELECT_QUERY_PART, nRecordColumnPosition );
+        String strRecordColumnSelectQuery = String.format( ENTRY_SELECT_QUERY_PART, nRecordColumnPosition );
 
         return strRecordColumnSelectQuery;
     }
@@ -80,7 +80,7 @@ public class RecordColumnEntryQueryPart extends AbstractRecordColumnQueryPart
     @Override
     public String getRecordColumnFromQuery( )
     {
-        return ENTRY_RECORD_FIELD_FORM_QUERY_PART;
+        return ENTRY_FROM_QUERY_PART;
     }
 
     /**
@@ -93,34 +93,34 @@ public class RecordColumnEntryQueryPart extends AbstractRecordColumnQueryPart
 
         StringBuilder stringBuilderJoinQuery = new StringBuilder( );
 
-        String strJoinSelectQueryPart = String.format( ENTRY_RECORD_FIELD_JOIN_SELECT_QUERY_PART, nRecordColumnPosition );
+        String strJoinSelectQueryPart = String.format( ENTRY_JOIN_SELECT_QUERY_PART, nRecordColumnPosition );
         stringBuilderJoinQuery.append( strJoinSelectQueryPart );
 
-        String strJoinFromQueryPart = String.format( ENTRY_RECORD_FIELD_JOIN_FROM_QUERY_PART, nRecordColumnPosition );
+        String strJoinFromQueryPart = String.format( ENTRY_JOIN_FROM_QUERY_PART, nRecordColumnPosition );
         stringBuilderJoinQuery.append( strJoinFromQueryPart );
 
-        String strJoinInnerJoinRecordQueryPart = String.format( ENTRY_RECORD_FIELD_JOIN_RECORD_QUERY_PART, nRecordColumnPosition );
+        String strJoinInnerJoinRecordQueryPart = String.format( ENTRY_JOIN_RECORD_QUERY_PART, nRecordColumnPosition );
         stringBuilderJoinQuery.append( strJoinInnerJoinRecordQueryPart );
 
-        String strJoinInnerJoinEntryQueryPart = String.format( ENTRY_RECORD_FIELD_JOIN_ENTRY_QUERY_PART, nRecordColumnPosition );
+        String strJoinInnerJoinEntryQueryPart = String.format( ENTRY_JOIN_ENTRY_QUERY_PART, nRecordColumnPosition );
         stringBuilderJoinQuery.append( strJoinInnerJoinEntryQueryPart );
 
         StringBuilder stringBuilderListEntryTitle = new StringBuilder( );
         IRecordColumn recordColumn = getRecordColumn( );
         if ( recordColumn instanceof RecordColumnEntry )
         {
-            RecordColumnEntry recordColumnEntryRecordField = (RecordColumnEntry) recordColumn;
-            List<String> listEntryTitle = recordColumnEntryRecordField.getListEntryTitle( );
+            RecordColumnEntry recordColumnEntry = (RecordColumnEntry) recordColumn;
+            List<String> listEntryTitle = recordColumnEntry.getListEntryTitle( );
             if ( listEntryTitle != null && !listEntryTitle.isEmpty( ) )
             {
                 buildListEntryTitle( stringBuilderListEntryTitle, listEntryTitle );
             }
         }
 
-        String strJoinWhereQueryPart = String.format( ENTRY_RECORD_FIELD_JOIN_WHERE_QUERY_PART, nRecordColumnPosition, stringBuilderListEntryTitle.toString( ) );
+        String strJoinWhereQueryPart = String.format( ENTRY_JOIN_WHERE_QUERY_PART, nRecordColumnPosition, stringBuilderListEntryTitle.toString( ) );
         stringBuilderJoinQuery.append( strJoinWhereQueryPart ).append( " ) " );
 
-        String strJoinQueryPart = String.format( ENTRY_RECORD_FIELD_JOIN_QUERY_PART, nRecordColumnPosition );
+        String strJoinQueryPart = String.format( ENTRY_JOIN_QUERY_PART, nRecordColumnPosition );
         stringBuilderJoinQuery.append( strJoinQueryPart );
 
         return Arrays.asList( stringBuilderJoinQuery.toString( ) );
@@ -157,8 +157,8 @@ public class RecordColumnEntryQueryPart extends AbstractRecordColumnQueryPart
     {
         int nRecordColumnPosition = getRecordColumnPosition( );
         Map<String, Object> mapRecordColumnValues = new LinkedHashMap<>( );
-        String strRecordFieldValueColumnName = String.format( RecordFilterColumnNameConstants.COLUMN_ENTRY_RECORD_FIELD_VALUE_PATTERN, nRecordColumnPosition );
-        mapRecordColumnValues.put( strRecordFieldValueColumnName, daoUtil.getString( strRecordFieldValueColumnName ) );
+        String strEntryValueColumnName = String.format( RecordFilterColumnNameConstants.COLUMN_ENTRY_VALUE_PATTERN, nRecordColumnPosition );
+        mapRecordColumnValues.put( strEntryValueColumnName, daoUtil.getString( strEntryValueColumnName ) );
 
         return mapRecordColumnValues;
     }

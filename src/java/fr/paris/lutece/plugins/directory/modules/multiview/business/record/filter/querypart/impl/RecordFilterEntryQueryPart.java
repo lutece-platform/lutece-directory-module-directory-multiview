@@ -44,14 +44,14 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
 
 /**
- * Implementation of the IRecordFilterQueryPart for a RecordFilterEntryRecordField filter
+ * Implementation of the IRecordFilterQueryPart for an Entry filter
  */
-public class RecordFilterEntryRecordFieldQueryPart extends AbstractRecordFilterQueryPart
+public class RecordFilterEntryQueryPart extends AbstractRecordFilterQueryPart
 {
     // Constants
     private static final int DEFAULT_POSITION = NumberUtils.INTEGER_MINUS_ONE;
-    private static final String RECORD_FIELD_VALUE_QUERY_PATTERN = "column_%1$s.column_%1$s_value = ";
-    private static final String RECORD_FIELD_VALUE_NAME_PATTERN = "'$column_%s$'";
+    private static final String ENTRY_VALUE_QUERY_PATTERN = "column_%1$s.column_%1$s_value = ";
+    private static final String ENTRY_VALUE_NAME_PATTERN = "'$column_%s$'";
 
     /**
      * {@inheritDoc}
@@ -70,17 +70,17 @@ public class RecordFilterEntryRecordFieldQueryPart extends AbstractRecordFilterQ
             }
         }
 
-        StringBuilder stringBuilderRecordFieldQueryPattern = new StringBuilder( );
+        StringBuilder stringBuilderEntryQueryPattern = new StringBuilder( );
         if ( nPosition != DEFAULT_POSITION )
         {
-            String strRecordFieldValueQueryPattern = String.format( RECORD_FIELD_VALUE_QUERY_PATTERN, nPosition );
-            String strRecordFieldNamePattern = String.format( RECORD_FIELD_VALUE_NAME_PATTERN, nPosition );
+            String strEntryValueQueryPattern = String.format( ENTRY_VALUE_QUERY_PATTERN, nPosition );
+            String strEntryNamePattern = String.format( ENTRY_VALUE_NAME_PATTERN, nPosition );
 
-            stringBuilderRecordFieldQueryPattern.append( strRecordFieldValueQueryPattern );
-            stringBuilderRecordFieldQueryPattern.append( strRecordFieldNamePattern );
+            stringBuilderEntryQueryPattern.append( strEntryValueQueryPattern );
+            stringBuilderEntryQueryPattern.append( strEntryNamePattern );
         }
 
-        setRecordFilterQuery( RecordFilterQueryBuilder.buildRecordFilterQuery( stringBuilderRecordFieldQueryPattern.toString( ), recordFilterItem ) );
+        setRecordFilterQuery( RecordFilterQueryBuilder.buildRecordFilterQuery( stringBuilderEntryQueryPattern.toString( ), recordFilterItem ) );
     }
 
     /**
@@ -97,9 +97,9 @@ public class RecordFilterEntryRecordFieldQueryPart extends AbstractRecordFilterQ
         Set<String> setFilterName = mapFilterNameValues.keySet( );
         for ( String strFilterName : setFilterName )
         {
-            if ( strFilterName.startsWith( RecordFilterColumnNameConstants.FILTER_ENTRY_RECORD_FIELD_BASE_NAME_PATTERN ) )
+            if ( strFilterName.startsWith( RecordFilterColumnNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN ) )
             {
-                String strColumnNumber = strFilterName.replaceFirst( RecordFilterColumnNameConstants.FILTER_ENTRY_RECORD_FIELD_BASE_NAME_PATTERN,
+                String strColumnNumber = strFilterName.replaceFirst( RecordFilterColumnNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN,
                         StringUtils.EMPTY );
                 nPosition = NumberUtils.toInt( strColumnNumber, NumberUtils.INTEGER_MINUS_ONE );
                 break;

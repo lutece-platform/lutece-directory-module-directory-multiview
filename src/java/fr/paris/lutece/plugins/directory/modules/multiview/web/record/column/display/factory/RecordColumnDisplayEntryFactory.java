@@ -36,12 +36,12 @@ package fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.di
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnEntry;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.IRecordColumnDisplay;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.impl.RecordColumnDisplayEntryRecordField;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.impl.RecordColumnDisplayEntry;
 
 /**
- * Implementation of the IRecordColumnDisplayFactory for the column based on record field value
+ * Implementation of the IRecordColumnDisplayFactory for the Entry column
  */
-public class RecordColumnDisplayEntryRecordFieldFactory implements IRecordColumnDisplayFactory
+public class RecordColumnDisplayEntryFactory implements IRecordColumnDisplayFactory
 {
     /**
      * {@inheritDoc}
@@ -49,14 +49,14 @@ public class RecordColumnDisplayEntryRecordFieldFactory implements IRecordColumn
     @Override
     public IRecordColumnDisplay buildRecordColumnDisplay( IRecordColumn recordColumn )
     {
-        RecordColumnDisplayEntryRecordField recordColumnDisplayEntryRecordField = null;
+        RecordColumnDisplayEntry recordColumnDisplayEntry = null;
 
         if ( recordColumn instanceof RecordColumnEntry )
         {
-            recordColumnDisplayEntryRecordField = new RecordColumnDisplayEntryRecordField( );
-            recordColumnDisplayEntryRecordField.setRecordColumn( recordColumn );
+            recordColumnDisplayEntry = new RecordColumnDisplayEntry( );
+            recordColumnDisplayEntry.setRecordColumn( recordColumn );
         }
 
-        return recordColumnDisplayEntryRecordField;
+        return recordColumnDisplayEntry;
     }
 }

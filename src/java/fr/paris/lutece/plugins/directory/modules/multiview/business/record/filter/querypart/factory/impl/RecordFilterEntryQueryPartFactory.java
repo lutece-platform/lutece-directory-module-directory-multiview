@@ -37,12 +37,12 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterEntry;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.IRecordFilterQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.IRecordFilterQueryPartFactory;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterEntryRecordFieldQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterEntryQueryPart;
 
 /**
- * Implementation of IRecordFilterQueryPartFactory for an EntryRecordField filter
+ * Implementation of IRecordFilterQueryPartFactory for an Entry filter
  */
-public class RecordFilterEntryRecordFieldQueryPartFactory implements IRecordFilterQueryPartFactory
+public class RecordFilterEntryQueryPartFactory implements IRecordFilterQueryPartFactory
 {
     /**
      * {@inheritDoc}
@@ -50,13 +50,13 @@ public class RecordFilterEntryRecordFieldQueryPartFactory implements IRecordFilt
     @Override
     public IRecordFilterQueryPart buildRecordFilterQueryPart( IRecordFilter recordFilter )
     {
-        IRecordFilterQueryPart recordFilterEntryRecordFieldQueryPart = null;
+        IRecordFilterQueryPart recordFilterEntryQueryPart = null;
 
         if ( recordFilter instanceof RecordFilterEntry )
         {
-            recordFilterEntryRecordFieldQueryPart = new RecordFilterEntryRecordFieldQueryPart( );
+            recordFilterEntryQueryPart = new RecordFilterEntryQueryPart( );
         }
 
-        return recordFilterEntryRecordFieldQueryPart;
+        return recordFilterEntryQueryPart;
     }
 }

@@ -30,7 +30,7 @@
     
     <!-- Filters QueryParts Factories -->    
     <bean id="directory-multiview.recordFilter.directoryRecord.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterDirectoryQueryPartFactory"/>
-    <bean id="directory-multiview.recordFilter.entry.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterEntryRecordFieldQueryPartFactory"/>
+    <bean id="directory-multiview.recordFilter.entry.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterEntryQueryPartFactory"/>
     <bean id="directory-multiview.recordFilter.recordDateCreation.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterRecordDateCreationQueryPartFactory"/>
     <bean id="directory-multiview.recordFilter.workflowState.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterWorkflowStateQueryPartFactory"/>
 	
@@ -77,7 +77,7 @@
 	<bean id="directory-multiview.recordDateCreation.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayRecordDateCreationFactory"/>
 	<bean id="directory-multiview.directoryRecord.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayDirectoryFactory"/>
 	<bean id="directory-multiview.workflowState.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayWorkflowStateFactory"/>
-	<bean id="directory-multiview.entry.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayEntryRecordFieldFactory"/>
+	<bean id="directory-multiview.entry.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayEntryFactory"/>
 	
 	<!-- Columns QueryPart Factories -->
 	<bean id="directory-multiview.recordColumn.directory.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.factory.impl.RecordColumnDirectoryQueryPartFactory"/>
@@ -101,7 +101,7 @@
 	
 	<!-- Columns Factories -->
 	<bean id="directory-multiview.directory.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayDirectoryFactory"/>
-	<bean id="directory-multiview.entry.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayEntryRecordFieldFactory"/>
+	<bean id="directory-multiview.entry.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayEntryFactory"/>
 	<bean id="directory-multiview.recordDateCreation.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayRecordDateCreationFactory"/>
 	<bean id="directory-multiview.workflowState.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayWorkflowStateFactory"/>
 	
