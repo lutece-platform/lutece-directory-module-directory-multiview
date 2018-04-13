@@ -1,0 +1,133 @@
+/*
+ * Copyright (c) 2002-2017, Mairie de Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.column;
+
+import java.io.Serializable;
+import java.util.Comparator;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
+/**
+ * Comparator for RecordColumnCell objects
+ */
+public class RecordColumnCellComparator implements Comparator<RecordColumnCell>, Serializable
+{
+    // Generated UID
+    private static final long serialVersionUID = -7519611978697011989L;
+
+    // Variables
+    private final String _strSortKey;
+
+    /**
+     * Constructor
+     * 
+     * @param strSortKey
+     *            The key used to sort the RecordColumnCell
+     */
+    public RecordColumnCellComparator( String strSortKey )
+    {
+        _strSortKey = strSortKey;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int compare( RecordColumnCell recordColumnCellOne, RecordColumnCell recordColumnCellTwo )
+    {
+        int nComparisonResult = NumberUtils.INTEGER_ZERO;
+
+        if ( recordColumnCellOne == null )
+        {
+            if ( recordColumnCellTwo != null )
+            {
+                nComparisonResult = NumberUtils.INTEGER_MINUS_ONE;
+            }
+        }
+        else
+        {
+            if ( recordColumnCellTwo == null )
+            {
+                nComparisonResult = NumberUtils.INTEGER_ONE;
+            }
+            else
+            {
+                Object objectOne = recordColumnCellOne.getRecordColumnCellValueByName( _strSortKey );
+                Object objectTwo = recordColumnCellTwo.getRecordColumnCellValueByName( _strSortKey );
+
+                nComparisonResult = compareRecordColumnCellObject( objectOne, objectTwo );
+            }
+        }
+
+        return nComparisonResult;
+    }
+
+    /**
+     * Compare two RecordColumnCell object values by converting them as String
+     * 
+     * @param objectOne
+     *            The first object to compare
+     * @param objectTwo
+     *            The second object to compare
+     * @return the result of the comparison of the two given objects
+     */
+    private int compareRecordColumnCellObject( Object objectOne, Object objectTwo )
+    {
+        int nComparisonResult = NumberUtils.INTEGER_ZERO;
+
+        if ( objectOne == null )
+        {
+            if ( objectTwo != null )
+            {
+                nComparisonResult = NumberUtils.INTEGER_MINUS_ONE;
+            }
+        }
+        else
+        {
+            if ( objectTwo == null )
+            {
+                nComparisonResult = NumberUtils.INTEGER_ONE;
+            }
+            else
+            {
+                String strObjectOneRepresentation = String.valueOf( objectOne );
+                String strObjectTwoRepresentation = String.valueOf( objectTwo );
+
+                nComparisonResult = strObjectOneRepresentation.compareTo( strObjectTwoRepresentation );
+            }
+        }
+
+        return nComparisonResult;
+    }
+}

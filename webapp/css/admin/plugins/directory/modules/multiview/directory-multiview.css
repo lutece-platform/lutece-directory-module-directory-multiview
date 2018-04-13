@@ -38,8 +38,8 @@
 table.table-hover thead tr th[data-field]:hover{ cursor:pointer }
 table.table-hover tbody tr:hover{ cursor:pointer }
 
-#multi-record-panel .nav-tabs{ margin-bottom:0 }
-#multi-record-panel .nav-tabs > li:first-of-type {margin-left:0;}
+#multi-record-panel .nav-tabs{ margin-bottom:0; margin-top: 1%; }
+#multi-record-panel .nav-tabs > li:first-of-type { margin-left: 10%; }
 #multi-record-panel .nav-tabs > li {margin-left:15px;}
 #multi-record-panel .nav-tabs > li > button{ background-color:#ddd; border:1px solid #ddd; padding:15px 30px; text-transform:uppercase; font-size:1.5rem;}
 #multi-record-panel .nav-tabs > li.active > button {margin-bottom:-1px; border-bottom:1px solid #fff; background-color:#fff}
@@ -125,6 +125,9 @@ table.table-hover tbody tr:hover{ cursor:pointer }
 #filter-records label.select:last-of-type{ margin-right:0 }
 #filter-records label.select:after{ content:'\f107'; color:#1f263d; font-family:'FontAwesome'; font-size:18px; right:8px; top:5px; position:absolute; pointer-events:none }
 #filter-records .btn{}
+
+#multiview-no-records { width: 100%; text-align: center; min-height: 520px }
+#multiview-no-records img { position: absolute; top: 60%; left: 60%; margin-top: -250px; margin-left: -250px }
 
 .popover{max-width:500px;}
 #user-identity-infos{text-align:left; }

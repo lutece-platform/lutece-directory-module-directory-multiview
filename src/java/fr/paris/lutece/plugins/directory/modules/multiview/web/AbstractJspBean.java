@@ -56,6 +56,9 @@ public abstract class AbstractJspBean extends MVCAdminJspBean
     // Rights
     public static final String RIGHT_MANAGEDIRECTORYFILTERCONDITION = "DIRECTORY_FILTER_MANAGEMENT";
 
+    // Generated serial UID
+    private static final long serialVersionUID = 5595439308265255189L;
+
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "directory-multiview.listItems.itemsPerPage";
 
@@ -67,10 +70,9 @@ public abstract class AbstractJspBean extends MVCAdminJspBean
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
 
     // Variables
-    private int _nDefaultItemsPerPage;
     private String _strCurrentPageIndex;
     private int _nItemsPerPage;
-    protected LocalizedPaginator<Integer> _paginator;
+    private LocalizedPaginator<Integer> _paginator;
 
     /**
      * Return a model that contains the list and paginator infos
@@ -91,8 +93,8 @@ public abstract class AbstractJspBean extends MVCAdminJspBean
             String strActivePanelName )
     {
         _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-        _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
-        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        int nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
+        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, nDefaultItemsPerPage );
 
         UrlItem url = new UrlItem( strManageJsp );
         url.addParameter( DirectoryMultiviewConstants.PARAMETER_CURRENT_SELECTED_PANEL, strActivePanelName );
@@ -118,5 +120,15 @@ public abstract class AbstractJspBean extends MVCAdminJspBean
     public void resetCurrentPaginatorPageIndex( )
     {
         _strCurrentPageIndex = "1";
+    }
+
+    /**
+     * Return the paginator
+     * 
+     * @return the paginator
+     */
+    protected LocalizedPaginator<Integer> getPaginator( )
+    {
+        return _paginator;
     }
 }

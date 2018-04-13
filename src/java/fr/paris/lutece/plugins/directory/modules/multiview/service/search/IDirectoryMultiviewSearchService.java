@@ -33,14 +33,11 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service.search;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import fr.paris.lutece.plugins.directory.business.Directory;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
  * Interface for the search service for the module-directory-multiview
@@ -51,22 +48,17 @@ public interface IDirectoryMultiviewSearchService
     String BEAN_NAME = "directory-multiview.directoryMultiviewSearchService";
 
     /**
-     * Filter the map of record assignment by the record result obtains by the search of the given term for the given list of directories
+     * Filter the list of DirectoryRecordItem by the record result obtains by the search of the given term
      * 
-     * @param mapRecordAssignment
-     *            The map to filter
-     * @param listDirectories
-     *            The list of directories to retrieve the record result from
+     * @param listDirectoryRecordItem
+     *            The list of DirectoryRecordItem to filter
      * @param adminUser
      *            The adminUser who made the search
-     * @param plugin
-     *            The plugin to use
      * @param strSearchText
      *            The term to search on the record
      * @param locale
      *            The locale
      * @return the map which contains only RecordAssignement of record which contains entry with the given term as value
      */
-    Map<String, RecordAssignment> filterBySearchedText( Map<String, RecordAssignment> mapRecordAssignment, Collection<Directory> listDirectories,
-            AdminUser adminUser, Plugin plugin, String strSearchText, Locale locale );
+    List<DirectoryRecordItem> filterBySearchedText( List<DirectoryRecordItem> listDirectoryRecordItem, AdminUser adminUser, String strSearchText, Locale locale );
 }

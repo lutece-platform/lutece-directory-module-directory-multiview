@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -42,8 +43,11 @@ import fr.paris.lutece.util.ReferenceItem;
 /**
  * Comparator for ReferenceItem
  */
-public class ReferenceItemComparator implements Comparator<ReferenceItem>
+public class ReferenceItemComparator implements Comparator<ReferenceItem>, Serializable
 {
+    // Generated UID
+    private static final long serialVersionUID = -177021185525287854L;
+
     /**
      * {@inheritDoc}
      */

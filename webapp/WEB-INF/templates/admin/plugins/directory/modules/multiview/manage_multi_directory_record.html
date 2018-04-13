@@ -1,114 +1,40 @@
 <@tform action='jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp' id='searchForm' class2='form-inline'>
 <#include "includes/include_multi_records_list_header.html">
 <#include "includes/include_manage_multi_record_directory_header.html">
-
 <div class="tab-content">
     <@columns>
         <div class="box box-records-tab-content">
             <div class="box-header">
-                    <h3 class="box-title"></h3>
+                <h3 class="box-title"></h3>
             </div>
-            <div id="multi-record-list" class="box-body table-responsive records">
-                <div class="col-xs-12 col-sm-offset-1 col-sm-10 table-responsive tab-content">
-                        <table class="table table-hover table-striped">
-                                <thead>
-                                        <tr>
-                                                <th data-field="state">
-                                                        #i18n{module.directory.multiview.records_list.state}
-                                                </th>
-                                                <th data-field="nature">
-                                                        #i18n{module.directory.multiview.records_list.nature}
-                                                </th>
-                                                <#if customized_column_list?has_content>
-                                                	<#list customized_column_list as customized_column>
-														<th data-field="${customized_column.customizedColumnName}">
-															${customized_column.customizedColumnTitle}
-														</th>
-                                                	</#list>
-                                                </#if>
-                                                <th data-field="created" class="th-sort-DESC">
-                                                        #i18n{module.directory.multiview.records_list.created}
-                                                        <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?current_selected_panel="+current_selected_panel attribute="created" />
-                                                </th>                                               
-                                                <th data-field="assigned">
-                                                        #i18n{module.directory.multiview.records_list.assigned}
-                                                        <@sort jsp_url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?current_selected_panel="+current_selected_panel attribute="assigned" />
-                                                </th>
-                                        </tr>
-                                </thead>
-                                <tbody>
-                                        <#list resource_actions_list as resource_actions>
-                                                <tr data-url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?view=view_record_visualisation&id_directory_record=${resource_actions.record.idRecord}&id_directory=${resource_actions.record.directory.idDirectory}">
-                                                        <td>
-                                                                <span class="label label-info unread">
-                                                                        <#if resource_actions.workflow_state?exists>
-                                                                                ${(resource_actions.workflow_state.name)!''}
-                                                                        </#if>
-                                                                </span>
-                                                        </td>
-                                                        <td>
-                                                            <#if resource_actions.record.directory.title?exists>
-                                                                    ${(resource_actions.record.directory.title)!}
-                                                            </#if>
-                                                        </td>
-                                                        <#if customized_column_list?has_content>
-                                                        	<#list customized_column_list as customizedColumn>
-                                                        		<#assign map_key = customizedColumn.customizedColumnName>
-                                                        		<#assign map_value = customizedColumn.customizedColumnName + '_value'>
-                                                        		<td>
-                                                            		<#list resource_actions[map_key] as map_value>
-                                                                		${map_value!''}
-                                                                		<br/>
-                                                            		</#list>
-                                                        		</td>
-                                                        	</#list>
-                                                        </#if>
-                                                        <td>
-                                                            ${(resource_actions.record.dateCreation?date)!''}
-                                                        </td>                                                    
-                                                        <td>
-                                                            <#if recordAssignmentMap?? >
-                                                                <#if (recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.firstName)?has_content >
-                                                                    <strong>
-                                                                    	<i class="fa fa-sitemap"></i>&nbsp;&nbsp;&nbsp;${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUnit.label}
-                                                                    	<br />
-                                                                        <i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.firstName} ${(recordAssignmentMap[resource_actions.record.idRecord?string].assignedUser.lastName)!''}
-                                                                    </strong>
-                                                                <#else>
-                                                                    <strong>
-                                                                        <i class="fa fa-sitemap"></i>&nbsp;&nbsp;&nbsp;${recordAssignmentMap[resource_actions.record.idRecord?string].assignedUnit.label}
-                                                                    </strong>
-                                                                </#if>
-                                                            </#if>&nbsp;
-                                                        </td>
-                                                </tr>
-                                        </#list>
-                                </tbody>
-                        </table>
-                </div>
-
-                <div class="col-xs-12">
+            <#if table_template?has_content>
+                <div id="multi-record-list" class="box-body table-responsive records">
+				    ${table_template}
+                    <div class="col-xs-12">
                         <@paginationAdmin paginator=paginator combo=1 showcount=1 form=0 />
+                    </div>
                 </div>
-
-            </div>
+            <#else>
+                <div id="multiview-no-records">
+                    <h2 class="text-muted">#i18n{module.directory.multiview.manage_directory_multirecord.noRecords}</h2>
+                    <img class="img-responsive" src="images/admin/skin/plugins/directory/modules/multiview/no_records.jpg" alt="#i18n{module.directory.multiview.manage_directory_multirecord.noRecords}" title="">
+                </div>
+            </#if>
         </div>
-    <script src="js/plugins/directory/modules/multiview/directory-multiview.js"></script>
+        <script src="js/plugins/directory/modules/multiview/directory-multiview.js"></script>
     </@columns>
 </div>
 </@tform>
 
-<script >
+<script>
 $( document ).ready(function() {
-    $( "#search_directory" ).change( function( ) 
+    $( "#multiview_id_directory" ).change( function( ) 
     {
         // reinit workflow states 
-        $( "#search_state_workflow" ).find( "option" ).remove( );
+        $( "#multiview_id_state_workflow" ).find( "option" ).remove( );
 
         // submit to get new states
         $( "#searchForm" ).submit( ) ;
     });
 });
 </script>
-
-

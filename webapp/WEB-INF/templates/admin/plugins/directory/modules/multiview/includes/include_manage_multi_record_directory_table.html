@@ -1,0 +1,26 @@
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 table-responsive tab-content">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <#if record_column_header_template_list?has_content>
+                    <#list record_column_header_template_list as record_column_header_template>
+                        ${record_column_header_template}
+                    </#list>
+                </#if>
+            </tr>
+        </thead>
+        <tbody>
+            <#if record_part_line_template_list?has_content>
+                <#list record_part_line_template_list as record_part_line_template>
+                    <tr data-url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?view=view_record_visualisation&id_directory_record=${record_part_line_template.idRecord}&id_directory=${record_part_line_template.idDirectory}">
+                        <#if record_part_line_template.recordColumnPartLineTemplateList?has_content>
+                            <#list record_part_line_template.recordColumnPartLineTemplateList as record_column_part_line_template>
+                                ${record_column_part_line_template}
+                            </#list>
+                        </#if>
+                    </tr>
+                </#list>
+            </#if>
+        </tbody>
+    </table>
+</div>

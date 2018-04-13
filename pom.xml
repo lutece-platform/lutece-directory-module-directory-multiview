@@ -8,11 +8,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.paris.lutece.plugins</groupId>
-        <artifactId>module-directory-multiview</artifactId>
+    <artifactId>module-directory-multiview</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>1.0.0-SNAPSHOT</version>
-
-    	<name>Lutece directory multi view module</name>
+    <version>2.0.0-SNAPSHOT</version>
+	<name>Lutece directory multi view module</name>
 
      <repositories>
          <repository>
@@ -43,31 +42,19 @@
         <dependency>
             <groupId>fr.paris.lutece</groupId>
             <artifactId>lutece-core</artifactId>
-            <version>[6.0.0-SNAPSHOT,)</version>
+            <version>[6.0.2-SNAPSHOT,)</version>
             <type>lutece-core</type>
         </dependency>
-
-
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-directory</artifactId>
             <version>[4.0.7-SNAPSHOT,)</version>
             <type>lutece-plugin</type>
         </dependency>
-
- 
-
-        
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-unittree</artifactId>
             <version>2.1.1-SNAPSHOT</version>
-            <type>lutece-plugin</type>
-        </dependency>
-        <dependency>
-            <groupId>fr.paris.lutece.plugins</groupId>
-            <artifactId>module-workflow-directorydemands</artifactId>
-            <version>[1.0.0-SNAPSHOT,)</version>
             <type>lutece-plugin</type>
         </dependency>
         <dependency>

@@ -55,6 +55,7 @@ public class ReferenceListFactory
     private final String _strCodeAttr;
     private final String _strNameAttribute;
     private boolean _bNumerical = Boolean.TRUE;
+    private boolean _bDefaultSortNeeded = Boolean.FALSE;
     private final String _strDefaultCode = DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_CODE;
     private String _strDefaultName = DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_NAME;
 
@@ -113,13 +114,33 @@ public class ReferenceListFactory
 
             if ( referenceList != null && !referenceList.isEmpty( ) )
             {
-                referenceListResult.addAll( filterDuplicatesReferenceItem( referenceList ) );
+                referenceListResult.addAll( removeDuplicateAndSortList( referenceList ) );
             }
 
             manageItemName( referenceListResult );
+
         }
 
         return referenceListResult;
+    }
+
+    /**
+     * Return the given list without the duplicate ReferenceItem and sorted if needed
+     * 
+     * @param referenceList
+     *            The ReferenceList to remove the duplicates and to sort
+     * @return the given list without the duplicate ReferenceItem and sorted if needed
+     */
+    private ReferenceList removeDuplicateAndSortList( ReferenceList referenceList )
+    {
+        ReferenceList referenceListWithoutDuplicate = filterDuplicatesReferenceItem( referenceList );
+
+        if ( _bDefaultSortNeeded )
+        {
+            referenceListWithoutDuplicate.sort( new ReferenceItemComparator( ) );
+        }
+
+        return referenceListWithoutDuplicate;
     }
 
     /**
@@ -174,5 +195,16 @@ public class ReferenceListFactory
     public void setDefaultName( String strDefaultName )
     {
         _strDefaultName = strDefaultName;
+    }
+
+    /**
+     * Set the boolean which tell if the default sort (based on the name value) is needed or not
+     * 
+     * @param bDefaultSortNeeded
+     *            The boolean which tell if the default sort (based on the name value) is needed or not
+     */
+    public void setDefaultSortNeeded( boolean bDefaultSortNeeded )
+    {
+        _bDefaultSortNeeded = bDefaultSortNeeded;
     }
 }

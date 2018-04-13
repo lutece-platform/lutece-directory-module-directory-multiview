@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.directory.modules.multiview.web;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,43 +46,42 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.mchange.v1.lang.BooleanUtils;
-
 import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.DirectoryAction;
 import fr.paris.lutece.plugins.directory.business.DirectoryActionHome;
-import fr.paris.lutece.plugins.directory.business.DirectoryFilter;
 import fr.paris.lutece.plugins.directory.business.DirectoryHome;
-import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.customizedcolumn.CustomizedColumn;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.customizedcolumn.CustomizedColumnFactory;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.recordfilter.IRecordFilterItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItemComparator;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItemComparatorConfig;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.RecordPanelFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewAuthorizationService;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.UserIdentityService;
+import fr.paris.lutece.plugins.directory.modules.multiview.service.search.IDirectoryMultiviewSearchService;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.IRecordFilterParameter;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterAssignedUnitParameter;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterCustomizedColumnParameter;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterDirectoryParameter;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterNumberOfDaysParameter;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.RecordFilterWorkflowStateParameter;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.IRecordListPanel;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.RecordListPanelFactory;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.util.RecordListPanelUtil;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.IRecordColumnDisplay;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.RecordColumnDisplayFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.IRecordFilterDisplay;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.RecordFilterDisplayFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.RecordPanelDisplayFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListPositionComparator;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListTemplateBuilder;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListUtil;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
 import fr.paris.lutece.plugins.directory.service.DirectoryService;
 import fr.paris.lutece.plugins.directory.service.record.IRecordService;
 import fr.paris.lutece.plugins.directory.service.record.RecordService;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordFieldItem;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.service.AssignmentService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -127,7 +127,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_DIRECTORY = "directory";
     private static final String MARK_ENTRY_LIST = "entry_list";
-    private static final String MARK_NUMBER_RECORD = "number_record";
     private static final String MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD = "map_id_entry_list_record_field";
     private static final String MARK_ID_ENTRY_TYPE_IMAGE = "id_entry_type_image";
     private static final String MARK_ID_ENTRY_TYPE_MYLUTECE_USER = "id_entry_type_mylutece_user";
@@ -135,8 +134,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_SHOW_DATE_CREATION_RECORD = "show_date_creation_record";
     private static final String MARK_SHOW_DATE_MODIFICATION_RECORD = "show_date_modification_record";
     private static final String MARK_RECORD = "record";
-    private static final String MARK_RESOURCE_ACTIONS_LIST = "resource_actions_list";
-    private static final String MARK_RECORD_ASSIGNMENT_MAP = "recordAssignmentMap";
     private static final String MARK_RESOURCE_ACTIONS = "resource_actions";
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
     private static final String MARK_HISTORY_WORKFLOW_ENABLED = "history_workflow";
@@ -147,12 +144,11 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_ID_ACTION = "id_action";
     private static final String MARK_ID_DIRECTORY = "id_directory";
     private static final String MARK_TASK_FORM = "tasks_form";
-    private static final String MARK_RECORD_ASSIGNMENT_FILTER = "record_assignment_filter";
     private static final String MARK_SEARCH_TEXT = "search_text";
-    private static final String MARK_RECORD_FIELD_FILTER_LIST = "recordfield_filter_list";
-    private static final String MARK_CUSTOMIZED_COLUMN_LIST = "customized_column_list";
     private static final String MARK_RECORD_PANEL_LIST = "record_panel_list";
     private static final String MARK_CURRENT_SELECTED_PANEL = "current_selected_panel";
+    private static final String MARK_RECORD_FILTER_LIST = "record_filter_list";
+    private static final String MARK_TABLE_TEMPLATE = "table_template";
 
     // JSP URL
     private static final String JSP_MANAGE_MULTIVIEW = "jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp";
@@ -161,9 +157,10 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String PARAMETER_ID_DIRECTORY = "id_directory";
     private static final String PARAMETER_ID_ACTION = "id_action";
     private static final String PARAMETER_ID_DIRECTORY_RECORD = "id_directory_record";
-    private static final String PARAMETER_SORTED_ATTRIBUTE_NAME = "sorted_attribute_name";
-    private static final String PARAMETER_SORTED_ATTRIBUTE_ASC = "asc_sort";
-    private static final String PARAMETER_BUTTON_REFRESH = "refresh";
+    private static final String PARAMETER_PAGE_INDEX = "page_index";
+    private static final String PARAMETER_SORT_COLUMN_POSITION = "column_position";
+    private static final String PARAMETER_SORT_ATTRIBUTE_NAME = "sorted_attribute_name";
+    private static final String PARAMETER_SORT_ASC_VALUE = "asc_sort";
 
     // Views
     private static final String VIEW_MULTIVIEW = "view_multiview";
@@ -175,70 +172,25 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String ACTION_SAVE_TASK_FORM = "doSaveTaskForm";
     private static final String ACTION_CANCEL_TASK_FORM = "doCancelTaskForm";
 
+    // Constants
+
+    private static final String BASE_SORT_URL_PATTERN = JSP_MANAGE_MULTIVIEW + "?current_selected_panel=%s";
+
     // Session fields
-    private final IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
+    private String _strSearchedText = StringUtils.EMPTY;
+    private String _strSelectedPanelTechnicalCode = StringUtils.EMPTY;
+    private transient List<IRecordColumn> _listRecordColumn;
+    private transient List<IRecordFilterDisplay> _listRecordFilterDisplay;
+    private transient List<IRecordColumnDisplay> _listRecordColumnDisplay;
+    private transient List<IRecordPanelDisplay> _listRecordPanelDisplay;
+    private transient IRecordPanelDisplay _recordPanelDisplayActive;
+    private transient DirectoryRecordItemComparatorConfig _directoryRecordItemComparatorConfig;
+    private final transient IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
     private final transient IDirectoryMultiviewService _directoryMultiviewService = SpringContextService.getBean( IDirectoryMultiviewService.BEAN_NAME );
-
-    // Variables
-    private HashMap<Integer, Directory> _directoryList;
-    private RecordAssignmentFilter _assignmentFilter;
-    private transient List<IRecordFilterParameter> _listRecordFilterParameter;
-    private List<Map<String, Object>> _listResourceActions;
-    private boolean _bIsInitialized;
-    private transient CustomizedColumnFactory _customizedColumnFactory;
-
-    /**
-     * initialize the JspBean
-     * 
-     * @param request
-     *            The HttpServletRequest
-     */
-    public void initialize( HttpServletRequest request )
-    {
-        if ( !_bIsInitialized )
-        {
-            _directoryList = new HashMap<>( );
-            _listResourceActions = new ArrayList<>( );
-
-            // init the assignment filter
-            _assignmentFilter = new RecordAssignmentFilter( );
-            _assignmentFilter.setUserUnitIdList( AssignmentService.findAllSubUnitsIds( AdminUserService.getAdminUser( request ) ) );
-            _assignmentFilter.setActiveDirectory( true );
-            _assignmentFilter.setActiveAssignmentRecordsOnly( true );
-            _assignmentFilter.setLastActiveAssignmentRecordsOnly( true );
-
-            DirectoryFilter filter = new DirectoryFilter( );
-            filter.setIsDisabled( 1 );
-            List<Directory> listDirectory = DirectoryHome.getDirectoryList( filter, DirectoryUtils.getPlugin( ) );
-            for ( Directory directory : listDirectory )
-            {
-                if ( directory.getIdWorkflow( ) > 0 )
-                {
-                    int nIdDirectory = directory.getIdDirectory( );
-                    _directoryList.put( nIdDirectory, directory );
-                }
-            }
-
-            // Create the CustomizedColumnFactory
-            _customizedColumnFactory = new CustomizedColumnFactory( listDirectory, getPlugin( ), request.getLocale( ) );
-
-            // Set the list of the RecordFieldItem to the filter
-            List<RecordFieldItem> listRecordFieldItem = _customizedColumnFactory.createRecordFieldItemList( );
-            _assignmentFilter.setListRecordFieldItem( listRecordFieldItem );
-
-            // Set the default values on the filter
-            populateRecordFilterItemList( request );
-            for ( IRecordFilterParameter recordFilterParameter : _listRecordFilterParameter )
-            {
-                recordFilterParameter.getRecordFilterItem( ).setItemDefaultValue( _assignmentFilter );
-                recordFilterParameter.getColumnFilter( ).populateListValue( );
-            }
-
-            reInitDirectoryMultiview( null );
-            _bIsInitialized = true;
-        }
-
-    }
+    private final transient IDirectoryMultiviewSearchService _directoryMultiviewSearchService = SpringContextService
+            .getBean( IDirectoryMultiviewSearchService.BEAN_NAME );
+    private final transient IDirectoryMultiviewAuthorizationService _directoryMultiviewAuthorizationService = SpringContextService
+            .getBean( IDirectoryMultiviewAuthorizationService.BEAN_NAME );
 
     /**
      * Return management of directory record ( list of directory record ).
@@ -252,100 +204,214 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     @View( value = VIEW_MULTIVIEW, defaultView = true )
     public String getManageDirectoryRecord( HttpServletRequest request ) throws AccessDeniedException
     {
-        // Clear the resource actions list
-        _listResourceActions.clear( );
-
-        // force refresh ?
-        if ( request.getParameter( PARAMETER_BUTTON_REFRESH ) != null )
+        // Retrieve the list of all filters, columns and panels if the pagination and the sort are not used
+        boolean isSessionLost = isSessionLost( );
+        if ( isPaginationAndSortNotUsed( request ) || isSessionLost )
         {
-            _bIsInitialized = false;
-            initialize( request );
+            initRecordRelatedLists( request );
+            _strSearchedText = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT );
+            manageSelectedPanel( );
         }
 
-        // test if we are paginating or sorting OR if there is a new search request
-        if ( request.getParameter( Paginator.PARAMETER_PAGE_INDEX ) == null )
-        {
-            if ( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_NAME ) != null )
-            {
-                // new SORT
-                _assignmentFilter.setOrderBy( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_NAME ) );
-                _assignmentFilter.setAsc( BooleanUtils.parseBoolean( request.getParameter( PARAMETER_SORTED_ATTRIBUTE_ASC ) ) );
-            }
-            else
-            {
-                // new SEARCH
-                RecordAssignmentFilter newFilter = _directoryMultiviewService.getRecordAssignmentFilter( request, _listRecordFilterParameter,
-                        _customizedColumnFactory );
+        // Build the Column for the Panel and save their values for the active panel
+        buildRecordPanelDisplayWithData( );
 
-                // if filter changed, reinit several list for multiview
-                reInitDirectoryMultiview( newFilter );
-            }
+        // Sort the list of DirectoryRecordItem of the RecordPanel with the request information
+        sortDirectoryRecordItemList( request, _recordPanelDisplayActive.getDirectoryRecordItemList( ) );
+
+        // Build the template of each record filter display
+        if ( isPaginationAndSortNotUsed( request ) || isSessionLost )
+        {
+            _listRecordFilterDisplay.stream( ).forEach( recordFilterDisplay -> recordFilterDisplay.buildTemplate( request ) );
+            Collections.sort( _listRecordFilterDisplay, new RecordListPositionComparator( ) );
         }
 
-        // Create the list of RecordListPanel
-        List<IRecordListPanel> listRecordListPanel = RecordListPanelFactory.createRecordListPanelList( request, _assignmentFilter, _directoryList.values( ) );
+        // Retrieve the list of all id of record of the active RecordListPanelDisplay
+        List<Integer> listIdRecord = RecordListUtil.getListIdRecordOfRecordPanel( _recordPanelDisplayActive );
 
-        // Retrieve the Map which contains the records result of the search of the active panel
-        Map<String, RecordAssignment> mapRecordAssignmentAfterSearch = new LinkedHashMap<>( );
-        String strSelectedPanelName = request.getParameter( DirectoryMultiviewConstants.PARAMETER_CURRENT_SELECTED_PANEL );
-
-        IRecordListPanel activePanel = RecordListPanelUtil.findActiveRecordListPanel( listRecordListPanel );
-        if ( activePanel != null )
-        {
-            mapRecordAssignmentAfterSearch = activePanel.getRecordAssignmentMap( );
-            strSelectedPanelName = activePanel.getName( );
-        }
-
-        // Paginate
-        Map<String, Object> model = getPaginatedListModel( request, Paginator.PARAMETER_PAGE_INDEX, new ArrayList<>( mapRecordAssignmentAfterSearch.keySet( )
-                .stream( ).map( key -> Integer.parseInt( key ) ).collect( Collectors.toList( ) ) ), JSP_MANAGE_MULTIVIEW, strSelectedPanelName );
-
-        // get only records for page items.
-        List<Record> lRecord = _recordService.loadListByListId( _paginator.getPageItems( ), getPlugin( ) );
-
-        // Create the global list of IEntry
-        List<IEntry> listIEntryToSearch = new ArrayList<>( );
-        List<CustomizedColumn> listCustomizedColumn = _customizedColumnFactory.createCustomizedColumnList( );
-        for ( CustomizedColumn customizedColumn : listCustomizedColumn )
-        {
-            listIEntryToSearch.addAll( customizedColumn.getListEntryCustomizedColumn( ) );
-        }
-
-        for ( Record record : lRecord )
-        {
-            // data complement (not done by directory plugin)
-            record.getDirectory( ).setIdWorkflow( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getIdWorkflow( ) );
-            record.getDirectory( ).setTitle( _directoryList.get( record.getDirectory( ).getIdDirectory( ) ).getTitle( ) );
-
-            // add resourceActions
-            _listResourceActions.add( DirectoryService.getInstance( ).getResourceAction( record, record.getDirectory( ), listIEntryToSearch, getUser( ), null,
-                    null, false, getPlugin( ) ) );
-        }
-
-        // Populate the list of ResourceActions with the list of entry containing in the list of the CustomizedColumn of the Factory
-        _directoryMultiviewService.populateResourceActionList( _listResourceActions, _customizedColumnFactory );
-
-        model.put( MARK_PAGINATOR, _paginator );
-        model.put( MARK_NUMBER_RECORD, mapRecordAssignmentAfterSearch.keySet( ).size( ) );
+        // Build the model
+        Map<String, Object> model = getPaginatedListModel( request, Paginator.PARAMETER_PAGE_INDEX, listIdRecord, JSP_MANAGE_MULTIVIEW,
+                _strSelectedPanelTechnicalCode );
+        model.put( MARK_PAGINATOR, getPaginator( ) );
         model.put( MARK_LOCALE, getLocale( ) );
-        model.put( MARK_RESOURCE_ACTIONS_LIST, _listResourceActions );
-        model.put( MARK_RECORD_ASSIGNMENT_FILTER, _assignmentFilter );
-        model.put( MARK_RECORD_ASSIGNMENT_MAP, mapRecordAssignmentAfterSearch );
-        model.put( MARK_SEARCH_TEXT, request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT ) );
-        model.put( MARK_CUSTOMIZED_COLUMN_LIST, _customizedColumnFactory.createCustomizedColumnList( ) );
+        model.put( MARK_SEARCH_TEXT, _strSearchedText );
+        model.put( MARK_RECORD_FILTER_LIST, _listRecordFilterDisplay );
 
-        // Build the template for each filter
-        for ( IRecordFilterParameter recordFilterParameter : _listRecordFilterParameter )
-        {
-            recordFilterParameter.getColumnFilter( ).buildTemplate( _assignmentFilter, request );
-        }
-        model.put( MARK_RECORD_FIELD_FILTER_LIST, _listRecordFilterParameter );
+        // Add the template of column to the model
+        String strSortUrl = String.format( BASE_SORT_URL_PATTERN, _strSelectedPanelTechnicalCode );
+        List<DirectoryRecordItem> listDirectoryRecordItemToDisplay = buildDirectoryRecordItemListToDisplay( );
+        String strTableTemplate = RecordListTemplateBuilder.buildTableTemplate( _listRecordColumnDisplay, listDirectoryRecordItemToDisplay, getLocale( ),
+                strSortUrl );
+        model.put( MARK_TABLE_TEMPLATE, strTableTemplate );
 
         // Add the list of all record panel
-        model.put( MARK_RECORD_PANEL_LIST, listRecordListPanel );
-        model.put( MARK_CURRENT_SELECTED_PANEL, strSelectedPanelName );
+        model.put( MARK_RECORD_PANEL_LIST, _listRecordPanelDisplay );
+        model.put( MARK_CURRENT_SELECTED_PANEL, _strSelectedPanelTechnicalCode );
 
         return getPage( PROPERTY_MANAGE_DIRECTORY_RECORD_PAGE_TITLE, TEMPLATE_MANAGE_MULTI_DIRECTORY_RECORD, model );
+    }
+
+    /**
+     * Return the boolean which tell if the pagination and the sort are not used
+     * 
+     * @param request
+     *            The request to retrieve the information from
+     * @return the boolean which tell if the pagination and the sort are not used
+     */
+    private boolean isPaginationAndSortNotUsed( HttpServletRequest request )
+    {
+        return request.getParameter( PARAMETER_PAGE_INDEX ) == null && request.getParameter( PARAMETER_SORT_COLUMN_POSITION ) == null;
+    }
+
+    /**
+     * Return the boolean which tell if the session is lost
+     * 
+     * @return the boolean which tell if the session is lost
+     */
+    private boolean isSessionLost( )
+    {
+        return _listRecordColumn == null || _listRecordFilterDisplay == null || _listRecordColumnDisplay == null || _listRecordPanelDisplay == null
+                || _recordPanelDisplayActive == null;
+    }
+
+    /**
+     * Build the list of all columns, filters and record panels and all of their display equivalents
+     * 
+     * @param request
+     *            The request used to build the list of the records elements
+     */
+    private void initRecordRelatedLists( HttpServletRequest request )
+    {
+        List<IRecordFilter> listRecordFilter = RecordFilterFactory.buildRecordFilterList( );
+        List<IRecordPanel> listRecordPanel = RecordPanelFactory.buildRecordPanelList( );
+        _listRecordColumn = RecordColumnFactory.buildRecordColumnList( );
+
+        _listRecordFilterDisplay = RecordFilterDisplayFactory.createRecordFilterDisplayList( request, listRecordFilter );
+        _listRecordColumnDisplay = RecordColumnDisplayFactory.createRecordColumnDisplayList( _listRecordColumn );
+        _listRecordPanelDisplay = RecordPanelDisplayFactory.createRecordPanelDisplayList( request, listRecordPanel, listRecordFilter );
+    }
+
+    /**
+     * Retrieve the technical code of the selected panel and change the value of the previous selected one if it wasn't the same and reset the pagination in
+     * this case
+     */
+    private void manageSelectedPanel( )
+    {
+        IRecordPanelDisplay recordPanelDisplay = _directoryMultiviewService.findActiveRecordPanel( _listRecordPanelDisplay );
+        if ( recordPanelDisplay != null )
+        {
+            String strSelectedPanelTechnicalCode = recordPanelDisplay.getTechnicalCode( );
+            if ( StringUtils.isNotBlank( strSelectedPanelTechnicalCode ) && !_strSelectedPanelTechnicalCode.equals( strSelectedPanelTechnicalCode ) )
+            {
+                _strSelectedPanelTechnicalCode = strSelectedPanelTechnicalCode;
+                resetCurrentPaginatorPageIndex( );
+            }
+        }
+    }
+
+    /**
+     * Build all the record panels by building their template and retrieve the data of their columns for the given list of filter and the specified text to
+     * search
+     */
+    private void buildRecordPanelDisplayWithData( )
+    {
+        // Retrieve the list of all RecordFilter
+        List<IRecordFilter> listRecordFilterOfRecordFilterDisplay = _listRecordFilterDisplay.stream( ).map( IRecordFilterDisplay::getRecordFilter )
+                .collect( Collectors.toList( ) );
+
+        for ( IRecordPanelDisplay recordPanelDisplay : _listRecordPanelDisplay )
+        {
+            // Build the list of filter to use for the panel
+            List<IRecordFilter> listRecordFilterDisplay = new ArrayList<>( );
+            listRecordFilterDisplay.add( recordPanelDisplay.getRecordFilter( ) );
+            listRecordFilterDisplay.addAll( listRecordFilterOfRecordFilterDisplay );
+
+            // Populate the RecordColumns from the information of the list of RecordFilterItem
+            List<DirectoryRecordItem> listDirectoryRecordItem = _directoryMultiviewService.populateRecordColumns( _listRecordColumn, listRecordFilterDisplay );
+
+            if ( StringUtils.isNotBlank( _strSearchedText ) )
+            {
+                listDirectoryRecordItem = _directoryMultiviewSearchService.filterBySearchedText( listDirectoryRecordItem, getUser( ), _strSearchedText,
+                        getLocale( ) );
+            }
+            recordPanelDisplay.setDirectoryRecordItemList( listDirectoryRecordItem );
+
+            // Associate for each RecordColumnDisplay its RecordColumnValues if the panel is active
+            if ( recordPanelDisplay.isActive( ) )
+            {
+                _recordPanelDisplayActive = recordPanelDisplay;
+            }
+
+            // Build the template of the record list panel
+            recordPanelDisplay.buildTemplate( getLocale( ) );
+        }
+    }
+
+    /**
+     * Build the list of DirectoryRecordItem to display for the given IRecordFilterPanelDisplay based on the number of items of the current paginator
+     * 
+     * @return list of DirectoryRecordItem to display for the given IRecordFilterPanelDisplay
+     */
+    private List<DirectoryRecordItem> buildDirectoryRecordItemListToDisplay( )
+    {
+        List<DirectoryRecordItem> listDirectoryRecordItemToDisplay = new ArrayList<>( );
+
+        List<Integer> listIdRecordPaginated = getPaginator( ).getPageItems( );
+        List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanelDisplayActive.getDirectoryRecordItemList( );
+        if ( listIdRecordPaginated != null && !listIdRecordPaginated.isEmpty( ) && listDirectoryRecordItem != null && !listDirectoryRecordItem.isEmpty( ) )
+        {
+            for ( DirectoryRecordItem directoryRecordItem : listDirectoryRecordItem )
+            {
+                Integer nIdRecord = directoryRecordItem.getIdRecord( );
+                if ( listIdRecordPaginated.contains( nIdRecord ) )
+                {
+                    listDirectoryRecordItemToDisplay.add( directoryRecordItem );
+                }
+            }
+        }
+
+        return listDirectoryRecordItemToDisplay;
+    }
+
+    /**
+     * Sort the given list of DirectoryRecordItem from the values contains in the request
+     * 
+     * @param request
+     *            The request to retrieve the values used for the sort
+     * @param listDirectoryRecordItem
+     *            The list of DirectoryRecordItem to sort
+     */
+    private void sortDirectoryRecordItemList( HttpServletRequest request, List<DirectoryRecordItem> listDirectoryRecordItem )
+    {
+        if ( request.getParameter( PARAMETER_SORT_COLUMN_POSITION ) != null )
+        {
+            buildDirectoryRecordItemComparatorConfiguration( request );
+        }
+
+        if ( listDirectoryRecordItem != null && !listDirectoryRecordItem.isEmpty( ) )
+        {
+            DirectoryRecordItemComparator directoryRecordItemComparator = new DirectoryRecordItemComparator( _directoryRecordItemComparatorConfig );
+            Collections.sort( listDirectoryRecordItem, directoryRecordItemComparator );
+        }
+    }
+
+    /**
+     * Build the configuration to use for sort the DirectoryRecordItem with the information from the request
+     * 
+     * @param request
+     *            The request to retrieve the values for the sort from
+     */
+    private void buildDirectoryRecordItemComparatorConfiguration( HttpServletRequest request )
+    {
+        String strColumnToSortPosition = request.getParameter( PARAMETER_SORT_COLUMN_POSITION );
+        int nColumnToSortPosition = NumberUtils.toInt( strColumnToSortPosition, NumberUtils.INTEGER_MINUS_ONE );
+
+        String strSortKey = request.getParameter( PARAMETER_SORT_ATTRIBUTE_NAME );
+
+        String strAscSort = request.getParameter( PARAMETER_SORT_ASC_VALUE );
+        boolean bAscSort = Boolean.parseBoolean( strAscSort );
+
+        _directoryRecordItemComparatorConfig = new DirectoryRecordItemComparatorConfig( nColumnToSortPosition, strSortKey, bAscSort );
     }
 
     /**
@@ -361,25 +427,21 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     public String getRecordVisualisation( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD );
-        int nIdRecord = DirectoryUtils.convertStringToInt( strIdRecord );
-        EntryFilter filter;
-
+        int nIdRecord = NumberUtils.toInt( strIdRecord, NumberUtils.INTEGER_MINUS_ONE );
         Record record = _recordService.findByPrimaryKey( nIdRecord, getPlugin( ) );
 
-        int nIdDirectory = record.getDirectory( ).getIdDirectory( );
+        String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
+        int nIdDirectory = NumberUtils.toInt( strIdDirectory, NumberUtils.INTEGER_MINUS_ONE );
         Directory directory = DirectoryHome.findByPrimaryKey( nIdDirectory, getPlugin( ) );
 
-        if ( ( record == null )
-                || ( directory == null )
-                || !RBACService.isAuthorized( Directory.RESOURCE_TYPE, Integer.toString( nIdRecord ),
-                        DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, getUser( ) ) )
+        boolean bRBACAuthorization = RBACService.isAuthorized( Directory.RESOURCE_TYPE, Integer.toString( nIdRecord ),
+                DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, getUser( ) );
+        boolean bAuthorizedRecord = _directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
+
+        if ( record == null || directory == null || !bRBACAuthorization || !bAuthorizedRecord )
         {
             throw new AccessDeniedException( MESSAGE_ACCESS_DENIED );
         }
-
-        filter = new EntryFilter( );
-        filter.setIdDirectory( record.getDirectory( ).getIdDirectory( ) );
-        filter.setIsGroup( EntryFilter.FILTER_TRUE );
 
         List<IEntry> listEntry = DirectoryUtils.getFormEntries( record.getDirectory( ).getIdDirectory( ), getPlugin( ), getUser( ) );
 
@@ -439,37 +501,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     }
 
     /**
-     * reinit multiview context
-     * 
-     * @param newFilter
-     *            The new filter on which to base
-     */
-    private void reInitDirectoryMultiview( RecordAssignmentFilter newFilter )
-    {
-        _listResourceActions = new ArrayList<>( );
-
-        if ( newFilter != null )
-        {
-            // Set the values on the filter
-            for ( IRecordFilterParameter recordFilterParameter : _listRecordFilterParameter )
-            {
-                IRecordFilterItem recordFilterItem = recordFilterParameter.getRecordFilterItem( );
-                recordFilterItem.setItemValue( _assignmentFilter, recordFilterItem.getItemValue( newFilter ) );
-            }
-
-            _assignmentFilter.setOrderBy( newFilter.getOrderBy( ) );
-            _assignmentFilter.setAsc( newFilter.isAsc( ) );
-        }
-        else
-        {
-            _assignmentFilter.setOrderBy( StringUtils.EMPTY );
-            _assignmentFilter.setAsc( true );
-        }
-
-        resetCurrentPaginatorPageIndex( );
-    }
-
-    /**
      * Process workflow action on record
      * 
      * @param request
@@ -483,8 +514,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         int nIdRecord = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) );
         int nIdAction = Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) );
         int nIdDirectory = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY ) );
-
-        IRecordService recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
 
         if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( ) ) )
         {
@@ -513,8 +542,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         if ( bHasSucceed )
         {
             // Update record modification date (for directory plugin)
-            Record record = recordService.findByPrimaryKey( nIdRecord, getPlugin( ) );
-            recordService.update( record, getPlugin( ) );
+            Record record = _recordService.findByPrimaryKey( nIdRecord, getPlugin( ) );
+            _recordService.update( record, getPlugin( ) );
         }
 
         // Redirect to the correct view
@@ -534,7 +563,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
                 .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
         Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
-        int nIdDirectory = NumberUtils.toInt( request.getParameter( MARK_ID_DIRECTORY ), NumberUtils.INTEGER_MINUS_ONE );
 
         if ( nIdAction == null || nIdRecord == null )
         {
@@ -548,6 +576,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         Map<String, Object> model = getModel( );
         model.put( MARK_ID_DIRECTORY_RECORD, nIdRecord );
         model.put( MARK_ID_ACTION, nIdAction );
+
+        int nIdDirectory = NumberUtils.toInt( request.getParameter( MARK_ID_DIRECTORY ), NumberUtils.INTEGER_MINUS_ONE );
         model.put( MARK_ID_DIRECTORY, nIdDirectory );
         model.put( MARK_TASK_FORM, strHtmlTasksForm );
 
@@ -564,7 +594,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     @Action( value = ACTION_SAVE_TASK_FORM )
     public String doSaveTaskForm( HttpServletRequest request )
     {
-
         Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
                 .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
         Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
@@ -612,36 +641,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) );
 
         return redirect( request, VIEW_RECORD_VISUALISATION, mapParameters );
-    }
-
-    /**
-     * Populate the list of all Record Filter Item on which we can filter the records
-     * 
-     * @param request
-     *            The HttpServletRequest
-     */
-    private void populateRecordFilterItemList( HttpServletRequest request )
-    {
-        _listRecordFilterParameter = new ArrayList<>( );
-
-        _listRecordFilterParameter.add( new RecordFilterDirectoryParameter( ) );
-        _listRecordFilterParameter.add( new RecordFilterWorkflowStateParameter( request ) );
-
-        // Manage the case of CustomizedColumn
-        List<CustomizedColumn> customizedColumnList = _customizedColumnFactory.createCustomizedColumnList( );
-        for ( CustomizedColumn customizedColumn : customizedColumnList )
-        {
-            if ( customizedColumn.isFilterAuthorized( ) )
-            {
-                List<IEntry> listEntry = customizedColumn.getListEntryCustomizedColumn( );
-                int nColumnNumber = customizedColumn.getCustomizedColumnNumber( );
-
-                _listRecordFilterParameter.add( new RecordFilterCustomizedColumnParameter( request, listEntry, nColumnNumber ) );
-            }
-        }
-
-        _listRecordFilterParameter.add( new RecordFilterAssignedUnitParameter( request ) );
-        _listRecordFilterParameter.add( new RecordFilterNumberOfDaysParameter( ) );
     }
 
     /**

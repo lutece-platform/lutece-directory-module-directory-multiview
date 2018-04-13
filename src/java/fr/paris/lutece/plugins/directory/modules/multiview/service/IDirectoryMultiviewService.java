@@ -34,15 +34,11 @@
 package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import fr.paris.lutece.plugins.directory.business.IEntry;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.customizedcolumn.CustomizedColumnFactory;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.recordfilter.IRecordFilterParameter;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignmentFilter;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
 
 /**
  * Interface of the service for the module-directory-multiview
@@ -53,47 +49,22 @@ public interface IDirectoryMultiviewService
     String BEAN_NAME = "directory-multiview.directoryMultiviewService";
 
     /**
-     * Fill the filter value from the request
+     * Populate the RecordColumns from a list of RecordFilter
      * 
-     * @param request
-     *            The HttpServletRequest to retrieve the value from
-     * @param listRecordFilterParameter
-     *            The list of all IRecordFilterParameter use for filter the records
-     * @param customizedColumnFactory
-     *            The factory to use for creating the new RecordFieldItem list for the new filter
-     * @return the filter The filter to set the value on
+     * @param listRecordColumn
+     *            The list of all RecordColumn to use to be populated
+     * @param listRecordFilter
+     *            The list of RecordFilter to use for retrieving the data of the columns to populate
+     * @return the RecordListValues containing all the data of the RecordColumns
      */
-    RecordAssignmentFilter getRecordAssignmentFilter( HttpServletRequest request, List<IRecordFilterParameter> listRecordFilterParameter,
-            CustomizedColumnFactory customizedColumnFactory );
+    List<DirectoryRecordItem> populateRecordColumns( List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter );
 
     /**
-     * Populate the list of ResourcesActions with the value containing in the the list of the customizedColumn inside the Factory
+     * Find the RecordPanel which is active in the given list
      * 
-     * @param resourceActions
-     *            The list of ResourceActions to populate
-     * @param customizedColumnFactory
-     *            The Factory which contains the list of CustomizedColumn to retrieve the data from
+     * @param listRecordPanelDisplay
+     *            The list to retrieve the active AbstractRecordPanelDisplay
+     * @return the IRecordFilterPanelDisplay which is active or null if not found
      */
-    void populateResourceActionList( List<Map<String, Object>> resourceActions, CustomizedColumnFactory customizedColumnFactory );
-
-    /**
-     * Populate Record Precisions
-     * 
-     * @param resourceActions
-     *            The list of all Resources Actions
-     * @param listEntry
-     *            The list of IEntry to retrieve data from
-     * @param strMarkName
-     *            The name of the mark to store the value inside
-     */
-    void populateRecord( List<Map<String, Object>> resourceActions, List<IEntry> listEntry, String strMarkName );
-
-    /**
-     * Populate the Map which associate for each id record its last RecordAssignment
-     * 
-     * @param listRecordAssignment
-     *            The list of RecordAssignment to populate the map from
-     * @return the Map which associate for each id record its last RecordAssignment
-     */
-    Map<String, RecordAssignment> populateRecordAssignmentMap( List<RecordAssignment> listRecordAssignment );
+    IRecordPanelDisplay findActiveRecordPanel( List<IRecordPanelDisplay> listRecordPanelDisplay );
 }

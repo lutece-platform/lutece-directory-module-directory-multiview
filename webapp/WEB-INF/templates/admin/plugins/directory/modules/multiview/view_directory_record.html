@@ -111,29 +111,32 @@
 								</div>
 							</#list>
 						</#if>
-						<#else>
-							<#assign entryKey=""+entry.idEntry>
-							<#assign first = true>
-							<div class="form-group">
-								<#if entry.title?exists>
-									<div class="col-xs-12 col-sm-offset-1 col-sm-11">
-										<label class="control-label label-record-history" for="recordfield_${entryKey}">${entry.title}</label>
-									</div>
+					</fieldset>
+				<#else>
+					<fieldset>
+					    <#assign entryKey=""+entry.idEntry>
+						<#assign first = true>
+						<div class="form-group">
+							<#if entry.title?exists>
+								<div class="col-xs-12 col-sm-offset-1 col-sm-11">
+									<label class="control-label label-record-history" for="recordfield_${entryKey}">${entry.title}</label>
+								</div>
+							</#if>
+							<#list map_id_entry_list_record_field[entryKey] as recordfield>
+							<#if recordfield.field?? && recordfield.field.title?? && recordfield.field.title == 'geometry' && recordfield.value?has_content>
+									<input type="hidden" id="${entry.idEntry}_geometry" name="${entry.idEntry}_geometry" value="${recordfield.value}" />
 								</#if>
-								<#list map_id_entry_list_record_field[entryKey] as recordfield>
-									<#if recordfield.field?? && recordfield.field.title?? && recordfield.field.title == 'geometry' && recordfield.value?has_content>
-										<input type="hidden" id="${entry.idEntry}_geometry" name="${entry.idEntry}_geometry" value="${recordfield.value}" />
-									</#if>
-								</#list>
-								<#list map_id_entry_list_record_field[entryKey] as recordfield>
-									<div id="recordfield_${entryKey}" class="col-xs-12 col-sm-offset-1 col-sm-11">
-										<@getRecordFieldHtml entry=entry recordfield=recordfield first=first />
-										<#assign first = false>
-									</div>
-								</#list>
-							</div>
-						</#if>
-					</#list>
+							</#list>
+							<#list map_id_entry_list_record_field[entryKey] as recordfield>
+								<div id="recordfield_${entryKey}" class="col-xs-12 col-sm-offset-1 col-sm-11">
+									<@getRecordFieldHtml entry=entry recordfield=recordfield first=first />
+									<#assign first = false>
+								</div>
+							</#list>
+						</div>
+					</fieldset>
+				</#if>
+				</#list>
 			</div>
 		</div>
 		<div>${resource_history}</div>

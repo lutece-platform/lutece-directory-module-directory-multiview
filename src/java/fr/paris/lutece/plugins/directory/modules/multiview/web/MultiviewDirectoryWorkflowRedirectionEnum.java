@@ -41,7 +41,9 @@ import java.util.Map;
  */
 public enum MultiviewDirectoryWorkflowRedirectionEnum
 {
-    LIST( "list" ), DETAILS( "details" ), DEFAULT( "default" );
+    LIST( "list" ), //
+    DETAILS( "details" ), //
+    DEFAULT( "default" );
 
     // Variables
     private static final Map<String, MultiviewDirectoryWorkflowRedirectionEnum> _mapValueNames = new LinkedHashMap<>( );

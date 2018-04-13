@@ -3,20 +3,117 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" >
-
-	<!-- Directory-Multiview Service -->
+     
+    <!-- Directory-Multiview Service -->
 	<bean id="directory-multiview.directoryMultiviewService" class="fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewService"/>
 	
 	<!-- Directory-Multiview Search Service -->
 	<bean id="directory-multiview.directoryMultiviewSearchService" class="fr.paris.lutece.plugins.directory.modules.multiview.service.search.DirectoryMultiviewSearchService"/>
+    
+    <!-- Directory-Multiview Authorization Service -->
+    <bean id="directory-multiview.directoryMultiviewAuthorizationService" class="fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewAuthorizationService">
+    	<constructor-arg name="recordFilterStandalonePanel" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.panel.IRecordFilterStandalonePanel" ref="directory-multiview.recordsPanel.filter"/>
+    </bean>
+    
+    <!-- DAO -->
+    <bean id="directory-multiview.recordListDAO" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListDAO" />
+    
+    <!-- DirectoryRecordItemComparator configuration -->
+    <bean id="directory-multiview.directoryRecordItem.comparator.configuration.default" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItemComparatorConfig">
+    	<constructor-arg name="nColumnToSortPosition" type="int" value="3"/>
+    	<constructor-arg name="strSortAttributeName" type="java.lang.String" value="record_date_creation"/>
+    	<constructor-arg name="bAscSort" type="boolean" value="false"/>
+    </bean>
+    
+    <!-- Panels Filters QueryParts Factories -->
+    <bean id="directory-multiview.recordFilter.panelRecords.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.standalone.panel.RecordFilterPanelRecordsQueryPartFactory"/>
+    
+    <!-- Filters QueryParts Factories -->    
+    <bean id="directory-multiview.recordFilter.directoryRecord.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterDirectoryQueryPartFactory"/>
+    <bean id="directory-multiview.recordFilter.entry.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterEntryRecordFieldQueryPartFactory"/>
+    <bean id="directory-multiview.recordFilter.recordDateCreation.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterRecordDateCreationQueryPartFactory"/>
+    <bean id="directory-multiview.recordFilter.workflowState.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterWorkflowStateQueryPartFactory"/>
+	
+	<!-- Panels Filters Configurations -->
+	<bean id="directory-multiview.recordsPanel.filterConfiguration" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration">
+		<constructor-arg name="nPosition" type="int" value="1"/>
+		<constructor-arg name="strRecordFilterLabel" type="java.lang.String" value=""/>
+	</bean>
+	
+	<!-- Filters Configurations -->
+	<bean id="directory-multiview.directoryRecord.filterConfiguration" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration">
+		<constructor-arg name="nPosition" type="int" value="1"/>
+		<constructor-arg name="strRecordFilterLabel" type="java.lang.String" value="-"/>
+	</bean>
+	<bean id="directory-multiview.workflowState.filterConfiguration" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration">
+		<constructor-arg name="nPosition" type="int" value="2"/>
+		<constructor-arg name="strRecordFilterLabel" type="java.lang.String" value="-"/>
+	</bean>
+	<bean id="directory-multiview.recordDateCreation.filterConfiguration" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration">
+		<constructor-arg name="nPosition" type="int" value="3"/>
+		<constructor-arg name="strRecordFilterLabel" type="java.lang.String" value="Cr&#233;&#233;e depuis..."/>
+	</bean>
+	
+	<!-- Panels Filters -->
+	<bean id="directory-multiview.recordsPanel.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.panel.RecordFilterPanelRecords">
+		<constructor-arg name="recordFilterConfiguration" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration" ref="directory-multiview.recordsPanel.filterConfiguration"/>	
+	</bean>
+	
+	<!-- Filters -->
+	<bean id="directory-multiview.recordDateCreation.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterRecordDateCreation">
+		<constructor-arg name="recordFilterConfiguration" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration" ref="directory-multiview.recordDateCreation.filterConfiguration"/>
+	</bean>
+	<bean id="directory-multiview.direcoryRecord.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterDirectory">
+		<constructor-arg name="recordFilterConfiguration" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration" ref="directory-multiview.directoryRecord.filterConfiguration"/>
+	</bean>
+	<bean id="directory-multiview.workflowState.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterWorkflowState">
+		<constructor-arg name="recordFilterConfiguration" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration" ref="directory-multiview.workflowState.filterConfiguration"/>
+	</bean>
+		
+	<!-- Panels Filters Factories -->
+	<bean id="directory-multiview.recordsPanel.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory.RecordPanelRecordsDisplayFactory"/>
+	
+	<!-- Filters Factories -->
+	<bean id="directory-multiview.recordDateCreation.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayRecordDateCreationFactory"/>
+	<bean id="directory-multiview.directoryRecord.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayDirectoryFactory"/>
+	<bean id="directory-multiview.workflowState.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayWorkflowStateFactory"/>
+	<bean id="directory-multiview.entry.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayEntryRecordFieldFactory"/>
+	
+	<!-- Columns QueryPart Factories -->
+	<bean id="directory-multiview.recordColumn.directory.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.factory.impl.RecordColumnDirectoryQueryPartFactory"/>
+	<bean id="directory-multiview.recordColumn.entry.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.factory.impl.RecordColumnEntryQueryPartFactory"/>
+	<bean id="directory-multiview.recordColumn.recordDateCreation.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.factory.impl.RecordColumnRecordDateCreationQueryPartFactory"/>
+	<bean id="directory-multiview.recordColumn.workflowState.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.factory.impl.RecordColumnWorkflowStateQueryPartFactory"/>	
+	
+	<!-- Columns -->
+	<bean id="directory-multiview.workflowState.column" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnWorkflowState">
+		<constructor-arg name="nRecordColumnPosition" type="int" value="1"/>		
+		<constructor-arg name="strRecordColumnTitle" type="java.lang.String" value="&#201;tat"/>
+	</bean>
+	<bean id="directory-multiview.directory.column" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnDirectory">
+		<constructor-arg name="nRecordColumnPosition" type="int" value="2"/>
+		<constructor-arg name="strRecordColumnTitle" type="java.lang.String" value="Nature"/>
+	</bean>
+	<bean id="directory-multiview.recordCreationDate.column" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnRecordDateCreation">
+		<constructor-arg name="nRecordColumnPosition" type="int" value="3"/>
+		<constructor-arg name="strRecordColumnTitle" type="java.lang.String" value="Cr&#201;&#201;e le"/>
+	</bean>
+	
+	<!-- Columns Factories -->
+	<bean id="directory-multiview.directory.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayDirectoryFactory"/>
+	<bean id="directory-multiview.entry.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayEntryRecordFieldFactory"/>
+	<bean id="directory-multiview.recordDateCreation.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayRecordDateCreationFactory"/>
+	<bean id="directory-multiview.workflowState.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayWorkflowStateFactory"/>
 	
 	<!-- Panels -->
-	<bean id="directory-multiview.recordsPanel" class="fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.RecordListRecordsPanel">
-		<property name="position" value="1"></property>
+	<bean id="directory-multiview.recordsPanel" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.impl.RecordPanelRecords">
+		<constructor-arg name="strTechnicalCode" type="java.lang.String" value="records"/>
+		<constructor-arg name="strTitleKey" type="java.lang.String" value="module.directory.multiview.records_list.label_records_panel"/>
+		<constructor-arg name="recordFilterConfiguration" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration" ref="directory-multiview.recordsPanel.filterConfiguration"/>
 	</bean>
-	<bean id="directory-multiview.myRecordsPanel" class="fr.paris.lutece.plugins.directory.modules.multiview.web.recordlistpanel.RecordListMyRecordsPanel">
-		<property name="position" value="2"></property>
-	</bean>
+	
+	<!-- Panels Display Factories -->
+	<bean id="directory-multiview.recordsPanel.panel.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory.RecordPanelRecordsDisplayFactory"/>
 		
     <!-- IdentityService -->
     <bean id="directory-multiview.identitystore.httpTransport" class="fr.paris.lutece.plugins.identitystore.web.rs.service.IdentityTransportRest">

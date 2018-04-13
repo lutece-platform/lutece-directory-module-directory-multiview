@@ -34,23 +34,22 @@
 package fr.paris.lutece.plugins.directory.modules.multiview.service.search;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.directory.business.Directory;
+import fr.paris.lutece.plugins.directory.business.DirectoryFilter;
+import fr.paris.lutece.plugins.directory.business.DirectoryHome;
 import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.RecordField;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.directory.web.action.DirectoryAdminSearchFields;
-import fr.paris.lutece.plugins.workflow.modules.directorydemands.business.RecordAssignment;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
@@ -63,40 +62,103 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
      * {@inheritDoc}
      */
     @Override
-    public Map<String, RecordAssignment> filterBySearchedText( Map<String, RecordAssignment> mapRecordAssignment, Collection<Directory> listDirectories,
-            AdminUser adminUser, Plugin plugin, String strSearchText, Locale locale )
+    public List<DirectoryRecordItem> filterBySearchedText( List<DirectoryRecordItem> listDirectoryRecordItem, AdminUser adminUser, String strSearchText,
+            Locale locale )
     {
-        // No search text
-        if ( StringUtils.isBlank( strSearchText ) )
-        {
-            return mapRecordAssignment;
-        }
-        else
-        {
-            Map<String, RecordAssignment> mapReturn = new LinkedHashMap<>( mapRecordAssignment );
-            List<String> listIdRecord = new ArrayList<>( );
+        List<DirectoryRecordItem> listDirectoryRecordItemResult = new ArrayList<>( );
 
-            // For each directory, compute the plain text search;
-            for ( Directory directory : listDirectories )
+        if ( listDirectoryRecordItem != null && !listDirectoryRecordItem.isEmpty( ) )
+        {
+            if ( StringUtils.isNotBlank( strSearchText ) )
             {
-                // Create the list of entry to search on
-                List<IEntry> listEntry = retrieveDirectoryListEntry( directory, plugin );
-
-                // Create the query map
-                HashMap<String, List<RecordField>> mapSearchRecordField = createMapSearchRecordField( listEntry, strSearchText );
-
-                // If the map contains entry to search on we will make the search
-                if ( !mapSearchRecordField.isEmpty( ) )
-                {
-                    populateIdRecordResultSearchList( adminUser, listIdRecord, directory, mapSearchRecordField, locale );
-                }
+                // Retrieve the list of directory to use for filter the records
+                listDirectoryRecordItemResult = buildDirectoryRecordItemSearchResult( listDirectoryRecordItem, strSearchText, adminUser, locale );
             }
+            else
+            {
+                listDirectoryRecordItemResult = new ArrayList<>( listDirectoryRecordItem );
+            }
+        }
+
+        return listDirectoryRecordItemResult;
+    }
+
+    /**
+     * Return the list of DirectoryRecordItem retain from the given list of DirectoryRecordItem and the result of the search
+     * 
+     * @param listDirectoryRecordItem
+     *            The list of DirectoryRecordItem which all the record information before the search is made
+     * @param strSearchText
+     *            The text which must be searched
+     * @param adminUser
+     *            The AdminUser who made the search
+     * @param locale
+     *            The locale to use for the search
+     * @return the list of DirectoryRecordItem retain from the given list of DirectoryRecordItem and the result of the search
+     */
+    private List<DirectoryRecordItem> buildDirectoryRecordItemSearchResult( List<DirectoryRecordItem> listDirectoryRecordItem, String strSearchText,
+            AdminUser adminUser, Locale locale )
+    {
+        List<DirectoryRecordItem> listDirectoryRecordItemResult = new ArrayList<>( );
+
+        // Retrieve the list of directory to use for filter the records
+        DirectoryFilter directoryFilter = new DirectoryFilter( );
+        List<Directory> listDirectories = DirectoryHome.getDirectoryList( directoryFilter, DirectoryMultiviewPlugin.getPlugin( ) );
+
+        // For each directory, compute the plain text search
+        if ( listDirectories != null && !listDirectories.isEmpty( ) )
+        {
+            // Retrieve the list of the id record of the result of the search
+            List<Integer> listIdRecord = retrieveListRecordResultSearch( listDirectories, strSearchText, adminUser, locale );
 
             // Keep only the record which are contains in the result list
-            mapReturn.keySet( ).retainAll( listIdRecord );
-
-            return mapReturn;
+            for ( DirectoryRecordItem directoryRecordItem : listDirectoryRecordItem )
+            {
+                Integer nIdRecord = directoryRecordItem.getIdRecord( );
+                if ( listIdRecord.contains( nIdRecord ) )
+                {
+                    listDirectoryRecordItemResult.add( directoryRecordItem );
+                }
+            }
         }
+
+        return listDirectoryRecordItemResult;
+    }
+
+    /**
+     * Retrieve the list of the id record of the result of the search
+     * 
+     * @param listDirectories
+     *            The list of directory on which the search is based
+     * @param strSearchText
+     *            The text which must be searched
+     * @param adminUser
+     *            The AdminUser who made the search
+     * @param locale
+     *            The locale to use for the search
+     * @return the list of the id record of the result of the search
+     */
+    private List<Integer> retrieveListRecordResultSearch( List<Directory> listDirectories, String strSearchText, AdminUser adminUser, Locale locale )
+    {
+        List<Integer> listIdRecord = new ArrayList<>( );
+
+        for ( Directory directory : listDirectories )
+        {
+            // Create the list of entry to search on
+            List<IEntry> listEntry = retrieveDirectoryListEntry( directory, DirectoryMultiviewPlugin.getPlugin( ) );
+
+            // Create the query map
+            HashMap<String, List<RecordField>> mapSearchRecordField = createMapSearchRecordField( listEntry, strSearchText );
+
+            // If the map contains entry to search on we will make the search
+            if ( !mapSearchRecordField.isEmpty( ) )
+            {
+                List<Integer> listResultSearchIdRecord = populateIdRecordResultSearchList( adminUser, directory, mapSearchRecordField, locale );
+                listIdRecord.addAll( listResultSearchIdRecord );
+            }
+        }
+
+        return listIdRecord;
     }
 
     /**
@@ -140,7 +202,8 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
                 List<IEntry> listChildrenEntry = entry.getChildren( );
                 if ( listChildrenEntry != null && !listChildrenEntry.isEmpty( ) )
                 {
-                    listEntryResult.addAll( listChildrenEntry );
+                    List<IEntry> listAllChildren = getListOfAllChildren( listChildrenEntry );
+                    listEntryResult.addAll( listAllChildren );
                 }
                 else
                 {
@@ -182,21 +245,20 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
     }
 
     /**
-     * Populate the list of id record with the id record of the search result for the given directory for the given map of RecordField
+     * Return the list of id record with the id record of the search result for the given directory for the given map of RecordField
      * 
      * @param adminUser
      *            The adminUser who made the search
-     * @param listIdRecord
-     *            The list of id record to populate
      * @param directory
      *            The directory to make the search on
      * @param mapSearchRecordField
      *            The map which contains the field to find
      * @param locale
      *            The locale
+     * @return the the list of id record with the id record of the search result for the given directory for the given map of RecordField
      */
-    private void populateIdRecordResultSearchList( AdminUser adminUser, List<String> listIdRecord, Directory directory,
-            HashMap<String, List<RecordField>> mapSearchRecordField, Locale locale )
+    private List<Integer> populateIdRecordResultSearchList( AdminUser adminUser, Directory directory, HashMap<String, List<RecordField>> mapSearchRecordField,
+            Locale locale )
     {
         // Create the search fields object
         DirectoryAdminSearchFields searchFields = new DirectoryAdminSearchFields( );
@@ -204,7 +266,11 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
         searchFields.setMapQuery( mapSearchRecordField );
 
         // Compute the search
-        listIdRecord.addAll( DirectoryUtils.getListResults( null, directory, Boolean.TRUE, Boolean.TRUE, searchFields, adminUser, locale ).stream( )
-                .map( nId -> nId.toString( ) ).collect( Collectors.toList( ) ) );
+        boolean bWorkflowServiceEnable = Boolean.TRUE;
+        boolean bUseFilterDirectory = Boolean.TRUE;
+        List<Integer> listIdRecord = DirectoryUtils.getListResults( null, directory, bWorkflowServiceEnable, bUseFilterDirectory, searchFields, adminUser,
+                locale );
+
+        return listIdRecord;
     }
 }
