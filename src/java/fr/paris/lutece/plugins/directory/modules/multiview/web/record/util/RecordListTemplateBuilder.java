@@ -57,7 +57,7 @@ public final class RecordListTemplateBuilder
     // Marks
     private static final String DIRECTORY_RECORD_ITEM_LIST = "directory_record_item_list";
     private static final String RECORD_COLUMN_HEADER_TEMPLATE_LIST = "record_column_header_template_list";
-    private static final String RECORD_PART_LINE_TEMPLATE_LIST = "record_part_line_template_list";
+    private static final String RECORD_LINE_TEMPLATE_LIST = "record_line_template_list";
 
     /**
      * Constructor
@@ -98,7 +98,7 @@ public final class RecordListTemplateBuilder
             Map<String, Object> model = new LinkedHashMap<>( );
             model.put( RECORD_COLUMN_HEADER_TEMPLATE_LIST, listRecordColumnHeaderTemplate );
             model.put( DIRECTORY_RECORD_ITEM_LIST, listDirectoryRecordItem );
-            model.put( RECORD_PART_LINE_TEMPLATE_LIST, listRecordColumnLineTemplate );
+            model.put( RECORD_LINE_TEMPLATE_LIST, listRecordColumnLineTemplate );
 
             strTableTemplate = AppTemplateService.getTemplate( TEMPLATE_MULTI_DIRECTORY_TABLE, locale, model ).getHtml( );
         }
@@ -158,7 +158,7 @@ public final class RecordListTemplateBuilder
                 RecordColumnLineTemplate recordColumnLineTemplate = new RecordColumnLineTemplate( nIdRecord, nIdDirectory );
 
                 List<RecordColumnCell> listRecordColumnCell = directoryRecordItem.getDirectoryRecordCellValues( );
-                populatePartLineTemplateFromCellValues( recordColumnLineTemplate, listRecordColumnCell, listRecordColumnDisplay, locale );
+                populateLineTemplateFromCellValues( recordColumnLineTemplate, listRecordColumnCell, listRecordColumnDisplay, locale );
 
                 listRecordColumnLineTemplate.add( recordColumnLineTemplate );
             }
@@ -179,7 +179,7 @@ public final class RecordListTemplateBuilder
      * @param locale
      *            The locale to use for build the templates
      */
-    private static void populatePartLineTemplateFromCellValues( RecordColumnLineTemplate recordColumnLineTemplate, List<RecordColumnCell> listRecordColumnCell,
+    private static void populateLineTemplateFromCellValues( RecordColumnLineTemplate recordColumnLineTemplate, List<RecordColumnCell> listRecordColumnCell,
             List<IRecordColumnDisplay> listRecordColumnDisplay, Locale locale )
     {
         if ( listRecordColumnCell != null && !listRecordColumnCell.isEmpty( ) )
@@ -200,7 +200,7 @@ public final class RecordListTemplateBuilder
     }
 
     /**
-     * Find the RecordColumnDisplay in the given with the specified position or null if not found
+     * Find the RecordColumnDisplay in the given list with the specified position or null if not found
      * 
      * @param nRecordColumnPosition
      *            The position of the RecordColumnDisplay to retrieve

@@ -37,14 +37,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represent a line of the multi view directory tab
+ * This class represent a line of the Multiview table
  */
 public class RecordColumnLineTemplate
 {
     // Variables
     private final int _nIdRecord;
     private final int _nIdDirectory;
-    private List<String> _listRecordColumnPartLineTemplate;
+    private List<String> _listRecordColumnCellTemplate;
 
     /**
      * Constructor
@@ -58,7 +58,7 @@ public class RecordColumnLineTemplate
     {
         _nIdRecord = nIdRecord;
         _nIdDirectory = nIdDirectory;
-        _listRecordColumnPartLineTemplate = new ArrayList<>( );
+        _listRecordColumnCellTemplate = new ArrayList<>( );
     }
 
     /**
@@ -82,24 +82,24 @@ public class RecordColumnLineTemplate
     }
 
     /**
-     * Return the list of record column part line template
+     * Return the list of the RecordColumnCell template
      * 
-     * @return the list of record column part line template
+     * @return the list of the RecordColumnCell template
      */
-    public List<String> getRecordColumnPartLineTemplateList( )
+    public List<String> getRecordColumnCellTemplateList( )
     {
-        return _listRecordColumnPartLineTemplate;
+        return _listRecordColumnCellTemplate;
     }
 
     /**
-     * Set the list of record column part line template
+     * Set the list of the RecordColumnCell template
      * 
-     * @param listRecordColumnPartLineTemplate
-     *            The list of record column part line template
+     * @param listRecordColumnCellTemplate
+     *            The list of the RecordColumnCell template
      */
-    public void setRecordColumnPartLineTemplate( List<String> listRecordColumnPartLineTemplate )
+    public void setRecordColumnCellTemplate( List<String> listRecordColumnCellTemplate )
     {
-        _listRecordColumnPartLineTemplate = listRecordColumnPartLineTemplate;
+        _listRecordColumnCellTemplate = listRecordColumnCellTemplate;
     }
 
     /**
@@ -110,6 +110,6 @@ public class RecordColumnLineTemplate
      */
     public void addRecordColumnCellTemplate( String strRecordColumnCell )
     {
-        _listRecordColumnPartLineTemplate.add( strRecordColumnCell );
+        _listRecordColumnCellTemplate.add( strRecordColumnCell );
     }
 }

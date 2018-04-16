@@ -10,12 +10,12 @@
             </tr>
         </thead>
         <tbody>
-            <#if record_part_line_template_list?has_content>
-                <#list record_part_line_template_list as record_part_line_template>
-                    <tr data-url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?view=view_record_visualisation&id_directory_record=${record_part_line_template.idRecord}&id_directory=${record_part_line_template.idDirectory}">
-                        <#if record_part_line_template.recordColumnPartLineTemplateList?has_content>
-                            <#list record_part_line_template.recordColumnPartLineTemplateList as record_column_part_line_template>
-                                ${record_column_part_line_template}
+            <#if record_line_template_list?has_content>
+                <#list record_line_template_list as record_line_template>
+                    <tr data-url="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?view=view_record_visualisation&id_directory_record=${record_line_template.idRecord}&id_directory=${record_line_template.idDirectory}">
+                        <#if record_line_template.recordColumnCellTemplateList?has_content>
+                            <#list record_line_template.recordColumnCellTemplateList as record_column_cell_template>
+                                ${record_column_cell_template}
                             </#list>
                         </#if>
                     </tr>
