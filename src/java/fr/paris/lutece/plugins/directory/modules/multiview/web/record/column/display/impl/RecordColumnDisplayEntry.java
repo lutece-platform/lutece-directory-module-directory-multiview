@@ -42,7 +42,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnCell;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordEntryNameConstants;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 
 /**
@@ -84,7 +84,7 @@ public class RecordColumnDisplayEntry extends AbstractRecordColumnDisplay
         String strEntryValue = StringUtils.EMPTY;
         if ( recordColumnCell != null )
         {
-            String strEntryValueName = String.format( RecordFilterColumnNameConstants.COLUMN_ENTRY_VALUE_PATTERN, getRecordColumnPosition( ) );
+            String strEntryValueName = String.format( RecordEntryNameConstants.COLUMN_ENTRY_VALUE_PATTERN, getRecordColumnPosition( ) );
             Object objEntryValue = recordColumnCell.getRecordColumnCellValueByName( strEntryValueName );
             if ( objEntryValue != null )
             {

@@ -40,7 +40,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordWorkflowStateNameConstants;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
@@ -92,8 +92,8 @@ public class RecordColumnWorkflowStateQueryPart extends AbstractRecordColumnQuer
     protected Map<String, Object> getMapRecordColumnValues( DAOUtil daoUtil )
     {
         Map<String, Object> mapRecordColumnValues = new LinkedHashMap<>( );
-        String strWorkflowStateName = daoUtil.getString( RecordFilterColumnNameConstants.COLUMN_WORKFLOW_STATE_NAME );
-        mapRecordColumnValues.put( RecordFilterColumnNameConstants.COLUMN_WORKFLOW_STATE_NAME, strWorkflowStateName );
+        String strWorkflowStateName = daoUtil.getString( RecordWorkflowStateNameConstants.COLUMN_WORKFLOW_STATE_NAME );
+        mapRecordColumnValues.put( RecordWorkflowStateNameConstants.COLUMN_WORKFLOW_STATE_NAME, strWorkflowStateName );
 
         return mapRecordColumnValues;
     }

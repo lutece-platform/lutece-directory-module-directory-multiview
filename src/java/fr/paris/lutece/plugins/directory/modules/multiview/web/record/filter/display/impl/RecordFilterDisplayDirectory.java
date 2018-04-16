@@ -46,7 +46,7 @@ import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.DirectoryFilter;
 import fr.paris.lutece.plugins.directory.business.DirectoryHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -73,7 +73,7 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
         String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
         if ( StringUtils.isNotBlank( strIdDirectory ) )
         {
-            mapFilterNameValues.put( RecordFilterColumnNameConstants.FILTER_ID_DIRECTORY, strIdDirectory );
+            mapFilterNameValues.put( RecordDirectoryNameConstants.FILTER_ID_DIRECTORY, strIdDirectory );
             strIdDirectoryValue = strIdDirectory;
         }
 

@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filt
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterQueryBuilder;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
 
 /**
  * Implementation of the IRecordFilterQueryPart for a RecordFilterDirectory filter
@@ -43,7 +43,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColu
 public class RecordFilterDirectoryQueryPart extends AbstractRecordFilterQueryPart
 {
     // Constants
-    private static final String DIRECTORY_QUERY_PATTERN = "directory.id_directory = $" + RecordFilterColumnNameConstants.FILTER_ID_DIRECTORY + "$";
+    private static final String DIRECTORY_QUERY_PATTERN = "directory.id_directory = $" + RecordDirectoryNameConstants.FILTER_ID_DIRECTORY + "$";
 
     /**
      * {@inheritDoc}

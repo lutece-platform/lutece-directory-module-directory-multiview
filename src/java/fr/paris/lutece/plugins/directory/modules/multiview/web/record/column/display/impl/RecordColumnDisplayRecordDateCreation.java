@@ -39,7 +39,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnCell;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordRecordDateCreationNameConstants;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 
 /**
@@ -66,7 +66,7 @@ public class RecordColumnDisplayRecordDateCreation extends AbstractRecordColumnD
         Map<String, Object> model = new LinkedHashMap<>( );
         model.put( MARK_SORT_URL, buildCompleteSortUrl( strSortUrl ) );
         model.put( MARK_RECORD_DATE_CREATION_COLUMN_TITLE, getRecordColumnTitle( ) );
-        model.put( MARK_COLUMN_SORT_ATTRIBUTE, RecordFilterColumnNameConstants.COLUMN_RECORD_DATE_CREATION );
+        model.put( MARK_COLUMN_SORT_ATTRIBUTE, RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION );
 
         String strRecordDateCreationHeaderTemplate = AppTemplateService.getTemplate( RECORD_COLUMN_HEADER_TEMPLATE, locale, model ).getHtml( );
         setRecordColumnHeaderTemplate( strRecordDateCreationHeaderTemplate );
@@ -83,7 +83,7 @@ public class RecordColumnDisplayRecordDateCreation extends AbstractRecordColumnD
         Date dateRecordDateCreation = null;
         if ( recordColumnCell != null )
         {
-            Object objRecordDateCreation = recordColumnCell.getRecordColumnCellValueByName( RecordFilterColumnNameConstants.COLUMN_RECORD_DATE_CREATION );
+            Object objRecordDateCreation = recordColumnCell.getRecordColumnCellValueByName( RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION );
             if ( objRecordDateCreation != null )
             {
                 dateRecordDateCreation = (Date) objRecordDateCreation;

@@ -40,7 +40,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnCell;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 
 /**
@@ -80,7 +80,7 @@ public class RecordColumnDisplayDirectory extends AbstractRecordColumnDisplay
         String strDirectoryTitle = StringUtils.EMPTY;
         if ( recordColumnCell != null )
         {
-            Object objDirectoryTitle = recordColumnCell.getRecordColumnCellValueByName( RecordFilterColumnNameConstants.COLUMN_DIRECTORY_TITLE );
+            Object objDirectoryTitle = recordColumnCell.getRecordColumnCellValueByName( RecordDirectoryNameConstants.COLUMN_DIRECTORY_TITLE );
             if ( objDirectoryTitle != null )
             {
                 strDirectoryTitle = String.valueOf( objDirectoryTitle );

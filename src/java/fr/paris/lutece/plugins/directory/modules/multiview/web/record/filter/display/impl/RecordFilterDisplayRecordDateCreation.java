@@ -40,7 +40,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordRecordDateCreationNameConstants;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -70,7 +70,7 @@ public class RecordFilterDisplayRecordDateCreation extends AbstractRecordFilterD
         setValue( strPeriodCreationDate );
 
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
-        mapFilterNameValues.put( RecordFilterColumnNameConstants.FILTER_RECORD_DATE_CREATION, strPeriodCreationDate );
+        mapFilterNameValues.put( RecordRecordDateCreationNameConstants.FILTER_RECORD_DATE_CREATION, strPeriodCreationDate );
 
         return mapFilterNameValues;
     }

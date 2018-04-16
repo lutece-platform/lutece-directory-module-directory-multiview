@@ -46,7 +46,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.DirectoryHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordWorkflowStateNameConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
@@ -79,7 +79,7 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
 
         if ( StringUtils.isNotBlank( strIdWorkflowState ) )
         {
-            mapFilterNameValues.put( RecordFilterColumnNameConstants.FILTER_ID_WORKFLOW_STATE, strIdWorkflowState );
+            mapFilterNameValues.put( RecordWorkflowStateNameConstants.FILTER_ID_WORKFLOW_STATE, strIdWorkflowState );
         }
 
         return mapFilterNameValues;

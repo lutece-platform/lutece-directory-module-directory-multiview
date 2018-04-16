@@ -41,7 +41,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordRecordDateCreationNameConstants;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
@@ -88,8 +88,8 @@ public class RecordColumnRecordDateCreationQueryPart extends AbstractRecordColum
     protected Map<String, Object> getMapRecordColumnValues( DAOUtil daoUtil )
     {
         Map<String, Object> mapRecordColumnValues = new LinkedHashMap<>( );
-        Date dateRecordDateCreation = daoUtil.getDate( RecordFilterColumnNameConstants.COLUMN_RECORD_DATE_CREATION );
-        mapRecordColumnValues.put( RecordFilterColumnNameConstants.COLUMN_RECORD_DATE_CREATION, dateRecordDateCreation );
+        Date dateRecordDateCreation = daoUtil.getDate( RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION );
+        mapRecordColumnValues.put( RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION, dateRecordDateCreation );
 
         return mapRecordColumnValues;
     }

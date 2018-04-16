@@ -34,26 +34,20 @@
 package fr.paris.lutece.plugins.directory.modules.multiview.util;
 
 /**
- * Constants class for the name of RecordFilter or RecordColumn element names
+ * Constants class for the name of RecordFilter or RecordColumn element names for the Entry
  */
-public final class RecordFilterColumnNameConstants
+public class RecordEntryNameConstants
 {
     // Filter Constants
     public static final String FILTER_ENTRY_BASE_NAME_PATTERN = "column_";
-    public static final String FILTER_ID_DIRECTORY = "id_directory";
-    public static final String FILTER_RECORD_DATE_CREATION = "period_record_creation";
-    public static final String FILTER_ID_WORKFLOW_STATE = "id_workflow_state";
 
     // Column Constants
-    public static final String COLUMN_DIRECTORY_TITLE = "title";
     public static final String COLUMN_ENTRY_VALUE_PATTERN = "column_%s_value";
-    public static final String COLUMN_RECORD_DATE_CREATION = "record_date_creation";
-    public static final String COLUMN_WORKFLOW_STATE_NAME = "workflow_state_name";
 
     /**
      * Constructor
      */
-    private RecordFilterColumnNameConstants( )
+    private RecordEntryNameConstants( )
     {
 
     }

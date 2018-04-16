@@ -58,7 +58,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterEntryConfiguration;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordEntryNameConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -92,7 +92,7 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
                 nRecordColumnPosition = recordColumn.getRecordColumnPosition( );
             }
 
-            String strEntryValueColumnName = RecordFilterColumnNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN + nRecordColumnPosition;
+            String strEntryValueColumnName = RecordEntryNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN + nRecordColumnPosition;
             mapFilterNameValues.put( strEntryValueColumnName, strEntryParameterValue );
             strEntryValue = strEntryParameterValue;
         }

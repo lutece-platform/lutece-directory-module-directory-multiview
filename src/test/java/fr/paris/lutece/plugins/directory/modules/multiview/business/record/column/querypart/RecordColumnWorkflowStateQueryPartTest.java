@@ -47,7 +47,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.colum
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnWorkflowState;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.impl.RecordColumnWorkflowStateQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.DAOUtilMock;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordWorkflowStateNameConstants;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -81,7 +81,7 @@ public class RecordColumnWorkflowStateQueryPartTest extends LuteceTestCase
     public void testGetRecordColumnCellWorkflowState( )
     {
         String strWorkflowStateValueToRetrieve = "workflow state";
-        DAOUtil daoUtil = new DAOUtilMock( StringUtils.EMPTY, RecordFilterColumnNameConstants.COLUMN_WORKFLOW_STATE_NAME, strWorkflowStateValueToRetrieve );
+        DAOUtil daoUtil = new DAOUtilMock( StringUtils.EMPTY, RecordWorkflowStateNameConstants.COLUMN_WORKFLOW_STATE_NAME, strWorkflowStateValueToRetrieve );
 
         IRecordColumn recordColumn = new RecordColumnWorkflowState( 1, "Workflow State" );
         RecordColumnWorkflowStateQueryPart recordColumnWorkflowStateQueryPart = new RecordColumnWorkflowStateQueryPart( );
@@ -94,7 +94,7 @@ public class RecordColumnWorkflowStateQueryPartTest extends LuteceTestCase
         assertThat( mapRecordColumnCellValues, is( not( nullValue( ) ) ) );
         assertThat( mapRecordColumnCellValues.size( ), is( 1 ) );
 
-        Object objDirectoryResult = recordColumnCell.getRecordColumnCellValueByName( RecordFilterColumnNameConstants.COLUMN_WORKFLOW_STATE_NAME );
+        Object objDirectoryResult = recordColumnCell.getRecordColumnCellValueByName( RecordWorkflowStateNameConstants.COLUMN_WORKFLOW_STATE_NAME );
         assertThat( objDirectoryResult, is( not( nullValue( ) ) ) );
         assertThat( String.valueOf( objDirectoryResult ), is( strWorkflowStateValueToRetrieve ) );
     }

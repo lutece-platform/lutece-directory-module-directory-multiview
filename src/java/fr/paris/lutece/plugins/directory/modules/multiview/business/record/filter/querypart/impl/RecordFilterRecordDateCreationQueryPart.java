@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filt
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterQueryBuilder;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordRecordDateCreationNameConstants;
 
 /**
  * Implementation of the IRecordFilterQueryPart for a RecordFilterDateCreation filter
@@ -44,7 +44,7 @@ public class RecordFilterRecordDateCreationQueryPart extends AbstractRecordFilte
 {
     // Constants
     private static final String DATE_CREATION_PERIOD_QUERY_PATTERN = "record.date_creation >= date_add( current_timestamp , INTERVAL -$"
-            + RecordFilterColumnNameConstants.FILTER_RECORD_DATE_CREATION + "$ DAY )";
+            + RecordRecordDateCreationNameConstants.FILTER_RECORD_DATE_CREATION + "$ DAY )";
 
     /**
      * {@inheritDoc}

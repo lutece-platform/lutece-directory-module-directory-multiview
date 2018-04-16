@@ -31,27 +31,24 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl;
-
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterQueryBuilder;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordWorkflowStateNameConstants;
+package fr.paris.lutece.plugins.directory.modules.multiview.util;
 
 /**
- * Implementation of the IRecordFilterQueryPart for a RecordFilterWorkflowState filter
+ * Constants class for the name of RecordFilter or RecordColumn element names for the Directory
  */
-public class RecordFilterWorkflowStateQueryPart extends AbstractRecordFilterQueryPart
+public class RecordDirectoryNameConstants
 {
-    // Constants
-    private static final String WORKFLOW_STATE_QUERY_PATTERN = "ws_workflow_state.id_state = $" + RecordWorkflowStateNameConstants.FILTER_ID_WORKFLOW_STATE
-            + "$";
+    // Filter Constants
+    public static final String FILTER_ID_DIRECTORY = "id_directory";
+
+    // Column Constants
+    public static final String COLUMN_DIRECTORY_TITLE = "title";
 
     /**
-     * {@inheritDoc}
+     * Constructor
      */
-    @Override
-    public void buildRecordFilterQuery( RecordFilterItem recordFilterItem )
+    private RecordDirectoryNameConstants( )
     {
-        setRecordFilterQuery( RecordFilterQueryBuilder.buildRecordFilterQuery( WORKFLOW_STATE_QUERY_PATTERN, recordFilterItem ) );
+
     }
 }

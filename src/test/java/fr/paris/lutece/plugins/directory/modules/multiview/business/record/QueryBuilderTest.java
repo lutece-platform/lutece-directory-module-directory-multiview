@@ -61,7 +61,8 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterDirectoryQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterEntryQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterWorkflowStateQueryPart;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordWorkflowStateNameConstants;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**
@@ -158,7 +159,7 @@ public class QueryBuilderTest extends LuteceTestCase
 
         RecordFilterItem recordFilterItemDirectory = new RecordFilterItem( );
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
-        mapFilterNameValues.put( RecordFilterColumnNameConstants.FILTER_ID_DIRECTORY, 4 );
+        mapFilterNameValues.put( RecordDirectoryNameConstants.FILTER_ID_DIRECTORY, 4 );
         recordFilterItemDirectory.setMapFilterNameValues( mapFilterNameValues );
 
         RecordFilterDirectoryQueryPart recordFilterDirectoryQueryPart = new RecordFilterDirectoryQueryPartMock( );
@@ -186,7 +187,7 @@ public class QueryBuilderTest extends LuteceTestCase
 
         RecordFilterItem recordFilterItemDirectory = new RecordFilterItem( );
         Map<String, Object> mapFilterNameValuesDirectory = new LinkedHashMap<>( );
-        mapFilterNameValuesDirectory.put( RecordFilterColumnNameConstants.FILTER_ID_DIRECTORY, 4 );
+        mapFilterNameValuesDirectory.put( RecordDirectoryNameConstants.FILTER_ID_DIRECTORY, 4 );
         recordFilterItemDirectory.setMapFilterNameValues( mapFilterNameValuesDirectory );
 
         RecordFilterDirectoryQueryPart recordFilterDirectoryQueryPart = new RecordFilterDirectoryQueryPartMock( );
@@ -195,7 +196,7 @@ public class QueryBuilderTest extends LuteceTestCase
 
         RecordFilterItem recordFilterItemWorkflowState = new RecordFilterItem( );
         Map<String, Object> mapFilterNameValuesWorkflowState = new LinkedHashMap<>( );
-        mapFilterNameValuesWorkflowState.put( RecordFilterColumnNameConstants.FILTER_ID_WORKFLOW_STATE, 12 );
+        mapFilterNameValuesWorkflowState.put( RecordWorkflowStateNameConstants.FILTER_ID_WORKFLOW_STATE, 12 );
         recordFilterItemWorkflowState.setMapFilterNameValues( mapFilterNameValuesWorkflowState );
 
         RecordFilterWorkflowStateQueryPart recordFilterWorkflowStateQueryPart = new RecordFilterWorkflowStateQueryPartMock( );

@@ -44,7 +44,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnEntry;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordEntryNameConstants;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
@@ -157,7 +157,7 @@ public class RecordColumnEntryQueryPart extends AbstractRecordColumnQueryPart
     {
         int nRecordColumnPosition = getRecordColumnPosition( );
         Map<String, Object> mapRecordColumnValues = new LinkedHashMap<>( );
-        String strEntryValueColumnName = String.format( RecordFilterColumnNameConstants.COLUMN_ENTRY_VALUE_PATTERN, nRecordColumnPosition );
+        String strEntryValueColumnName = String.format( RecordEntryNameConstants.COLUMN_ENTRY_VALUE_PATTERN, nRecordColumnPosition );
         mapRecordColumnValues.put( strEntryValueColumnName, daoUtil.getString( strEntryValueColumnName ) );
 
         return mapRecordColumnValues;

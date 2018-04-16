@@ -40,7 +40,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnCell;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordWorkflowStateNameConstants;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 
 /**
@@ -80,7 +80,7 @@ public class RecordColumnDisplayWorkflowState extends AbstractRecordColumnDispla
         String strWorkflowStateName = StringUtils.EMPTY;
         if ( recordColumnCell != null )
         {
-            Object objWorkflowStateName = recordColumnCell.getRecordColumnCellValueByName( RecordFilterColumnNameConstants.COLUMN_WORKFLOW_STATE_NAME );
+            Object objWorkflowStateName = recordColumnCell.getRecordColumnCellValueByName( RecordWorkflowStateNameConstants.COLUMN_WORKFLOW_STATE_NAME );
             if ( objWorkflowStateName != null )
             {
                 strWorkflowStateName = String.valueOf( objWorkflowStateName );

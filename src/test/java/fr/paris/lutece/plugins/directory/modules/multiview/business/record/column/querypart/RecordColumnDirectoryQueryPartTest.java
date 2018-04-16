@@ -47,7 +47,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.colum
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnDirectory;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.impl.RecordColumnDirectoryQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.DAOUtilMock;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -81,7 +81,7 @@ public class RecordColumnDirectoryQueryPartTest extends LuteceTestCase
     public void testGetRecordColumnCellDirectory( )
     {
         String strDirectoryValueToRetrieve = "directory title";
-        DAOUtil daoUtil = new DAOUtilMock( StringUtils.EMPTY, RecordFilterColumnNameConstants.COLUMN_DIRECTORY_TITLE, strDirectoryValueToRetrieve );
+        DAOUtil daoUtil = new DAOUtilMock( StringUtils.EMPTY, RecordDirectoryNameConstants.COLUMN_DIRECTORY_TITLE, strDirectoryValueToRetrieve );
 
         IRecordColumn recordColumn = new RecordColumnDirectory( 1, "Directory" );
         RecordColumnDirectoryQueryPart recordColumnDirectoryQueryPart = new RecordColumnDirectoryQueryPart( );
@@ -94,7 +94,7 @@ public class RecordColumnDirectoryQueryPartTest extends LuteceTestCase
         assertThat( mapRecordColumnCellValues, is( not( nullValue( ) ) ) );
         assertThat( mapRecordColumnCellValues.size( ), is( 1 ) );
 
-        Object objDirectoryResult = recordColumnCell.getRecordColumnCellValueByName( RecordFilterColumnNameConstants.COLUMN_DIRECTORY_TITLE );
+        Object objDirectoryResult = recordColumnCell.getRecordColumnCellValueByName( RecordDirectoryNameConstants.COLUMN_DIRECTORY_TITLE );
         assertThat( objDirectoryResult, is( not( nullValue( ) ) ) );
         assertThat( String.valueOf( objDirectoryResult ), is( strDirectoryValueToRetrieve ) );
     }

@@ -48,7 +48,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.colum
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnRecordDateCreation;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.impl.RecordColumnRecordDateCreationQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.DAOUtilMock;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordRecordDateCreationNameConstants;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -82,7 +82,8 @@ public class RecordColumnRecordDateCreationQueryPartTest extends LuteceTestCase
     public void testGetRecordColumnCellRecordDateCreation( )
     {
         String strRecordDateCreationValueToRetrieve = String.valueOf( LocalDate.now( ) );
-        DAOUtil daoUtil = new DAOUtilMock( StringUtils.EMPTY, RecordFilterColumnNameConstants.COLUMN_RECORD_DATE_CREATION, strRecordDateCreationValueToRetrieve );
+        DAOUtil daoUtil = new DAOUtilMock( StringUtils.EMPTY, RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION,
+                strRecordDateCreationValueToRetrieve );
 
         IRecordColumn recordColumn = new RecordColumnRecordDateCreation( 1, "Record Date Creation" );
         RecordColumnRecordDateCreationQueryPart recordColumnRecordDateCreationQueryPart = new RecordColumnRecordDateCreationQueryPart( );
@@ -95,7 +96,7 @@ public class RecordColumnRecordDateCreationQueryPartTest extends LuteceTestCase
         assertThat( mapRecordColumnCellValues, is( not( nullValue( ) ) ) );
         assertThat( mapRecordColumnCellValues.size( ), is( 1 ) );
 
-        Object objDirectoryResult = recordColumnCell.getRecordColumnCellValueByName( RecordFilterColumnNameConstants.COLUMN_RECORD_DATE_CREATION );
+        Object objDirectoryResult = recordColumnCell.getRecordColumnCellValueByName( RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION );
         assertThat( objDirectoryResult, is( not( nullValue( ) ) ) );
         assertThat( String.valueOf( objDirectoryResult ), is( strRecordDateCreationValueToRetrieve ) );
     }

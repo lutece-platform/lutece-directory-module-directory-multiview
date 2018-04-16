@@ -40,7 +40,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
@@ -87,8 +87,8 @@ public class RecordColumnDirectoryQueryPart extends AbstractRecordColumnQueryPar
     protected Map<String, Object> getMapRecordColumnValues( DAOUtil daoUtil )
     {
         Map<String, Object> mapRecordColumnValues = new LinkedHashMap<>( );
-        String strDirectoryTitle = daoUtil.getString( RecordFilterColumnNameConstants.COLUMN_DIRECTORY_TITLE );
-        mapRecordColumnValues.put( RecordFilterColumnNameConstants.COLUMN_DIRECTORY_TITLE, strDirectoryTitle );
+        String strDirectoryTitle = daoUtil.getString( RecordDirectoryNameConstants.COLUMN_DIRECTORY_TITLE );
+        mapRecordColumnValues.put( RecordDirectoryNameConstants.COLUMN_DIRECTORY_TITLE, strDirectoryTitle );
 
         return mapRecordColumnValues;
     }

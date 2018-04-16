@@ -41,7 +41,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterQueryBuilder;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordFilterColumnNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordEntryNameConstants;
 
 /**
  * Implementation of the IRecordFilterQueryPart for an Entry filter
@@ -97,9 +97,9 @@ public class RecordFilterEntryQueryPart extends AbstractRecordFilterQueryPart
         Set<String> setFilterName = mapFilterNameValues.keySet( );
         for ( String strFilterName : setFilterName )
         {
-            if ( strFilterName.startsWith( RecordFilterColumnNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN ) )
+            if ( strFilterName.startsWith( RecordEntryNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN ) )
             {
-                String strColumnNumber = strFilterName.replaceFirst( RecordFilterColumnNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN, StringUtils.EMPTY );
+                String strColumnNumber = strFilterName.replaceFirst( RecordEntryNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN, StringUtils.EMPTY );
                 nPosition = NumberUtils.toInt( strColumnNumber, NumberUtils.INTEGER_MINUS_ONE );
                 break;
             }
