@@ -35,8 +35,8 @@ package fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
 
 /**
  * Global interface for Filter objects
@@ -59,11 +59,11 @@ public interface IFilterable
     IRecordFilter getRecordFilter( );
 
     /**
-     * Create a RecordFilterItem for the filter with the data in the request
+     * Create a RecordParameters for the filter with the data in the request
      * 
      * @param request
      *            The request to retrieve the data of the filter
-     * @return the RecordFilterItem for the given filter with the data of the request
+     * @return the RecordParameters for the given filter with the data of the request
      */
-    RecordFilterItem createRecordFilterItem( HttpServletRequest request );
+    RecordParameters createRecordParameters( HttpServletRequest request );
 }

@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterQueryBuilder;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordWorkflowStateNameConstants;
 
@@ -50,8 +50,8 @@ public class RecordFilterWorkflowStateQueryPart extends AbstractRecordFilterQuer
      * {@inheritDoc}
      */
     @Override
-    public void buildRecordFilterQuery( RecordFilterItem recordFilterItem )
+    public void buildRecordFilterQuery( RecordParameters recordParameters )
     {
-        setRecordFilterQuery( RecordFilterQueryBuilder.buildRecordFilterQuery( WORKFLOW_STATE_QUERY_PATTERN, recordFilterItem ) );
+        setRecordFilterQuery( RecordFilterQueryBuilder.buildRecordFilterQuery( WORKFLOW_STATE_QUERY_PATTERN, recordParameters ) );
     }
 }

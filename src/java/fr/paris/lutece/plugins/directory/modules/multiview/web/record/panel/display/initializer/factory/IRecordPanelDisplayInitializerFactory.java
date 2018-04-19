@@ -31,27 +31,22 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.factory;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterQueryBuilder;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordRecordDateCreationNameConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.IRecordPanelDisplayInitializer;
 
 /**
- * Implementation of the IRecordFilterQueryPart for a RecordFilterDateCreation filter
+ * Factory associated to the implementation of the IRecordPanelDisplayInitializer
  */
-public class RecordFilterRecordDateCreationQueryPart extends AbstractRecordFilterQueryPart
+public interface IRecordPanelDisplayInitializerFactory
 {
-    // Constants
-    private static final String DATE_CREATION_PERIOD_QUERY_PATTERN = "record.date_creation >= date_add( current_timestamp , INTERVAL -$"
-            + RecordRecordDateCreationNameConstants.FILTER_RECORD_DATE_CREATION + "$ DAY )";
-
     /**
-     * {@inheritDoc}
+     * Build the IRecordPanelDisplayInitializer associated to the given IRecordPanelInitializer
+     * 
+     * @param recordPanelInitializer
+     *            The RecordPanelInitializer to use for build the RecordPanelDisplayInitializer
+     * @return the IRecordPanelDisplayInitializer associated to the given recordPanelInitializer or null if not found
      */
-    @Override
-    public void buildRecordFilterQuery( RecordParameters recordParameters )
-    {
-        setRecordFilterQuery( RecordFilterQueryBuilder.buildRecordFilterQuery( DATE_CREATION_PERIOD_QUERY_PATTERN, recordParameters ) );
-    }
+    IRecordPanelDisplayInitializer buildRecordPanelDisplay( IRecordPanelInitializer recordPanelInitializer );
 }

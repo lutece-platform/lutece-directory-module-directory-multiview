@@ -51,5 +51,8 @@ public interface IRecordListPosition
      * @param nPosition
      *            The position to set to the element
      */
-    void setPosition( int nPosition );
+    default void setPosition( int nPosition )
+    {
+        // Nothing to do
+    }
 }

@@ -31,50 +31,24 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.service;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.impl;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 
 /**
- * Service for the module-directory-multiview
+ * Implementation of the IRecordPanelDisplayInitializer interface for the RecordPanelRecordsInitializer
  */
-public class DirectoryMultiviewService implements IDirectoryMultiviewService
+public class RecordPanelRecordsDisplayInitializer extends AbstractRecordPanelDisplayInitializer
 {
     /**
      * {@inheritDoc}
      */
     @Override
-    public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
+    public void buildRecordParameters( HttpServletRequest request )
     {
-        RecordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IRecordPanelDisplay findActiveRecordPanel( List<IRecordPanelDisplay> listRecordPanelDisplay )
-    {
-        IRecordPanelDisplay recordPanelDisplayActive = null;
-
-        if ( listRecordPanelDisplay != null && !listRecordPanelDisplay.isEmpty( ) )
-        {
-            for ( IRecordPanelDisplay recordPanelDisplay : listRecordPanelDisplay )
-            {
-                if ( recordPanelDisplay.isActive( ) )
-                {
-                    recordPanelDisplayActive = recordPanelDisplay;
-                    break;
-                }
-            }
-        }
-
-        return recordPanelDisplayActive;
+        // No data to store in the RecordParameters for this RecordPanelInitializer
+        getRecordPanelInitializer( ).setRecordParameters( new RecordParameters( ) );
     }
 }

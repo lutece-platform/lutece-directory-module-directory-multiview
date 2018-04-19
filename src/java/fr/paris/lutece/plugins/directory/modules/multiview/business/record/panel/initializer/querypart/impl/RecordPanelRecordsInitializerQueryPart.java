@@ -31,50 +31,21 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.service;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl;
 
-import java.util.List;
-
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 
 /**
- * Service for the module-directory-multiview
+ * Implementation of the IRecordFilterQueryPart for a RecordFilterPanelRecords filter
  */
-public class DirectoryMultiviewService implements IDirectoryMultiviewService
+public class RecordPanelRecordsInitializerQueryPart extends AbstractRecordPanelInitializerQueryPart
 {
     /**
      * {@inheritDoc}
      */
     @Override
-    public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
+    public void buildRecordPanelInitializerQuery( RecordParameters recordParameters )
     {
-        RecordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IRecordPanelDisplay findActiveRecordPanel( List<IRecordPanelDisplay> listRecordPanelDisplay )
-    {
-        IRecordPanelDisplay recordPanelDisplayActive = null;
-
-        if ( listRecordPanelDisplay != null && !listRecordPanelDisplay.isEmpty( ) )
-        {
-            for ( IRecordPanelDisplay recordPanelDisplay : listRecordPanelDisplay )
-            {
-                if ( recordPanelDisplay.isActive( ) )
-                {
-                    recordPanelDisplayActive = recordPanelDisplay;
-                    break;
-                }
-            }
-        }
-
-        return recordPanelDisplayActive;
+        // There is no query for this filter
     }
 }

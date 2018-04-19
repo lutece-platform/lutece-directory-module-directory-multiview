@@ -53,14 +53,14 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.colum
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.RecordColumnDirectoryQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.RecordColumnRecordDateCreationQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.RecordColumnWorkflowStateQueryPartMock;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.RecordPanelRecordsQueryPartMock;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.RecordPanelDirectoryInitializerQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.IRecordFilterQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.RecordFilterDirectoryQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.RecordFilterWorkflowStateQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterDirectoryQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterEntryQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterWorkflowStateQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.IRecordPanelInitializerQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordWorkflowStateNameConstants;
 import fr.paris.lutece.test.LuteceTestCase;
@@ -71,6 +71,7 @@ import fr.paris.lutece.test.LuteceTestCase;
 public class QueryBuilderTest extends LuteceTestCase
 {
     // Variables
+    List<IRecordPanelInitializerQueryPart> _listRecordPanelInitializerQueryPart;
     List<IRecordColumnQueryPart> _listRecordColumnQueryPart;
     List<IRecordFilterQueryPart> _listRecordFilterQueryPart;
 
@@ -83,6 +84,7 @@ public class QueryBuilderTest extends LuteceTestCase
         super.setUp( );
 
         // Reset the list in session
+        _listRecordPanelInitializerQueryPart = new ArrayList<>( );
         _listRecordColumnQueryPart = new ArrayList<>( );
         _listRecordFilterQueryPart = new ArrayList<>( );
     }
@@ -103,7 +105,7 @@ public class QueryBuilderTest extends LuteceTestCase
     {
         String strBasicQueryToFind = StringUtils.EMPTY;
 
-        _listRecordFilterQueryPart.add( (IRecordFilterQueryPart) new RecordPanelRecordsQueryPartMock( ) );
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelDirectoryInitializerQueryPartMock( ) );
 
         checkQueryToBuilt( strBasicQueryToFind );
     }
@@ -114,11 +116,11 @@ public class QueryBuilderTest extends LuteceTestCase
     public void testBuildQueryWithColumnDirectory( )
     {
         String strBasicQueryToFind = "SELECT id_directory, id_record, id_directory, title "
-                + "FROM directory_directory AS directory INNER JOIN directory_record AS record ON record.id_directory = " + "directory.id_directory WHERE 1=1";
+                + "FROM directory_directory AS directory INNER JOIN directory_record AS record ON record.id_directory = " + "directory.id_directory";
 
         _listRecordColumnQueryPart.add( new RecordColumnDirectoryQueryPartMock( ) );
 
-        _listRecordFilterQueryPart.add( (IRecordFilterQueryPart) new RecordPanelRecordsQueryPartMock( ) );
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelDirectoryInitializerQueryPartMock( ) );
 
         checkQueryToBuilt( strBasicQueryToFind );
     }
@@ -132,13 +134,13 @@ public class QueryBuilderTest extends LuteceTestCase
         String strQueryToFind = "SELECT id_directory, id_record, id_directory, title, " + "workflow_state_name, record_date_creation FROM directory_directory "
                 + "AS directory INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory LEFT JOIN "
                 + "workflow_resource_workflow AS wf_resource_workflow ON wf_resource_workflow.id_resource = record.id_record LEFT JOIN "
-                + "workflow_state AS ws_workflow_state ON ws_workflow_state.id_state = wf_resource_workflow.id_state WHERE 1=1";
+                + "workflow_state AS ws_workflow_state ON ws_workflow_state.id_state = wf_resource_workflow.id_state";
 
         _listRecordColumnQueryPart.add( new RecordColumnDirectoryQueryPartMock( ) );
         _listRecordColumnQueryPart.add( new RecordColumnWorkflowStateQueryPartMock( ) );
         _listRecordColumnQueryPart.add( new RecordColumnRecordDateCreationQueryPartMock( ) );
 
-        _listRecordFilterQueryPart.add( (IRecordFilterQueryPart) new RecordPanelRecordsQueryPartMock( ) );
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelDirectoryInitializerQueryPartMock( ) );
 
         checkQueryToBuilt( strQueryToFind );
     }
@@ -155,12 +157,12 @@ public class QueryBuilderTest extends LuteceTestCase
 
         _listRecordColumnQueryPart.add( new RecordColumnDirectoryQueryPartMock( ) );
 
-        _listRecordFilterQueryPart.add( (IRecordFilterQueryPart) new RecordPanelRecordsQueryPartMock( ) );
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelDirectoryInitializerQueryPartMock( ) );
 
-        RecordFilterItem recordFilterItemDirectory = new RecordFilterItem( );
+        RecordParameters recordFilterItemDirectory = new RecordParameters( );
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
         mapFilterNameValues.put( RecordDirectoryNameConstants.FILTER_ID_DIRECTORY, 4 );
-        recordFilterItemDirectory.setMapFilterNameValues( mapFilterNameValues );
+        recordFilterItemDirectory.setRecordParametersMap( mapFilterNameValues );
 
         RecordFilterDirectoryQueryPart recordFilterDirectoryQueryPart = new RecordFilterDirectoryQueryPartMock( );
         recordFilterDirectoryQueryPart.buildRecordFilterQuery( recordFilterItemDirectory );
@@ -183,21 +185,21 @@ public class QueryBuilderTest extends LuteceTestCase
         _listRecordColumnQueryPart.add( new RecordColumnDirectoryQueryPartMock( ) );
         _listRecordColumnQueryPart.add( new RecordColumnWorkflowStateQueryPartMock( ) );
 
-        _listRecordFilterQueryPart.add( (IRecordFilterQueryPart) new RecordPanelRecordsQueryPartMock( ) );
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelDirectoryInitializerQueryPartMock( ) );
 
-        RecordFilterItem recordFilterItemDirectory = new RecordFilterItem( );
+        RecordParameters recordFilterItemDirectory = new RecordParameters( );
         Map<String, Object> mapFilterNameValuesDirectory = new LinkedHashMap<>( );
         mapFilterNameValuesDirectory.put( RecordDirectoryNameConstants.FILTER_ID_DIRECTORY, 4 );
-        recordFilterItemDirectory.setMapFilterNameValues( mapFilterNameValuesDirectory );
+        recordFilterItemDirectory.setRecordParametersMap( mapFilterNameValuesDirectory );
 
         RecordFilterDirectoryQueryPart recordFilterDirectoryQueryPart = new RecordFilterDirectoryQueryPartMock( );
         recordFilterDirectoryQueryPart.buildRecordFilterQuery( recordFilterItemDirectory );
         _listRecordFilterQueryPart.add( recordFilterDirectoryQueryPart );
 
-        RecordFilterItem recordFilterItemWorkflowState = new RecordFilterItem( );
+        RecordParameters recordFilterItemWorkflowState = new RecordParameters( );
         Map<String, Object> mapFilterNameValuesWorkflowState = new LinkedHashMap<>( );
         mapFilterNameValuesWorkflowState.put( RecordWorkflowStateNameConstants.FILTER_ID_WORKFLOW_STATE, 12 );
-        recordFilterItemWorkflowState.setMapFilterNameValues( mapFilterNameValuesWorkflowState );
+        recordFilterItemWorkflowState.setRecordParametersMap( mapFilterNameValuesWorkflowState );
 
         RecordFilterWorkflowStateQueryPart recordFilterWorkflowStateQueryPart = new RecordFilterWorkflowStateQueryPartMock( );
         recordFilterWorkflowStateQueryPart.buildRecordFilterQuery( recordFilterItemWorkflowState );
@@ -217,10 +219,10 @@ public class QueryBuilderTest extends LuteceTestCase
 
         _listRecordColumnQueryPart.add( new RecordColumnDirectoryQueryPartMock( ) );
 
-        _listRecordFilterQueryPart.add( (IRecordFilterQueryPart) new RecordPanelRecordsQueryPartMock( ) );
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelDirectoryInitializerQueryPartMock( ) );
 
         RecordFilterDirectoryQueryPart recordFilterDirectoryQueryPart = new RecordFilterDirectoryQueryPartMock( );
-        recordFilterDirectoryQueryPart.buildRecordFilterQuery( new RecordFilterItem( ) );
+        recordFilterDirectoryQueryPart.buildRecordFilterQuery( new RecordParameters( ) );
         _listRecordFilterQueryPart.add( recordFilterDirectoryQueryPart );
 
         checkQueryToBuilt( strQueryToFind );
@@ -236,14 +238,14 @@ public class QueryBuilderTest extends LuteceTestCase
                 + "record_3.id_record AS id_record_3, record_field_3.record_field_value AS column_3_value FROM directory_record_field AS "
                 + "record_field_3 INNER JOIN directory_record AS record_3 ON record_field_3.id_record = record_3.id_record INNER JOIN "
                 + "directory_entry AS entry_3 ON entry_3.id_entry = record_field_3.id_entry WHERE entry_3.title IN ( 'Nom', 'Prénom' ) ) "
-                + "AS column_3 ON column_3.id_record_3 = record.id_record WHERE 1=1";
+                + "AS column_3 ON column_3.id_record_3 = record.id_record";
 
         IRecordColumn recordColumnEntryRecordField = new RecordColumnEntry( 3, "Colonne 3", Arrays.asList( "Nom", "Prénom" ) );
         RecordColumnEntryQueryPart recordColumnEntryRecordFieldQueryPart = new RecordColumnEntryRecordFieldQueryPartMock( 3 );
         recordColumnEntryRecordFieldQueryPart.setRecordColumn( recordColumnEntryRecordField );
         _listRecordColumnQueryPart.add( recordColumnEntryRecordFieldQueryPart );
 
-        _listRecordFilterQueryPart.add( (IRecordFilterQueryPart) new RecordPanelRecordsQueryPartMock( ) );
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelDirectoryInitializerQueryPartMock( ) );
 
         checkQueryToBuilt( strQueryToFind );
     }
@@ -265,7 +267,7 @@ public class QueryBuilderTest extends LuteceTestCase
                 + "column_5.id_record_5 = record.id_record LEFT JOIN ( SELECT record_7.id_record AS id_record_7, record_field_7.record_field_value "
                 + "AS column_7_value FROM directory_record_field AS record_field_7 INNER JOIN directory_record AS record_7 ON record_field_7."
                 + "id_record = record_7.id_record INNER JOIN directory_entry AS entry_7 ON entry_7.id_entry = record_field_7.id_entry WHERE "
-                + "entry_7.title IN ( 'Adresse', 'Téléphone' ) ) AS column_7 ON column_7.id_record_7 = record.id_record WHERE 1=1";
+                + "entry_7.title IN ( 'Adresse', 'Téléphone' ) ) AS column_7 ON column_7.id_record_7 = record.id_record";
 
         IRecordColumn recordColumnEntryRecordFieldOne = new RecordColumnEntry( 3, "Colonne 3", Arrays.asList( "Nom", "Prénom" ) );
         RecordColumnEntryQueryPart recordColumnEntryRecordFieldQueryPartOne = new RecordColumnEntryRecordFieldQueryPartMock( 3 );
@@ -282,7 +284,7 @@ public class QueryBuilderTest extends LuteceTestCase
         recordColumnEntryRecordFieldQueryPartThree.setRecordColumn( recordColumnEntryRecordFieldThree );
         _listRecordColumnQueryPart.add( recordColumnEntryRecordFieldQueryPartThree );
 
-        _listRecordFilterQueryPart.add( (IRecordFilterQueryPart) new RecordPanelRecordsQueryPartMock( ) );
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelDirectoryInitializerQueryPartMock( ) );
 
         checkQueryToBuilt( strQueryToFind );
     }
@@ -313,12 +315,12 @@ public class QueryBuilderTest extends LuteceTestCase
         recordColumnEntryRecordFieldQueryPartTwo.setRecordColumn( recordColumnEntryRecordFieldTwo );
         _listRecordColumnQueryPart.add( recordColumnEntryRecordFieldQueryPartTwo );
 
-        _listRecordFilterQueryPart.add( (IRecordFilterQueryPart) new RecordPanelRecordsQueryPartMock( ) );
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelDirectoryInitializerQueryPartMock( ) );
 
-        RecordFilterItem recordFilterItemEntryRecordField = new RecordFilterItem( );
+        RecordParameters recordFilterItemEntryRecordField = new RecordParameters( );
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
         mapFilterNameValues.put( "column_5", "test colonne 5" );
-        recordFilterItemEntryRecordField.setMapFilterNameValues( mapFilterNameValues );
+        recordFilterItemEntryRecordField.setRecordParametersMap( mapFilterNameValues );
 
         IRecordFilterQueryPart recordFilterEntryRecordFieldQueryPart = new RecordFilterEntryQueryPart( );
         recordFilterEntryRecordFieldQueryPart.buildRecordFilterQuery( recordFilterItemEntryRecordField );
@@ -336,7 +338,7 @@ public class QueryBuilderTest extends LuteceTestCase
      */
     private void checkQueryToBuilt( String strQueryToFind )
     {
-        String strQueryBuilt = QueryBuilder.buildQuery( _listRecordColumnQueryPart, _listRecordFilterQueryPart );
+        String strQueryBuilt = QueryBuilder.buildQuery( _listRecordPanelInitializerQueryPart, _listRecordColumnQueryPart, _listRecordFilterQueryPart );
         assertThat( strQueryBuilt, is( not( nullValue( ) ) ) );
         assertThat( removeQuerySpaces( strQueryBuilt ), is( strQueryToFind ) );
     }

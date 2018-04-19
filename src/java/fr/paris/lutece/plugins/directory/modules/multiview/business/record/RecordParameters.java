@@ -31,50 +31,37 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.service;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record;
 
-import java.util.List;
-
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * Service for the module-directory-multiview
+ * Class which contains all parameter names and their values used for build the query to execute
  */
-public class DirectoryMultiviewService implements IDirectoryMultiviewService
+public class RecordParameters
 {
+    // Variables
+    private Map<String, Object> _mapRecordParameters = new LinkedHashMap<>( );
+
     /**
-     * {@inheritDoc}
+     * Return the map which associate for each parameter name its value
+     * 
+     * @return the map which associate for each parameter its value
      */
-    @Override
-    public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
+    public Map<String, Object> getRecordParametersMap( )
     {
-        RecordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
+        return _mapRecordParameters;
     }
 
     /**
-     * {@inheritDoc}
+     * Set the map of all parameters and their values
+     * 
+     * @param mapRecordParameters
+     *            The map of all parameters and their values
      */
-    @Override
-    public IRecordPanelDisplay findActiveRecordPanel( List<IRecordPanelDisplay> listRecordPanelDisplay )
+    public void setRecordParametersMap( Map<String, Object> mapRecordParameters )
     {
-        IRecordPanelDisplay recordPanelDisplayActive = null;
-
-        if ( listRecordPanelDisplay != null && !listRecordPanelDisplay.isEmpty( ) )
-        {
-            for ( IRecordPanelDisplay recordPanelDisplay : listRecordPanelDisplay )
-            {
-                if ( recordPanelDisplay.isActive( ) )
-                {
-                    recordPanelDisplayActive = recordPanelDisplay;
-                    break;
-                }
-            }
-        }
-
-        return recordPanelDisplayActive;
+        _mapRecordParameters = mapRecordParameters;
     }
 }

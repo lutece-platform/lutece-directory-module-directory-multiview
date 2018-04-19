@@ -31,32 +31,27 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.standalone.panel;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.panel.RecordFilterPanelRecords;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.IRecordFilterQueryPart;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.IRecordFilterQueryPartFactory;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.querypart.impl.standalone.RecordPanelRecordsQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 
 /**
- * Implementation of IRecordFilterQueryPartFactory for a PanelRecords filter
+ * Interface for a filter which are linked to a Panel object
  */
-public class RecordFilterPanelRecordsQueryPartFactory implements IRecordFilterQueryPartFactory
+public interface IRecordPanelInitializer
 {
     /**
-     * {@inheritDoc}
+     * Return the RecordParameters of the RecordPanel
+     * 
+     * @return the RecordParameters of the RecordPanel
      */
-    @Override
-    public IRecordFilterQueryPart buildRecordFilterQueryPart( IRecordFilter recordFilter )
-    {
-        IRecordFilterQueryPart recordFilterPanelRecordsQueryPart = null;
+    RecordParameters getRecordParameters( );
 
-        if ( recordFilter instanceof RecordFilterPanelRecords )
-        {
-            recordFilterPanelRecordsQueryPart = new RecordPanelRecordsQueryPart( );
-        }
-
-        return recordFilterPanelRecordsQueryPart;
-    }
+    /**
+     * Set the RecordParameters to the RecordPanel
+     * 
+     * @param recordParameters
+     *            The RecordParameters to set to the RecordPanel
+     */
+    void setRecordParameters( RecordParameters recordParameters );
 }

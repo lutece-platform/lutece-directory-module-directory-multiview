@@ -31,25 +31,22 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.panel;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.factory;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.AbstractRecordFilterStandalone;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.IRecordPanelInitializerQueryPart;
 
 /**
- * Implementation of the IRecordFilter for the filter associated to the panel Records
+ * Factory for the RecordPanelInitializerQueryPart implementation
  */
-public class RecordFilterPanelRecords extends AbstractRecordFilterStandalone implements IRecordFilterStandalonePanel
+public interface IRecordPanelInitializerQueryPartFactory
 {
     /**
-     * Constructor
+     * Build the IRecordPanelInitializerQueryPart associated to the given IRecordPanelInitializer
      * 
-     * @param recordFilterConfiguration
-     *            The RecordFilterConfiguration to set to the RecordFilter
+     * @param recordPanelInitializer
+     *            The IRecordPanelInitializer to build the IRecordPanelInitializerQueryPart from
+     * @return the IRecordPanelInitializerQueryPart associated to the given IRecordFilter
      */
-    public RecordFilterPanelRecords( RecordFilterConfiguration recordFilterConfiguration )
-    {
-        super( );
-        setRecordFilterConfiguration( recordFilterConfiguration );
-    }
+    IRecordPanelInitializerQueryPart buildRecordPanelInitializerQueryPart( IRecordPanelInitializer recordPanelInitializer );
 }

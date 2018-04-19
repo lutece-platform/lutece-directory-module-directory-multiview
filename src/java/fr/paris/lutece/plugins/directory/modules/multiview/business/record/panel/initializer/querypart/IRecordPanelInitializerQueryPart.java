@@ -31,53 +31,43 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration;
+import java.util.List;
+
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 
 /**
- * Abstract class for implementation of the IRecordFilterStandalone interface
+ * Interface used for the record filter associated to a RecordPanelInitializer
  */
-public abstract class AbstractRecordFilterStandalone implements IRecordFilterStandalone
+public interface IRecordPanelInitializerQueryPart
 {
-    // Variables
-    private RecordFilterItem _recordFilterItem = new RecordFilterItem( );
-    private RecordFilterConfiguration _recordFilterConfiguration;
+    /**
+     * Build the query of the RecordPanelInitializer from the given RecordParameters
+     * 
+     * @param recordParameters
+     *            The RecordParameters to use for building the query
+     */
+    void buildRecordPanelInitializerQuery( RecordParameters recordParameters );
+    
+    /**
+     * Return the select query part of the RecordPanelInitializer
+     * 
+     * @return the select query part of the RecordPanelInitializer
+     */
+    String getRecordPanelInitializerSelectQuery( );
 
     /**
-     * {@inheritDoc}
+     * Return the from query part of the RecordPanelInitializer
+     * 
+     * @return the from query part of the RecordPanelInitializer
      */
-    @Override
-    public RecordFilterItem getRecordFilterItem( )
-    {
-        return _recordFilterItem;
-    }
+    String getRecordPanelInitializerFromQuery( );
 
     /**
-     * {@inheritDoc}
+     * Return the list of join queries for a RecordPanelInitializer
+     * 
+     * @return the list of join queries for a RecordPanelInitializer
      */
-    @Override
-    public void setRecordFilterItem( RecordFilterItem recordFilterItem )
-    {
-        _recordFilterItem = recordFilterItem;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public RecordFilterConfiguration getRecordFilterConfiguration( )
-    {
-        return _recordFilterConfiguration;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setRecordFilterConfiguration( RecordFilterConfiguration recordFilterConfiguration )
-    {
-        _recordFilterConfiguration = recordFilterConfiguration;
-    }
+    List<String> getRecordPanelInitializerJoinQueries( );
 }

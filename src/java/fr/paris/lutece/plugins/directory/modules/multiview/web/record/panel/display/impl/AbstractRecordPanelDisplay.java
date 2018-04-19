@@ -39,18 +39,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.configuration.RecordPanelConfiguration;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.IRecordListPosition;
-import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 
 /**
@@ -67,13 +64,13 @@ public abstract class AbstractRecordPanelDisplay implements IRecordPanelDisplay,
     private static final String MARK_PANEL_TITLE = "panel_title";
     private static final String MARK_PANEL_RECORD_NUMBER = "panel_recordNumber";
 
+    // Constants
+    private static final int DEFAULT_RECORD_NUMBER = NumberUtils.INTEGER_ZERO;
+    private static final int DEFAULT_RECORD_PANEL_POSITION = NumberUtils.INTEGER_MINUS_ONE;
+
     // Variables
-    private int _nPosition;
     private boolean _bActive;
     private String _strTemplate;
-    private IRecordPanelDisplay _recordFilterPanelDisplay;
-    private List<DirectoryRecordItem> _listDirectoryRecordItem = new ArrayList<>( );
-    private IRecordFilter _recordFilter;
     private IRecordPanel _recordPanel;
 
     /**
@@ -82,16 +79,19 @@ public abstract class AbstractRecordPanelDisplay implements IRecordPanelDisplay,
     @Override
     public int getPosition( )
     {
-        return _nPosition;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setPosition( int nPosition )
-    {
-        _nPosition = nPosition;
+        int nRecordPanelPosition = DEFAULT_RECORD_PANEL_POSITION;
+        
+        if ( _recordPanel != null )
+        {
+            RecordPanelConfiguration recordPanelConfiguration = _recordPanel.getRecordPanelConfiguration( );
+            
+            if ( recordPanelConfiguration != null )
+            {
+                nRecordPanelPosition = recordPanelConfiguration.getPosition( );
+            }
+        }
+        
+        return nRecordPanelPosition;
     }
 
     /**
@@ -100,7 +100,19 @@ public abstract class AbstractRecordPanelDisplay implements IRecordPanelDisplay,
     @Override
     public int getRecordNumber( )
     {
-        return _listDirectoryRecordItem.size( );
+        int nRecordNumber = DEFAULT_RECORD_NUMBER;
+
+        if ( _recordPanel != null )
+        {
+            List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
+
+            if ( !CollectionUtils.isEmpty( listDirectoryRecordItem ) )
+            {
+                nRecordNumber = listDirectoryRecordItem.size( );
+            }
+        }
+
+        return nRecordNumber;
     }
 
     /**
@@ -148,67 +160,25 @@ public abstract class AbstractRecordPanelDisplay implements IRecordPanelDisplay,
     }
 
     /**
-     * Return the RecordFilterPanelDisplay of the RecordPanelDisplay
-     * 
-     * @return the RecordFilterPanelDisplay of the RecordPanelDisplay
-     */
-    public IRecordPanelDisplay getRecordFilterDisplay( )
-    {
-        return _recordFilterPanelDisplay;
-    }
-
-    /**
-     * Set the RecordFilterPanelDisplay to the panel
-     * 
-     * @param recordFilterPanelDisplay
-     *            The RecordFilterPanelDisplay to set to the panel
-     */
-    public void setRecordFilterListPanelDisplay( IRecordPanelDisplay recordFilterPanelDisplay )
-    {
-        _recordFilterPanelDisplay = recordFilterPanelDisplay;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public List<DirectoryRecordItem> getDirectoryRecordItemList( )
     {
-        return _listDirectoryRecordItem;
+        List<DirectoryRecordItem> listDirectoryRecordItemResult = new ArrayList<>( );
+
+        if ( _recordPanel != null )
+        {
+            listDirectoryRecordItemResult = _recordPanel.getDirectoryRecordItemList( );
+        }
+
+        return listDirectoryRecordItemResult;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setDirectoryRecordItemList( List<DirectoryRecordItem> listDirectoryRecordItem )
-    {
-        _listDirectoryRecordItem = listDirectoryRecordItem;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IRecordFilter getRecordFilter( )
-    {
-        return _recordFilter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setRecordFilter( IRecordFilter recordFilter )
-    {
-        _recordFilter = recordFilter;
-    }
-
-    /**
-     * Return the recordPanel of the RecordPanelDisplay
-     * 
-     * @return the recordPanel
-     */
     public IRecordPanel getRecordPanel( )
     {
         return _recordPanel;
@@ -227,115 +197,27 @@ public abstract class AbstractRecordPanelDisplay implements IRecordPanelDisplay,
      * {@inheritDoc}
      */
     @Override
-    public abstract void configureRecordPanelDisplay( HttpServletRequest request );
-
-    /**
-     * Get the map of all parameter names and values used by the filter
-     * 
-     * @param request
-     *            The request used to retrieve the informations of the filter
-     * @return the map which contains all the parameter names and values of the filter
-     */
-    protected abstract Map<String, Object> getFilterDisplayMapValues( HttpServletRequest request );
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String buildTemplate( Locale locale )
     {
         String strTechnicalCode = StringUtils.EMPTY;
-        String strTitleKey = StringUtils.EMPTY;
+        String strTitle = StringUtils.EMPTY;
 
         IRecordPanel recordPanel = getRecordPanel( );
         if ( recordPanel != null )
         {
             strTechnicalCode = recordPanel.getTechnicalCode( );
-            strTitleKey = I18nService.getLocalizedString( recordPanel.getTitleKey( ), locale );
+            strTitle = recordPanel.getTitle( );
         }
 
         Map<String, Object> model = new LinkedHashMap<>( );
         model.put( MARK_PANEL_ACTIVE, _bActive );
         model.put( MARK_PANEL_TECHNICAL_CODE, strTechnicalCode );
-        model.put( MARK_PANEL_TITLE, strTitleKey );
+        model.put( MARK_PANEL_TITLE, strTitle );
         model.put( MARK_PANEL_RECORD_NUMBER, getRecordNumber( ) );
 
         String strRecordPanelDisplayTemplate = AppTemplateService.getTemplate( TEMPLATE_RECORD_PANEL, locale, model ).getHtml( );
         _strTemplate = strRecordPanelDisplayTemplate;
 
         return _strTemplate;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public RecordFilterItem createRecordFilterItem( HttpServletRequest request )
-    {
-        RecordFilterItem recordFilterItem = null;
-
-        if ( _recordFilter != null )
-        {
-            recordFilterItem = new RecordFilterItem( );
-
-            Map<String, Object> mapKeyNameValues = getFilterDisplayMapValues( request );
-            recordFilterItem.setMapFilterNameValues( mapKeyNameValues );
-
-            _recordFilter.setRecordFilterItem( recordFilterItem );
-        }
-
-        return recordFilterItem;
-    }
-
-    /**
-     * Initialize the RecordPanelDisplay by setting its name, its title and if is active or not
-     * 
-     * @param request
-     *            The request to retrieve the information from
-     */
-    protected void initPanel( HttpServletRequest request )
-    {
-        String strPanelTechnicalCode = StringUtils.EMPTY;
-
-        IRecordPanel recordPanel = getRecordPanel( );
-        if ( recordPanel != null )
-        {
-            strPanelTechnicalCode = recordPanel.getTechnicalCode( );
-        }
-
-        boolean bIsSelectedPanel = isSelectedPanel( request, strPanelTechnicalCode );
-        setActive( bIsSelectedPanel );
-    }
-
-    /**
-     * Check if the panel is the selected panel or not. Activate the default panel if not found
-     * 
-     * @param request
-     *            The HttpServletRequest to retrieve the information from
-     * @param strPanelTechnicalCode
-     *            The name of the panel to analyze
-     * @return true if the panel of the given name is the panel to analyze false otherwise
-     */
-    private boolean isSelectedPanel( HttpServletRequest request, String strPanelTechnicalCode )
-    {
-        boolean bIsSelectedPanel = Boolean.FALSE;
-
-        // We will retrieve the name of the current selected panel
-        String strRecordPanelSelected = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SELECTED_PANEL );
-        if ( StringUtils.isNotBlank( strRecordPanelSelected ) )
-        {
-            bIsSelectedPanel = strPanelTechnicalCode.equals( strRecordPanelSelected );
-        }
-        else
-        {
-            // If there is no selected panel we will see if there was a previous selected one
-            String strPreviousRecordPanelSelected = request.getParameter( DirectoryMultiviewConstants.PARAMETER_CURRENT_SELECTED_PANEL );
-            if ( StringUtils.isNotBlank( strPreviousRecordPanelSelected ) )
-            {
-                bIsSelectedPanel = strPanelTechnicalCode.equals( strPreviousRecordPanelSelected );
-            }
-        }
-
-        return bIsSelectedPanel;
     }
 }

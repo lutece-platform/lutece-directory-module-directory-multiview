@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.directory.business.Directory;
@@ -47,6 +48,7 @@ import fr.paris.lutece.plugins.directory.business.EntryFilter;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.directory.web.action.DirectoryAdminSearchFields;
@@ -62,25 +64,21 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
      * {@inheritDoc}
      */
     @Override
-    public List<DirectoryRecordItem> filterBySearchedText( List<DirectoryRecordItem> listDirectoryRecordItem, AdminUser adminUser, String strSearchText,
-            Locale locale )
+    public void filterBySearchedText( IRecordPanel recordPanel, AdminUser adminUser, String strSearchText, Locale locale )
     {
-        List<DirectoryRecordItem> listDirectoryRecordItemResult = new ArrayList<>( );
-
-        if ( listDirectoryRecordItem != null && !listDirectoryRecordItem.isEmpty( ) )
+        if ( recordPanel != null && !CollectionUtils.isEmpty( recordPanel.getDirectoryRecordItemList( ) ) )
         {
+            List<DirectoryRecordItem> listDirectoryRecordItemPanel = recordPanel.getDirectoryRecordItemList( );
+            List<DirectoryRecordItem> listDirectoryRecordItemResult = new ArrayList<>( listDirectoryRecordItemPanel );
+
             if ( StringUtils.isNotBlank( strSearchText ) )
             {
                 // Retrieve the list of directory to use for filter the records
-                listDirectoryRecordItemResult = buildDirectoryRecordItemSearchResult( listDirectoryRecordItem, strSearchText, adminUser, locale );
+                listDirectoryRecordItemResult = buildDirectoryRecordItemSearchResult( listDirectoryRecordItemPanel, strSearchText, adminUser, locale );
             }
-            else
-            {
-                listDirectoryRecordItemResult = new ArrayList<>( listDirectoryRecordItem );
-            }
-        }
 
-        return listDirectoryRecordItemResult;
+            recordPanel.setDirectoryRecordItemList( listDirectoryRecordItemResult );
+        }
     }
 
     /**

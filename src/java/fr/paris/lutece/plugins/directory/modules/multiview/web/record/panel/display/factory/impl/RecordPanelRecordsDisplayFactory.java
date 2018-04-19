@@ -31,16 +31,12 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory.impl;
 
-import java.util.List;
-
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.panel.RecordFilterPanelRecords;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.impl.RecordPanelRecords;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory.IRecordPanelDisplayFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.impl.RecordPanelRecordsDisplay;
 
 /**
@@ -52,7 +48,7 @@ public class RecordPanelRecordsDisplayFactory implements IRecordPanelDisplayFact
      * {@inheritDoc}
      */
     @Override
-    public IRecordPanelDisplay buildRecordPanelDisplay( IRecordPanel recordPanel, List<IRecordFilter> listRecordFilter )
+    public IRecordPanelDisplay buildRecordPanelDisplay( IRecordPanel recordPanel )
     {
         RecordPanelRecordsDisplay recordPanelRecordsFilterDisplay = null;
 
@@ -60,38 +56,8 @@ public class RecordPanelRecordsDisplayFactory implements IRecordPanelDisplayFact
         {
             recordPanelRecordsFilterDisplay = new RecordPanelRecordsDisplay( );
             recordPanelRecordsFilterDisplay.setRecordPanel( recordPanel );
-
-            // Associate the filter to the RecordFilterPanelDisplay
-            manageRecordFilterPanel( recordPanelRecordsFilterDisplay, listRecordFilter );
         }
 
         return recordPanelRecordsFilterDisplay;
-    }
-
-    /**
-     * Retrieve the RecordFilter associated to the RecordPanelRecordsFilterDisplay and configure it
-     * 
-     * @param recordPanelRecordsFilterDisplay
-     *            The RecordPanelRecordsFilterDisplay to configure
-     * @param listRecordFilter
-     *            The list of IRecordFilter to retrieve the RecordFilter of the given RecordPanelRecordsFilterDisplay
-     */
-    private void manageRecordFilterPanel( RecordPanelRecordsDisplay recordPanelRecordsFilterDisplay, List<IRecordFilter> listRecordFilter )
-    {
-        for ( IRecordFilter recordFilter : listRecordFilter )
-        {
-            if ( recordFilter instanceof RecordFilterPanelRecords )
-            {
-                recordPanelRecordsFilterDisplay.setRecordFilter( recordFilter );
-
-                RecordFilterConfiguration recordFilterConfiguration = recordFilter.getRecordFilterConfiguration( );
-                if ( recordFilterConfiguration != null )
-                {
-                    recordPanelRecordsFilterDisplay.setPosition( recordFilterConfiguration.getPosition( ) );
-                }
-
-                break;
-            }
-        }
     }
 }

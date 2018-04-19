@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.IRecordFilterQueryPart;
 
 /**
@@ -48,7 +48,7 @@ public abstract class AbstractRecordFilterQueryPart implements IRecordFilterQuer
      * {@inheritDoc}
      */
     @Override
-    public abstract void buildRecordFilterQuery( RecordFilterItem recordFilterItem );
+    public abstract void buildRecordFilterQuery( RecordParameters recordParameters );
 
     /**
      * {@inheritDoc}

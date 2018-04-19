@@ -31,37 +31,12 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl;
 
 /**
- * Item object for a RecordFilter
+ * Implementation of the IRecordFilter for the filter associated to the panel Records
  */
-public class RecordFilterItem
+public class RecordPanelRecordsInitializer extends AbstractRecordPanelInitializer
 {
-    // Variables
-    private Map<String, Object> _mapFilterNameValues = new LinkedHashMap<>( );
 
-    /**
-     * Return the map which associate for each filter item name its values
-     * 
-     * @return the_mapFilterNameValues
-     */
-    public Map<String, Object> getMapFilterNameValues( )
-    {
-        return _mapFilterNameValues;
-    }
-
-    /**
-     * Set the map of all filter name values
-     * 
-     * @param mapFilterNameValues
-     *            The map of all filter name values
-     */
-    public void setMapFilterNameValues( Map<String, Object> mapFilterNameValues )
-    {
-        _mapFilterNameValues = mapFilterNameValues;
-    }
 }

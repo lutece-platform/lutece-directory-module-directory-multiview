@@ -31,48 +31,42 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.querypart.impl.standalone;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.impl;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.standalone.IRecordFilterStandaloneQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.IRecordPanelDisplayInitializer;
 
 /**
- * Interface used for the record filter associated to a record panel
+ * Abstract class for the implementation of the RecordPanelDisplayInitializer interface
  */
-public interface IRecordPanelQueryPart extends IRecordFilterStandaloneQueryPart
+public abstract class AbstractRecordPanelDisplayInitializer implements IRecordPanelDisplayInitializer
 {
-    String STANDALONE_SELECT_QUERY = "directory.id_directory, record.id_record";
-    String STANDALONE_FROM_QUERY = "directory_directory AS directory";
-    String DIRECTORY_RECORDS_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
-
-    /**
-     * Return the select query part of the record filter standalone query part
-     * 
-     * @return the select query part of the record filter standalone query part
-     */
-    default String getRecordFilterStandaloneSelectQuery( )
-    {
-        return STANDALONE_SELECT_QUERY;
-    }
-
-    /**
-     * Return the from query part of the record filter standalone query part
-     * 
-     * @return the from query part of the record filter standalone query part
-     */
-    default String getRecordFilterStandaloneFromQuery( )
-    {
-        return STANDALONE_FROM_QUERY;
-    }
+    // Variables
+    private IRecordPanelInitializer _recordPanelInitializer;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    default List<String> getRecordFilterStandaloneJoinQueries( )
+    public abstract void buildRecordParameters( HttpServletRequest request );
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRecordPanelInitializer getRecordPanelInitializer( )
     {
-        return Arrays.asList( DIRECTORY_RECORDS_JOIN_QUERY );
+        return _recordPanelInitializer;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setRecordPanelInitializer( IRecordPanelInitializer recordPanelInitializer )
+    {
+        _recordPanelInitializer = recordPanelInitializer;
     }
 }

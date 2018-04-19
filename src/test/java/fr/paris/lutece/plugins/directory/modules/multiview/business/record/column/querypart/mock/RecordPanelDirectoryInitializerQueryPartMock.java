@@ -36,41 +36,41 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business.record.colu
 import java.util.Arrays;
 import java.util.List;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.querypart.impl.standalone.RecordPanelRecordsQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl.RecordPanelRecordsInitializerQueryPart;
 
 /**
  * Mock of a RecordPanelRecordsQueryPart
  */
-public class RecordPanelRecordsQueryPartMock extends RecordPanelRecordsQueryPart
+public class RecordPanelDirectoryInitializerQueryPartMock extends RecordPanelRecordsInitializerQueryPart
 {
-    String STANDALONE_SELECT_QUERY = "id_directory, id_record";
-    String STANDALONE_FROM_QUERY = "directory_directory AS directory";
-    String DIRECTORY_RECORDS_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
+    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY = "id_directory, id_record";
+    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY = "directory_directory AS directory";
+    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getRecordFilterStandaloneSelectQuery( )
+    public String getRecordPanelInitializerSelectQuery( )
     {
-        return STANDALONE_SELECT_QUERY;
+        return RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getRecordFilterStandaloneFromQuery( )
+    public String getRecordPanelInitializerFromQuery( )
     {
-        return STANDALONE_FROM_QUERY;
+        return RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<String> getRecordFilterStandaloneJoinQueries( )
+    public List<String> getRecordPanelInitializerJoinQueries( )
     {
-        return Arrays.asList( DIRECTORY_RECORDS_JOIN_QUERY );
+        return Arrays.asList( RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY );
     }
 }

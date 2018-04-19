@@ -36,17 +36,14 @@ package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.dis
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.IFilterable;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.IRecordListPosition;
 
 /**
  * Interface for Filter of a RecordPanelDisplay
  */
-public interface IRecordPanelDisplay extends IFilterable, IRecordListPosition
+public interface IRecordPanelDisplay extends IRecordListPosition
 {
     /**
      * Return the boolean which tell if the PanelDisplay is for the active Panel or not
@@ -85,6 +82,13 @@ public interface IRecordPanelDisplay extends IFilterable, IRecordListPosition
     String getTemplate( );
 
     /**
+     * Return the recordPanel of the RecordPanelDisplay
+     * 
+     * @return the recordPanel
+     */
+    IRecordPanel getRecordPanel( );
+
+    /**
      * Set the RecordPanel of the RecordPanelDisplay
      * 
      * @param recordPanel
@@ -98,22 +102,6 @@ public interface IRecordPanelDisplay extends IFilterable, IRecordListPosition
      * @return the list of DirectoryRecordItem of the RecordPanelDisplay
      */
     List<DirectoryRecordItem> getDirectoryRecordItemList( );
-
-    /**
-     * Set the list of DirectoryRecordItem of the RecordPanelDisplay
-     * 
-     * @param listDirectoryRecordItem
-     *            The list of DirectoryRecordItem to set to the RecordPanelDisplay
-     */
-    void setDirectoryRecordItemList( List<DirectoryRecordItem> listDirectoryRecordItem );
-
-    /**
-     * Configure the RecordPanelDisplay by setting its name, its title and if is active or not
-     * 
-     * @param request
-     *            The request to retrieve the information from
-     */
-    void configureRecordPanelDisplay( HttpServletRequest request );
 
     /**
      * Build the template of the RecordPanelDisplay

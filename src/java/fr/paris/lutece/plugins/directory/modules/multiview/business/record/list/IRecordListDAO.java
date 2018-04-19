@@ -35,9 +35,9 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business.record.list
 
 import java.util.List;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 
 /**
  * DAO for retrieving the data of a list of RecordColumn values from a list of RecordFilter
@@ -48,13 +48,14 @@ public interface IRecordListDAO
     String BEAN_NAME = "directory-multiview.recordListDAO";
 
     /**
-     * Create the list of DirectoryRecordItem return by the SQL query
+     * Populate the RecordPanel with the values returned by the SQL query results
      * 
+     * @param recordPanel
+     *            The RecordPanel used to retrieve the values of the RecordColumn
      * @param listRecordColumn
      *            The list of RecordColumn to populate
      * @param listRecordFilter
      *            The list of RecordFilter used for filtering the data to retrieve
-     * @return the list of DirectoryRecordItem return by the SQL query
      */
-    List<DirectoryRecordItem> populateRecordColumns( List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter );
+    void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter );
 }

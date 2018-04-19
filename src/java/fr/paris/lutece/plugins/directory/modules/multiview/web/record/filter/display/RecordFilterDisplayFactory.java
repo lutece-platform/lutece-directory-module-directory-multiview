@@ -35,19 +35,15 @@ package fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.di
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.IRecordFilterStandalone;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.panel.IRecordFilterStandalonePanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.IRecordFilterDisplayFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayFactoryFacade;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListPositionComparator;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
  * Factory for RecordFilterDisplay objects
@@ -113,42 +109,12 @@ public final class RecordFilterDisplayFactory
      */
     private static void manageRecordFilterDisplay( HttpServletRequest request, IRecordFilter recordFilter, IRecordFilterDisplay recordFilterDisplay )
     {
-        recordFilterDisplay.createRecordFilterItem( request );
+        recordFilterDisplay.createRecordParameters( request );
 
         RecordFilterConfiguration recordFilterConfiguration = recordFilter.getRecordFilterConfiguration( );
         if ( recordFilterConfiguration != null )
         {
             recordFilterDisplay.setPosition( recordFilterConfiguration.getPosition( ) );
         }
-    }
-
-    /**
-     * Build the list of all RecordFilterStandalone without all RecordFilterStandalonePanel except those given as parameter which is added to the result list
-     * 
-     * @param recordFilterStandalonePanel
-     *            The RecordFilterStandalonePanel to add to the result list
-     * @return the list of all RecordFilterStandalone without all RecordFilterStandalonePanel except those given as parameter which is added to the result list
-     */
-    public static List<IRecordFilter> buildListRecordFilter( IRecordFilterStandalonePanel recordFilterStandalonePanel )
-    {
-        List<IRecordFilter> listRecordFilter = new ArrayList<>( SpringContextService.getBeansOfType( IRecordFilterStandalone.class ) );
-
-        // Remove all filter associated to the list panel objects
-        if ( listRecordFilter != null && !listRecordFilter.isEmpty( ) )
-        {
-            Iterator<IRecordFilter> iteratorRecordFilter = listRecordFilter.iterator( );
-            while ( iteratorRecordFilter.hasNext( ) )
-            {
-                if ( iteratorRecordFilter.next( ) instanceof IRecordFilterStandalonePanel )
-                {
-                    iteratorRecordFilter.remove( );
-                }
-            }
-        }
-
-        // Add the filter of the default list panel object
-        listRecordFilter.add( (IRecordFilter) recordFilterStandalonePanel );
-
-        return listRecordFilter;
     }
 }

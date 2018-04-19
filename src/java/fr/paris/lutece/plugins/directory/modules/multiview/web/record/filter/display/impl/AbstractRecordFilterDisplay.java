@@ -40,8 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.IRecordFilterDisplay;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.ReferenceList;
@@ -164,21 +164,21 @@ public abstract class AbstractRecordFilterDisplay implements IRecordFilterDispla
      * {@inheritDoc}
      */
     @Override
-    public RecordFilterItem createRecordFilterItem( HttpServletRequest request )
+    public RecordParameters createRecordParameters( HttpServletRequest request )
     {
-        RecordFilterItem recordFilterItem = null;
+        RecordParameters recordParameters = null;
 
         if ( _recordFilter != null )
         {
-            recordFilterItem = new RecordFilterItem( );
+            recordParameters = new RecordParameters( );
 
             Map<String, Object> mapKeyNameValues = getFilterDisplayMapValues( request );
-            recordFilterItem.setMapFilterNameValues( mapKeyNameValues );
+            recordParameters.setRecordParametersMap( mapKeyNameValues );
 
-            _recordFilter.setRecordFilterItem( recordFilterItem );
+            _recordFilter.setRecordParameters( recordParameters );
         }
 
-        return recordFilterItem;
+        return recordParameters;
     }
 
     /**

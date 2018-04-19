@@ -33,9 +33,6 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory;
 
-import java.util.List;
-
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
 
@@ -49,10 +46,8 @@ public interface IRecordPanelDisplayFactory
      * 
      * @param recordPanel
      *            The record panel to use for build the FilterDisplay
-     * @param listRecordFilter
-     *            The the list of RecordFilter to use for building the FilterDisplay
      * @return the IRecordPanelDisplay associated to the given RecordFilter or null if the specified RecordFilter is not linked to the type of the
      *         IRecordPanelDisplayFactory
      */
-    IRecordPanelDisplay buildRecordPanelDisplay( IRecordPanel recordPanel, List<IRecordFilter> listRecordFilter );
+    IRecordPanelDisplay buildRecordPanelDisplay( IRecordPanel recordPanel );
 }

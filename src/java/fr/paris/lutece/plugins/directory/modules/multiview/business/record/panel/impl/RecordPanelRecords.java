@@ -33,8 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.impl;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.panel.RecordFilterPanelRecords;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.configuration.RecordPanelConfiguration;
 
 /**
  * Implementation of the IRecordPanel for the panel of all Records
@@ -44,18 +43,12 @@ public class RecordPanelRecords extends AbstractRecordPanel
     /**
      * Constructor
      * 
-     * @param strTechnicalCode
-     *            The technical code of the panel
-     * @param strTitleKey
-     *            The key of the title of the panel
-     * @param recordFilterConfiguration
-     *            The RecordFilterConfiguration of the RecordFilter of the RecordPanel
+     * @param recordPanelConfiguration
+     *            The RecordPanelConfiguration of the RecordPanel
      */
-    public RecordPanelRecords( String strTechnicalCode, String strTitleKey, RecordFilterConfiguration recordFilterConfiguration )
+    public RecordPanelRecords( RecordPanelConfiguration recordPanelConfiguration )
     {
         super( );
-        setTechnicalCode( strTechnicalCode );
-        setTitleKey( strTitleKey );
-        setRecordFilter( new RecordFilterPanelRecords( recordFilterConfiguration ) );
+        setRecordPanelConfiguration( recordPanelConfiguration );
     }
 }

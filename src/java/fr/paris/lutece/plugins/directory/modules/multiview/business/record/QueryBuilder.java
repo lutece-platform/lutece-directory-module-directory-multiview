@@ -37,16 +37,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.IRecordColumnQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.RecordColumnQueryBuilder;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterQueryConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.IRecordFilterQueryPart;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.standalone.IRecordFilterStandaloneQueryPart;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.standalone.RecordFilterStandaloneQueryBuilder;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.querypart.impl.standalone.IRecordPanelQueryPart;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.querypart.impl.standalone.RecordPanelQueryBuilder;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.IRecordPanelInitializerQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.RecordPanelInitializerQueryBuilder;
 
 /**
  * Class use to build a SQL query from part of query inside RecordFilter and RecordColumn
@@ -64,32 +63,30 @@ public final class QueryBuilder
     /**
      * Build a SQL query from different parts from a list of RecordColumn and a list of RecordFilter
      * 
+     * @param listRecordPanelInitializerQueryPart
+     *          The list of all RecordPanelInitializerQueryPart to use for built the query
      * @param listRecordColumnQueryPart
      *            The of RecordColumnQueryPart to retrieve the select and from parts of the query
      * @param listRecordFilterQueryPart
      *            The list of RecordFilterQueryPart to retrieve the where parts of the query
      * @return the global query build from the RecordColmuns and RecordFilters
      */
-    public static String buildQuery( List<IRecordColumnQueryPart> listRecordColumnQueryPart, List<IRecordFilterQueryPart> listRecordFilterQueryPart )
+    public static String buildQuery( List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart, List<IRecordColumnQueryPart> listRecordColumnQueryPart, List<IRecordFilterQueryPart> listRecordFilterQueryPart )
     {
         StringBuilder stringBuilderGlobalQuery = new StringBuilder( );
 
         if ( listRecordColumnQueryPart != null && !listRecordColumnQueryPart.isEmpty( ) )
         {
-            // Build the list of standalone record filter
-            List<IRecordFilterStandaloneQueryPart> listRecordFilterQueryPartStandalone = retrieveStandaloneFilterList( listRecordFilterQueryPart );
-            IRecordPanelQueryPart recordFilterPanelQueryPart = extractRecordPanelQueryPart( listRecordFilterQueryPartStandalone );
-
             // Build the select query part
-            buildSelectQueryPart( stringBuilderGlobalQuery, listRecordColumnQueryPart, recordFilterPanelQueryPart );
+            buildSelectQueryPart( stringBuilderGlobalQuery, listRecordPanelInitializerQueryPart, listRecordColumnQueryPart );
             stringBuilderGlobalQuery.append( RecordFilterQueryConstants.SPACE_SEPARATOR );
 
             // Build the from query part
-            buildFromQueryPart( stringBuilderGlobalQuery, listRecordColumnQueryPart, recordFilterPanelQueryPart );
+            buildFromQueryPart( stringBuilderGlobalQuery, listRecordPanelInitializerQueryPart, listRecordColumnQueryPart );
             stringBuilderGlobalQuery.append( RecordFilterQueryConstants.SPACE_SEPARATOR );
 
             // Build the join query part
-            buildJoinQueryPart( stringBuilderGlobalQuery, listRecordColumnQueryPart, recordFilterPanelQueryPart, listRecordFilterQueryPartStandalone );
+            buildJoinQueryPart( stringBuilderGlobalQuery, listRecordPanelInitializerQueryPart, listRecordColumnQueryPart );
             stringBuilderGlobalQuery.append( RecordFilterQueryConstants.SPACE_SEPARATOR );
 
             // Build the where query part
@@ -100,84 +97,29 @@ public final class QueryBuilder
     }
 
     /**
-     * Retrieve the list of standalone filter from a list of record filter
-     * 
-     * @param listRecordFilterQueryPart
-     *            The list of record filter query part to retrieve the list of standalone filter from
-     * @return the list of IRecordFilterStandaloneQueryPart from a list of record filter
-     */
-    private static List<IRecordFilterStandaloneQueryPart> retrieveStandaloneFilterList( List<IRecordFilterQueryPart> listRecordFilterQueryPart )
-    {
-        List<IRecordFilterStandaloneQueryPart> listRecordFilterQueryPartStandalone = new ArrayList<>( );
-
-        if ( listRecordFilterQueryPart != null && !listRecordFilterQueryPart.isEmpty( ) )
-        {
-            for ( IRecordFilterQueryPart recordFilterQueryPart : listRecordFilterQueryPart )
-            {
-                if ( recordFilterQueryPart instanceof IRecordFilterStandaloneQueryPart )
-                {
-                    listRecordFilterQueryPartStandalone.add( (IRecordFilterStandaloneQueryPart) recordFilterQueryPart );
-                }
-            }
-        }
-
-        return listRecordFilterQueryPartStandalone;
-    }
-
-    /**
-     * Retrieve form the list of record filter standalone query part the record filter associate to the current panel and remove it from the given list
-     * 
-     * @param listRecordFilterStandaloneQueryPart
-     *            The list of record filter standalone to retrieve the record panel query part from
-     * @return the record filter query part associated to a record panel or null if not found
-     */
-    private static IRecordPanelQueryPart extractRecordPanelQueryPart( List<IRecordFilterStandaloneQueryPart> listRecordFilterStandaloneQueryPart )
-    {
-        IRecordPanelQueryPart recordPanelQueryPart = null;
-
-        if ( listRecordFilterStandaloneQueryPart != null && !listRecordFilterStandaloneQueryPart.isEmpty( ) )
-        {
-            Iterator<IRecordFilterStandaloneQueryPart> iteratorRecordFilterStandaloneQueryPart = listRecordFilterStandaloneQueryPart.iterator( );
-            while ( iteratorRecordFilterStandaloneQueryPart.hasNext( ) )
-            {
-                IRecordFilterStandaloneQueryPart recordFilterStandaloneQueryPart = iteratorRecordFilterStandaloneQueryPart.next( );
-                if ( recordFilterStandaloneQueryPart instanceof IRecordPanelQueryPart )
-                {
-                    recordPanelQueryPart = (IRecordPanelQueryPart) recordFilterStandaloneQueryPart;
-                    iteratorRecordFilterStandaloneQueryPart.remove( );
-                    break;
-                }
-            }
-        }
-
-        return recordPanelQueryPart;
-    }
-
-    /**
      * Populate the StringBuilder of the global query with the select query part
      * 
      * @param stringBuilderGlobalQuery
      *            The StringBuilder of the global query to populate
-     * @param recordPanelQueryPart
-     *            The query part associated to the current panel
+     * @param listRecordPanelInitializerQueryPart
+     *            The list of all IRecordPanelInitializerQueryPart to use
      * @param listRecordColumnQueryPart
      *            The list of RecordColumnQueryPart to retrieve the select query parts from
      */
-    private static void buildSelectQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordColumnQueryPart> listRecordColumnQueryPart,
-            IRecordPanelQueryPart recordPanelQueryPart )
+    private static void buildSelectQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart, List<IRecordColumnQueryPart> listRecordColumnQueryPart )
     {
         List<String> listSelectQueryParts = new ArrayList<>( );
 
-        // Use the query part of the panel filter
-        String strRecordPanelSelectQueryPart = RecordPanelQueryBuilder.buildPanelSelectQueryPart( recordPanelQueryPart );
-        if ( StringUtils.isNotBlank( strRecordPanelSelectQueryPart ) )
+        // Use the query part of the RecordPanelInitializer
+        List<String> listRecordPanelInitializerSelectQueryParts = RecordPanelInitializerQueryBuilder.buildPanelInitializerSelectQueryParts( listRecordPanelInitializerQueryPart );
+        if ( !CollectionUtils.isEmpty( listRecordPanelInitializerSelectQueryParts ) )
         {
-            listSelectQueryParts.add( strRecordPanelSelectQueryPart );
+            listSelectQueryParts.addAll( listRecordPanelInitializerSelectQueryParts );
         }
 
         // Use the query part of the column
         List<String> listRecordColumnSelectQueryParts = RecordColumnQueryBuilder.buildRecordColumnSelectQueryPart( listRecordColumnQueryPart );
-        if ( listRecordColumnSelectQueryParts != null && !listRecordColumnSelectQueryParts.isEmpty( ) )
+        if ( !CollectionUtils.isEmpty( listRecordColumnSelectQueryParts ) )
         {
             listSelectQueryParts.addAll( listRecordColumnSelectQueryParts );
         }
@@ -190,26 +132,25 @@ public final class QueryBuilder
      * 
      * @param stringBuilderGlobalQuery
      *            The StringBuilder of the global query to populate
-     * @param recordPanelQueryPart
-     *            The query part associated to the current panel
+     * @param listRecordPanelInitializerQueryPart
+     *            The list of all IRecordPanelInitializerQueryPart to use
      * @param listRecordColumnQueryPart
      *            The list of RecordColumnQueryPart to retrieve the select query parts from
      */
-    private static void buildFromQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordColumnQueryPart> listRecordColumnQueryPart,
-            IRecordPanelQueryPart recordPanelQueryPart )
+    private static void buildFromQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart, List<IRecordColumnQueryPart> listRecordColumnQueryPart )
     {
         List<String> listFromQueryParts = new ArrayList<>( );
 
-        // Use the query part of the panel filter
-        String strRecordPanelFromQueryPart = RecordPanelQueryBuilder.buildPanelFromQueryPart( recordPanelQueryPart );
-        if ( StringUtils.isNotBlank( strRecordPanelFromQueryPart ) )
+        // Use the query part of the RecordPanelInitializer
+        List<String> listRecordPanelInitializerFromQueryPart = RecordPanelInitializerQueryBuilder.buildPanelInitializerFromQueryParts( listRecordPanelInitializerQueryPart );
+        if ( !CollectionUtils.isEmpty( listRecordPanelInitializerFromQueryPart ) )
         {
-            listFromQueryParts.add( strRecordPanelFromQueryPart );
+            listFromQueryParts.addAll( listRecordPanelInitializerFromQueryPart );
         }
 
         // Use the query parts of the columns
         List<String> listRecordColumnFromQueryParts = RecordColumnQueryBuilder.buildRecordColumnFromQueryParts( listRecordColumnQueryPart );
-        if ( listRecordColumnFromQueryParts != null && !listRecordColumnFromQueryParts.isEmpty( ) )
+        if ( !CollectionUtils.isEmpty( listRecordColumnFromQueryParts ) )
         {
             listFromQueryParts.addAll( listRecordColumnFromQueryParts );
         }
@@ -222,28 +163,19 @@ public final class QueryBuilder
      * 
      * @param stringBuilderGlobalQuery
      *            The StringBuilder of the global query to populate
-     * @param recordPanelQueryPart
-     *            The query part associated to the current panel
+     * @param listRecordPanelInitializerQueryPart
+     *            The list of all IRecordPanelInitializerQueryPart to use
      * @param listRecordColumnQueryPart
      *            The list of RecordColumnQueryPart to retrieve the select query parts from
-     * @param listRecordFilterQueryPartStandalone
-     *            The list of IRecordFilterStandaloneQueryPart to retrieve the join query parts from
      */
-    private static void buildJoinQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordColumnQueryPart> listRecordColumnQueryPart,
-            IRecordPanelQueryPart recordPanelQueryPart, List<IRecordFilterStandaloneQueryPart> listRecordFilterQueryPartStandalone )
+    private static void buildJoinQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart, List<IRecordColumnQueryPart> listRecordColumnQueryPart )
     {
         StringBuilder stringBuilderJoinQueryPart = new StringBuilder( );
 
         // Use the query parts of the panel filter
-        if ( recordPanelQueryPart != null )
+        if ( !CollectionUtils.isEmpty( listRecordPanelInitializerQueryPart ) )
         {
-            RecordPanelQueryBuilder.buildPanelJoinQueryParts( stringBuilderJoinQueryPart, recordPanelQueryPart );
-        }
-
-        // Use the query parts of the standalone filters
-        if ( listRecordFilterQueryPartStandalone != null && !listRecordFilterQueryPartStandalone.isEmpty( ) )
-        {
-            RecordFilterStandaloneQueryBuilder.buildRecordFilterStandaloneQueryParts( stringBuilderJoinQueryPart, listRecordFilterQueryPartStandalone );
+            RecordPanelInitializerQueryBuilder.buildRecordPanelInitializerJoinQueryParts( stringBuilderJoinQueryPart, listRecordPanelInitializerQueryPart );
         }
 
         // Use the query parts of the columns

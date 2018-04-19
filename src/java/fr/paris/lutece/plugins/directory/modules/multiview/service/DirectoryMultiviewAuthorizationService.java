@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,10 +42,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnFactory;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.panel.IRecordFilterStandalonePanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.RecordFilterDisplayFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 
 /**
  * Implementation of the IDirectoryMultiviewAuthorizationService interface
@@ -52,17 +51,17 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.dis
 public class DirectoryMultiviewAuthorizationService implements IDirectoryMultiviewAuthorizationService
 {
     // Variables
-    private final IRecordFilterStandalonePanel _recordFilterStandalonePanel;
+    private final IRecordPanel _recordPanel;
 
     /**
      * Constructor
      * 
-     * @param recordFilterStandalonePanel
-     *            The record filter standalone panel on which the authorization is based
+     * @param recordPanel
+     *            The RecordPanel on which the authorization is based
      */
-    public DirectoryMultiviewAuthorizationService( IRecordFilterStandalonePanel recordFilterStandalonePanel )
+    public DirectoryMultiviewAuthorizationService( IRecordPanel recordPanel )
     {
-        _recordFilterStandalonePanel = recordFilterStandalonePanel;
+        _recordPanel = recordPanel;
     }
 
     /**
@@ -73,12 +72,13 @@ public class DirectoryMultiviewAuthorizationService implements IDirectoryMultivi
     {
         boolean bIsUserAuthorizedOnRecord = Boolean.FALSE;
 
-        if ( nIdRecord != NumberUtils.INTEGER_MINUS_ONE )
+        if ( nIdRecord != NumberUtils.INTEGER_MINUS_ONE && _recordPanel != null )
         {
-            List<IRecordFilter> listRecordFilter = RecordFilterDisplayFactory.buildListRecordFilter( _recordFilterStandalonePanel );
             List<IRecordColumn> listRecordColumn = RecordColumnFactory.buildRecordColumnList( );
 
-            List<DirectoryRecordItem> listDirectoryRecordItem = RecordListFacade.populateRecordColumns( listRecordColumn, listRecordFilter );
+            RecordListFacade.populateRecordColumns( _recordPanel, listRecordColumn, new ArrayList<>( ) );
+            List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
+
             if ( listDirectoryRecordItem != null && !listDirectoryRecordItem.isEmpty( ) )
             {
                 List<Integer> listIdRecord = listDirectoryRecordItem.stream( ).map( DirectoryRecordItem::getIdRecord ).collect( Collectors.toList( ) );

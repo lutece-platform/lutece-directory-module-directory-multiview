@@ -43,6 +43,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**
@@ -69,7 +70,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
     }
 
     /**
-     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordFilterItem)}
+     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordParameters)}
      */
     public void testBuildRecordFilterQueryWithDirectoryPattern( )
     {
@@ -79,8 +80,8 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
 
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
         mapFilterNameValues.put( "id_directory", 4 );
-        RecordFilterItem recordFilterItem = new RecordFilterItem( );
-        recordFilterItem.setMapFilterNameValues( mapFilterNameValues );
+        RecordParameters recordFilterItem = new RecordParameters( );
+        recordFilterItem.setRecordParametersMap( mapFilterNameValues );
 
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );
@@ -88,7 +89,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
     }
 
     /**
-     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordFilterItem)} with a null value
+     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordParameters)} with a null value
      */
     public void testBuildRecordFilterQueryWithNullValue( )
     {
@@ -98,8 +99,8 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
 
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
         mapFilterNameValues.put( "id_directory", null );
-        RecordFilterItem recordFilterItem = new RecordFilterItem( );
-        recordFilterItem.setMapFilterNameValues( mapFilterNameValues );
+        RecordParameters recordFilterItem = new RecordParameters( );
+        recordFilterItem.setRecordParametersMap( mapFilterNameValues );
 
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );
@@ -107,7 +108,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
     }
 
     /**
-     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordFilterItem)}
+     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordParameters)}
      */
     public void testBuildRecordFilterQueryWithWrongName( )
     {
@@ -117,8 +118,8 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
 
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
         mapFilterNameValues.put( "test", 4 );
-        RecordFilterItem recordFilterItem = new RecordFilterItem( );
-        recordFilterItem.setMapFilterNameValues( mapFilterNameValues );
+        RecordParameters recordFilterItem = new RecordParameters( );
+        recordFilterItem.setRecordParametersMap( mapFilterNameValues );
 
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );
@@ -126,7 +127,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
     }
 
     /**
-     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordFilterItem)} with a query pattern with multiple names
+     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordParameters)} with a query pattern with multiple names
      */
     public void testBuildRecordFilterQueryWithMultipleName( )
     {
@@ -137,8 +138,8 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
         mapFilterNameValues.put( "id_directory", 4 );
         mapFilterNameValues.put( "id_workflow_state", 42 );
-        RecordFilterItem recordFilterItem = new RecordFilterItem( );
-        recordFilterItem.setMapFilterNameValues( mapFilterNameValues );
+        RecordParameters recordFilterItem = new RecordParameters( );
+        recordFilterItem.setRecordParametersMap( mapFilterNameValues );
 
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );
@@ -146,7 +147,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
     }
 
     /**
-     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordFilterItem)} with a query pattern with multiple values to replace
+     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordParameters)} with a query pattern with multiple values to replace
      * and a null value
      */
     public void testBuildRecordFilterQueryWithMultipleNameWithWrongValue( )
@@ -158,8 +159,8 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
         mapFilterNameValues.put( "id_directory", 4 );
         mapFilterNameValues.put( "id_workflow_state", null );
-        RecordFilterItem recordFilterItem = new RecordFilterItem( );
-        recordFilterItem.setMapFilterNameValues( mapFilterNameValues );
+        RecordParameters recordFilterItem = new RecordParameters( );
+        recordFilterItem.setRecordParametersMap( mapFilterNameValues );
 
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );
@@ -167,7 +168,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
     }
 
     /**
-     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordFilterItem)} with a query pattern with nothing to replace but
+     * Test of the method {@link RecordFilterQueryBuilder#buildRecordFilterQuery(String, RecordParameters)} with a query pattern with nothing to replace but
      * with element which has the same name that those in the map parameter
      */
     public void testBuildRecordFilterQueryWithoutElementToReplace( )
@@ -178,8 +179,8 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
 
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
         mapFilterNameValues.put( "id_directory", 4 );
-        RecordFilterItem recordFilterItem = new RecordFilterItem( );
-        recordFilterItem.setMapFilterNameValues( mapFilterNameValues );
+        RecordParameters recordFilterItem = new RecordParameters( );
+        recordFilterItem.setRecordParametersMap( mapFilterNameValues );
 
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );

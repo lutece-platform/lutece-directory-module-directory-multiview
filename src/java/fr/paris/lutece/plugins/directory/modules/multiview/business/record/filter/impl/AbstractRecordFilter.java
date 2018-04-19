@@ -33,8 +33,8 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl;
 
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration;
 
 /**
@@ -43,25 +43,25 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 public abstract class AbstractRecordFilter implements IRecordFilter
 {
     // Variables
-    private RecordFilterItem _recordFilterItem = new RecordFilterItem( );
+    private RecordParameters _recordParameters = new RecordParameters( );
     private RecordFilterConfiguration _recordFilterConfiguration;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public RecordFilterItem getRecordFilterItem( )
+    public RecordParameters getRecordParameters( )
     {
-        return _recordFilterItem;
+        return _recordParameters;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setRecordFilterItem( RecordFilterItem recordFilterItem )
+    public void setRecordParameters( RecordParameters recordParameters )
     {
-        _recordFilterItem = recordFilterItem;
+        _recordParameters = recordParameters;
     }
 
     /**

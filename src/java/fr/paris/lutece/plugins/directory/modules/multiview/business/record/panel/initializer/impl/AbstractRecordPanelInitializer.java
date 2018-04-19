@@ -31,12 +31,34 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone.panel;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl;
+
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer;
 
 /**
- * Interface for standalone filter which are linked to a Panel object
+ * Abstract class for implementation of the IRecordPanelInitializer interface
  */
-public interface IRecordFilterStandalonePanel
+public abstract class AbstractRecordPanelInitializer implements IRecordPanelInitializer
 {
+    // Variables
+    private RecordParameters _recordParameters = new RecordParameters( );
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RecordParameters getRecordParameters( )
+    {
+        return _recordParameters;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setRecordParameters( RecordParameters recordParameters )
+    {
+        _recordParameters = recordParameters;
+    }
 }

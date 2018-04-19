@@ -39,6 +39,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
+
 /**
  * Class used to build the query of the filter
  */
@@ -62,39 +64,39 @@ public final class RecordFilterQueryBuilder
      * 
      * @param strRecordFilterQueryPattern
      *            The pattern to use for building the query of the RecordFilter
-     * @param recordFilterItem
-     *            The RecordFilterItem to retrieve the values from for format the pattern
+     * @param recordParameters
+     *            The RecordParameters to retrieve the values from for format the pattern
      * @return the query formatted with all parameter replace by their values or an empty String if a parameter is missing in the RecordFilterItem
      */
-    public static String buildRecordFilterQuery( String strRecordFilterQueryPattern, RecordFilterItem recordFilterItem )
+    public static String buildRecordFilterQuery( String strRecordFilterQueryPattern, RecordParameters recordParameters )
     {
         String strRecordFilterQuery = DEFAULT_QUERY_VALUE;
 
-        if ( StringUtils.isNotBlank( strRecordFilterQueryPattern ) && recordFilterItem != null )
+        if ( StringUtils.isNotBlank( strRecordFilterQueryPattern ) && recordParameters != null )
         {
-            Map<String, Object> mapFilterItemNameValue = recordFilterItem.getMapFilterNameValues( );
+            Map<String, Object> mapRecordParameterNameValue = recordParameters.getRecordParametersMap( );
 
-            if ( mapFilterItemNameValue != null && !mapFilterItemNameValue.isEmpty( ) )
+            if ( mapRecordParameterNameValue != null && !mapRecordParameterNameValue.isEmpty( ) )
             {
                 strRecordFilterQuery = strRecordFilterQueryPattern;
 
-                for ( Entry<String, Object> entryFilterItemNameValue : mapFilterItemNameValue.entrySet( ) )
+                for ( Entry<String, Object> entryRecordParameter : mapRecordParameterNameValue.entrySet( ) )
                 {
-                    String strFilterItemName = entryFilterItemNameValue.getKey( );
-                    Object objFilterItemValue = entryFilterItemNameValue.getValue( );
+                    String strParameterName = entryRecordParameter.getKey( );
+                    Object objParameterValue = entryRecordParameter.getValue( );
 
                     // If a value is missing we will interrupt the processing for the current filter and
                     // reset the current query to avoid SQL error
-                    if ( objFilterItemValue == null || String.valueOf( objFilterItemValue ).equals( DEFAULT_ITEM_VALUE ) )
+                    if ( objParameterValue == null || String.valueOf( objParameterValue ).equals( DEFAULT_ITEM_VALUE ) )
                     {
                         strRecordFilterQuery = DEFAULT_QUERY_VALUE;
                         break;
                     }
                     else
                     {
-                        String strFilterItemValue = String.valueOf( objFilterItemValue );
-                        String strFilterItemNameBuilt = buildFilterNameToReplace( strFilterItemName );
-                        strRecordFilterQuery = strRecordFilterQuery.replaceAll( Pattern.quote( strFilterItemNameBuilt ), strFilterItemValue );
+                        String strParameterValue = String.valueOf( objParameterValue );
+                        String strParameterNameBuilt = buildParameterNameToReplace( strParameterName );
+                        strRecordFilterQuery = strRecordFilterQuery.replaceAll( Pattern.quote( strParameterNameBuilt ), strParameterValue );
                     }
                 }
             }
@@ -104,17 +106,17 @@ public final class RecordFilterQueryBuilder
     }
 
     /**
-     * Format the filter name to replace in the query pattern of the filter
+     * Format the parameter name to replace in the query pattern of the filter
      * 
-     * @param strFilterItemName
-     *            The name of the filter item to format
-     * @return the formatted name of the filter item
+     * @param strParameterName
+     *            The name of the parameter to format
+     * @return the formatted name of the parameter
      */
-    private static String buildFilterNameToReplace( String strFilterItemName )
+    private static String buildParameterNameToReplace( String strParameterName )
     {
-        StringBuilder stringBuilderFilterName = new StringBuilder( );
-        stringBuilderFilterName.append( KEY_NAME_SEPARATOR ).append( strFilterItemName ).append( KEY_NAME_SEPARATOR );
+        StringBuilder stringBuilderParameterName = new StringBuilder( );
+        stringBuilderParameterName.append( KEY_NAME_SEPARATOR ).append( strParameterName ).append( KEY_NAME_SEPARATOR );
 
-        return stringBuilderFilterName.toString( );
+        return stringBuilderParameterName.toString( );
     }
 }

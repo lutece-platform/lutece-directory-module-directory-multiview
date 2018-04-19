@@ -31,50 +31,35 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.service;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.factory;
 
 import java.util.List;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
- * Service for the module-directory-multiview
+ * Facade which allow to retrieve all the implementation of the IRecordPanelDisplayInitializerFactory
  */
-public class DirectoryMultiviewService implements IDirectoryMultiviewService
+public final class RecordDisplayInitializerFactoryFacade
 {
+    // Variables
+    private static final List<IRecordPanelDisplayInitializerFactory> _listRecordPanelDsiaplyInitializerFactory = SpringContextService.getBeansOfType( IRecordPanelDisplayInitializerFactory.class );
+    
     /**
-     * {@inheritDoc}
+     * Constructor
      */
-    @Override
-    public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
+    private RecordDisplayInitializerFactoryFacade( )
     {
-        RecordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
+        
     }
-
+    
     /**
-     * {@inheritDoc}
+     * Build the list of all implementation of the IRecordPanelDisplayInitializer interface
+     * 
+     * @return the list of all impleemntation of the RecordPanelDisplayInitializer
      */
-    @Override
-    public IRecordPanelDisplay findActiveRecordPanel( List<IRecordPanelDisplay> listRecordPanelDisplay )
+    public static List<IRecordPanelDisplayInitializerFactory> buildRecordPanelDisplayInitializerList( )
     {
-        IRecordPanelDisplay recordPanelDisplayActive = null;
-
-        if ( listRecordPanelDisplay != null && !listRecordPanelDisplay.isEmpty( ) )
-        {
-            for ( IRecordPanelDisplay recordPanelDisplay : listRecordPanelDisplay )
-            {
-                if ( recordPanelDisplay.isActive( ) )
-                {
-                    recordPanelDisplayActive = recordPanelDisplay;
-                    break;
-                }
-            }
-        }
-
-        return recordPanelDisplayActive;
+        return _listRecordPanelDsiaplyInitializerFactory;
     }
 }

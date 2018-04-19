@@ -31,14 +31,32 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.standalone;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.factory.impl;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl.RecordPanelRecordsInitializer;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.IRecordPanelDisplayInitializer;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.factory.IRecordPanelDisplayInitializerFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.impl.RecordPanelRecordsDisplayInitializer;
 
 /**
- * Interface for standalone RecordFilter which are not linked to a column
+ * Implementation of the IRecordPanelDisplayInitializerFactory for the RecordPanelRecordsDisplayInitializer
  */
-public interface IRecordFilterStandalone extends IRecordFilter
+public class RecordPanelRecordsDisplayInitializerFactory implements IRecordPanelDisplayInitializerFactory
 {
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRecordPanelDisplayInitializer buildRecordPanelDisplay( IRecordPanelInitializer recordPanelInitializer )
+    {
+        IRecordPanelDisplayInitializer recordPanelRecordsDisplayInitializer = null;
+        
+        if ( recordPanelInitializer instanceof RecordPanelRecordsInitializer )
+        {
+            recordPanelRecordsDisplayInitializer = new RecordPanelRecordsDisplayInitializer( );
+        }
+        
+        return recordPanelRecordsDisplayInitializer;
+    }
 }

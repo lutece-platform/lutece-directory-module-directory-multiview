@@ -35,9 +35,9 @@ package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
 import java.util.List;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
 
 /**
@@ -49,15 +49,16 @@ public interface IDirectoryMultiviewService
     String BEAN_NAME = "directory-multiview.directoryMultiviewService";
 
     /**
-     * Populate the RecordColumns from a list of RecordFilter
+     * Populate the given RecordPanel with the information from the given list of RecordColumns and RecordFilters
      * 
+     * @param recordPanel
+     *            The RecordPanel used to retrieve the values of the RecordColumns
      * @param listRecordColumn
      *            The list of all RecordColumn to use to be populated
      * @param listRecordFilter
      *            The list of RecordFilter to use for retrieving the data of the columns to populate
-     * @return the RecordListValues containing all the data of the RecordColumns
      */
-    List<DirectoryRecordItem> populateRecordColumns( List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter );
+    void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter );
 
     /**
      * Find the RecordPanel which is active in the given list

@@ -31,27 +31,12 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl;
-
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterQueryBuilder;
-import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordRecordDateCreationNameConstants;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl;
 
 /**
- * Implementation of the IRecordFilterQueryPart for a RecordFilterDateCreation filter
+ * Implementation of the IRecordPanelInitializer to allow the use of the Record and Directory for a Panel
  */
-public class RecordFilterRecordDateCreationQueryPart extends AbstractRecordFilterQueryPart
+public class RecordPanelDirectoryInitializer extends AbstractRecordPanelInitializer
 {
-    // Constants
-    private static final String DATE_CREATION_PERIOD_QUERY_PATTERN = "record.date_creation >= date_add( current_timestamp , INTERVAL -$"
-            + RecordRecordDateCreationNameConstants.FILTER_RECORD_DATE_CREATION + "$ DAY )";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void buildRecordFilterQuery( RecordParameters recordParameters )
-    {
-        setRecordFilterQuery( RecordFilterQueryBuilder.buildRecordFilterQuery( DATE_CREATION_PERIOD_QUERY_PATTERN, recordParameters ) );
-    }
 }

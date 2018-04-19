@@ -33,35 +33,51 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.impl;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.configuration.RecordPanelConfiguration;
 
 /**
  * Abstract class for implementation of the IRecordPanel
  */
 public abstract class AbstractRecordPanel implements IRecordPanel
 {
+    // Constants
+    private static final String DEFAULT_RECORD_PANEL_TITLE = StringUtils.EMPTY;
+    private static final String DEFAULT_RECORD_PANEL_TECHNICAL_CODE = StringUtils.EMPTY;
+    
     // Variables
-    private String _strTitleKey;
-    private String _strTechnicalCode;
-    private IRecordFilter _recordFilter;
-
+    private RecordPanelConfiguration _recordPanelConfiguration;
+    private List<DirectoryRecordItem> _listDirectoryRecordItem = new ArrayList<>( );
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getTitleKey( )
+    public RecordPanelConfiguration getRecordPanelConfiguration( )
     {
-        return _strTitleKey;
+        return _recordPanelConfiguration;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setTitleKey( String strTitleKey )
+    public String getTitle( )
     {
-        _strTitleKey = strTitleKey;
+        String strTitle = DEFAULT_RECORD_PANEL_TITLE;
+        
+        if ( _recordPanelConfiguration != null )
+        {
+            strTitle = _recordPanelConfiguration.getTitle( );
+        }
+        
+        return strTitle;
     }
 
     /**
@@ -70,35 +86,42 @@ public abstract class AbstractRecordPanel implements IRecordPanel
     @Override
     public String getTechnicalCode( )
     {
-        return _strTechnicalCode;
+        String strTechnicalCode = DEFAULT_RECORD_PANEL_TECHNICAL_CODE;
+        
+        if ( _recordPanelConfiguration != null )
+        {
+            strTechnicalCode = _recordPanelConfiguration.getTechnicalCode( );
+        }
+        
+        return strTechnicalCode;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setTechnicalCode( String strName )
+    public List<DirectoryRecordItem> getDirectoryRecordItemList( )
     {
-        _strTechnicalCode = strName;
+        return _listDirectoryRecordItem;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public IRecordFilter getRecordFilter( )
+    public void setDirectoryRecordItemList( List<DirectoryRecordItem> listDirectoryRecordItem )
     {
-        return _recordFilter;
+        _listDirectoryRecordItem = listDirectoryRecordItem;
     }
-
+    
     /**
-     * Set the recordFilter of the RecordPanel
+     * Set the RecordPanelConfiguration of the RecordPanel
      * 
-     * @param recordFilter
-     *            The RecordFilter to set to the RecordPanel
+     * @param recordPanelConfiguration
+     *          The RecordPanelconfiguration to set the RecordPanel
      */
-    public void setRecordFilter( IRecordFilter recordFilter )
+    protected void setRecordPanelConfiguration( RecordPanelConfiguration recordPanelConfiguration )
     {
-        _recordFilter = recordFilter;
+        _recordPanelConfiguration = recordPanelConfiguration;
     }
 }

@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 
 /**
  * Global QueryPart for all record filter type
@@ -41,12 +41,12 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 public interface IRecordFilterQueryPart
 {
     /**
-     * Build the query of the RecordFilter from the given RecordFilterItem
+     * Build the query of the RecordFilter from the given RecordParameters
      * 
-     * @param recordFilterItem
-     *            The RecordFilterItem to use for building the query
+     * @param recordParameters
+     *            The RecordParameters to use for building the query
      */
-    void buildRecordFilterQuery( RecordFilterItem recordFilterItem );
+    void buildRecordFilterQuery( RecordParameters recordParameters );
 
     /**
      * Return the query of the RecordFilter

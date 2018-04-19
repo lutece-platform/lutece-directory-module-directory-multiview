@@ -71,7 +71,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.dis
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.IRecordFilterDisplay;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.RecordFilterDisplayFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.RecordPanelDisplayFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory.RecordPanelDisplayFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListPositionComparator;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListTemplateBuilder;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListUtil;
@@ -288,7 +288,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         _listRecordFilterDisplay = RecordFilterDisplayFactory.createRecordFilterDisplayList( request, listRecordFilter );
         _listRecordColumnDisplay = RecordColumnDisplayFactory.createRecordColumnDisplayList( _listRecordColumn );
-        _listRecordPanelDisplay = RecordPanelDisplayFactory.createRecordPanelDisplayList( request, listRecordPanel, listRecordFilter );
+        _listRecordPanelDisplay = RecordPanelDisplayFactory.createRecordPanelDisplayList( request, listRecordPanel );
     }
 
     /**
@@ -316,25 +316,21 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private void buildRecordPanelDisplayWithData( )
     {
         // Retrieve the list of all RecordFilter
-        List<IRecordFilter> listRecordFilterOfRecordFilterDisplay = _listRecordFilterDisplay.stream( ).map( IRecordFilterDisplay::getRecordFilter )
+        List<IRecordFilter> listRecordFilter = _listRecordFilterDisplay.stream( ).map( IRecordFilterDisplay::getRecordFilter )
                 .collect( Collectors.toList( ) );
 
         for ( IRecordPanelDisplay recordPanelDisplay : _listRecordPanelDisplay )
         {
-            // Build the list of filter to use for the panel
-            List<IRecordFilter> listRecordFilterDisplay = new ArrayList<>( );
-            listRecordFilterDisplay.add( recordPanelDisplay.getRecordFilter( ) );
-            listRecordFilterDisplay.addAll( listRecordFilterOfRecordFilterDisplay );
+            // Retrieve the RecordPanel from the RecordPanelDisplay
+            IRecordPanel recordPanel = recordPanelDisplay.getRecordPanel( );
 
-            // Populate the RecordColumns from the information of the list of RecordFilterItem
-            List<DirectoryRecordItem> listDirectoryRecordItem = _directoryMultiviewService.populateRecordColumns( _listRecordColumn, listRecordFilterDisplay );
+            // Populate the RecordColumns from the information of the list of RecordFilterItem of the given RecordPanel
+            _directoryMultiviewService.populateRecordColumns( recordPanel, _listRecordColumn, listRecordFilter );
 
             if ( StringUtils.isNotBlank( _strSearchedText ) )
             {
-                listDirectoryRecordItem = _directoryMultiviewSearchService.filterBySearchedText( listDirectoryRecordItem, getUser( ), _strSearchedText,
-                        getLocale( ) );
+                _directoryMultiviewSearchService.filterBySearchedText( recordPanel, getUser( ), _strSearchedText, getLocale( ) );
             }
-            recordPanelDisplay.setDirectoryRecordItemList( listDirectoryRecordItem );
 
             // Associate for each RecordColumnDisplay its RecordColumnValues if the panel is active
             if ( recordPanelDisplay.isActive( ) )

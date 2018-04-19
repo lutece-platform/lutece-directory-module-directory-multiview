@@ -31,28 +31,39 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.querypart.impl.standalone;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.Arrays;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.AbstractRecordFilterQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 
 /**
- * Implementation of the IRecordFilterQueryPart for a RecordFilterPanelRecords filter
+ * Implementation of the RecordPanelInitializerQueryPart associate to the RecordPanelRecordDirectoryInitializer
  */
-public class RecordPanelRecordsQueryPart extends AbstractRecordFilterQueryPart implements IRecordPanelQueryPart
+public class RecordPanelDirectoryInitializerQueryPart extends AbstractRecordPanelInitializerQueryPart
 {
-    // Bean name
-    public static final String BEAN_NAME = "directory-multiview.recordFilter.panelRecords.queryPart";
+    // Constants
+    private static final String RECORD_DIRECTORY_SELECT_QUERY = "directory.id_directory, record.id_record";
+    private static final String RECORD_DIRECTORY_FROM_QUERY = "directory_directory AS directory";
+    private static final String RECORd_DIRECTORY_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
 
+    /**
+     * Constructor
+     */
+    public RecordPanelDirectoryInitializerQueryPart( )
+    {
+        super( );
+        setRecordPanelInitializerSelectQuery( RECORD_DIRECTORY_SELECT_QUERY );
+        setRecordPanelInitializerFromQuery( RECORD_DIRECTORY_FROM_QUERY );
+        setRecordPanelInitializerJoinQueriesList( Arrays.asList( RECORd_DIRECTORY_JOIN_QUERY ) );
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void buildRecordFilterQuery( RecordFilterItem recordFilterItem )
+    public void buildRecordPanelInitializerQuery( RecordParameters recordParameters )
     {
-        // There is no query for this filter
-        setRecordFilterQuery( StringUtils.EMPTY );
+        // There is nothing to do with the RecordParameters for this RecordPanelInitializer
     }
 }

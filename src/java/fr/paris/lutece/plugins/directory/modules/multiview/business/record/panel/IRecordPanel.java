@@ -33,7 +33,10 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
+import java.util.List;
+
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.configuration.RecordPanelConfiguration;
 
 /**
  * Interface for the Panel element
@@ -41,39 +44,38 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 public interface IRecordPanel
 {
     /**
-     * Return the RecordFilter of the RecordPanel
+     * Return the RecordPanelConfiguration of the RecordPanel
      * 
-     * @return the recordFilter of the RecordPanel
+     * @return the RecordPanelConfiguration of the RecordPanel
      */
-    IRecordFilter getRecordFilter( );
+    RecordPanelConfiguration getRecordPanelConfiguration( );
 
     /**
-     * Return the title key of the panel
+     * Return the title of the panel from the configuration
      * 
-     * @return the title key of the panel
+     * @return the title of the panel from the configuration
      */
-    String getTitleKey( );
+    String getTitle( );
 
     /**
-     * Set the title key of the panel
+     * Return the technical code of the panel from the configuration
      * 
-     * @param strTitleKey
-     *            The title key to set to the panel
-     */
-    void setTitleKey( String strTitleKey );
-
-    /**
-     * Return the technical code of the panel
-     * 
-     * @return the technical code of the panel
+     * @return the technical code of the panel from the configuration
      */
     String getTechnicalCode( );
 
     /**
-     * Set the technical code of the panel
+     * Return the list of DirectoryRecordItem of the Panel
      * 
-     * @param strTechnicalCode
-     *            The technical code to set to the panel
+     * @return the list of all DirectoryRecordItem of the Panel
      */
-    void setTechnicalCode( String strTechnicalCode );
+    List<DirectoryRecordItem> getDirectoryRecordItemList( );
+
+    /**
+     * Set the list of DirectoryRecordItem
+     * 
+     * @param listDirectoryRecordItem
+     *            The list of DirectoryRecordItem to set to the Panel
+     */
+    void setDirectoryRecordItemList( List<DirectoryRecordItem> listDirectoryRecordItem );
 }

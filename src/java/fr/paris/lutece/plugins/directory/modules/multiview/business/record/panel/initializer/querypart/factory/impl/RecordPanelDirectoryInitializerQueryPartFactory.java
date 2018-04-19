@@ -31,50 +31,32 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.service;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.factory.impl;
 
-import java.util.List;
-
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade;
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl.RecordPanelDirectoryInitializer;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.IRecordPanelInitializerQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.factory.IRecordPanelInitializerQueryPartFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl.RecordPanelDirectoryInitializerQueryPart;
 
 /**
- * Service for the module-directory-multiview
+ * Implementation of IRecordPanelInitializerQueryPartFactory for the RecordPanelRecordDirectoryInitializerQueryPart
  */
-public class DirectoryMultiviewService implements IDirectoryMultiviewService
+public class RecordPanelDirectoryInitializerQueryPartFactory implements IRecordPanelInitializerQueryPartFactory
 {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
+    @Override    
+    public IRecordPanelInitializerQueryPart buildRecordPanelInitializerQueryPart( IRecordPanelInitializer recordPanelInitializer )
     {
-        RecordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
-    }
+        IRecordPanelInitializerQueryPart recordPanelRecordDirectoryInitializerQueryPart = null;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IRecordPanelDisplay findActiveRecordPanel( List<IRecordPanelDisplay> listRecordPanelDisplay )
-    {
-        IRecordPanelDisplay recordPanelDisplayActive = null;
-
-        if ( listRecordPanelDisplay != null && !listRecordPanelDisplay.isEmpty( ) )
+        if ( recordPanelInitializer instanceof RecordPanelDirectoryInitializer )
         {
-            for ( IRecordPanelDisplay recordPanelDisplay : listRecordPanelDisplay )
-            {
-                if ( recordPanelDisplay.isActive( ) )
-                {
-                    recordPanelDisplayActive = recordPanelDisplay;
-                    break;
-                }
-            }
+            recordPanelRecordDirectoryInitializerQueryPart = new RecordPanelDirectoryInitializerQueryPart( );
         }
 
-        return recordPanelDisplayActive;
+        return recordPanelRecordDirectoryInitializerQueryPart;
     }
 }

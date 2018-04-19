@@ -39,7 +39,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterQueryBuilder;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordEntryNameConstants;
 
@@ -57,16 +57,16 @@ public class RecordFilterEntryQueryPart extends AbstractRecordFilterQueryPart
      * {@inheritDoc}
      */
     @Override
-    public void buildRecordFilterQuery( RecordFilterItem recordFilterItem )
+    public void buildRecordFilterQuery( RecordParameters recordParameters )
     {
         int nPosition = DEFAULT_POSITION;
 
-        if ( recordFilterItem != null )
+        if ( recordParameters != null )
         {
-            Map<String, Object> mapFilterNameValues = recordFilterItem.getMapFilterNameValues( );
-            if ( mapFilterNameValues != null && !mapFilterNameValues.isEmpty( ) )
+            Map<String, Object> mapRecordParametersNameValues = recordParameters.getRecordParametersMap( );
+            if ( mapRecordParametersNameValues != null && !mapRecordParametersNameValues.isEmpty( ) )
             {
-                nPosition = findFilterColumnPosition( mapFilterNameValues );
+                nPosition = findFilterColumnPosition( mapRecordParametersNameValues );
             }
         }
 
@@ -80,26 +80,26 @@ public class RecordFilterEntryQueryPart extends AbstractRecordFilterQueryPart
             stringBuilderEntryQueryPattern.append( strEntryNamePattern );
         }
 
-        setRecordFilterQuery( RecordFilterQueryBuilder.buildRecordFilterQuery( stringBuilderEntryQueryPattern.toString( ), recordFilterItem ) );
+        setRecordFilterQuery( RecordFilterQueryBuilder.buildRecordFilterQuery( stringBuilderEntryQueryPattern.toString( ), recordParameters ) );
     }
 
     /**
      * Find the position of the column for the filter from the given values
      * 
-     * @param mapFilterNameValues
+     * @param mapRecordParametersNameValues
      *            The map used to retrieve the position of the column of the filter
      * @return the position of the column for the filter from the given values or the {@link DEFAULT_POSITION} if not found
      */
-    private int findFilterColumnPosition( Map<String, Object> mapFilterNameValues )
+    private int findFilterColumnPosition( Map<String, Object> mapRecordParametersNameValues )
     {
         int nPosition = DEFAULT_POSITION;
 
-        Set<String> setFilterName = mapFilterNameValues.keySet( );
-        for ( String strFilterName : setFilterName )
+        Set<String> setParameterName = mapRecordParametersNameValues.keySet( );
+        for ( String strParameterName : setParameterName )
         {
-            if ( strFilterName.startsWith( RecordEntryNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN ) )
+            if ( strParameterName.startsWith( RecordEntryNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN ) )
             {
-                String strColumnNumber = strFilterName.replaceFirst( RecordEntryNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN, StringUtils.EMPTY );
+                String strColumnNumber = strParameterName.replaceFirst( RecordEntryNameConstants.FILTER_ENTRY_BASE_NAME_PATTERN, StringUtils.EMPTY );
                 nPosition = NumberUtils.toInt( strColumnNumber, NumberUtils.INTEGER_MINUS_ONE );
                 break;
             }

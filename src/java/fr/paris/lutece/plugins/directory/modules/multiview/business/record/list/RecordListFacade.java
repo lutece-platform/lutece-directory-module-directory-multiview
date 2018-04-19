@@ -36,9 +36,9 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business.record.list
 import java.util.Comparator;
 import java.util.List;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
@@ -58,18 +58,19 @@ public final class RecordListFacade
     }
 
     /**
-     * Populate the RecordColumns from a list of RecordFilter
+     * Populate the given RecordPanel with the information of the given RecordColumns and RecordFilters
      * 
+     * @param recordPanel
+     *            The RecordPanel to populate
      * @param listRecordColumn
      *            The list of all RecordColumn to use to be populated
      * @param listRecordFilter
      *            The list of RecordFilter to use for retrieving the data of the columns to populate
-     * @return the RecordListValues containing all the data of the RecordColumns
      */
-    public static List<DirectoryRecordItem> populateRecordColumns( List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
+    public static void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
     {
         listRecordColumn.sort( Comparator.comparing( IRecordColumn::getRecordColumnPosition ) );
 
-        return _recordListDAO.populateRecordColumns( listRecordColumn, listRecordFilter );
+        _recordListDAO.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
     }
 }

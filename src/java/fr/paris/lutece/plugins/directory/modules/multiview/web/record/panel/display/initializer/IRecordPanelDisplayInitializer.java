@@ -31,23 +31,36 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.standalone;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer;
 
 /**
- * Interface for standalone RecordFilter query part which are not linked to a column
+ * Interface for a RecordPanelDisplayInitializer
  */
-public interface IRecordFilterStandaloneQueryPart
+public interface IRecordPanelDisplayInitializer
 {
     /**
-     * Return the list of join queries for a standalone record filter
+     * Return the IRecordPanelInitializer associated to the RecordPanelDisplayInitializer
      * 
-     * @return the list of join queries for a standalone record filter
+     * @return the IRecordPanelInitializer associated to the RecordPanelDisplayInitializer
      */
-    default List<String> getRecordFilterStandaloneJoinQueries( )
-    {
-        return new ArrayList<>( );
-    }
+    IRecordPanelInitializer getRecordPanelInitializer( );
+    
+    /**
+     * Set the RecordPanelInitializer of the RecordPanelInitializerDisplay
+     * 
+     * @param recordPanelInitializer of the RecordPanelDisplayInitializer
+     */
+    void setRecordPanelInitializer( IRecordPanelInitializer recordPanelInitializer );
+    
+    /**
+     * Build the RecordParameters associated to the RecordPanelDisplayInitializer
+     * 
+     * @param request
+     *          The request use to build the RecordParameters for the RecordPanelDisplayInitializer
+     */
+    void buildRecordParameters( HttpServletRequest request );
 }

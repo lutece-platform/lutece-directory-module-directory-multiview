@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter;
 
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration;
 
 /**
@@ -41,19 +42,19 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 public interface IRecordFilter
 {
     /**
-     * Return the RecordFilterItem of the RecordFilter
+     * Return the RecordParameters of the RecordFilter
      * 
-     * @return the RecordFilterItem of the RecordFilter
+     * @return the RecordParameters of the RecordFilter
      */
-    RecordFilterItem getRecordFilterItem( );
+    RecordParameters getRecordParameters( );
 
     /**
-     * Set the RecordFilterItem to the RecordFilter
+     * Set the RecordParameters to the RecordFilter
      * 
-     * @param recordFilterItem
-     *            The RecordFilterItem to set to the RecordFilter
+     * @param recordParameters
+     *            The RecordParameters to set to the RecordFilter
      */
-    void setRecordFilterItem( RecordFilterItem recordFilterItem );
+    void setRecordParameters( RecordParameters recordParameters );
 
     /**
      * Return the RecordFilterConfiguration for the RecordFilter

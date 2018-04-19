@@ -33,10 +33,9 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service.search;
 
-import java.util.List;
 import java.util.Locale;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.portal.business.user.AdminUser;
 
 /**
@@ -48,17 +47,16 @@ public interface IDirectoryMultiviewSearchService
     String BEAN_NAME = "directory-multiview.directoryMultiviewSearchService";
 
     /**
-     * Filter the list of DirectoryRecordItem by the record result obtains by the search of the given term
+     * Filter the list of DirectoryRecordItem of the given RecordPanel by the record result obtains by the search of the given term
      * 
-     * @param listDirectoryRecordItem
-     *            The list of DirectoryRecordItem to filter
+     * @param recordPanel
+     *            The RecordPanel to retrieve the list of DirectryRecordItem from
      * @param adminUser
      *            The adminUser who made the search
      * @param strSearchText
      *            The term to search on the record
      * @param locale
      *            The locale
-     * @return the map which contains only RecordAssignement of record which contains entry with the given term as value
      */
-    List<DirectoryRecordItem> filterBySearchedText( List<DirectoryRecordItem> listDirectoryRecordItem, AdminUser adminUser, String strSearchText, Locale locale );
+    void filterBySearchedText( IRecordPanel recordPanel, AdminUser adminUser, String strSearchText, Locale locale );
 }

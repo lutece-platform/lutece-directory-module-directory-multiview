@@ -33,31 +33,10 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.impl;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * RecordPanelDisplay for the default panel
  */
 public class RecordPanelRecordsDisplay extends AbstractRecordPanelDisplay
 {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void configureRecordPanelDisplay( HttpServletRequest request )
-    {
-        initPanel( request );
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected Map<String, Object> getFilterDisplayMapValues( HttpServletRequest request )
-    {
-        return new LinkedHashMap<>( );
-    }
 }
