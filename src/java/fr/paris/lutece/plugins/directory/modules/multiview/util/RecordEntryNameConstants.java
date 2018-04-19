@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.util;
 /**
  * Constants class for the name of RecordFilter or RecordColumn element names for the Entry
  */
-public class RecordEntryNameConstants
+public final class RecordEntryNameConstants
 {
     // Filter Constants
     public static final String FILTER_ENTRY_BASE_NAME_PATTERN = "column_";

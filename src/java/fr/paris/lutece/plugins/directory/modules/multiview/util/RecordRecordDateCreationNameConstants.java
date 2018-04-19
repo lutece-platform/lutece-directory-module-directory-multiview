@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.util;
 /**
  * Constants class for the name of RecordFilter or RecordColumn element names for the Record date creation
  */
-public class RecordRecordDateCreationNameConstants
+public final class RecordRecordDateCreationNameConstants
 {
     // Filter Constants
     public static final String FILTER_RECORD_DATE_CREATION = "period_record_creation";

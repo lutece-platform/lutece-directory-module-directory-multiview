@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.util;
 /**
  * Constants class for the name of RecordFilter or RecordColumn element names for the Workflow State
  */
-public class RecordWorkflowStateNameConstants
+public final class RecordWorkflowStateNameConstants
 {
     // Filter Constants
     public static final String FILTER_ID_WORKFLOW_STATE = "id_workflow_state";

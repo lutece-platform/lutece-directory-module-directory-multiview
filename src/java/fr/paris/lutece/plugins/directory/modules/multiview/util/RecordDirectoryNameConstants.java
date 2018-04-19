@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.util;
 /**
  * Constants class for the name of RecordFilter or RecordColumn element names for the Directory
  */
-public class RecordDirectoryNameConstants
+public final class RecordDirectoryNameConstants
 {
     // Filter Constants
     public static final String FILTER_ID_DIRECTORY = "id_directory";
