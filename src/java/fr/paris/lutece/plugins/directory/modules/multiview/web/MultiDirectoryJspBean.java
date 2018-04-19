@@ -205,8 +205,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     public String getManageDirectoryRecord( HttpServletRequest request ) throws AccessDeniedException
     {
         // Retrieve the list of all filters, columns and panels if the pagination and the sort are not used
-        boolean isSessionLost = isSessionLost( );
-        if ( isPaginationAndSortNotUsed( request ) || isSessionLost )
+        boolean bIsSessionLost = isSessionLost( );
+        if ( isPaginationAndSortNotUsed( request ) || bIsSessionLost )
         {
             initRecordRelatedLists( request );
             _strSearchedText = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT );
@@ -220,7 +220,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         sortDirectoryRecordItemList( request, _recordPanelDisplayActive.getDirectoryRecordItemList( ) );
 
         // Build the template of each record filter display
-        if ( isPaginationAndSortNotUsed( request ) || isSessionLost )
+        if ( isPaginationAndSortNotUsed( request ) || bIsSessionLost )
         {
             _listRecordFilterDisplay.stream( ).forEach( recordFilterDisplay -> recordFilterDisplay.buildTemplate( request ) );
             Collections.sort( _listRecordFilterDisplay, new RecordListPositionComparator( ) );
