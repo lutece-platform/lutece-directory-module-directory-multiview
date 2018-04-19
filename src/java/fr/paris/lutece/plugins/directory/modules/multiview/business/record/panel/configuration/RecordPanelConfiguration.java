@@ -52,13 +52,13 @@ public class RecordPanelConfiguration
      * Constructor
      * 
      * @param strTechnicalCode
-     *          The technical code of the RecordPanel
+     *            The technical code of the RecordPanel
      * @param nPosition
      *            The position of the RecordPanel
      * @param strTitle
-     *          The title of the RecordPanel
+     *            The title of the RecordPanel
      * @param listRecordPanelInitializer
-     *          The list of all RecordPanelInitializer used to built the initialize list of the table associated to the given panel
+     *            The list of all RecordPanelInitializer used to built the initialize list of the table associated to the given panel
      */
     public RecordPanelConfiguration( String strTechnicalCode, int nPosition, String strTitle, List<IRecordPanelInitializer> listRecordPanelInitializer )
     {
@@ -77,7 +77,7 @@ public class RecordPanelConfiguration
     {
         return _strTechnicalCode;
     }
-    
+
     /**
      * Return the position of the RecordPanel
      * 
@@ -87,7 +87,7 @@ public class RecordPanelConfiguration
     {
         return _nPosition;
     }
-    
+
     /**
      * Return the title of the RecordPanel
      * 
@@ -97,7 +97,7 @@ public class RecordPanelConfiguration
     {
         return _strTitle;
     }
-    
+
     /**
      * Return the list of RecordPanelInitializer of the RecordPanelconfiguration
      * 

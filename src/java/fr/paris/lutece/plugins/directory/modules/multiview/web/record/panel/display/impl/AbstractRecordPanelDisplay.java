@@ -80,17 +80,17 @@ public abstract class AbstractRecordPanelDisplay implements IRecordPanelDisplay,
     public int getPosition( )
     {
         int nRecordPanelPosition = DEFAULT_RECORD_PANEL_POSITION;
-        
+
         if ( _recordPanel != null )
         {
             RecordPanelConfiguration recordPanelConfiguration = _recordPanel.getRecordPanelConfiguration( );
-            
+
             if ( recordPanelConfiguration != null )
             {
                 nRecordPanelPosition = recordPanelConfiguration.getPosition( );
             }
         }
-        
+
         return nRecordPanelPosition;
     }
 

@@ -47,40 +47,41 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class RecordPanelInitializerQueryPartFacade
 {
     // Variables
-    private static final List<IRecordPanelInitializerQueryPartFactory> _listRecordPanelInitializerQueryPartFactory = SpringContextService.getBeansOfType( IRecordPanelInitializerQueryPartFactory.class );
-    
+    private static final List<IRecordPanelInitializerQueryPartFactory> _listRecordPanelInitializerQueryPartFactory = SpringContextService
+            .getBeansOfType( IRecordPanelInitializerQueryPartFactory.class );
+
     /**
      * Constructor
      */
     private RecordPanelInitializerQueryPartFacade( )
     {
-        
+
     }
-    
+
     /**
      * Retrieve the IRecordPanelInitializerQueryPart associate to the given RecordPanelInitializer
      * 
      * @param recordPanelInitializer
-     *          The RecordPanelInitializer to retrieve the RecordPanelInitializerQueryPart associated
+     *            The RecordPanelInitializer to retrieve the RecordPanelInitializerQueryPart associated
      * @return the IRecordPanelInitializerQueryPart associate to the given RecordPanelInitializer or null if not found
      */
     public static IRecordPanelInitializerQueryPart getRecordPanelInitializerQueryPart( IRecordPanelInitializer recordPanelInitializer )
     {
         IRecordPanelInitializerQueryPart recordPanelInitializerQueryPart = null;
-        
+
         if ( recordPanelInitializer != null && !CollectionUtils.isEmpty( _listRecordPanelInitializerQueryPartFactory ) )
         {
             for ( IRecordPanelInitializerQueryPartFactory recordPanelInitializerQueryPartFactory : _listRecordPanelInitializerQueryPartFactory )
             {
                 recordPanelInitializerQueryPart = recordPanelInitializerQueryPartFactory.buildRecordPanelInitializerQueryPart( recordPanelInitializer );
-                
+
                 if ( recordPanelInitializerQueryPart != null )
                 {
                     break;
                 }
             }
         }
-        
+
         return recordPanelInitializerQueryPart;
     }
 }

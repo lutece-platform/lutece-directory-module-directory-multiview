@@ -43,16 +43,17 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class RecordDisplayInitializerFactoryFacade
 {
     // Variables
-    private static final List<IRecordPanelDisplayInitializerFactory> _listRecordPanelDsiaplyInitializerFactory = SpringContextService.getBeansOfType( IRecordPanelDisplayInitializerFactory.class );
-    
+    private static final List<IRecordPanelDisplayInitializerFactory> _listRecordPanelDsiaplyInitializerFactory = SpringContextService
+            .getBeansOfType( IRecordPanelDisplayInitializerFactory.class );
+
     /**
      * Constructor
      */
     private RecordDisplayInitializerFactoryFacade( )
     {
-        
+
     }
-    
+
     /**
      * Build the list of all implementation of the IRecordPanelDisplayInitializer interface
      * 

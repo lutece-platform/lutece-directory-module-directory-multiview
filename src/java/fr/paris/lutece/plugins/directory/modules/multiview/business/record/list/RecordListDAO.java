@@ -75,9 +75,9 @@ public class RecordListDAO implements IRecordListDAO
         {
             return;
         }
-        
+
         // Build the list of query part from the recordPanel, the list of columns and the list of filters
-        List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart =  buildRecordPanelInitializerQueryPartList( recordPanel );
+        List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart = buildRecordPanelInitializerQueryPartList( recordPanel );
         List<IRecordColumnQueryPart> listRecordColumnQueryPart = buildRecordColumnQueryPartList( listRecordColumn );
         List<IRecordFilterQueryPart> listRecordFilterQueryPart = buildRecordFilterQueryPartList( listRecordFilter );
 
@@ -125,12 +125,12 @@ public class RecordListDAO implements IRecordListDAO
 
         return directoryRecordItem;
     }
-    
+
     /**
      * Build the list of all RecordPanelInitializerQueryPart associate to all the RecordPanelInitializer to retrieve from the given RecordPanel
      * 
      * @param recordPanel
-     *          The RecordPanel used to retrieve the list of all RecordPanelInitializer to retrieve the list of RecordPanelInitializerQueryPart
+     *            The RecordPanel used to retrieve the list of all RecordPanelInitializer to retrieve the list of RecordPanelInitializerQueryPart
      * @return the list of all RecordPanelInitializerQueryPart associate to all the RecordPanelInitializer to retrieve from the given RecordPanel
      */
     private static List<IRecordPanelInitializerQueryPart> buildRecordPanelInitializerQueryPartList( IRecordPanel recordPanel )
@@ -146,7 +146,7 @@ public class RecordListDAO implements IRecordListDAO
             for ( IRecordPanelInitializer recordPanelInitializer : listRecordPanelInitializer )
             {
                 IRecordPanelInitializerQueryPart recordPanelInitializerQueryPart = retrieveRecordPanelInitializerQueryPart( recordPanelInitializer );
-                if( recordPanelInitializerQueryPart != null )
+                if ( recordPanelInitializerQueryPart != null )
                 {
                     listRecordPanelInitializerQueryPart.add( recordPanelInitializerQueryPart );
                 }
@@ -155,12 +155,12 @@ public class RecordListDAO implements IRecordListDAO
 
         return listRecordPanelInitializerQueryPart;
     }
-    
+
     /**
      * Retrieve the IRecordPanelInitializerQueryPart associate to the given RecordPanelInitializer
      * 
      * @param recordPanelInitializer
-     *          The RecordPanelInitializer used to retrieve the associated IRecordPanelInitializerQueryPart
+     *            The RecordPanelInitializer used to retrieve the associated IRecordPanelInitializerQueryPart
      * @return the IRecordPanelInitializerQueryPart associate to the given RecordPanelInitializer or null if not found
      */
     private static IRecordPanelInitializerQueryPart retrieveRecordPanelInitializerQueryPart( IRecordPanelInitializer recordPanelInitializer )
@@ -170,7 +170,7 @@ public class RecordListDAO implements IRecordListDAO
         if ( recordPanelInitializer != null )
         {
             recordPanelInitializerQueryPartResult = RecordPanelInitializerQueryPartFacade.getRecordPanelInitializerQueryPart( recordPanelInitializer );
-            
+
             if ( recordPanelInitializerQueryPartResult != null )
             {
                 recordPanelInitializerQueryPartResult.buildRecordPanelInitializerQuery( recordPanelInitializer.getRecordParameters( ) );

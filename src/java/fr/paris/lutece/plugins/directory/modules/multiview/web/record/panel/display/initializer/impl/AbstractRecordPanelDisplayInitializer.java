@@ -51,7 +51,7 @@ public abstract class AbstractRecordPanelDisplayInitializer implements IRecordPa
      */
     @Override
     public abstract void buildRecordParameters( HttpServletRequest request );
-    
+
     /**
      * {@inheritDoc}
      */
@@ -60,7 +60,7 @@ public abstract class AbstractRecordPanelDisplayInitializer implements IRecordPa
     {
         return _recordPanelInitializer;
     }
-    
+
     /**
      * {@inheritDoc}
      */

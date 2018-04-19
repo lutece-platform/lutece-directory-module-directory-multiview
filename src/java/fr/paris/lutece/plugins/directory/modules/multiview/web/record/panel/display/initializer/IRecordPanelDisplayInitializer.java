@@ -48,19 +48,20 @@ public interface IRecordPanelDisplayInitializer
      * @return the IRecordPanelInitializer associated to the RecordPanelDisplayInitializer
      */
     IRecordPanelInitializer getRecordPanelInitializer( );
-    
+
     /**
      * Set the RecordPanelInitializer of the RecordPanelInitializerDisplay
      * 
-     * @param recordPanelInitializer of the RecordPanelDisplayInitializer
+     * @param recordPanelInitializer
+     *            of the RecordPanelDisplayInitializer
      */
     void setRecordPanelInitializer( IRecordPanelInitializer recordPanelInitializer );
-    
+
     /**
      * Build the RecordParameters associated to the RecordPanelDisplayInitializer
      * 
      * @param request
-     *          The request use to build the RecordParameters for the RecordPanelDisplayInitializer
+     *            The request use to build the RecordParameters for the RecordPanelDisplayInitializer
      */
     void buildRecordParameters( HttpServletRequest request );
 }

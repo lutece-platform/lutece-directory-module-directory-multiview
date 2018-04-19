@@ -64,14 +64,15 @@ public final class QueryBuilder
      * Build a SQL query from different parts from a list of RecordColumn and a list of RecordFilter
      * 
      * @param listRecordPanelInitializerQueryPart
-     *          The list of all RecordPanelInitializerQueryPart to use for built the query
+     *            The list of all RecordPanelInitializerQueryPart to use for built the query
      * @param listRecordColumnQueryPart
      *            The of RecordColumnQueryPart to retrieve the select and from parts of the query
      * @param listRecordFilterQueryPart
      *            The list of RecordFilterQueryPart to retrieve the where parts of the query
      * @return the global query build from the RecordColmuns and RecordFilters
      */
-    public static String buildQuery( List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart, List<IRecordColumnQueryPart> listRecordColumnQueryPart, List<IRecordFilterQueryPart> listRecordFilterQueryPart )
+    public static String buildQuery( List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart,
+            List<IRecordColumnQueryPart> listRecordColumnQueryPart, List<IRecordFilterQueryPart> listRecordFilterQueryPart )
     {
         StringBuilder stringBuilderGlobalQuery = new StringBuilder( );
 
@@ -106,12 +107,14 @@ public final class QueryBuilder
      * @param listRecordColumnQueryPart
      *            The list of RecordColumnQueryPart to retrieve the select query parts from
      */
-    private static void buildSelectQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart, List<IRecordColumnQueryPart> listRecordColumnQueryPart )
+    private static void buildSelectQueryPart( StringBuilder stringBuilderGlobalQuery,
+            List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart, List<IRecordColumnQueryPart> listRecordColumnQueryPart )
     {
         List<String> listSelectQueryParts = new ArrayList<>( );
 
         // Use the query part of the RecordPanelInitializer
-        List<String> listRecordPanelInitializerSelectQueryParts = RecordPanelInitializerQueryBuilder.buildPanelInitializerSelectQueryParts( listRecordPanelInitializerQueryPart );
+        List<String> listRecordPanelInitializerSelectQueryParts = RecordPanelInitializerQueryBuilder
+                .buildPanelInitializerSelectQueryParts( listRecordPanelInitializerQueryPart );
         if ( !CollectionUtils.isEmpty( listRecordPanelInitializerSelectQueryParts ) )
         {
             listSelectQueryParts.addAll( listRecordPanelInitializerSelectQueryParts );
@@ -137,12 +140,14 @@ public final class QueryBuilder
      * @param listRecordColumnQueryPart
      *            The list of RecordColumnQueryPart to retrieve the select query parts from
      */
-    private static void buildFromQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart, List<IRecordColumnQueryPart> listRecordColumnQueryPart )
+    private static void buildFromQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart,
+            List<IRecordColumnQueryPart> listRecordColumnQueryPart )
     {
         List<String> listFromQueryParts = new ArrayList<>( );
 
         // Use the query part of the RecordPanelInitializer
-        List<String> listRecordPanelInitializerFromQueryPart = RecordPanelInitializerQueryBuilder.buildPanelInitializerFromQueryParts( listRecordPanelInitializerQueryPart );
+        List<String> listRecordPanelInitializerFromQueryPart = RecordPanelInitializerQueryBuilder
+                .buildPanelInitializerFromQueryParts( listRecordPanelInitializerQueryPart );
         if ( !CollectionUtils.isEmpty( listRecordPanelInitializerFromQueryPart ) )
         {
             listFromQueryParts.addAll( listRecordPanelInitializerFromQueryPart );
@@ -168,7 +173,8 @@ public final class QueryBuilder
      * @param listRecordColumnQueryPart
      *            The list of RecordColumnQueryPart to retrieve the select query parts from
      */
-    private static void buildJoinQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart, List<IRecordColumnQueryPart> listRecordColumnQueryPart )
+    private static void buildJoinQueryPart( StringBuilder stringBuilderGlobalQuery, List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart,
+            List<IRecordColumnQueryPart> listRecordColumnQueryPart )
     {
         StringBuilder stringBuilderJoinQueryPart = new StringBuilder( );
 

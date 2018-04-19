@@ -50,11 +50,11 @@ public abstract class AbstractRecordPanel implements IRecordPanel
     // Constants
     private static final String DEFAULT_RECORD_PANEL_TITLE = StringUtils.EMPTY;
     private static final String DEFAULT_RECORD_PANEL_TECHNICAL_CODE = StringUtils.EMPTY;
-    
+
     // Variables
     private RecordPanelConfiguration _recordPanelConfiguration;
     private List<DirectoryRecordItem> _listDirectoryRecordItem = new ArrayList<>( );
-    
+
     /**
      * {@inheritDoc}
      */
@@ -63,7 +63,7 @@ public abstract class AbstractRecordPanel implements IRecordPanel
     {
         return _recordPanelConfiguration;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,12 +71,12 @@ public abstract class AbstractRecordPanel implements IRecordPanel
     public String getTitle( )
     {
         String strTitle = DEFAULT_RECORD_PANEL_TITLE;
-        
+
         if ( _recordPanelConfiguration != null )
         {
             strTitle = _recordPanelConfiguration.getTitle( );
         }
-        
+
         return strTitle;
     }
 
@@ -87,12 +87,12 @@ public abstract class AbstractRecordPanel implements IRecordPanel
     public String getTechnicalCode( )
     {
         String strTechnicalCode = DEFAULT_RECORD_PANEL_TECHNICAL_CODE;
-        
+
         if ( _recordPanelConfiguration != null )
         {
             strTechnicalCode = _recordPanelConfiguration.getTechnicalCode( );
         }
-        
+
         return strTechnicalCode;
     }
 
@@ -113,12 +113,12 @@ public abstract class AbstractRecordPanel implements IRecordPanel
     {
         _listDirectoryRecordItem = listDirectoryRecordItem;
     }
-    
+
     /**
      * Set the RecordPanelConfiguration of the RecordPanel
      * 
      * @param recordPanelConfiguration
-     *          The RecordPanelconfiguration to set the RecordPanel
+     *            The RecordPanelconfiguration to set the RecordPanel
      */
     protected void setRecordPanelConfiguration( RecordPanelConfiguration recordPanelConfiguration )
     {

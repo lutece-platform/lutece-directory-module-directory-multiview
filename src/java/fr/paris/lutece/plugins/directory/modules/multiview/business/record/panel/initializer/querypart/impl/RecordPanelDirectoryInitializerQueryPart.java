@@ -57,7 +57,7 @@ public class RecordPanelDirectoryInitializerQueryPart extends AbstractRecordPane
         setRecordPanelInitializerFromQuery( RECORD_DIRECTORY_FROM_QUERY );
         setRecordPanelInitializerJoinQueriesList( Arrays.asList( RECORd_DIRECTORY_JOIN_QUERY ) );
     }
-    
+
     /**
      * {@inheritDoc}
      */

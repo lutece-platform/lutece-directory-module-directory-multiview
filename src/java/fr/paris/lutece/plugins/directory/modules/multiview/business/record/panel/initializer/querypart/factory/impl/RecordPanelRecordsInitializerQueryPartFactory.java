@@ -47,7 +47,7 @@ public class RecordPanelRecordsInitializerQueryPartFactory implements IRecordPan
     /**
      * {@inheritDoc}
      */
-    @Override    
+    @Override
     public IRecordPanelInitializerQueryPart buildRecordPanelInitializerQueryPart( IRecordPanelInitializer recordPanelInitializer )
     {
         IRecordPanelInitializerQueryPart recordPanelRecordsInitializerQueryPart = null;

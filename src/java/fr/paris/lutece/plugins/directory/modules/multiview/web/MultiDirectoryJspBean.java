@@ -316,8 +316,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private void buildRecordPanelDisplayWithData( )
     {
         // Retrieve the list of all RecordFilter
-        List<IRecordFilter> listRecordFilter = _listRecordFilterDisplay.stream( ).map( IRecordFilterDisplay::getRecordFilter )
-                .collect( Collectors.toList( ) );
+        List<IRecordFilter> listRecordFilter = _listRecordFilterDisplay.stream( ).map( IRecordFilterDisplay::getRecordFilter ).collect( Collectors.toList( ) );
 
         for ( IRecordPanelDisplay recordPanelDisplay : _listRecordPanelDisplay )
         {

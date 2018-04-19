@@ -49,7 +49,7 @@ public interface IRecordPanelInitializerQueryPart
      *            The RecordParameters to use for building the query
      */
     void buildRecordPanelInitializerQuery( RecordParameters recordParameters );
-    
+
     /**
      * Return the select query part of the RecordPanelInitializer
      * 

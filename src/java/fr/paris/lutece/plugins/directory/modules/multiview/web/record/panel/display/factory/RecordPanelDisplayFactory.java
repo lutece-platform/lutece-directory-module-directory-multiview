@@ -111,24 +111,24 @@ public final class RecordPanelDisplayFactory
 
         return listRecordPanelDisplay;
     }
-    
+
     /**
-     * Configure the RecordPanelDisplay by defining if its active or not and build all the RecordPanelInitializer
-     * with their RecordParameters from its RecordPanel
+     * Configure the RecordPanelDisplay by defining if its active or not and build all the RecordPanelInitializer with their RecordParameters from its
+     * RecordPanel
      * 
      * @param request
      *            The request to retrieve the information from
      * @param recordPanelDisplay
-     *          The recordPanelInitializer to configure with the information from the request
+     *            The recordPanelInitializer to configure with the information from the request
      */
     private static void configureRecordPanelDisplay( HttpServletRequest request, IRecordPanelDisplay recordPanelDisplay )
     {
         boolean bIsSelectedPanel = isSelectedPanel( request, recordPanelDisplay.getTechnicalCode( ) );
         recordPanelDisplay.setActive( bIsSelectedPanel );
-        
+
         buildRecordPanelDisplayInitializer( request, recordPanelDisplay.getRecordPanel( ) );
     }
-    
+
     /**
      * Check if the panel is the selected panel or not. Activate the default panel if not found
      * 
@@ -160,23 +160,24 @@ public final class RecordPanelDisplayFactory
 
         return bIsSelectedPanel;
     }
-    
+
     /**
      * Build the list of all RecordPanelDisplayInitializer of all RecordPanelInitializer of the RecordPänel
      * 
      * @param request
-     *          The HttpServletRequest used to build the list of all RecordPanelDisplayInitializer 
+     *            The HttpServletRequest used to build the list of all RecordPanelDisplayInitializer
      * @param recordPanel
-     *          The IRecordPanel to the RecordPanelInitializer from
+     *            The IRecordPanel to the RecordPanelInitializer from
      */
     private static void buildRecordPanelDisplayInitializer( HttpServletRequest request, IRecordPanel recordPanel )
     {
-        List<IRecordPanelDisplayInitializerFactory> listRecordPanelDisplayInitializerFactory = RecordDisplayInitializerFactoryFacade.buildRecordPanelDisplayInitializerList( );
-        
+        List<IRecordPanelDisplayInitializerFactory> listRecordPanelDisplayInitializerFactory = RecordDisplayInitializerFactoryFacade
+                .buildRecordPanelDisplayInitializerList( );
+
         if ( !CollectionUtils.isEmpty( listRecordPanelDisplayInitializerFactory ) && recordPanel != null )
         {
             RecordPanelConfiguration recordPanelConfiguration = recordPanel.getRecordPanelConfiguration( );
-            
+
             if ( recordPanelConfiguration != null )
             {
                 for ( IRecordPanelDisplayInitializerFactory recordPanelDisplayInitializerFactory : listRecordPanelDisplayInitializerFactory )
@@ -194,19 +195,21 @@ public final class RecordPanelDisplayFactory
      * and build its RecordParameters with the request
      * 
      * @param request
-     *          The request used to build the RecordParameters of the RecordPanelInitializer
+     *            The request used to build the RecordParameters of the RecordPanelInitializer
      * @param recordPanelDisplayInitializerFactory
-     *          The IRecordPanelDisplayInitializerFactory used to build the IRecordPanelDisplayInitializer
+     *            The IRecordPanelDisplayInitializerFactory used to build the IRecordPanelDisplayInitializer
      * @param listRecordPanelInitializer
-     *          The list of all RecordPanelInitializer to retrieve those which is associated to the given IRecordPanelDisplayInitializerFactory
+     *            The list of all RecordPanelInitializer to retrieve those which is associated to the given IRecordPanelDisplayInitializerFactory
      */
-    private static void buildPanelDisplayInitializerRecordParameters( HttpServletRequest request, IRecordPanelDisplayInitializerFactory recordPanelDisplayInitializerFactory, List<IRecordPanelInitializer> listRecordPanelInitializer )
+    private static void buildPanelDisplayInitializerRecordParameters( HttpServletRequest request,
+            IRecordPanelDisplayInitializerFactory recordPanelDisplayInitializerFactory, List<IRecordPanelInitializer> listRecordPanelInitializer )
     {
         if ( recordPanelDisplayInitializerFactory != null && !CollectionUtils.isEmpty( listRecordPanelInitializer ) )
         {
             for ( IRecordPanelInitializer recordPanelInitializer : listRecordPanelInitializer )
             {
-                IRecordPanelDisplayInitializer recordPanelDisplayInitializer = recordPanelDisplayInitializerFactory.buildRecordPanelDisplay( recordPanelInitializer );
+                IRecordPanelDisplayInitializer recordPanelDisplayInitializer = recordPanelDisplayInitializerFactory
+                        .buildRecordPanelDisplay( recordPanelInitializer );
                 if ( recordPanelDisplayInitializer != null )
                 {
                     recordPanelDisplayInitializer.setRecordPanelInitializer( recordPanelInitializer );
@@ -215,7 +218,7 @@ public final class RecordPanelDisplayFactory
             }
         }
     }
-    
+
     /**
      * Check if there is an active RecordDisplay Panel in the given list and if there is no one set the first element in the list (which is in first position)
      * as active

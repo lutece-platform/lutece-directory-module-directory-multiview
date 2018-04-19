@@ -51,12 +51,12 @@ public class RecordPanelRecordsDisplayInitializerFactory implements IRecordPanel
     public IRecordPanelDisplayInitializer buildRecordPanelDisplay( IRecordPanelInitializer recordPanelInitializer )
     {
         IRecordPanelDisplayInitializer recordPanelRecordsDisplayInitializer = null;
-        
+
         if ( recordPanelInitializer instanceof RecordPanelRecordsInitializer )
         {
             recordPanelRecordsDisplayInitializer = new RecordPanelRecordsDisplayInitializer( );
         }
-        
+
         return recordPanelRecordsDisplayInitializer;
     }
 }

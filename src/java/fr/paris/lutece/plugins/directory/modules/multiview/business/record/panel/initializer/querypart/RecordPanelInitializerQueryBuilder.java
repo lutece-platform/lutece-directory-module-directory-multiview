@@ -114,7 +114,8 @@ public final class RecordPanelInitializerQueryBuilder
      * @param listRecordPanelInitializerQueryPart
      *            The list of all RecordPanelInitializerQueryPart to retrieve the list of join query parts from
      */
-    public static void buildRecordPanelInitializerJoinQueryParts( StringBuilder stringBuilderJoinQueryPart, List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart )
+    public static void buildRecordPanelInitializerJoinQueryParts( StringBuilder stringBuilderJoinQueryPart,
+            List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart )
     {
         for ( IRecordPanelInitializerQueryPart recordPanelInitializerQueryPart : listRecordPanelInitializerQueryPart )
         {

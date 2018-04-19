@@ -50,13 +50,13 @@ public abstract class AbstractRecordPanelInitializerQueryPart implements IRecord
     private String _strRecordPanelInitializerSelectQuery = StringUtils.EMPTY;
     private String _strRecordPanelInitializerFromQuery = StringUtils.EMPTY;
     private List<String> _listRecordPanelInitializerJoinQueries = new ArrayList<>( );
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public abstract void buildRecordPanelInitializerQuery( RecordParameters recordParameters );
-    
+
     /**
      * {@inheritDoc}
      */
@@ -65,18 +65,18 @@ public abstract class AbstractRecordPanelInitializerQueryPart implements IRecord
     {
         return _strRecordPanelInitializerSelectQuery;
     }
-    
+
     /**
      * Set the select query part of the RecordPanelInitializer
      * 
      * @param strRecordPanelInitializerSelectQuery
-     *          The select query part of the RecordPanelInitializer
+     *            The select query part of the RecordPanelInitializer
      */
     protected void setRecordPanelInitializerSelectQuery( String strRecordPanelInitializerSelectQuery )
     {
         _strRecordPanelInitializerSelectQuery = strRecordPanelInitializerSelectQuery;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -85,18 +85,18 @@ public abstract class AbstractRecordPanelInitializerQueryPart implements IRecord
     {
         return _strRecordPanelInitializerFromQuery;
     }
-    
+
     /**
      * Set the From query part of the RecordPanelInitializer
      * 
      * @param strRecordPanelInitializerFrolmQuery
-     *          The from query part of the RecordPanelInitializer to set
+     *            The from query part of the RecordPanelInitializer to set
      */
     protected void setRecordPanelInitializerFromQuery( String strRecordPanelInitializerFrolmQuery )
     {
         _strRecordPanelInitializerFromQuery = strRecordPanelInitializerFrolmQuery;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -105,12 +105,12 @@ public abstract class AbstractRecordPanelInitializerQueryPart implements IRecord
     {
         return _listRecordPanelInitializerJoinQueries;
     }
-    
+
     /**
      * Set the list of all join query parts of the RecordPanelInitializer
      * 
      * @param listRecordPanelInitializerJoinQueries
-     *          The list of all join query parts of RecordPanelInitializer
+     *            The list of all join query parts of RecordPanelInitializer
      */
     protected void setRecordPanelInitializerJoinQueriesList( List<String> listRecordPanelInitializerJoinQueries )
     {
