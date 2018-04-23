@@ -31,46 +31,55 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.list;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl.RecordPanelRecordsInitializerQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 
 /**
- * Mock of a RecordPanelDirectoryInitializerQueryPart
+ * Mock implementation of the RecordListDAO
  */
-public class RecordPanelDirectoryInitializerQueryPartMock extends RecordPanelRecordsInitializerQueryPart
+public class RecordListDAOMock implements IRecordListDAO
 {
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY = "id_directory, id_record";
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY = "directory_directory AS directory";
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
-
+    // Constants
+    private static final int ID_DIRECTORY = 14;
+    
+    // Variables
+    private final List<Integer> _listIdAuthorizedRecord;
+    
     /**
-     * {@inheritDoc}
+     * Constructor
+     * 
+     * @param listIdAuthorizedRecord
+     *          The list of id of Record of which the user is authorized to see informations
      */
-    @Override
-    public String getRecordPanelInitializerSelectQuery( )
+    public RecordListDAOMock( List<Integer> listIdAuthorizedRecord )
     {
-        return RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY;
+        _listIdAuthorizedRecord = listIdAuthorizedRecord;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getRecordPanelInitializerFromQuery( )
+    public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
     {
-        return RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getRecordPanelInitializerJoinQueries( )
-    {
-        return Arrays.asList( RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY );
+        List<DirectoryRecordItem> listDirectoryRecordItem = new ArrayList<>( );
+        
+        for ( Integer nIdRecord : _listIdAuthorizedRecord )
+        {
+            DirectoryRecordItem directoryRecordItem = new DirectoryRecordItem( );
+            directoryRecordItem.setIdDirectory( ID_DIRECTORY );
+            directoryRecordItem.setIdRecord( nIdRecord );
+            
+            listDirectoryRecordItem.add( directoryRecordItem ); 
+        }
+        
+        recordPanel.setDirectoryRecordItemList( listDirectoryRecordItem );
     }
 }

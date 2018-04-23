@@ -31,46 +31,34 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl;
 
-import java.util.Arrays;
-import java.util.List;
-
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl.RecordPanelRecordsInitializerQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer;
 
 /**
- * Mock of a RecordPanelDirectoryInitializerQueryPart
+ * Mock for the RecordPanelDirectoryInitializer implementation
  */
-public class RecordPanelDirectoryInitializerQueryPartMock extends RecordPanelRecordsInitializerQueryPart
+public class RecordPanelDirectoryInitializerMock implements IRecordPanelInitializer
 {
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY = "id_directory, id_record";
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY = "directory_directory AS directory";
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
-
+    // Variables
+    private RecordParameters _recordParameters = new RecordParameters( );
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getRecordPanelInitializerSelectQuery( )
+    public RecordParameters getRecordParameters( )
     {
-        return RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY;
+        return _recordParameters;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getRecordPanelInitializerFromQuery( )
+    public void setRecordParameters( RecordParameters recordParameters )
     {
-        return RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getRecordPanelInitializerJoinQueries( )
-    {
-        return Arrays.asList( RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY );
+        _recordParameters = recordParameters; 
     }
 }

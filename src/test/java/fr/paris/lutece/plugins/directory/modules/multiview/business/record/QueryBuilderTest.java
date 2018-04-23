@@ -54,6 +54,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.colum
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.RecordColumnRecordDateCreationQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.RecordColumnWorkflowStateQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.RecordPanelDirectoryInitializerQueryPartMock;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock.RecordPanelRecordsInitializerQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.IRecordFilterQueryPart;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.RecordFilterDirectoryQueryPartMock;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.RecordFilterWorkflowStateQueryPartMock;
@@ -111,6 +112,18 @@ public class QueryBuilderTest extends LuteceTestCase
     }
 
     /**
+     * Test the for {@link QueryBuilder#buildQuery(List, List)} method with the columnDirectory without PanelInitializer
+     */
+    public void testBuildQueryWithColumnWithoutRecordPanelInitializer( )
+    {
+        String strBasicQueryToFind = StringUtils.EMPTY;
+
+        _listRecordColumnQueryPart.add( new RecordColumnDirectoryQueryPartMock( ) );
+
+        checkQueryToBuilt( strBasicQueryToFind );
+    }
+    
+    /**
      * Test the for {@link QueryBuilder#buildQuery(List, List)} method with the RecordPanel and the columnDirectory
      */
     public void testBuildQueryWithColumnDirectory( )
@@ -125,6 +138,20 @@ public class QueryBuilderTest extends LuteceTestCase
         checkQueryToBuilt( strBasicQueryToFind );
     }
 
+    /**
+     * Test the for {@link QueryBuilder#buildQuery(List, List)} method with the RecordPanel and the columnDirectory without the RecordPanelRecordsInitializer
+     */
+    public void testBuildQueryWithColumnDirectoryWithoutDirectoryInitializer( )
+    {
+        String strBasicQueryToFind = "SELECT id_directory, title FROM";
+
+        _listRecordColumnQueryPart.add( new RecordColumnDirectoryQueryPartMock( ) );
+
+        _listRecordPanelInitializerQueryPart.add( new RecordPanelRecordsInitializerQueryPartMock( ) );
+
+        checkQueryToBuilt( strBasicQueryToFind );
+    }
+    
     /**
      * Test the for {@link QueryBuilder#buildQuery(List, List)} method with the RecordPanel and three columns: the Directory, WorkflowState and
      * RecordDateCreation columns

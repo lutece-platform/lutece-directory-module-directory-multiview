@@ -33,44 +33,12 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock;
 
-import java.util.Arrays;
-import java.util.List;
-
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl.RecordPanelRecordsInitializerQueryPart;
 
 /**
- * Mock of a RecordPanelDirectoryInitializerQueryPart
+ * Mock of a RecordPanelRecordsInitializerQueryPart
  */
-public class RecordPanelDirectoryInitializerQueryPartMock extends RecordPanelRecordsInitializerQueryPart
+public class RecordPanelRecordsInitializerQueryPartMock extends RecordPanelRecordsInitializerQueryPart
 {
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY = "id_directory, id_record";
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY = "directory_directory AS directory";
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getRecordPanelInitializerSelectQuery( )
-    {
-        return RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getRecordPanelInitializerFromQuery( )
-    {
-        return RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getRecordPanelInitializerJoinQueries( )
-    {
-        return Arrays.asList( RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY );
-    }
 }

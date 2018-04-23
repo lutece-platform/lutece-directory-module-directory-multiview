@@ -31,46 +31,68 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock;
+package fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl;
 
-import java.util.Arrays;
-import java.util.List;
+import org.apache.commons.lang3.math.NumberUtils;
 
-import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl.RecordPanelRecordsInitializerQueryPart;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 
 /**
- * Mock of a RecordPanelDirectoryInitializerQueryPart
+ * Mock implementation of the RecordColumn for the RecordColumnDirectory
  */
-public class RecordPanelDirectoryInitializerQueryPartMock extends RecordPanelRecordsInitializerQueryPart
+public class RecordColumnDirectoryMock implements IRecordColumn
 {
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY = "id_directory, id_record";
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY = "directory_directory AS directory";
-    private static final String RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
-
+    // Variables
+    private int _nPosition = NumberUtils.INTEGER_MINUS_ONE;
+    private String _strRecordColumnTitle;
+    
+    /**
+     * Constructor
+     * 
+     * @param nRecordColumnPosition
+     *            The position of the RecordColumn
+     * @param strRecordColumnTitle
+     *            The title of the RecrdColumn
+     */
+    public RecordColumnDirectoryMock( int nRecordColumnPosition, String strRecordColumnTitle )
+    {
+        _nPosition = nRecordColumnPosition;
+        _strRecordColumnTitle = strRecordColumnTitle;
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getRecordPanelInitializerSelectQuery( )
+    public int getRecordColumnPosition( )
     {
-        return RECORD_PANEL_DIRECTORY_INITIALIZER_SELECT_QUERY;
+        return _nPosition;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getRecordPanelInitializerFromQuery( )
+    public void setRecordColumnPosition( int nPosition )
     {
-        return RECORD_PANEL_DIRECTORY_INITIALIZER_FROM_QUERY;
+        _nPosition = nPosition;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<String> getRecordPanelInitializerJoinQueries( )
+    public String getRecordColumnTitle( )
     {
-        return Arrays.asList( RECORD_PANEL_DIRECTORY_INITIALIZER_JOIN_QUERY );
+        return _strRecordColumnTitle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setRecordColumnTitle( String strRecordColumnTitle )
+    {
+        _strRecordColumnTitle = strRecordColumnTitle;
     }
 }
