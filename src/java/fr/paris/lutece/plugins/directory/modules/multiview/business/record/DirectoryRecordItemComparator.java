@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
@@ -45,8 +46,13 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Comparator for DirectoryRecordItam object. The comparison is based on the value of objects with the given key
  */
-public class DirectoryRecordItemComparator implements Comparator<DirectoryRecordItem>
+public class DirectoryRecordItemComparator implements Comparator<DirectoryRecordItem>, Serializable
 {
+    /**
+     * Generated UID
+     */
+    private static final long serialVersionUID = -8569813504412874604L;
+    
     // Constants
     private static final int SORT_ASCENDANT_DIRECTION = NumberUtils.INTEGER_ONE;
     private static final int SORT_DESCENDANT_DIRECTION = NumberUtils.INTEGER_MINUS_ONE;
@@ -56,8 +62,6 @@ public class DirectoryRecordItemComparator implements Comparator<DirectoryRecord
     private final String _strSortAttributeName;
     private final int _nCellPosition;
     private final int _nSortDirection;
-    private final DirectoryRecordItemComparatorConfig _defaultDirectoryRecordItemComparatorConfig = SpringContextService
-            .getBean( DEFAULT_CONFIGURATION_BEAN_NAME );
 
     /**
      * Constructor
@@ -75,9 +79,35 @@ public class DirectoryRecordItemComparator implements Comparator<DirectoryRecord
         }
         else
         {
-            _strSortAttributeName = _defaultDirectoryRecordItemComparatorConfig.getSortAttributeName( );
-            _nCellPosition = _defaultDirectoryRecordItemComparatorConfig.getColumnToSortPosition( );
-            _nSortDirection = computeSortDirection( _defaultDirectoryRecordItemComparatorConfig.isAscSort( ) );
+            DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfigDefault = SpringContextService.getBean( DEFAULT_CONFIGURATION_BEAN_NAME );
+            _strSortAttributeName = directoryRecordItemComparatorConfigDefault.getSortAttributeName( );
+            _nCellPosition = directoryRecordItemComparatorConfigDefault.getColumnToSortPosition( );
+            _nSortDirection = computeSortDirection( directoryRecordItemComparatorConfigDefault.isAscSort( ) );
+        }
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param directoryRecordItemComparatorConfig
+     *            The DirectoryRecordItemComparatorConfig to use for sort the DirectoryRecordItem
+     * @param directoryRecordItemComparatorConfigDefault
+     *          The DirectoryRecordItemComparatorConfig to use as default configuration if the given DirectoryRecordItemComparatorConfig doesn't have all
+     *          the necessaries information
+     */
+    public DirectoryRecordItemComparator( DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfig, DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfigDefault )
+    {
+        if ( directoryRecordItemComparatorConfig != null && directoryRecordItemComparatorConfig.getColumnToSortPosition( ) != NumberUtils.INTEGER_MINUS_ONE )
+        {
+            _strSortAttributeName = directoryRecordItemComparatorConfig.getSortAttributeName( );
+            _nCellPosition = directoryRecordItemComparatorConfig.getColumnToSortPosition( );
+            _nSortDirection = computeSortDirection( directoryRecordItemComparatorConfig.isAscSort( ) );
+        }
+        else
+        {
+            _strSortAttributeName = directoryRecordItemComparatorConfigDefault.getSortAttributeName( );
+            _nCellPosition = directoryRecordItemComparatorConfigDefault.getColumnToSortPosition( );
+            _nSortDirection = computeSortDirection( directoryRecordItemComparatorConfigDefault.isAscSort( ) );
         }
     }
 
