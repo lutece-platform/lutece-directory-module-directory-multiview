@@ -53,6 +53,10 @@ public class DAOUtilMock extends DAOUtil
      * 
      * @param strSQL
      *            The query to execute
+     * @param strColumnName
+     *          The name of the column
+     * @param strValueToRetrieve
+     *          The value to retrieve from the column
      */
     public DAOUtilMock( String strSQL, String strColumnName, String strValueToRetrieve )
     {
