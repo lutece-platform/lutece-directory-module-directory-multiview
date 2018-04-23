@@ -54,27 +54,69 @@ public class ReferenceItemComparator implements Comparator<ReferenceItem>, Seria
     @Override
     public int compare( ReferenceItem referenceItemOne, ReferenceItem referenceItemTwo )
     {
+        int nComparisonResult = NumberUtils.INTEGER_ZERO;
+        
         if ( referenceItemOne != null )
         {
             if ( referenceItemTwo != null )
             {
-                return referenceItemOne.getName( ).compareTo( referenceItemTwo.getName( ) );
+                String strReferenceItemNameOne = referenceItemOne.getName( );
+                String strReferenceItemNameTwo = referenceItemTwo.getName( );
+                
+                nComparisonResult = compareReferenceItemName( strReferenceItemNameOne, strReferenceItemNameTwo );
             }
             else
             {
-                return NumberUtils.INTEGER_ONE;
+                nComparisonResult = NumberUtils.INTEGER_ONE;
             }
         }
         else
         {
             if ( referenceItemTwo != null )
             {
-                return NumberUtils.INTEGER_MINUS_ONE;
+                nComparisonResult = NumberUtils.INTEGER_MINUS_ONE;
             }
             else
             {
-                return NumberUtils.INTEGER_ZERO;
+                nComparisonResult = NumberUtils.INTEGER_ZERO;
             }
         }
+        
+        return nComparisonResult;
+    }
+    
+    /**
+     * Make the comparison between the two given ReferenceItem names 
+     * 
+     * @param strReferenceItemNameOne
+     *          The first name of the ReferenceItem to compare
+     * @param strReferenceItemNameTwo
+     *          The second name of the ReferenceItem to compare
+     * @return the comparison between the two given ReferenceItem names
+     */
+    private int compareReferenceItemName( String strReferenceItemNameOne, String strReferenceItemNameTwo )
+    {
+        int nComparisonResult = NumberUtils.INTEGER_ZERO;
+        
+        if ( strReferenceItemNameOne == null )
+        {
+            if ( strReferenceItemNameTwo != null )
+            {
+                nComparisonResult = NumberUtils.INTEGER_MINUS_ONE;
+            }
+        }
+        else
+        {
+            if ( strReferenceItemNameTwo == null )
+            {
+                nComparisonResult = NumberUtils.INTEGER_ONE;
+            }
+            else
+            {
+                nComparisonResult = strReferenceItemNameOne.compareTo( strReferenceItemNameTwo );
+            }
+        }
+        
+        return nComparisonResult;
     }
 }
