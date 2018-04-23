@@ -40,18 +40,28 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Facade used to retrieve all the IRecordFilterDisplayFactory
  */
-public final class RecordFilterDisplayFactoryFacade
+public class RecordFilterDisplayFactoryFacade
 {
     // Variables
-    private static final List<IRecordFilterDisplayFactory> _listRecordFilterDisplayFactory = SpringContextService
-            .getBeansOfType( IRecordFilterDisplayFactory.class );
+    private final List<IRecordFilterDisplayFactory> _listRecordFilterDisplayFactory;
 
     /**
      * Constructor
      */
-    private RecordFilterDisplayFactoryFacade( )
+    public RecordFilterDisplayFactoryFacade( )
     {
-
+        _listRecordFilterDisplayFactory = SpringContextService.getBeansOfType( IRecordFilterDisplayFactory.class );
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param listRecordFilterDisplayFactory
+     *          The list of IRecordFilterDisplayFactory to use for the Facade
+     */
+    public RecordFilterDisplayFactoryFacade( List<IRecordFilterDisplayFactory> listRecordFilterDisplayFactory )
+    {
+        _listRecordFilterDisplayFactory = listRecordFilterDisplayFactory;
     }
 
     /**
@@ -59,7 +69,7 @@ public final class RecordFilterDisplayFactoryFacade
      * 
      * @return the list of all IRecordFilterDisplayFactory
      */
-    public static List<IRecordFilterDisplayFactory> buildRecordFilterDisplayFactoryList( )
+    public List<IRecordFilterDisplayFactory> buildRecordFilterDisplayFactoryList( )
     {
         return _listRecordFilterDisplayFactory;
     }

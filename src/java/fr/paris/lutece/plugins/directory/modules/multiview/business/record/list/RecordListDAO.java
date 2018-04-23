@@ -169,7 +169,7 @@ public class RecordListDAO implements IRecordListDAO
 
         if ( recordPanelInitializer != null )
         {
-            recordPanelInitializerQueryPartResult = RecordPanelInitializerQueryPartFacade.getRecordPanelInitializerQueryPart( recordPanelInitializer );
+            recordPanelInitializerQueryPartResult = new RecordPanelInitializerQueryPartFacade( ).getRecordPanelInitializerQueryPart( recordPanelInitializer );
 
             if ( recordPanelInitializerQueryPartResult != null )
             {
@@ -220,7 +220,7 @@ public class RecordListDAO implements IRecordListDAO
 
         if ( recordColumn != null )
         {
-            recordColumnQueryPartResult = RecordColumnQueryPartFacade.getRecordFilterQueryPart( recordColumn );
+            recordColumnQueryPartResult = new RecordColumnQueryPartFacade( ).getRecordFilterQueryPart( recordColumn );
         }
 
         return recordColumnQueryPartResult;
@@ -265,7 +265,7 @@ public class RecordListDAO implements IRecordListDAO
 
         if ( recordFilter != null )
         {
-            IRecordFilterQueryPart recordFilterQueryPart = RecordFilterQueryPartFacade.getRecordFilterQueryPart( recordFilter );
+            IRecordFilterQueryPart recordFilterQueryPart = new RecordFilterQueryPartFacade( ).getRecordFilterQueryPart( recordFilter );
             if ( recordFilterQueryPart != null )
             {
                 recordFilterQueryPart.buildRecordFilterQuery( recordFilter.getRecordParameters( ) );

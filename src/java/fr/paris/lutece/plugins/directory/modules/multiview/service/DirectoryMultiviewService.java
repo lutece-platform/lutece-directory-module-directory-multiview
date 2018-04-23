@@ -40,19 +40,21 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
  * Service for the module-directory-multiview
  */
 public class DirectoryMultiviewService implements IDirectoryMultiviewService
-{
+{ 
     /**
      * {@inheritDoc}
      */
     @Override
     public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
     {
-        RecordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
+        RecordListFacade recordListFacade = SpringContextService.getBean( RecordListFacade.BEAN_NAME );
+        recordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
     }
 
     /**

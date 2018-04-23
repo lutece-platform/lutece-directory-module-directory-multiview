@@ -282,13 +282,15 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      */
     private void initRecordRelatedLists( HttpServletRequest request )
     {
-        List<IRecordFilter> listRecordFilter = RecordFilterFactory.buildRecordFilterList( );
-        List<IRecordPanel> listRecordPanel = RecordPanelFactory.buildRecordPanelList( );
-        _listRecordColumn = RecordColumnFactory.buildRecordColumnList( );
+        List<IRecordFilter> listRecordFilter = new RecordFilterFactory( ).buildRecordFilterList( );
+        List<IRecordPanel> listRecordPanel = new RecordPanelFactory( ).buildRecordPanelList( );
+        
+        RecordColumnFactory recordColumnFactory = SpringContextService.getBean( RecordColumnFactory.BEAN_NAME );
+        _listRecordColumn = recordColumnFactory.buildRecordColumnList( );
 
-        _listRecordFilterDisplay = RecordFilterDisplayFactory.createRecordFilterDisplayList( request, listRecordFilter );
-        _listRecordColumnDisplay = RecordColumnDisplayFactory.createRecordColumnDisplayList( _listRecordColumn );
-        _listRecordPanelDisplay = RecordPanelDisplayFactory.createRecordPanelDisplayList( request, listRecordPanel );
+        _listRecordFilterDisplay = new RecordFilterDisplayFactory( ).createRecordFilterDisplayList( request, listRecordFilter );
+        _listRecordColumnDisplay = new RecordColumnDisplayFactory( ).createRecordColumnDisplayList( _listRecordColumn );
+        _listRecordPanelDisplay = new RecordPanelDisplayFactory( ).createRecordPanelDisplayList( request, listRecordPanel );
     }
 
     /**

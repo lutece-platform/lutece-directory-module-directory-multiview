@@ -40,18 +40,28 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Facade which allow to retrieve all the implementation of the IRecordPanelDisplayInitializerFactory
  */
-public final class RecordDisplayInitializerFactoryFacade
+public class RecordDisplayInitializerFactoryFacade
 {
     // Variables
-    private static final List<IRecordPanelDisplayInitializerFactory> _listRecordPanelDsiaplyInitializerFactory = SpringContextService
-            .getBeansOfType( IRecordPanelDisplayInitializerFactory.class );
+    private final List<IRecordPanelDisplayInitializerFactory> _listRecordPanelDsiaplyInitializerFactory;
 
     /**
      * Constructor
      */
-    private RecordDisplayInitializerFactoryFacade( )
+    public RecordDisplayInitializerFactoryFacade( )
     {
-
+        _listRecordPanelDsiaplyInitializerFactory = SpringContextService.getBeansOfType( IRecordPanelDisplayInitializerFactory.class );
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param listRecordPanelDsiaplyInitializerFactory
+     *          The list of IRecordPanelDisplayInitializerFactory to use for the Facade
+     */
+    public RecordDisplayInitializerFactoryFacade( List<IRecordPanelDisplayInitializerFactory> listRecordPanelDsiaplyInitializerFactory )
+    {
+        _listRecordPanelDsiaplyInitializerFactory = listRecordPanelDsiaplyInitializerFactory;
     }
 
     /**
@@ -59,7 +69,7 @@ public final class RecordDisplayInitializerFactoryFacade
      * 
      * @return the list of all impleemntation of the RecordPanelDisplayInitializer
      */
-    public static List<IRecordPanelDisplayInitializerFactory> buildRecordPanelDisplayInitializerList( )
+    public List<IRecordPanelDisplayInitializerFactory> buildRecordPanelDisplayInitializerList( )
     {
         return _listRecordPanelDsiaplyInitializerFactory;
     }

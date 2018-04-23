@@ -35,22 +35,29 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business.record.colu
 
 import java.util.List;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import javax.inject.Inject;
 
 /**
  * Factory used to build a list of RecordColumnColumn
  */
-public final class RecordColumnFactory
+public class RecordColumnFactory
 {
+    // Constants
+    public static final String BEAN_NAME = "directory-multiview.recordColumn.factory";
+    
     // Variables
-    private static final List<IRecordColumn> _listRecordColumn = SpringContextService.getBeansOfType( IRecordColumn.class );
-
+    private final List<IRecordColumn> _listRecordColumn;
+    
     /**
      * Constructor
+     * 
+     * @param listRecordColumn
+     *          The list of RecordColumn to use for the Factory
      */
-    private RecordColumnFactory( )
+    @Inject
+    public RecordColumnFactory( List<IRecordColumn> listRecordColumn )
     {
-
+        _listRecordColumn = listRecordColumn;
     }
 
     /**
@@ -58,7 +65,7 @@ public final class RecordColumnFactory
      * 
      * @return the list of all RecordColumn
      */
-    public static List<IRecordColumn> buildRecordColumnList( )
+    public List<IRecordColumn> buildRecordColumnList( )
     {
         return _listRecordColumn;
     }

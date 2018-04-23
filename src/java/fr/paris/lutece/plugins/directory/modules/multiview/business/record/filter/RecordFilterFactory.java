@@ -40,17 +40,28 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Factory used to build a list of RecordFilter
  */
-public final class RecordFilterFactory
+public class RecordFilterFactory
 {
     // Variables
-    private static final List<IRecordFilter> _listRecordFilter = SpringContextService.getBeansOfType( IRecordFilter.class );
+    private final List<IRecordFilter> _listRecordFilter;
 
     /**
      * Constructor
      */
-    private RecordFilterFactory( )
+    public RecordFilterFactory( )
     {
-
+        _listRecordFilter = SpringContextService.getBeansOfType( IRecordFilter.class );
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param listRecordFilter
+     *          The list of RecordFilter to use for the Factory
+     */
+    public RecordFilterFactory( List<IRecordFilter> listRecordFilter )
+    {
+        _listRecordFilter = listRecordFilter;
     }
 
     /**
@@ -58,7 +69,7 @@ public final class RecordFilterFactory
      * 
      * @return the list of all RecordFilter
      */
-    public static List<IRecordFilter> buildRecordFilterList( )
+    public List<IRecordFilter> buildRecordFilterList( )
     {
         return _listRecordFilter;
     }

@@ -40,18 +40,28 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Facade used to retrieve the list of all RecordColumnDisplayFactory
  */
-public final class RecordColumnDisplayFactoryFacade
+public class RecordColumnDisplayFactoryFacade
 {
     // Variables
-    private static final List<IRecordColumnDisplayFactory> _listRecordColumnDisplayFactory = SpringContextService
-            .getBeansOfType( IRecordColumnDisplayFactory.class );
+    private final List<IRecordColumnDisplayFactory> _listRecordColumnDisplayFactory;
 
     /**
      * Constructor
      */
-    private RecordColumnDisplayFactoryFacade( )
+    public RecordColumnDisplayFactoryFacade( )
     {
-
+        _listRecordColumnDisplayFactory = SpringContextService.getBeansOfType( IRecordColumnDisplayFactory.class );
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param listRecordColumnDisplayFactory
+     *          The list of IRecordColumnDisplayFactory to use for the Facade
+     */
+    public RecordColumnDisplayFactoryFacade( List<IRecordColumnDisplayFactory> listRecordColumnDisplayFactory )
+    {
+        _listRecordColumnDisplayFactory = listRecordColumnDisplayFactory;
     }
 
     /**
@@ -59,7 +69,7 @@ public final class RecordColumnDisplayFactoryFacade
      * 
      * @return the list of all RecordColumnDisplayFactory
      */
-    public static List<IRecordColumnDisplayFactory> buildRecordColumnDisplayFactoryList( )
+    public List<IRecordColumnDisplayFactory> buildRecordColumnDisplayFactoryList( )
     {
         return _listRecordColumnDisplayFactory;
     }

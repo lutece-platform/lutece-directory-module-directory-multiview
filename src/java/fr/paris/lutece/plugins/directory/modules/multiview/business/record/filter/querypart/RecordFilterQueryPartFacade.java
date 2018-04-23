@@ -42,18 +42,28 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Facade for a RecordFilter to build its request
  */
-public final class RecordFilterQueryPartFacade
+public class RecordFilterQueryPartFacade
 {
     // Variables
-    private static final List<IRecordFilterQueryPartFactory> _listRecordFilterQueryPartFactory = SpringContextService
-            .getBeansOfType( IRecordFilterQueryPartFactory.class );
+    private final List<IRecordFilterQueryPartFactory> _listRecordFilterQueryPartFactory;
 
     /**
      * Constructor
      */
-    private RecordFilterQueryPartFacade( )
+    public RecordFilterQueryPartFacade( )
     {
-
+        _listRecordFilterQueryPartFactory = SpringContextService.getBeansOfType( IRecordFilterQueryPartFactory.class );
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param listRecordFilterQueryPartFactory
+     *          The list of IRecordFilterQueryPartFactory to use for the Facade
+     */
+    public RecordFilterQueryPartFacade( List<IRecordFilterQueryPartFactory> listRecordFilterQueryPartFactory )
+    {
+        _listRecordFilterQueryPartFactory = listRecordFilterQueryPartFactory;
     }
 
     /**
@@ -63,7 +73,7 @@ public final class RecordFilterQueryPartFacade
      *            The RecordFilter to retrieve the associated QueryPart
      * @return the IRecordFilterQueryPart linked to the given filter or null if not found
      */
-    public static IRecordFilterQueryPart getRecordFilterQueryPart( IRecordFilter recordFilter )
+    public IRecordFilterQueryPart getRecordFilterQueryPart( IRecordFilter recordFilter )
     {
         IRecordFilterQueryPart recordFilterQueryPart = null;
 

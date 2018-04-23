@@ -18,6 +18,22 @@
     <!-- DAO -->
     <bean id="directory-multiview.recordListDAO" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListDAO" />
     
+    <!-- Facade -->
+    <bean id="directory-multiview.recordList.facade" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade">
+    	<constructor-arg name="recordListDAO" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.IRecordListDAO" ref="directory-multiview.recordListDAO" />
+    </bean>
+    
+    <!-- Factory -->
+    <bean id="directory-multiview.recordColumn.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnFactory">
+    	<constructor-arg name="listRecordColumn">
+    		<list value-type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn">
+    			<ref bean="directory-multiview.workflowState.column"/>
+    			<ref bean="directory-multiview.directory.column"/>
+    			<ref bean="directory-multiview.recordCreationDate.column"/>
+    		</list>
+    	</constructor-arg>
+    </bean>
+    
     <!-- DirectoryRecordItemComparator configuration -->
     <bean id="directory-multiview.directoryRecordItem.comparator.configuration.default" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItemComparatorConfig">
     	<constructor-arg name="nColumnToSortPosition" type="int" value="3"/>

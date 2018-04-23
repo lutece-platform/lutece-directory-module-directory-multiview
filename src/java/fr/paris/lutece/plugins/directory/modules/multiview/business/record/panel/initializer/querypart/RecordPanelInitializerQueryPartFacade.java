@@ -44,18 +44,28 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Facade for the RecordPanelInitializerQueryPart objects
  */
-public final class RecordPanelInitializerQueryPartFacade
+public class RecordPanelInitializerQueryPartFacade
 {
     // Variables
-    private static final List<IRecordPanelInitializerQueryPartFactory> _listRecordPanelInitializerQueryPartFactory = SpringContextService
-            .getBeansOfType( IRecordPanelInitializerQueryPartFactory.class );
+    private final List<IRecordPanelInitializerQueryPartFactory> _listRecordPanelInitializerQueryPartFactory;
 
     /**
      * Constructor
      */
-    private RecordPanelInitializerQueryPartFacade( )
+    public RecordPanelInitializerQueryPartFacade( )
     {
-
+        _listRecordPanelInitializerQueryPartFactory = SpringContextService.getBeansOfType( IRecordPanelInitializerQueryPartFactory.class );
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param listRecordPanelInitializerQueryPartFactory
+     *          The list of IRecordPanelInitializerQueryPartFactory to use for the Facade
+     */
+    public RecordPanelInitializerQueryPartFacade( List<IRecordPanelInitializerQueryPartFactory> listRecordPanelInitializerQueryPartFactory )
+    {
+        _listRecordPanelInitializerQueryPartFactory = listRecordPanelInitializerQueryPartFactory;
     }
 
     /**
@@ -65,7 +75,7 @@ public final class RecordPanelInitializerQueryPartFacade
      *            The RecordPanelInitializer to retrieve the RecordPanelInitializerQueryPart associated
      * @return the IRecordPanelInitializerQueryPart associate to the given RecordPanelInitializer or null if not found
      */
-    public static IRecordPanelInitializerQueryPart getRecordPanelInitializerQueryPart( IRecordPanelInitializer recordPanelInitializer )
+    public IRecordPanelInitializerQueryPart getRecordPanelInitializerQueryPart( IRecordPanelInitializer recordPanelInitializer )
     {
         IRecordPanelInitializerQueryPart recordPanelInitializerQueryPart = null;
 

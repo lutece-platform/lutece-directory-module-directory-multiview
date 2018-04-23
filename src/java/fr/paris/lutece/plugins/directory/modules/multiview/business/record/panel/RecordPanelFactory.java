@@ -40,17 +40,28 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Factory for all RecordPanel
  */
-public final class RecordPanelFactory
+public class RecordPanelFactory
 {
     // Variables
-    private static final List<IRecordPanel> _listRecordPanel = SpringContextService.getBeansOfType( IRecordPanel.class );
+    private final List<IRecordPanel> _listRecordPanel;
 
     /**
      * Constructor
      */
-    private RecordPanelFactory( )
+    public RecordPanelFactory( )
     {
-
+        _listRecordPanel = SpringContextService.getBeansOfType( IRecordPanel.class );
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param listRecordPanel
+     *          The list of RecordPanel to use for the Factory
+     */
+    public RecordPanelFactory( List<IRecordPanel> listRecordPanel )
+    {
+        _listRecordPanel = listRecordPanel;
     }
 
     /**
@@ -58,7 +69,7 @@ public final class RecordPanelFactory
      * 
      * @return the list of all IRecordPanel
      */
-    public static List<IRecordPanel> buildRecordPanelList( )
+    public List<IRecordPanel> buildRecordPanelList( )
     {
         return _listRecordPanel;
     }

@@ -56,19 +56,11 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.Recor
 /**
  * Factory for RecordPanel objects
  */
-public final class RecordPanelDisplayFactory
+public class RecordPanelDisplayFactory
 {
     // Constants
     private static final int INDEX_LIST_PANEL_FIRST_POSITION = NumberUtils.INTEGER_ZERO;
     private static final boolean ACTIVE_LIST_PANEL = Boolean.TRUE;
-
-    /**
-     * Constructor
-     */
-    private RecordPanelDisplayFactory( )
-    {
-
-    }
 
     /**
      * Create the list of all RecordPanelDisplay ordered by their position
@@ -79,10 +71,10 @@ public final class RecordPanelDisplayFactory
      *            The list of all IRecordPanel used for building IRecordFilterDisplay
      * @return the list of all RecordPanelDisplay ordered by their position
      */
-    public static List<IRecordPanelDisplay> createRecordPanelDisplayList( HttpServletRequest request, List<IRecordPanel> listRecordPanel )
+    public List<IRecordPanelDisplay> createRecordPanelDisplayList( HttpServletRequest request, List<IRecordPanel> listRecordPanel )
     {
         List<IRecordPanelDisplay> listRecordPanelDisplay = new ArrayList<>( );
-        List<IRecordPanelDisplayFactory> listRecordPanelDisplayFactory = RecordPanelDisplayFactoryFacade.buildRecordPanelDisplayFactoryList( );
+        List<IRecordPanelDisplayFactory> listRecordPanelDisplayFactory = new RecordPanelDisplayFactoryFacade( ).buildRecordPanelDisplayFactoryList( );
 
         if ( !CollectionUtils.isEmpty( listRecordPanelDisplayFactory ) )
         {
@@ -121,7 +113,7 @@ public final class RecordPanelDisplayFactory
      * @param recordPanelDisplay
      *            The recordPanelInitializer to configure with the information from the request
      */
-    private static void configureRecordPanelDisplay( HttpServletRequest request, IRecordPanelDisplay recordPanelDisplay )
+    private void configureRecordPanelDisplay( HttpServletRequest request, IRecordPanelDisplay recordPanelDisplay )
     {
         boolean bIsSelectedPanel = isSelectedPanel( request, recordPanelDisplay.getTechnicalCode( ) );
         recordPanelDisplay.setActive( bIsSelectedPanel );
@@ -138,7 +130,7 @@ public final class RecordPanelDisplayFactory
      *            The name of the panel to analyze
      * @return true if the panel of the given name is the panel to analyze false otherwise
      */
-    private static boolean isSelectedPanel( HttpServletRequest request, String strPanelTechnicalCode )
+    private boolean isSelectedPanel( HttpServletRequest request, String strPanelTechnicalCode )
     {
         boolean bIsSelectedPanel = Boolean.FALSE;
 
@@ -169,9 +161,9 @@ public final class RecordPanelDisplayFactory
      * @param recordPanel
      *            The IRecordPanel to the RecordPanelInitializer from
      */
-    private static void buildRecordPanelDisplayInitializer( HttpServletRequest request, IRecordPanel recordPanel )
+    private void buildRecordPanelDisplayInitializer( HttpServletRequest request, IRecordPanel recordPanel )
     {
-        List<IRecordPanelDisplayInitializerFactory> listRecordPanelDisplayInitializerFactory = RecordDisplayInitializerFactoryFacade
+        List<IRecordPanelDisplayInitializerFactory> listRecordPanelDisplayInitializerFactory = new RecordDisplayInitializerFactoryFacade( )
                 .buildRecordPanelDisplayInitializerList( );
 
         if ( !CollectionUtils.isEmpty( listRecordPanelDisplayInitializerFactory ) && recordPanel != null )
@@ -201,7 +193,7 @@ public final class RecordPanelDisplayFactory
      * @param listRecordPanelInitializer
      *            The list of all RecordPanelInitializer to retrieve those which is associated to the given IRecordPanelDisplayInitializerFactory
      */
-    private static void buildPanelDisplayInitializerRecordParameters( HttpServletRequest request,
+    private void buildPanelDisplayInitializerRecordParameters( HttpServletRequest request,
             IRecordPanelDisplayInitializerFactory recordPanelDisplayInitializerFactory, List<IRecordPanelInitializer> listRecordPanelInitializer )
     {
         if ( recordPanelDisplayInitializerFactory != null && !CollectionUtils.isEmpty( listRecordPanelInitializer ) )
@@ -226,7 +218,7 @@ public final class RecordPanelDisplayFactory
      * @param listRecordPanelDisplay
      *            The list of RecordDisplayPanel to analyze
      */
-    private static void manageActiveRecordPanelDisplay( List<IRecordPanelDisplay> listRecordPanelDisplay )
+    private void manageActiveRecordPanelDisplay( List<IRecordPanelDisplay> listRecordPanelDisplay )
     {
         boolean bActivePanelPresent = Boolean.FALSE;
 

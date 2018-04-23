@@ -45,16 +45,8 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.Recor
 /**
  * Factory for RecordColumnDisplay objects
  */
-public final class RecordColumnDisplayFactory
+public class RecordColumnDisplayFactory
 {
-    /**
-     * Constructor
-     */
-    private RecordColumnDisplayFactory( )
-    {
-
-    }
-
     /**
      * Create the list of all RecordColumnDisplay ordered by their position
      * 
@@ -62,10 +54,10 @@ public final class RecordColumnDisplayFactory
      *            The list of IRecordColumn to use for build the list of RecordColumnDisplay
      * @return the list of all RecordColumnDisplay ordered by their position
      */
-    public static List<IRecordColumnDisplay> createRecordColumnDisplayList( List<IRecordColumn> listRecordColumn )
+    public List<IRecordColumnDisplay> createRecordColumnDisplayList( List<IRecordColumn> listRecordColumn )
     {
         List<IRecordColumnDisplay> listRecordColumnDisplay = new ArrayList<>( );
-        List<IRecordColumnDisplayFactory> listRecordColumnDisplayFactory = RecordColumnDisplayFactoryFacade.buildRecordColumnDisplayFactoryList( );
+        List<IRecordColumnDisplayFactory> listRecordColumnDisplayFactory = new RecordColumnDisplayFactoryFacade( ).buildRecordColumnDisplayFactoryList( );
 
         if ( listRecordColumn != null && !listRecordColumn.isEmpty( ) && listRecordColumnDisplayFactory != null && !listRecordColumnDisplayFactory.isEmpty( ) )
         {

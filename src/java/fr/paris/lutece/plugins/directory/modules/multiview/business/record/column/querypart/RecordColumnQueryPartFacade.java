@@ -42,18 +42,28 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Facade for a RecordColumn to build its request
  */
-public final class RecordColumnQueryPartFacade
+public class RecordColumnQueryPartFacade
 {
     // Variables
-    private static final List<IRecordColumnQueryPartFactory> _listRecordColumnQueryPartFactory = SpringContextService
-            .getBeansOfType( IRecordColumnQueryPartFactory.class );
+    private final List<IRecordColumnQueryPartFactory> _listRecordColumnQueryPartFactory;
 
     /**
      * Constructor
      */
-    private RecordColumnQueryPartFacade( )
+    public RecordColumnQueryPartFacade( )
     {
-
+        _listRecordColumnQueryPartFactory = SpringContextService.getBeansOfType( IRecordColumnQueryPartFactory.class );
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param listRecordColumnQueryPartFactory
+     *          The list of IRecordColumnQueryPartFactory to use for the facade
+     */
+    public RecordColumnQueryPartFacade( List<IRecordColumnQueryPartFactory> listRecordColumnQueryPartFactory )
+    {
+        _listRecordColumnQueryPartFactory = listRecordColumnQueryPartFactory;
     }
 
     /**
@@ -63,7 +73,7 @@ public final class RecordColumnQueryPartFacade
      *            The RecordColumn to retrieve the associated QueryPart
      * @return the IRecordColumnQueryPart linked to the given column or null if not found
      */
-    public static IRecordColumnQueryPart getRecordFilterQueryPart( IRecordColumn recordColumn )
+    public IRecordColumnQueryPart getRecordFilterQueryPart( IRecordColumn recordColumn )
     {
         IRecordColumnQueryPart recordColumnQueryPart = null;
 

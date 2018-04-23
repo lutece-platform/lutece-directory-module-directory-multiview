@@ -52,16 +52,24 @@ public class DirectoryMultiviewAuthorizationService implements IDirectoryMultivi
 {
     // Variables
     private final IRecordPanel _recordPanel;
-
+    private final RecordListFacade _recordListFacade;
+    private final RecordColumnFactory _recordColumnFactory;
+    
     /**
      * Constructor
      * 
      * @param recordPanel
      *            The RecordPanel on which the authorization is based
+     * @param recordListFacade
+     *          The RecordListFacade to use by the service
+     * @param recordColumnFactory
+     *          The RecordColumnFactory to use by the service
      */
-    public DirectoryMultiviewAuthorizationService( IRecordPanel recordPanel )
+    public DirectoryMultiviewAuthorizationService( IRecordPanel recordPanel, RecordListFacade recordListFacade, RecordColumnFactory recordColumnFactory )
     {
         _recordPanel = recordPanel;
+        _recordListFacade = recordListFacade;
+        _recordColumnFactory = recordColumnFactory;
     }
 
     /**
@@ -74,9 +82,9 @@ public class DirectoryMultiviewAuthorizationService implements IDirectoryMultivi
 
         if ( nIdRecord != NumberUtils.INTEGER_MINUS_ONE && _recordPanel != null )
         {
-            List<IRecordColumn> listRecordColumn = RecordColumnFactory.buildRecordColumnList( );
+            List<IRecordColumn> listRecordColumn = _recordColumnFactory.buildRecordColumnList( );
 
-            RecordListFacade.populateRecordColumns( _recordPanel, listRecordColumn, new ArrayList<>( ) );
+            _recordListFacade.populateRecordColumns( _recordPanel, listRecordColumn, new ArrayList<>( ) );
             List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
 
             if ( listDirectoryRecordItem != null && !listDirectoryRecordItem.isEmpty( ) )

@@ -36,25 +36,33 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business.record.list
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
  * Facade used to populate a list of RecordColumn
  */
-public final class RecordListFacade
+public class RecordListFacade
 {
+    // Constants
+    public static final String BEAN_NAME = "directory-multiview.recordList.facade";
+    
     // Variables
-    private static final IRecordListDAO _recordListDAO = SpringContextService.getBean( IRecordListDAO.BEAN_NAME );
-
+    private final IRecordListDAO _recordListDAO;
+    
     /**
      * Constructor
+     * 
+     * @param recordListDAO
+     *          The DAO to use for the Facade
      */
-    private RecordListFacade( )
+    @Inject
+    public RecordListFacade( IRecordListDAO recordListDAO )
     {
-
+        _recordListDAO = recordListDAO;
     }
 
     /**
@@ -67,7 +75,7 @@ public final class RecordListFacade
      * @param listRecordFilter
      *            The list of RecordFilter to use for retrieving the data of the columns to populate
      */
-    public static void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
+    public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
     {
         listRecordColumn.sort( Comparator.comparing( IRecordColumn::getRecordColumnPosition ) );
 

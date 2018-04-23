@@ -48,16 +48,8 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.Recor
 /**
  * Factory for RecordFilterDisplay objects
  */
-public final class RecordFilterDisplayFactory
+public class RecordFilterDisplayFactory
 {
-    /**
-     * Constructor
-     */
-    private RecordFilterDisplayFactory( )
-    {
-
-    }
-
     /**
      * Return the list of all RecordFilterDisplay ordered by their position
      * 
@@ -67,10 +59,10 @@ public final class RecordFilterDisplayFactory
      *            The list of IRecordFilter used for building IRecordFilterDisplay
      * @return the list of all RecordFilterDisplay ordered by their position
      */
-    public static List<IRecordFilterDisplay> createRecordFilterDisplayList( HttpServletRequest request, List<IRecordFilter> listRecordFilter )
+    public List<IRecordFilterDisplay> createRecordFilterDisplayList( HttpServletRequest request, List<IRecordFilter> listRecordFilter )
     {
         List<IRecordFilterDisplay> listRecordFilterDisplay = new ArrayList<>( );
-        List<IRecordFilterDisplayFactory> listRecordFilterDisplayFactory = RecordFilterDisplayFactoryFacade.buildRecordFilterDisplayFactoryList( );
+        List<IRecordFilterDisplayFactory> listRecordFilterDisplayFactory = new RecordFilterDisplayFactoryFacade( ).buildRecordFilterDisplayFactoryList( );
 
         if ( listRecordFilter != null && !listRecordFilter.isEmpty( ) && listRecordFilterDisplayFactory != null && !listRecordFilterDisplayFactory.isEmpty( ) )
         {
@@ -107,7 +99,7 @@ public final class RecordFilterDisplayFactory
      * @param recordFilterDisplay
      *            The RecordFilterDisplay from which the RecordFilterItem must be created
      */
-    private static void manageRecordFilterDisplay( HttpServletRequest request, IRecordFilter recordFilter, IRecordFilterDisplay recordFilterDisplay )
+    private void manageRecordFilterDisplay( HttpServletRequest request, IRecordFilter recordFilter, IRecordFilterDisplay recordFilterDisplay )
     {
         recordFilterDisplay.createRecordParameters( request );
 
