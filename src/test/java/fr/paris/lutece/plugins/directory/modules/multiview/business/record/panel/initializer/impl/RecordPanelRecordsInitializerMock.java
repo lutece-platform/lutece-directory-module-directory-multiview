@@ -43,7 +43,7 @@ public class RecordPanelRecordsInitializerMock implements IRecordPanelInitialize
 {
     // Variables
     private RecordParameters _recordParameters = new RecordParameters( );
-    
+
     /**
      * {@inheritDoc}
      */
@@ -59,6 +59,6 @@ public class RecordPanelRecordsInitializerMock implements IRecordPanelInitialize
     @Override
     public void setRecordParameters( RecordParameters recordParameters )
     {
-        _recordParameters = recordParameters; 
+        _recordParameters = recordParameters;
     }
 }

@@ -52,12 +52,12 @@ public class RecordPanelFactory
     {
         _listRecordPanel = SpringContextService.getBeansOfType( IRecordPanel.class );
     }
-    
+
     /**
      * Constructor
      * 
      * @param listRecordPanel
-     *          The list of RecordPanel to use for the Factory
+     *            The list of RecordPanel to use for the Factory
      */
     public RecordPanelFactory( List<IRecordPanel> listRecordPanel )
     {

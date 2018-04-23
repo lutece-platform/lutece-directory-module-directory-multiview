@@ -45,7 +45,7 @@ public class RecordColumnWorkflowStateMock implements IRecordColumn
     // Variables
     private int _nPosition = NumberUtils.INTEGER_MINUS_ONE;
     private String _strRecordColumnTitle;
-    
+
     /**
      * Constructor
      * 
@@ -59,7 +59,7 @@ public class RecordColumnWorkflowStateMock implements IRecordColumn
         _nPosition = nRecordColumnPosition;
         _strRecordColumnTitle = strRecordColumnTitle;
     }
-    
+
     /**
      * {@inheritDoc}
      */

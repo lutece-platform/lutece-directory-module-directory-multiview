@@ -123,7 +123,7 @@ public class RecordColumnEntryRecordFieldQueryPartTest extends LuteceTestCase
 
         }
     }
-    
+
     /**
      * Test for the {@link RecordColumnEntryQueryPart#getRecordColumnJoinQueries()} method with a column which have no Entry title
      */
@@ -133,22 +133,21 @@ public class RecordColumnEntryRecordFieldQueryPartTest extends LuteceTestCase
                 + "column_1_value FROM directory_record_field AS record_field_1 INNER JOIN directory_record AS record_1 ON "
                 + "record_field_1.id_record = record_1.id_record INNER JOIN directory_entry AS entry_1 ON entry_1.id_entry = "
                 + "record_field_1.id_entry WHERE entry_1.title IN ( ) ) AS column_1 ON column_1.id_record_1 = record.id_record";
-        
+
         IRecordColumn recordColumn = new RecordColumnEntry( 1, "Titre", new ArrayList<>( ) );
         RecordColumnEntryQueryPart recordColumnEntryQueryPart = new RecordColumnEntryQueryPart( );
         recordColumnEntryQueryPart.setRecordColumn( recordColumn );
-        
+
         List<String> listRecordColumnJoinQueries = recordColumnEntryQueryPart.getRecordColumnJoinQueries( );
         assertThat( listRecordColumnJoinQueries, is( not( nullValue( ) ) ) );
         assertThat( listRecordColumnJoinQueries.size( ), is( 1 ) );
-        
+
         String strRecordColumnJoinQuery = removeQuerySpaces( listRecordColumnJoinQueries.get( 0 ) );
         assertThat( strRecordColumnJoinQuery, is( strJoinQueryExpected ) );
     }
-    
+
     /**
-     * Test for the {@link RecordColumnEntryQueryPart#getRecordColumnJoinQueries()} method with a column which have no Entry title
-     * and no position
+     * Test for the {@link RecordColumnEntryQueryPart#getRecordColumnJoinQueries()} method with a column which have no Entry title and no position
      */
     public void testGetRecordColumnJoinQueriesWithoutEntryTitleAndColumnPosition( )
     {
@@ -156,17 +155,17 @@ public class RecordColumnEntryRecordFieldQueryPartTest extends LuteceTestCase
                 + "column_-1_value FROM directory_record_field AS record_field_-1 INNER JOIN directory_record AS record_-1 ON "
                 + "record_field_-1.id_record = record_-1.id_record INNER JOIN directory_entry AS entry_-1 ON entry_-1.id_entry = "
                 + "record_field_-1.id_entry WHERE entry_-1.title IN ( ) ) AS column_-1 ON column_-1.id_record_-1 = record.id_record";
-        
+
         RecordColumnEntryQueryPart recordColumnEntryQueryPart = new RecordColumnEntryQueryPart( );
-        
+
         List<String> listRecordColumnJoinQueries = recordColumnEntryQueryPart.getRecordColumnJoinQueries( );
         assertThat( listRecordColumnJoinQueries, is( not( nullValue( ) ) ) );
         assertThat( listRecordColumnJoinQueries.size( ), is( 1 ) );
-        
+
         String strRecordColumnJoinQuery = removeQuerySpaces( listRecordColumnJoinQueries.get( 0 ) );
         assertThat( strRecordColumnJoinQuery, is( strJoinQueryExpected ) );
     }
-    
+
     /**
      * Test for the {@link RecordColumnEntryQueryPart#getRecordColumnJoinQueries()} method
      */
@@ -175,23 +174,22 @@ public class RecordColumnEntryRecordFieldQueryPartTest extends LuteceTestCase
         String strJoinQueryExpected = "LEFT JOIN ( SELECT record_5.id_record AS id_record_5, record_field_5.record_field_value AS "
                 + "column_5_value FROM directory_record_field AS record_field_5 INNER JOIN directory_record AS record_5 ON "
                 + "record_field_5.id_record = record_5.id_record INNER JOIN directory_entry AS entry_5 ON entry_5.id_entry = "
-                + "record_field_5.id_entry WHERE entry_5.title IN ( 'FirstName', 'LastName' ) ) AS column_5 ON column_5.id_record_5 "
-                + "= record.id_record";
-        
+                + "record_field_5.id_entry WHERE entry_5.title IN ( 'FirstName', 'LastName' ) ) AS column_5 ON column_5.id_record_5 " + "= record.id_record";
+
         List<String> listEntryTitle = Arrays.asList( "FirstName", "LastName" );
         IRecordColumn recordColumn = new RecordColumnEntry( 5, "Titre", listEntryTitle );
-        
+
         RecordColumnEntryQueryPart recordColumnEntryQueryPart = new RecordColumnEntryQueryPart( );
         recordColumnEntryQueryPart.setRecordColumn( recordColumn );
-        
+
         List<String> listRecordColumnJoinQueries = recordColumnEntryQueryPart.getRecordColumnJoinQueries( );
         assertThat( listRecordColumnJoinQueries, is( not( nullValue( ) ) ) );
         assertThat( listRecordColumnJoinQueries.size( ), is( 1 ) );
-        
+
         String strRecordColumnJoinQuery = removeQuerySpaces( listRecordColumnJoinQueries.get( 0 ) );
         assertThat( strRecordColumnJoinQuery, is( strJoinQueryExpected ) );
     }
-    
+
     /**
      * Remove all the unnecessary spaces of a query
      * 

@@ -52,7 +52,7 @@ public class DirectoryRecordItemComparator implements Comparator<DirectoryRecord
      * Generated UID
      */
     private static final long serialVersionUID = -8569813504412874604L;
-    
+
     // Constants
     private static final int SORT_ASCENDANT_DIRECTION = NumberUtils.INTEGER_ONE;
     private static final int SORT_DESCENDANT_DIRECTION = NumberUtils.INTEGER_MINUS_ONE;
@@ -85,17 +85,18 @@ public class DirectoryRecordItemComparator implements Comparator<DirectoryRecord
             _nSortDirection = computeSortDirection( directoryRecordItemComparatorConfigDefault.isAscSort( ) );
         }
     }
-    
+
     /**
      * Constructor
      * 
      * @param directoryRecordItemComparatorConfig
      *            The DirectoryRecordItemComparatorConfig to use for sort the DirectoryRecordItem
      * @param directoryRecordItemComparatorConfigDefault
-     *          The DirectoryRecordItemComparatorConfig to use as default configuration if the given DirectoryRecordItemComparatorConfig doesn't have all
-     *          the necessaries information
+     *            The DirectoryRecordItemComparatorConfig to use as default configuration if the given DirectoryRecordItemComparatorConfig doesn't have all the
+     *            necessaries information
      */
-    public DirectoryRecordItemComparator( DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfig, DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfigDefault )
+    public DirectoryRecordItemComparator( DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfig,
+            DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfigDefault )
     {
         if ( directoryRecordItemComparatorConfig != null && directoryRecordItemComparatorConfig.getColumnToSortPosition( ) != NumberUtils.INTEGER_MINUS_ONE )
         {

@@ -48,21 +48,21 @@ public class RecordListDAOMock implements IRecordListDAO
 {
     // Constants
     private static final int ID_DIRECTORY = 14;
-    
+
     // Variables
     private final List<Integer> _listIdAuthorizedRecord;
-    
+
     /**
      * Constructor
      * 
      * @param listIdAuthorizedRecord
-     *          The list of id of Record of which the user is authorized to see informations
+     *            The list of id of Record of which the user is authorized to see informations
      */
     public RecordListDAOMock( List<Integer> listIdAuthorizedRecord )
     {
         _listIdAuthorizedRecord = listIdAuthorizedRecord;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -70,16 +70,16 @@ public class RecordListDAOMock implements IRecordListDAO
     public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
     {
         List<DirectoryRecordItem> listDirectoryRecordItem = new ArrayList<>( );
-        
+
         for ( Integer nIdRecord : _listIdAuthorizedRecord )
         {
             DirectoryRecordItem directoryRecordItem = new DirectoryRecordItem( );
             directoryRecordItem.setIdDirectory( ID_DIRECTORY );
             directoryRecordItem.setIdRecord( nIdRecord );
-            
-            listDirectoryRecordItem.add( directoryRecordItem ); 
+
+            listDirectoryRecordItem.add( directoryRecordItem );
         }
-        
+
         recordPanel.setDirectoryRecordItemList( listDirectoryRecordItem );
     }
 }

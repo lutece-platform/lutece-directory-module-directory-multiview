@@ -68,7 +68,7 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
     // Variables
     private IRecordPanel _recordPanel;
     private RecordColumnFactory _recordColumnFactory;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -76,24 +76,24 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
     public void setUp( ) throws Exception
     {
         super.setUp( );
-        
+
         IRecordPanelInitializer recordPanelDirectoryInitializer = new RecordPanelDirectoryInitializerMock( );
         IRecordPanelInitializer recordPanelRecordsInitializer = new RecordPanelRecordsInitializerMock( );
-        
+
         List<IRecordPanelInitializer> listRecordPanelInitializer = new ArrayList<>( );
         listRecordPanelInitializer.add( recordPanelDirectoryInitializer );
         listRecordPanelInitializer.add( recordPanelRecordsInitializer );
-        
+
         RecordPanelConfiguration recordPanelConfiguration = new RecordPanelConfiguration( "code_technique", 1, "titre", listRecordPanelInitializer );
         _recordPanel = new RecordPanelRecords( recordPanelConfiguration );
-        
+
         List<IRecordColumn> listRecordColumn = new ArrayList<>( );
         listRecordColumn.add( new RecordColumnDirectoryMock( 1, "directory" ) );
         listRecordColumn.add( new RecordColumnRecordDateCreationMock( 2, "date creation" ) );
         listRecordColumn.add( new RecordColumnWorkflowStateMock( 3, "workflow state" ) );
         _recordColumnFactory = new RecordColumnFactory( listRecordColumn );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -102,7 +102,7 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
     {
         super.tearDown( );
     }
-    
+
     /**
      * Test of the method {@link DirectoryMultiviewAuthorizationService#isUserAuthorizedOnRecord(int)} on a record on which the user is authorized
      */
@@ -110,15 +110,16 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
     {
         int nIdRecord = 3;
         List<Integer> listAuthorizedId = Arrays.asList( 1, 2, 3, 4 );
-        
+
         RecordListDAOMock recordListDAOMock = new RecordListDAOMock( listAuthorizedId );
         RecordListFacade recordListFacade = new RecordListFacade( recordListDAOMock );
-        IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( _recordPanel, recordListFacade, _recordColumnFactory );
-        
+        IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( _recordPanel,
+                recordListFacade, _recordColumnFactory );
+
         boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
         assertThat( bIsUserAuthorize, is( Boolean.TRUE ) );
     }
-    
+
     /**
      * Test of the method {@link DirectoryMultiviewAuthorizationService#isUserAuthorizedOnRecord(int)} on a record on which the user is not authorized
      */
@@ -126,15 +127,16 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
     {
         int nIdRecord = 6;
         List<Integer> listAuthorizedId = Arrays.asList( 1, 2, 3, 4 );
-        
+
         RecordListDAOMock recordListDAOMock = new RecordListDAOMock( listAuthorizedId );
         RecordListFacade recordListFacade = new RecordListFacade( recordListDAOMock );
-        IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( _recordPanel, recordListFacade, _recordColumnFactory );
-        
+        IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( _recordPanel,
+                recordListFacade, _recordColumnFactory );
+
         boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
         assertThat( bIsUserAuthorize, is( Boolean.FALSE ) );
     }
-    
+
     /**
      * Test of the method {@link DirectoryMultiviewAuthorizationService#isUserAuthorizedOnRecord(int)} with a bad id for a record
      */
@@ -142,15 +144,16 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
     {
         int nIdRecord = -1;
         List<Integer> listAuthorizedId = Arrays.asList( 1, 2, 3, 4 );
-        
+
         RecordListDAOMock recordListDAOMock = new RecordListDAOMock( listAuthorizedId );
         RecordListFacade recordListFacade = new RecordListFacade( recordListDAOMock );
-        IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( _recordPanel, recordListFacade, _recordColumnFactory );
-        
+        IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( _recordPanel,
+                recordListFacade, _recordColumnFactory );
+
         boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
         assertThat( bIsUserAuthorize, is( Boolean.FALSE ) );
     }
-    
+
     /**
      * Test of the method {@link DirectoryMultiviewAuthorizationService#isUserAuthorizedOnRecord(int)} with an empty panel
      */
@@ -158,11 +161,12 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
     {
         int nIdRecord = 2;
         List<Integer> listAuthorizedId = Arrays.asList( 1, 2, 3, 4 );
-        
+
         RecordListDAOMock recordListDAOMock = new RecordListDAOMock( listAuthorizedId );
         RecordListFacade recordListFacade = new RecordListFacade( recordListDAOMock );
-        IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( null, recordListFacade, _recordColumnFactory );
-        
+        IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( null, recordListFacade,
+                _recordColumnFactory );
+
         boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
         assertThat( bIsUserAuthorize, is( Boolean.FALSE ) );
     }

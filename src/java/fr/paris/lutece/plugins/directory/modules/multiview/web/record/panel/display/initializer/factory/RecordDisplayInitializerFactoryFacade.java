@@ -52,12 +52,12 @@ public class RecordDisplayInitializerFactoryFacade
     {
         _listRecordPanelDsiaplyInitializerFactory = SpringContextService.getBeansOfType( IRecordPanelDisplayInitializerFactory.class );
     }
-    
+
     /**
      * Constructor
      * 
      * @param listRecordPanelDsiaplyInitializerFactory
-     *          The list of IRecordPanelDisplayInitializerFactory to use for the Facade
+     *            The list of IRecordPanelDisplayInitializerFactory to use for the Facade
      */
     public RecordDisplayInitializerFactoryFacade( List<IRecordPanelDisplayInitializerFactory> listRecordPanelDsiaplyInitializerFactory )
     {

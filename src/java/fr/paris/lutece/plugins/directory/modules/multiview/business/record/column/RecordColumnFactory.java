@@ -44,15 +44,15 @@ public class RecordColumnFactory
 {
     // Constants
     public static final String BEAN_NAME = "directory-multiview.recordColumn.factory";
-    
+
     // Variables
     private final List<IRecordColumn> _listRecordColumn;
-    
+
     /**
      * Constructor
      * 
      * @param listRecordColumn
-     *          The list of RecordColumn to use for the Factory
+     *            The list of RecordColumn to use for the Factory
      */
     @Inject
     public RecordColumnFactory( List<IRecordColumn> listRecordColumn )

@@ -56,12 +56,12 @@ public class RecordPanelInitializerQueryPartFacade
     {
         _listRecordPanelInitializerQueryPartFactory = SpringContextService.getBeansOfType( IRecordPanelInitializerQueryPartFactory.class );
     }
-    
+
     /**
      * Constructor
      * 
      * @param listRecordPanelInitializerQueryPartFactory
-     *          The list of IRecordPanelInitializerQueryPartFactory to use for the Facade
+     *            The list of IRecordPanelInitializerQueryPartFactory to use for the Facade
      */
     public RecordPanelInitializerQueryPartFacade( List<IRecordPanelInitializerQueryPartFactory> listRecordPanelInitializerQueryPartFactory )
     {

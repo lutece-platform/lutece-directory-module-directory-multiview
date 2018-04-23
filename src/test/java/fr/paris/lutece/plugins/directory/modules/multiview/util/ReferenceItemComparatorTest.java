@@ -54,7 +54,7 @@ public class ReferenceItemComparatorTest extends LuteceTestCase
     {
         super.setUp( );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -63,100 +63,100 @@ public class ReferenceItemComparatorTest extends LuteceTestCase
     {
         super.tearDown( );
     }
-    
+
     /**
-     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method
-     * with two empty ReferenceItem
+     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method with two empty
+     * ReferenceItem
      */
     public void testCompareEmptyReferenceItem( )
     {
         ReferenceItem referenceItemOne = new ReferenceItem( );
-        
+
         ReferenceItem referenceItemTwo = new ReferenceItem( );
-        
+
         ReferenceItemComparator referenceItemComparator = new ReferenceItemComparator( );
         int nCompareResult = referenceItemComparator.compare( referenceItemOne, referenceItemTwo );
         assertThat( nCompareResult, is( NumberUtils.INTEGER_ZERO ) );
     }
-    
+
     /**
-     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method
-     * with the first ReferenceItem which is empty
+     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method with the first
+     * ReferenceItem which is empty
      */
     public void testCompareReferenceItemWithFirstEmpty( )
     {
         ReferenceItem referenceItemOne = new ReferenceItem( );
-        
+
         ReferenceItem referenceItemTwo = new ReferenceItem( );
         referenceItemTwo.setName( "Test" );
-        
+
         ReferenceItemComparator referenceItemComparator = new ReferenceItemComparator( );
         int nCompareResult = referenceItemComparator.compare( referenceItemOne, referenceItemTwo );
         assertThat( nCompareResult, is( NumberUtils.INTEGER_MINUS_ONE ) );
     }
-    
+
     /**
-     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method
-     * with the second ReferenceItem which is empty
+     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method with the second
+     * ReferenceItem which is empty
      */
     public void testCompareReferenceItemWithSecondEmpty( )
     {
         ReferenceItem referenceItemOne = new ReferenceItem( );
         referenceItemOne.setName( "Test" );
-        
+
         ReferenceItem referenceItemTwo = new ReferenceItem( );
-        
+
         ReferenceItemComparator referenceItemComparator = new ReferenceItemComparator( );
         int nCompareResult = referenceItemComparator.compare( referenceItemOne, referenceItemTwo );
         assertThat( nCompareResult, is( NumberUtils.INTEGER_ONE ) );
     }
-    
+
     /**
-     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method
-     * with the two ReferenceItems which have the same name
+     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method with the two
+     * ReferenceItems which have the same name
      */
     public void testCompareReferenceItemSameNames( )
     {
         ReferenceItem referenceItemOne = new ReferenceItem( );
         referenceItemOne.setName( "Test" );
-        
+
         ReferenceItem referenceItemTwo = new ReferenceItem( );
         referenceItemTwo.setName( "Test" );
-        
+
         ReferenceItemComparator referenceItemComparator = new ReferenceItemComparator( );
         int nCompareResult = referenceItemComparator.compare( referenceItemOne, referenceItemTwo );
         assertThat( nCompareResult, is( NumberUtils.INTEGER_ZERO ) );
     }
-    
+
     /**
-     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method
-     * with the first ReferenceItem which have a "greater" value than the second ReferenceItem
+     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method with the first
+     * ReferenceItem which have a "greater" value than the second ReferenceItem
      */
     public void testCompareReferenceItemFirstGreater( )
     {
         ReferenceItem referenceItemOne = new ReferenceItem( );
         referenceItemOne.setName( "Item" );
-        
+
         ReferenceItem referenceItemTwo = new ReferenceItem( );
         referenceItemTwo.setName( "Test" );
-        
+
         ReferenceItemComparator referenceItemComparator = new ReferenceItemComparator( );
         int nCompareResult = referenceItemComparator.compare( referenceItemOne, referenceItemTwo );
         assertTrue( nCompareResult < NumberUtils.INTEGER_ZERO );
     }
-    
+
     /**
-     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method
-     * with the second ReferenceItem which have a "greater" value than the first ReferenceItem
+     * Test for the {@link ReferenceItemComparator#compare(fr.paris.lutece.util.ReferenceItem, fr.paris.lutece.util.ReferenceItem)} method with the second
+     * ReferenceItem which have a "greater" value than the first ReferenceItem
      */
     public void testCompareReferenceItemSecondGreater( )
     {
         ReferenceItem referenceItemOne = new ReferenceItem( );
         referenceItemOne.setName( "Test" );
-        
+
         ReferenceItem referenceItemTwo = new ReferenceItem( );
         referenceItemTwo.setName( "Item" );
-        
+
         ReferenceItemComparator referenceItemComparator = new ReferenceItemComparator( );
         int nCompareResult = referenceItemComparator.compare( referenceItemOne, referenceItemTwo );
         assertTrue( nCompareResult > NumberUtils.INTEGER_ZERO );

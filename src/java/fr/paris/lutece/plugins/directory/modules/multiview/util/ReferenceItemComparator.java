@@ -55,14 +55,14 @@ public class ReferenceItemComparator implements Comparator<ReferenceItem>, Seria
     public int compare( ReferenceItem referenceItemOne, ReferenceItem referenceItemTwo )
     {
         int nComparisonResult = NumberUtils.INTEGER_ZERO;
-        
+
         if ( referenceItemOne != null )
         {
             if ( referenceItemTwo != null )
             {
                 String strReferenceItemNameOne = referenceItemOne.getName( );
                 String strReferenceItemNameTwo = referenceItemTwo.getName( );
-                
+
                 nComparisonResult = compareReferenceItemName( strReferenceItemNameOne, strReferenceItemNameTwo );
             }
             else
@@ -81,23 +81,23 @@ public class ReferenceItemComparator implements Comparator<ReferenceItem>, Seria
                 nComparisonResult = NumberUtils.INTEGER_ZERO;
             }
         }
-        
+
         return nComparisonResult;
     }
-    
+
     /**
-     * Make the comparison between the two given ReferenceItem names 
+     * Make the comparison between the two given ReferenceItem names
      * 
      * @param strReferenceItemNameOne
-     *          The first name of the ReferenceItem to compare
+     *            The first name of the ReferenceItem to compare
      * @param strReferenceItemNameTwo
-     *          The second name of the ReferenceItem to compare
+     *            The second name of the ReferenceItem to compare
      * @return the comparison between the two given ReferenceItem names
      */
     private int compareReferenceItemName( String strReferenceItemNameOne, String strReferenceItemNameTwo )
     {
         int nComparisonResult = NumberUtils.INTEGER_ZERO;
-        
+
         if ( strReferenceItemNameOne == null )
         {
             if ( strReferenceItemNameTwo != null )
@@ -116,7 +116,7 @@ public class ReferenceItemComparator implements Comparator<ReferenceItem>, Seria
                 nComparisonResult = strReferenceItemNameOne.compareTo( strReferenceItemNameTwo );
             }
         }
-        
+
         return nComparisonResult;
     }
 }

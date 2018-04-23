@@ -54,12 +54,12 @@ public class RecordColumnQueryPartFacade
     {
         _listRecordColumnQueryPartFactory = SpringContextService.getBeansOfType( IRecordColumnQueryPartFactory.class );
     }
-    
+
     /**
      * Constructor
      * 
      * @param listRecordColumnQueryPartFactory
-     *          The list of IRecordColumnQueryPartFactory to use for the facade
+     *            The list of IRecordColumnQueryPartFactory to use for the facade
      */
     public RecordColumnQueryPartFacade( List<IRecordColumnQueryPartFactory> listRecordColumnQueryPartFactory )
     {

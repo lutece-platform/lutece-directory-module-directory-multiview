@@ -52,12 +52,12 @@ public class RecordFilterFactory
     {
         _listRecordFilter = SpringContextService.getBeansOfType( IRecordFilter.class );
     }
-    
+
     /**
      * Constructor
      * 
      * @param listRecordFilter
-     *          The list of RecordFilter to use for the Factory
+     *            The list of RecordFilter to use for the Factory
      */
     public RecordFilterFactory( List<IRecordFilter> listRecordFilter )
     {

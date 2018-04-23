@@ -52,12 +52,12 @@ public class RecordColumnDisplayFactoryFacade
     {
         _listRecordColumnDisplayFactory = SpringContextService.getBeansOfType( IRecordColumnDisplayFactory.class );
     }
-    
+
     /**
      * Constructor
      * 
      * @param listRecordColumnDisplayFactory
-     *          The list of IRecordColumnDisplayFactory to use for the Facade
+     *            The list of IRecordColumnDisplayFactory to use for the Facade
      */
     public RecordColumnDisplayFactoryFacade( List<IRecordColumnDisplayFactory> listRecordColumnDisplayFactory )
     {

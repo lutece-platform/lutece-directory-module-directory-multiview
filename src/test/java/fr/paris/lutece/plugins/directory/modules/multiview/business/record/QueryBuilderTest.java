@@ -122,7 +122,7 @@ public class QueryBuilderTest extends LuteceTestCase
 
         checkQueryToBuilt( strBasicQueryToFind );
     }
-    
+
     /**
      * Test the for {@link QueryBuilder#buildQuery(List, List)} method with the RecordPanel and the columnDirectory
      */
@@ -151,7 +151,7 @@ public class QueryBuilderTest extends LuteceTestCase
 
         checkQueryToBuilt( strBasicQueryToFind );
     }
-    
+
     /**
      * Test the for {@link QueryBuilder#buildQuery(List, List)} method with the RecordPanel and three columns: the Directory, WorkflowState and
      * RecordDateCreation columns

@@ -52,7 +52,7 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
 {
     // Constants
     private static final String DEFAULT_SORT_ATTRIBUTE_NAME = "name";
-    
+
     /**
      * {@inheritDoc}
      */
@@ -61,7 +61,7 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
     {
         super.setUp( );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -70,25 +70,25 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
     {
         super.tearDown( );
     }
-    
+
     /**
      * Test for the method {@link RecordColumnCellComparator#compare(RecordColumnCell, RecordColumnCell)} without any values on each RecordColumnCell
      */
     public void testCompareWithoutValues( )
     {
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
-        
+
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
-        
+
         RecordColumnCellComparator recordColumnCellComparator = new RecordColumnCellComparator( DEFAULT_SORT_ATTRIBUTE_NAME );
-        
+
         int nComparisonResult = recordColumnCellComparator.compare( recordColumnCellOne, recordColumnCellTwo );
         assertThat( nComparisonResult, is( NumberUtils.INTEGER_ZERO ) );
     }
-    
+
     /**
-     * Test for the method {@link RecordColumnCellComparator#compare(RecordColumnCell, RecordColumnCell)} with the second RecordColumnCell
-     * which have a greater value than the first
+     * Test for the method {@link RecordColumnCellComparator#compare(RecordColumnCell, RecordColumnCell)} with the second RecordColumnCell which have a greater
+     * value than the first
      */
     public void testCompareWithSecondCellValueGreater( )
     {
@@ -96,21 +96,21 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
         mapRecordColumnValuesOne.put( DEFAULT_SORT_ATTRIBUTE_NAME, "Martin" );
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
         recordColumnCellOne.setRecordColumnCellValues( mapRecordColumnValuesOne );
-        
+
         Map<String, Object> mapRecordColumnValuesTwo = new LinkedHashMap<>( );
         mapRecordColumnValuesTwo.put( DEFAULT_SORT_ATTRIBUTE_NAME, "Albert" );
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
         recordColumnCellTwo.setRecordColumnCellValues( mapRecordColumnValuesTwo );
-        
+
         RecordColumnCellComparator recordColumnCellComparator = new RecordColumnCellComparator( DEFAULT_SORT_ATTRIBUTE_NAME );
-        
+
         int nComparisonResult = recordColumnCellComparator.compare( recordColumnCellOne, recordColumnCellTwo );
         assertTrue( nComparisonResult > NumberUtils.INTEGER_ZERO );
     }
-    
+
     /**
-     * Test for the method {@link RecordColumnCellComparator#compare(RecordColumnCell, RecordColumnCell)} with the first RecordColumnCell
-     * which have a greater value than the second
+     * Test for the method {@link RecordColumnCellComparator#compare(RecordColumnCell, RecordColumnCell)} with the first RecordColumnCell which have a greater
+     * value than the second
      */
     public void testCompareWithFirstCellValueGreater( )
     {
@@ -118,21 +118,20 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
         mapRecordColumnValuesOne.put( DEFAULT_SORT_ATTRIBUTE_NAME, "Albert" );
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
         recordColumnCellOne.setRecordColumnCellValues( mapRecordColumnValuesOne );
-        
+
         Map<String, Object> mapRecordColumnValuesTwo = new LinkedHashMap<>( );
         mapRecordColumnValuesTwo.put( DEFAULT_SORT_ATTRIBUTE_NAME, "Martin" );
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
         recordColumnCellTwo.setRecordColumnCellValues( mapRecordColumnValuesTwo );
-        
+
         RecordColumnCellComparator recordColumnCellComparator = new RecordColumnCellComparator( DEFAULT_SORT_ATTRIBUTE_NAME );
-        
+
         int nComparisonResult = recordColumnCellComparator.compare( recordColumnCellOne, recordColumnCellTwo );
         assertTrue( nComparisonResult < NumberUtils.INTEGER_ZERO );
     }
-    
+
     /**
-     * Test for the method {@link RecordColumnCellComparator#compare(RecordColumnCell, RecordColumnCell)} with integer values
-     * for the sorting key
+     * Test for the method {@link RecordColumnCellComparator#compare(RecordColumnCell, RecordColumnCell)} with integer values for the sorting key
      */
     public void testCompareWithIntegerValues( )
     {
@@ -140,21 +139,21 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
         mapRecordColumnValuesOne.put( DEFAULT_SORT_ATTRIBUTE_NAME, 1 );
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
         recordColumnCellOne.setRecordColumnCellValues( mapRecordColumnValuesOne );
-        
+
         Map<String, Object> mapRecordColumnValuesTwo = new LinkedHashMap<>( );
         mapRecordColumnValuesTwo.put( DEFAULT_SORT_ATTRIBUTE_NAME, 10 );
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
         recordColumnCellTwo.setRecordColumnCellValues( mapRecordColumnValuesTwo );
-        
+
         RecordColumnCellComparator recordColumnCellComparator = new RecordColumnCellComparator( DEFAULT_SORT_ATTRIBUTE_NAME );
-        
+
         int nComparisonResult = recordColumnCellComparator.compare( recordColumnCellOne, recordColumnCellTwo );
         assertThat( nComparisonResult, is( NumberUtils.INTEGER_MINUS_ONE ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the first 
-     * RecordCellColumn which have a null value
+     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the first RecordCellColumn which have a
+     * null value
      */
     public void testCompareWithFirstCellNullValue( )
     {
@@ -162,21 +161,21 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
         mapRecordColumnValuesOne.put( DEFAULT_SORT_ATTRIBUTE_NAME, null );
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
         recordColumnCellOne.setRecordColumnCellValues( mapRecordColumnValuesOne );
-        
+
         Map<String, Object> mapRecordColumnValuesTwo = new LinkedHashMap<>( );
         mapRecordColumnValuesTwo.put( DEFAULT_SORT_ATTRIBUTE_NAME, "Martin" );
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
         recordColumnCellTwo.setRecordColumnCellValues( mapRecordColumnValuesTwo );
-        
+
         RecordColumnCellComparator recordColumnCellComparator = new RecordColumnCellComparator( DEFAULT_SORT_ATTRIBUTE_NAME );
-        
+
         int nComparisonResult = recordColumnCellComparator.compare( recordColumnCellOne, recordColumnCellTwo );
         assertThat( nComparisonResult, is( NumberUtils.INTEGER_MINUS_ONE ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the second 
-     * RecordCellColumn which have a null value
+     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the second RecordCellColumn which have a
+     * null value
      */
     public void testCompareWithSecondCellNullValue( )
     {
@@ -184,21 +183,21 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
         mapRecordColumnValuesOne.put( DEFAULT_SORT_ATTRIBUTE_NAME, "Martin" );
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
         recordColumnCellOne.setRecordColumnCellValues( mapRecordColumnValuesOne );
-        
+
         Map<String, Object> mapRecordColumnValuesTwo = new LinkedHashMap<>( );
         mapRecordColumnValuesTwo.put( DEFAULT_SORT_ATTRIBUTE_NAME, null );
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
         recordColumnCellTwo.setRecordColumnCellValues( mapRecordColumnValuesTwo );
-        
+
         RecordColumnCellComparator recordColumnCellComparator = new RecordColumnCellComparator( DEFAULT_SORT_ATTRIBUTE_NAME );
-        
+
         int nComparisonResult = recordColumnCellComparator.compare( recordColumnCellOne, recordColumnCellTwo );
         assertThat( nComparisonResult, is( NumberUtils.INTEGER_ONE ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with one RecordCellColumn
-     * which haven't the good key
+     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with one RecordCellColumn which haven't the
+     * good key
      */
     public void testCompareWithOneMissingKey( )
     {
@@ -206,21 +205,21 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
         mapRecordColumnValuesOne.put( "test", "Albert" );
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
         recordColumnCellOne.setRecordColumnCellValues( mapRecordColumnValuesOne );
-        
+
         Map<String, Object> mapRecordColumnValuesTwo = new LinkedHashMap<>( );
         mapRecordColumnValuesTwo.put( DEFAULT_SORT_ATTRIBUTE_NAME, "Martin" );
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
         recordColumnCellTwo.setRecordColumnCellValues( mapRecordColumnValuesTwo );
-        
+
         RecordColumnCellComparator recordColumnCellComparator = new RecordColumnCellComparator( DEFAULT_SORT_ATTRIBUTE_NAME );
-        
+
         int nComparisonResult = recordColumnCellComparator.compare( recordColumnCellOne, recordColumnCellTwo );
         assertThat( nComparisonResult, is( NumberUtils.INTEGER_MINUS_ONE ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the two RecordCellColumn
-     * which haven't the good key
+     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the two RecordCellColumn which haven't
+     * the good key
      */
     public void testCompareWithoutSortKey( )
     {
@@ -228,14 +227,14 @@ public class RecordColumnCellComparatorTest extends LuteceTestCase
         mapRecordColumnValuesOne.put( "test", "Albert" );
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
         recordColumnCellOne.setRecordColumnCellValues( mapRecordColumnValuesOne );
-        
+
         Map<String, Object> mapRecordColumnValuesTwo = new LinkedHashMap<>( );
         mapRecordColumnValuesTwo.put( "test", "Martin" );
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
         recordColumnCellTwo.setRecordColumnCellValues( mapRecordColumnValuesTwo );
-        
+
         RecordColumnCellComparator recordColumnCellComparator = new RecordColumnCellComparator( DEFAULT_SORT_ATTRIBUTE_NAME );
-        
+
         int nComparisonResult = recordColumnCellComparator.compare( recordColumnCellOne, recordColumnCellTwo );
         assertThat( nComparisonResult, is( NumberUtils.INTEGER_ZERO ) );
     }

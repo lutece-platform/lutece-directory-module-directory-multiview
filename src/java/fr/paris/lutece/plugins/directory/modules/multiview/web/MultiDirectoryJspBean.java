@@ -284,7 +284,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     {
         List<IRecordFilter> listRecordFilter = new RecordFilterFactory( ).buildRecordFilterList( );
         List<IRecordPanel> listRecordPanel = new RecordPanelFactory( ).buildRecordPanelList( );
-        
+
         RecordColumnFactory recordColumnFactory = SpringContextService.getBean( RecordColumnFactory.BEAN_NAME );
         _listRecordColumn = recordColumnFactory.buildRecordColumnList( );
 

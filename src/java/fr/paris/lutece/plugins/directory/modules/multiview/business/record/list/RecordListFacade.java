@@ -49,15 +49,15 @@ public class RecordListFacade
 {
     // Constants
     public static final String BEAN_NAME = "directory-multiview.recordList.facade";
-    
+
     // Variables
     private final IRecordListDAO _recordListDAO;
-    
+
     /**
      * Constructor
      * 
      * @param recordListDAO
-     *          The DAO to use for the Facade
+     *            The DAO to use for the Facade
      */
     @Inject
     public RecordListFacade( IRecordListDAO recordListDAO )

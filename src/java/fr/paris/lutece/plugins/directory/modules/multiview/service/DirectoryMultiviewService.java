@@ -46,7 +46,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * Service for the module-directory-multiview
  */
 public class DirectoryMultiviewService implements IDirectoryMultiviewService
-{ 
+{
     /**
      * {@inheritDoc}
      */

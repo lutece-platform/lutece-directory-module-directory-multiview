@@ -54,10 +54,11 @@ public class DirectoryRecordItemComparatorTest extends LuteceTestCase
     private static final int EQUALITY_COMPARISON_RESULT = NumberUtils.INTEGER_ZERO;
     private static final int SUPERIOR_COMPARISON_RESULT = NumberUtils.INTEGER_ONE;
     private static final int INFERIOR_COMPARISON_RESULT = NumberUtils.INTEGER_MINUS_ONE;
-    
+
     // Variables
-    private static final DirectoryRecordItemComparatorConfig _defaultDirectoryRecordItemComparatorConfig = new DirectoryRecordItemComparatorConfig( DEFAULT_COLUMN_POSITION_TO_SORT, DEFAULT_SORT_ATTRIBUTE_NAME, ASCENDANT_SORT );
-    
+    private static final DirectoryRecordItemComparatorConfig _defaultDirectoryRecordItemComparatorConfig = new DirectoryRecordItemComparatorConfig(
+            DEFAULT_COLUMN_POSITION_TO_SORT, DEFAULT_SORT_ATTRIBUTE_NAME, ASCENDANT_SORT );
+
     /**
      * {@inheritDoc}
      */
@@ -77,91 +78,98 @@ public class DirectoryRecordItemComparatorTest extends LuteceTestCase
     }
 
     /**
-     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with two DirectoryRecordItem
-     * which have no values
+     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with two DirectoryRecordItem which have no
+     * values
      */
     public void testCompareWithEmptyDirectoryRecordItems( )
     {
         DirectoryRecordItem directoryRecordItemOne = new DirectoryRecordItem( );
         DirectoryRecordItem directoryRecordItemTwo = new DirectoryRecordItem( );
-        
-        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( _defaultDirectoryRecordItemComparatorConfig, _defaultDirectoryRecordItemComparatorConfig );
+
+        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( _defaultDirectoryRecordItemComparatorConfig,
+                _defaultDirectoryRecordItemComparatorConfig );
         int nComparisonResult = comparator.compare( directoryRecordItemOne, directoryRecordItemTwo );
         assertThat( nComparisonResult, is( EQUALITY_COMPARISON_RESULT ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the first DirectoryRecordItem
-     * which have no values with the ascendant sort
+     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the first DirectoryRecordItem which have
+     * no values with the ascendant sort
      */
     public void testCompareAscendantSortWithFirstDirectoryRecordItemEmpty( )
     {
         DirectoryRecordItem directoryRecordItemOne = new DirectoryRecordItem( );
         directoryRecordItemOne.addRecordColumnCell( null );
-        
+
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
         DirectoryRecordItem directoryRecordItemTwo = new DirectoryRecordItem( );
         directoryRecordItemTwo.addRecordColumnCell( recordColumnCellTwo );
-        
-        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( _defaultDirectoryRecordItemComparatorConfig, _defaultDirectoryRecordItemComparatorConfig );
+
+        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( _defaultDirectoryRecordItemComparatorConfig,
+                _defaultDirectoryRecordItemComparatorConfig );
         int nComparisonResult = comparator.compare( directoryRecordItemOne, directoryRecordItemTwo );
         assertThat( nComparisonResult, is( INFERIOR_COMPARISON_RESULT ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the first DirectoryRecordItem
-     * which have no values with the descendant sort
+     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the first DirectoryRecordItem which have
+     * no values with the descendant sort
      */
     public void testCompareDescendantSortWithFirstDirectoryRecordItemEmpty( )
     {
         DirectoryRecordItem directoryRecordItemOne = new DirectoryRecordItem( );
         directoryRecordItemOne.addRecordColumnCell( null );
-        
+
         RecordColumnCell recordColumnCellTwo = new RecordColumnCell( );
         DirectoryRecordItem directoryRecordItemTwo = new DirectoryRecordItem( );
         directoryRecordItemTwo.addRecordColumnCell( recordColumnCellTwo );
-        
-        DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfig = new DirectoryRecordItemComparatorConfig( DEFAULT_COLUMN_POSITION_TO_SORT, DEFAULT_SORT_ATTRIBUTE_NAME, DESCENDANT_SORT );
-        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( directoryRecordItemComparatorConfig, _defaultDirectoryRecordItemComparatorConfig );
-        
+
+        DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfig = new DirectoryRecordItemComparatorConfig( DEFAULT_COLUMN_POSITION_TO_SORT,
+                DEFAULT_SORT_ATTRIBUTE_NAME, DESCENDANT_SORT );
+        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( directoryRecordItemComparatorConfig,
+                _defaultDirectoryRecordItemComparatorConfig );
+
         int nComparisonResult = comparator.compare( directoryRecordItemOne, directoryRecordItemTwo );
         assertThat( nComparisonResult, is( SUPERIOR_COMPARISON_RESULT ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the second DirectoryRecordItem
-     * which have no values with the ascendant sort
+     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the second DirectoryRecordItem which
+     * have no values with the ascendant sort
      */
     public void testCompareAscendantSortWithSecondDirectoryRecordItemEmpty( )
     {
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
         DirectoryRecordItem directoryRecordItemOne = new DirectoryRecordItem( );
         directoryRecordItemOne.addRecordColumnCell( recordColumnCellOne );
-        
+
         DirectoryRecordItem directoryRecordItemTwo = new DirectoryRecordItem( );
         directoryRecordItemTwo.addRecordColumnCell( null );
-        
-        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( _defaultDirectoryRecordItemComparatorConfig, _defaultDirectoryRecordItemComparatorConfig );
+
+        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( _defaultDirectoryRecordItemComparatorConfig,
+                _defaultDirectoryRecordItemComparatorConfig );
         int nComparisonResult = comparator.compare( directoryRecordItemOne, directoryRecordItemTwo );
         assertThat( nComparisonResult, is( SUPERIOR_COMPARISON_RESULT ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the second DirectoryRecordItem
-     * which have no values with the descendant sort
+     * Test for the method {@link DirectoryRecordItemComparator#compare(DirectoryRecordItem, DirectoryRecordItem)} with the second DirectoryRecordItem which
+     * have no values with the descendant sort
      */
     public void testCompareDescendantSortWithSecondDirectoryRecordItemEmpty( )
     {
         RecordColumnCell recordColumnCellOne = new RecordColumnCell( );
         DirectoryRecordItem directoryRecordItemOne = new DirectoryRecordItem( );
         directoryRecordItemOne.addRecordColumnCell( recordColumnCellOne );
-        
+
         DirectoryRecordItem directoryRecordItemTwo = new DirectoryRecordItem( );
         directoryRecordItemTwo.addRecordColumnCell( null );
-        
-        DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfig = new DirectoryRecordItemComparatorConfig( DEFAULT_COLUMN_POSITION_TO_SORT, DEFAULT_SORT_ATTRIBUTE_NAME, DESCENDANT_SORT );
-        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( directoryRecordItemComparatorConfig, _defaultDirectoryRecordItemComparatorConfig );
-        
+
+        DirectoryRecordItemComparatorConfig directoryRecordItemComparatorConfig = new DirectoryRecordItemComparatorConfig( DEFAULT_COLUMN_POSITION_TO_SORT,
+                DEFAULT_SORT_ATTRIBUTE_NAME, DESCENDANT_SORT );
+        DirectoryRecordItemComparator comparator = new DirectoryRecordItemComparator( directoryRecordItemComparatorConfig,
+                _defaultDirectoryRecordItemComparatorConfig );
+
         int nComparisonResult = comparator.compare( directoryRecordItemOne, directoryRecordItemTwo );
         assertThat( nComparisonResult, is( INFERIOR_COMPARISON_RESULT ) );
     }
