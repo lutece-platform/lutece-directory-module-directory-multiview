@@ -76,7 +76,7 @@ public final class QueryBuilder
     {
         StringBuilder stringBuilderGlobalQuery = new StringBuilder( );
 
-        if ( listRecordColumnQueryPart != null && !listRecordColumnQueryPart.isEmpty( ) )
+        if ( !CollectionUtils.isEmpty( listRecordPanelInitializerQueryPart ) && !CollectionUtils.isEmpty( listRecordColumnQueryPart ) )
         {
             // Build the select query part
             buildSelectQueryPart( stringBuilderGlobalQuery, listRecordPanelInitializerQueryPart, listRecordColumnQueryPart );
