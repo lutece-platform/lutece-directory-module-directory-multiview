@@ -66,7 +66,7 @@ public class DAOUtilMock extends DAOUtil
         _dateValueToRetrieve = null;
         _strColumnName = strColumnName;
     }
-    
+
     /**
      * Constructor
      * 
