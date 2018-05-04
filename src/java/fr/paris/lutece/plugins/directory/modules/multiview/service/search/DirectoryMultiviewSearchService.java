@@ -139,21 +139,26 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
      * @param strSearchText
      *            The text to search
      * @return the list of the identifier of the Record from the result of the search of the given text
-     * @throws ParseException
-     * @throws IOException
+     * @throws ParseException if the parsing fails
+     * @throws IOException if there is a low-level IO error
      */
     private List<Integer> searchIdRecordList( String strSearchText ) throws ParseException, IOException
     {
-        List<Integer> listIdRecordResult = new ArrayList<>( );
-
-        Query querySearch = prepareQuery( strSearchText );
-
         IndexSearcher indexSearcher = _indexSearcher;
-        if ( indexSearcher == null && _directorySearchFactory != null )
+        if ( _indexSearcher == null && _directorySearchFactory != null )
         {
             indexSearcher = _directorySearchFactory.getIndexSearcher( );
         }
+        
+        if ( indexSearcher == null )
+        {
+            throw new IOException( "The IndexSearcher is undefined !" );
+        }
+        
+        List<Integer> listIdRecordResult = new ArrayList<>( );
 
+        Query querySearch = prepareQuery( strSearchText );
+        
         TopDocs topDocs = indexSearcher.search( querySearch, LuceneSearchEngine.MAX_RESPONSES );
         if ( topDocs != null && topDocs.scoreDocs != null )
         {
@@ -176,7 +181,7 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
      * @param strSearchText
      *            The text to search
      * @return the query to execute with the given text to make the search
-     * @throws ParseException
+     * @throws ParseException if the parsing fails
      */
     private Query prepareQuery( String strSearchText ) throws ParseException
     {
@@ -194,7 +199,7 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
      * @param scoreDoc
      *            The scoreDoc to retrieve the id Record from
      * @return the id of the Record of the given ScoreDoc or -1 if not found or if a problem occurred
-     * @throws IOException
+     * @throws IOException if there is a low-level IO error
      */
     private int retrieveIdRecordFromDoc( IndexSearcher indexSearcher, ScoreDoc scoreDoc ) throws IOException
     {
