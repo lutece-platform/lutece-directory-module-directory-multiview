@@ -33,8 +33,9 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.impl;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,8 @@ public class RecordColumnRecordDateCreationQueryPart extends AbstractRecordColum
     protected Map<String, Object> getMapRecordColumnValues( DAOUtil daoUtil )
     {
         Map<String, Object> mapRecordColumnValues = new LinkedHashMap<>( );
-        Date dateRecordDateCreation = daoUtil.getDate( RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION );
+        Timestamp timestampRecordDateCreation = daoUtil.getTimestamp( RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION );
+        Date dateRecordDateCreation = new Date( timestampRecordDateCreation.getTime( ) );
         mapRecordColumnValues.put( RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION, dateRecordDateCreation );
 
         return mapRecordColumnValues;

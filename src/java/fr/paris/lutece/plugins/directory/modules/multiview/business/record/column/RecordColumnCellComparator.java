@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.directory.modules.multiview.business.record.colu
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Date;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -121,13 +122,43 @@ public class RecordColumnCellComparator implements Comparator<RecordColumnCell>,
             }
             else
             {
-                String strObjectOneRepresentation = String.valueOf( objectOne );
-                String strObjectTwoRepresentation = String.valueOf( objectTwo );
-
-                nComparisonResult = strObjectOneRepresentation.compareTo( strObjectTwoRepresentation );
+                nComparisonResult = compareObject( objectOne, objectTwo );
             }
         }
 
+        return nComparisonResult;
+    }
+    
+    /**
+     * Make the comparison between the two given object. If there are both Date
+     * a comparison will be make on the two Dates otherwise it their comparison as
+     * String which will be made
+     * 
+     * @param objectOne
+     *          The first object to compare
+     * @param objectTwo
+     *          The second object to compare
+     * @return the result of the comparison between the two given objects
+     */
+    private int compareObject( Object objectOne, Object objectTwo )
+    {
+        int nComparisonResult = NumberUtils.INTEGER_ZERO;
+        
+        if ( objectOne instanceof Date && objectTwo instanceof Date )
+        {
+            Date dateOne = (Date) objectOne;
+            Date dateTwo = (Date) objectTwo;
+            
+            nComparisonResult = dateOne.compareTo( dateTwo );
+        }
+        else
+        {
+            String strObjectOneRepresentation = String.valueOf( objectOne );
+            String strObjectTwoRepresentation = String.valueOf( objectTwo );
+
+            nComparisonResult = strObjectOneRepresentation.compareTo( strObjectTwoRepresentation ); 
+        }
+        
         return nComparisonResult;
     }
 }

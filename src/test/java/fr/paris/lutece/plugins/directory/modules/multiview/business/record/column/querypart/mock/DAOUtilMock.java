@@ -33,8 +33,8 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.mock;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -46,6 +46,7 @@ public class DAOUtilMock extends DAOUtil
 {
     // Variables
     private final String _strValueToRetrieve;
+    private final Date _dateValueToRetrieve;
     private final String _strColumnName;
 
     /**
@@ -62,6 +63,25 @@ public class DAOUtilMock extends DAOUtil
     {
         super( strSQL );
         _strValueToRetrieve = strValueToRetrieve;
+        _dateValueToRetrieve = null;
+        _strColumnName = strColumnName;
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param strSQL
+     *            The query to execute
+     * @param strColumnName
+     *            The name of the column
+     * @param dateValueToRetrieve
+     *            The date value to retrieve from the column
+     */
+    public DAOUtilMock( String strSQL, String strColumnName, Date dateValueToRetrieve )
+    {
+        super( strSQL );
+        _strValueToRetrieve = null;
+        _dateValueToRetrieve = dateValueToRetrieve;
         _strColumnName = strColumnName;
     }
 
@@ -89,19 +109,19 @@ public class DAOUtilMock extends DAOUtil
      * {@inheritDoc}
      */
     @Override
-    public Date getDate( String strColumnName )
+    public Timestamp getTimestamp( String strColumnName )
     {
-        Date date = null;
+        Timestamp timestamp = null;
 
         if ( _strColumnName.equals( strColumnName ) )
         {
-            date = Date.valueOf( LocalDate.now( ) );
+            timestamp = new Timestamp( _dateValueToRetrieve.getTime( ) );
         }
         else
         {
             throw new AppException( );
         }
 
-        return date;
+        return timestamp;
     }
 }

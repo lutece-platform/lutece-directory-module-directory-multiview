@@ -38,7 +38,9 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -81,9 +83,9 @@ public class RecordColumnRecordDateCreationQueryPartTest extends LuteceTestCase
      */
     public void testGetRecordColumnCellRecordDateCreation( )
     {
-        String strRecordDateCreationValueToRetrieve = String.valueOf( LocalDate.now( ) );
+        Date dateRecordDateCreationValueToRetrieve = new Date( );
         DAOUtil daoUtil = new DAOUtilMock( StringUtils.EMPTY, RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION,
-                strRecordDateCreationValueToRetrieve );
+                dateRecordDateCreationValueToRetrieve );
 
         IRecordColumn recordColumn = new RecordColumnRecordDateCreation( 1, "Record Date Creation" );
         RecordColumnRecordDateCreationQueryPart recordColumnRecordDateCreationQueryPart = new RecordColumnRecordDateCreationQueryPart( );
@@ -98,7 +100,7 @@ public class RecordColumnRecordDateCreationQueryPartTest extends LuteceTestCase
 
         Object objDirectoryResult = recordColumnCell.getRecordColumnCellValueByName( RecordRecordDateCreationNameConstants.COLUMN_RECORD_DATE_CREATION );
         assertThat( objDirectoryResult, is( not( nullValue( ) ) ) );
-        assertThat( String.valueOf( objDirectoryResult ), is( strRecordDateCreationValueToRetrieve ) );
+        assertThat( (Date) objDirectoryResult, is( dateRecordDateCreationValueToRetrieve ) );
     }
 
     /**
