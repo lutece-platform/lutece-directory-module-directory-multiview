@@ -67,7 +67,7 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
     private Analyzer _analyzer;
     private IndexSearcher _indexSearcher;
     private DirectorySearchFactory _directorySearchFactory;
-    
+
     /**
      * Constructor
      */
@@ -76,15 +76,16 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
         _directorySearchFactory = DirectorySearchFactory.getInstance( );
         _analyzer = _directorySearchFactory.getAnalyzer( );
     }
-    
+
     /**
      * Constructor
      * 
      * @param indexSearcher
-     *          The IndexSearcher to use for made the search
+     *            The IndexSearcher to use for made the search
      * @param analyzer
-     *          The Analyzer to use for parsing the query of the search
-     * @throws AppException - if one of the given parameters are missing
+     *            The Analyzer to use for parsing the query of the search
+     * @throws AppException
+     *             - if one of the given parameters are missing
      */
     public DirectoryMultiviewSearchService( IndexSearcher indexSearcher, Analyzer analyzer ) throws AppException
     {
@@ -98,7 +99,7 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
             _analyzer = analyzer;
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -108,23 +109,23 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
         if ( recordPanel != null && StringUtils.isNotBlank( strSearchText ) )
         {
             List<DirectoryRecordItem> listDirectoryRecordItem = recordPanel.getDirectoryRecordItemList( );
-            
+
             if ( !CollectionUtils.isEmpty( listDirectoryRecordItem ) )
             {
                 try
-                {                    
+                {
                     List<Integer> listIdRecord = searchIdRecordList( strSearchText );
-                    
+
                     if ( listIdRecord.isEmpty( ) )
                     {
                         recordPanel.setDirectoryRecordItemList( new ArrayList<>( ) );
                     }
                     else
                     {
-                        removeDirectoryItemOutsideSearchResult( recordPanel, listIdRecord );    
+                        removeDirectoryItemOutsideSearchResult( recordPanel, listIdRecord );
                     }
-                } 
-                catch ( IOException | ParseException exception )
+                }
+                catch( IOException | ParseException exception )
                 {
                     AppLogService.error( "An error occurred during the search on the index: " + exception.getMessage( ) );
                 }
@@ -136,23 +137,23 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
      * Search the list of the identifier of the Record from the result of the search of the given text
      * 
      * @param strSearchText
-     *          The text to search
+     *            The text to search
      * @return the list of the identifier of the Record from the result of the search of the given text
-     * @throws ParseException 
-     * @throws IOException 
+     * @throws ParseException
+     * @throws IOException
      */
     private List<Integer> searchIdRecordList( String strSearchText ) throws ParseException, IOException
     {
         List<Integer> listIdRecordResult = new ArrayList<>( );
 
         Query querySearch = prepareQuery( strSearchText );
-        
+
         IndexSearcher indexSearcher = _indexSearcher;
         if ( indexSearcher == null && _directorySearchFactory != null )
         {
             indexSearcher = _directorySearchFactory.getIndexSearcher( );
         }
-        
+
         TopDocs topDocs = indexSearcher.search( querySearch, LuceneSearchEngine.MAX_RESPONSES );
         if ( topDocs != null && topDocs.scoreDocs != null )
         {
@@ -168,32 +169,32 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
 
         return listIdRecordResult;
     }
-    
+
     /**
      * Prepare the query to execute with the given text to make the search
      * 
      * @param strSearchText
-     *          The text to search
+     *            The text to search
      * @return the query to execute with the given text to make the search
-     * @throws ParseException 
+     * @throws ParseException
      */
     private Query prepareQuery( String strSearchText ) throws ParseException
     {
         QueryParser queryParser = new QueryParser( DirectorySearchItem.FIELD_CONTENTS, _analyzer );
         Query queryParsed = queryParser.parse( strSearchText );
-        
+
         return queryParsed;
     }
-    
+
     /**
      * Retrieve the id of the Record with the given searcher for the specified ScoreDoc
      * 
      * @param indexSearcher
-     *          The searcher used to retrieve the Document
+     *            The searcher used to retrieve the Document
      * @param scoreDoc
-     *          The scoreDoc to retrieve the id Record from
+     *            The scoreDoc to retrieve the id Record from
      * @return the id of the Record of the given ScoreDoc or -1 if not found or if a problem occurred
-     * @throws IOException 
+     * @throws IOException
      */
     private int retrieveIdRecordFromDoc( IndexSearcher indexSearcher, ScoreDoc scoreDoc ) throws IOException
     {
@@ -209,17 +210,17 @@ public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearc
                 nIdRecord = NumberUtils.toInt( strIdRecord, NumberUtils.INTEGER_MINUS_ONE );
             }
         }
-        
+
         return nIdRecord;
     }
-    
+
     /**
      * Remove the DirectoryRecordItem which are not associated to a Record which are absent from the list of search result
      * 
      * @param recordPanel
-     *          The RecordPael to remove the DirectoryRecordItem which are not present in the search
+     *            The RecordPael to remove the DirectoryRecordItem which are not present in the search
      * @param listIdRecord
-     *          The list of all id of the Record which are the result of the search
+     *            The list of all id of the Record which are the result of the search
      */
     private void removeDirectoryItemOutsideSearchResult( IRecordPanel recordPanel, List<Integer> listIdRecord )
     {

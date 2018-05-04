@@ -84,7 +84,7 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
     private IndexWriter _indexWriter;
     private static final List<Integer> _listPanelIdRecord = Arrays.asList( 1, 2, 3, 4, 5 );
     private List<Entry<String, String>> _listStoredContent;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -92,14 +92,14 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
     protected void setUp( ) throws Exception
     {
         super.setUp( );
-        
+
         _recordPanel = createRecordPanel( );
-        
+
         populateStoredContents( );
         createIndexForTest( );
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -108,9 +108,10 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
     {
         super.tearDown( );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
+     * Test for the method
+     * {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
      * without directory and analyzer
      */
     public void testFilterBySearchedTextWithoutDirectoryAndAnalyzer( )
@@ -119,17 +120,18 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
         {
             @SuppressWarnings( "unused" )
             IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( null, null );
-            
+
             fail( "The AppException hasn't been throwned !" );
         }
-        catch ( AppException exception )
+        catch( AppException exception )
         {
             // Nothing to do
         }
     }
-    
+
     /**
-     * Test for the method {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
+     * Test for the method
+     * {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
      * without directory
      */
     public void testFilterBySearchedTextWithoutDirectory( )
@@ -138,17 +140,18 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
         {
             @SuppressWarnings( "unused" )
             IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( null, _analyzer );
-            
+
             fail( "The AppException hasn't been throwned for the missing Directory !" );
         }
-        catch ( AppException exception )
+        catch( AppException exception )
         {
             // Nothing to do
         }
     }
-    
+
     /**
-     * Test for the method {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
+     * Test for the method
+     * {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
      * without analyzer
      */
     public void testFilterBySearchedTextWithoutAnalyzer( )
@@ -157,137 +160,143 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
         {
             @SuppressWarnings( "unused" )
             IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( _indexSearcher, null );
-            
+
             fail( "The AppException hasn't been throwned for the missing Analyzer !" );
         }
-        catch ( AppException exception )
+        catch( AppException exception )
         {
             // Nothing to do
         }
     }
-    
+
     /**
-     * Test for the method {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
+     * Test for the method
+     * {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
      * with a null text to search
      */
     public void testFilterBySearchedTextWithNullTextSearch( )
     {
         String strSearchText = null;
-        
+
         IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( _indexSearcher, _analyzer );
         directoryMultiviewSearchService.filterBySearchedText( _recordPanel, strSearchText );
-        
+
         List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
         assertThat( listDirectoryRecordItem.size( ), is( _listPanelIdRecord.size( ) ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
+     * Test for the method
+     * {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
      * with an empty text to search
      */
     public void testFilterBySearchedTextWithEmptyTextSearch( )
     {
         String strSearchText = StringUtils.EMPTY;
-        
+
         IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( _indexSearcher, _analyzer );
         directoryMultiviewSearchService.filterBySearchedText( _recordPanel, strSearchText );
-        
+
         List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
         assertThat( listDirectoryRecordItem.size( ), is( _listPanelIdRecord.size( ) ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
+     * Test for the method
+     * {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
      */
     public void testFilterBySearchedText( )
     {
         String strSearchText = "test";
-        
+
         IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( _indexSearcher, _analyzer );
         directoryMultiviewSearchService.filterBySearchedText( _recordPanel, strSearchText );
-        
+
         List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
         assertThat( listDirectoryRecordItem.size( ), is( NumberUtils.INTEGER_ONE ) );
-        
+
         DirectoryRecordItem directoryRecordItem = listDirectoryRecordItem.get( NumberUtils.INTEGER_ZERO );
         assertThat( directoryRecordItem.getIdRecord( ), is( 1 ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
+     * Test for the method
+     * {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
      * with the search which returns several results
      */
     public void testFilterBySearchedTextTwoResult( )
     {
         String strSearchText = "title";
-        
+
         IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( _indexSearcher, _analyzer );
         directoryMultiviewSearchService.filterBySearchedText( _recordPanel, strSearchText );
-        
+
         List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
         assertThat( listDirectoryRecordItem.size( ), is( 2 ) );
-        
+
         DirectoryRecordItem directoryRecordItemOne = listDirectoryRecordItem.get( NumberUtils.INTEGER_ZERO );
         assertThat( directoryRecordItemOne.getIdRecord( ), is( 1 ) );
-        
+
         DirectoryRecordItem directoryRecordItemFive = listDirectoryRecordItem.get( NumberUtils.INTEGER_ONE );
         assertThat( directoryRecordItemFive.getIdRecord( ), is( 5 ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
+     * Test for the method
+     * {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
      * with the search which returns none result
      */
     public void testFilterBySearchedTextWithoutResult( )
     {
         String strSearchText = "nothing";
-        
+
         IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( _indexSearcher, _analyzer );
         directoryMultiviewSearchService.filterBySearchedText( _recordPanel, strSearchText );
-        
+
         List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
         assertThat( listDirectoryRecordItem.size( ), is( NumberUtils.INTEGER_ZERO ) );
     }
-    
+
     /**
-     * Test for the method {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
+     * Test for the method
+     * {@link DirectoryMultiviewSearchService#filterBySearchedText(fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel, String)}
      * with the panel which doesn't have item
      */
     public void testFilterBySearchedTextWithPanelWithoutItem( )
     {
         String strSearchText = "test";
-        
+
         _recordPanel.setDirectoryRecordItemList( new ArrayList<>( ) );
-        
+
         IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( _indexSearcher, _analyzer );
         directoryMultiviewSearchService.filterBySearchedText( _recordPanel, strSearchText );
-        
+
         List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
         assertThat( listDirectoryRecordItem.size( ), is( NumberUtils.INTEGER_ZERO ) );
     }
-    
+
     /**
      * Verify that the result of the search are updated after a new Document added to the index
      */
     public void testResultSearchUpdatedAfterDocumentAddition( )
     {
         String strSearchText = "title";
-        
+
         IDirectoryMultiviewSearchService directoryMultiviewSearchService = new DirectoryMultiviewSearchService( _indexSearcher, _analyzer );
         directoryMultiviewSearchService.filterBySearchedText( _recordPanel, strSearchText );
-        
+
         List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
         assertThat( listDirectoryRecordItem.size( ), is( 2 ) );
-        
+
         addDocumentToIndex( 6, "title" );
-        
+
         directoryMultiviewSearchService = new DirectoryMultiviewSearchService( _indexSearcher, _analyzer );
         directoryMultiviewSearchService.filterBySearchedText( _recordPanel, strSearchText );
-        
+
         List<DirectoryRecordItem> listDirectoryRecordItemAfterAddition = _recordPanel.getDirectoryRecordItemList( );
         assertThat( listDirectoryRecordItemAfterAddition.size( ), is( 3 ) );
     }
-    
+
     /**
      * Create the RecordPanel to use for the tests
      * 
@@ -297,7 +306,7 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
     {
         RecordPanelConfiguration recordPanelConfiguration = new RecordPanelConfiguration( "code", 1, "title", new ArrayList<>( ) );
         IRecordPanel recordPanel = new RecordPanelRecords( recordPanelConfiguration );
-        
+
         List<DirectoryRecordItem> listDirectoryRecordItem = new ArrayList<>( );
         for ( Integer nIdRecord : _listPanelIdRecord )
         {
@@ -305,11 +314,11 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
             directoryRecordItem.setIdRecord( nIdRecord );
             listDirectoryRecordItem.add( directoryRecordItem );
         }
-        
+
         recordPanel.setDirectoryRecordItemList( listDirectoryRecordItem );
         return recordPanel;
     }
-    
+
     /**
      * Populate the list of Entry which represent the Documents of the index
      */
@@ -323,7 +332,7 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
         _listStoredContent.add( new AbstractMap.SimpleEntry<>( "5", "something" ) );
         _listStoredContent.add( new AbstractMap.SimpleEntry<>( "5", "title" ) );
     }
-    
+
     /**
      * Create and populate the index for the tests
      */
@@ -331,47 +340,47 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
     {
         _directory = new RAMDirectory( );
         _analyzer = new LuteceFrenchAnalyzer( );
-        
+
         try
         {
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig( _analyzer );
             indexWriterConfig.setOpenMode( OpenMode.CREATE_OR_APPEND );
-            
+
             _indexWriter = new IndexWriter( _directory, indexWriterConfig );
-            
-            for ( Entry<String,String> entryStoredContents : _listStoredContent )
+
+            for ( Entry<String, String> entryStoredContents : _listStoredContent )
             {
                 String strIdRecord = entryStoredContents.getKey( );
                 String strContent = entryStoredContents.getValue( );
-                
+
                 FieldType fieldType = new FieldType( StringField.TYPE_STORED );
                 fieldType.setOmitNorms( Boolean.FALSE );
-                
+
                 Document document = new Document( );
                 document.add( new Field( DirectorySearchItem.FIELD_ID_DIRECTORY_RECORD, strIdRecord, fieldType ) );
                 document.add( new Field( DirectorySearchItem.FIELD_CONTENTS, strContent, TextField.TYPE_NOT_STORED ) );
                 _indexWriter.addDocument( document );
             }
-            
+
             _indexWriter.close( );
-            
+
             IndexReader indexReader = DirectoryReader.open( _directory );
             _indexSearcher = new IndexSearcher( indexReader );
-        } 
-        catch ( IOException e )
+        }
+        catch( IOException e )
         {
             // Nothing to do
         }
     }
-    
+
     /**
-     * Add a new Document to the index and its equivalent DirectoryRecordItem to the RecordPanel list.
-     * Create a new IndexSearcher after the addition of the new Document to the index.
+     * Add a new Document to the index and its equivalent DirectoryRecordItem to the RecordPanel list. Create a new IndexSearcher after the addition of the new
+     * Document to the index.
      * 
      * @param nIdRecord
-     *          The identifier of the record to add
+     *            The identifier of the record to add
      * @param strContentsValue
-     *          The value of the contents field of the document
+     *            The value of the contents field of the document
      */
     private void addDocumentToIndex( int nIdRecord, String strContentsValue )
     {
@@ -379,26 +388,26 @@ public class DirectoryMultiviewSearchServiceTest extends LuteceTestCase
         {
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig( _analyzer );
             indexWriterConfig.setOpenMode( OpenMode.APPEND );
-            
+
             _indexWriter = new IndexWriter( _directory, indexWriterConfig );
-            
+
             FieldType fieldType = new FieldType( StringField.TYPE_STORED );
             fieldType.setOmitNorms( Boolean.FALSE );
-            
+
             Document document = new Document( );
             document.add( new Field( DirectorySearchItem.FIELD_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ), fieldType ) );
             document.add( new Field( DirectorySearchItem.FIELD_CONTENTS, strContentsValue, TextField.TYPE_NOT_STORED ) );
             _indexWriter.addDocument( document );
             _indexWriter.close( );
-            
+
             DirectoryRecordItem directoryRecordItem = new DirectoryRecordItem( );
             directoryRecordItem.setIdRecord( nIdRecord );
             _recordPanel.getDirectoryRecordItemList( ).add( directoryRecordItem );
-            
+
             IndexReader indexReader = DirectoryReader.open( _directory );
             _indexSearcher = new IndexSearcher( indexReader );
         }
-        catch ( IOException exception )
+        catch( IOException exception )
         {
             // Nothing to do
         }
