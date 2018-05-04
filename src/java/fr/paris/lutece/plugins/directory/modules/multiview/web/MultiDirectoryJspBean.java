@@ -330,7 +330,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
             if ( StringUtils.isNotBlank( _strSearchedText ) )
             {
-                _directoryMultiviewSearchService.filterBySearchedText( recordPanel, getUser( ), _strSearchedText, getLocale( ) );
+                _directoryMultiviewSearchService.filterBySearchedText( recordPanel, _strSearchedText );
             }
 
             // Associate for each RecordColumnDisplay its RecordColumnValues if the panel is active

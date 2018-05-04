@@ -33,242 +33,208 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service.search;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 
-import fr.paris.lutece.plugins.directory.business.Directory;
-import fr.paris.lutece.plugins.directory.business.DirectoryFilter;
-import fr.paris.lutece.plugins.directory.business.DirectoryHome;
-import fr.paris.lutece.plugins.directory.business.EntryFilter;
-import fr.paris.lutece.plugins.directory.business.IEntry;
-import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
-import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
-import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
-import fr.paris.lutece.plugins.directory.web.action.DirectoryAdminSearchFields;
-import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.plugins.directory.service.directorysearch.DirectorySearchFactory;
+import fr.paris.lutece.plugins.directory.service.directorysearch.DirectorySearchItem;
+import fr.paris.lutece.portal.service.search.LuceneSearchEngine;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 /**
  * Implementation of the module-directory-multiview search service
  */
 public class DirectoryMultiviewSearchService implements IDirectoryMultiviewSearchService
 {
+    // Variables
+    private Analyzer _analyzer;
+    private IndexSearcher _indexSearcher;
+    private DirectorySearchFactory _directorySearchFactory;
+    
+    /**
+     * Constructor
+     */
+    public DirectoryMultiviewSearchService( )
+    {
+        _directorySearchFactory = DirectorySearchFactory.getInstance( );
+        _analyzer = _directorySearchFactory.getAnalyzer( );
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param indexSearcher
+     *          The IndexSearcher to use for made the search
+     * @param analyzer
+     *          The Analyzer to use for parsing the query of the search
+     * @throws AppException - if one of the given parameters are missing
+     */
+    public DirectoryMultiviewSearchService( IndexSearcher indexSearcher, Analyzer analyzer ) throws AppException
+    {
+        if ( indexSearcher == null || analyzer == null )
+        {
+            throw new AppException( "The parameters of the search service musn't be null !" );
+        }
+        else
+        {
+            _indexSearcher = indexSearcher;
+            _analyzer = analyzer;
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void filterBySearchedText( IRecordPanel recordPanel, AdminUser adminUser, String strSearchText, Locale locale )
+    public void filterBySearchedText( IRecordPanel recordPanel, String strSearchText )
     {
-        if ( recordPanel != null && !CollectionUtils.isEmpty( recordPanel.getDirectoryRecordItemList( ) ) )
+        if ( recordPanel != null && StringUtils.isNotBlank( strSearchText ) )
         {
-            List<DirectoryRecordItem> listDirectoryRecordItemPanel = recordPanel.getDirectoryRecordItemList( );
-            List<DirectoryRecordItem> listDirectoryRecordItemResult = new ArrayList<>( listDirectoryRecordItemPanel );
-
-            if ( StringUtils.isNotBlank( strSearchText ) )
+            List<DirectoryRecordItem> listDirectoryRecordItem = recordPanel.getDirectoryRecordItemList( );
+            
+            if ( !CollectionUtils.isEmpty( listDirectoryRecordItem ) )
             {
-                // Retrieve the list of directory to use for filter the records
-                listDirectoryRecordItemResult = buildDirectoryRecordItemSearchResult( listDirectoryRecordItemPanel, strSearchText, adminUser, locale );
+                try
+                {                    
+                    List<Integer> listIdRecord = searchIdRecordList( strSearchText );
+                    
+                    if ( listIdRecord.isEmpty( ) )
+                    {
+                        recordPanel.setDirectoryRecordItemList( new ArrayList<>( ) );
+                    }
+                    else
+                    {
+                        removeDirectoryItemOutsideSearchResult( recordPanel, listIdRecord );    
+                    }
+                } 
+                catch ( IOException | ParseException exception )
+                {
+                    AppLogService.error( "An error occurred during the search on the index: " + exception.getMessage( ) );
+                }
             }
-
-            recordPanel.setDirectoryRecordItemList( listDirectoryRecordItemResult );
         }
     }
 
     /**
-     * Return the list of DirectoryRecordItem retain from the given list of DirectoryRecordItem and the result of the search
+     * Search the list of the identifier of the Record from the result of the search of the given text
      * 
-     * @param listDirectoryRecordItem
-     *            The list of DirectoryRecordItem which all the record information before the search is made
      * @param strSearchText
-     *            The text which must be searched
-     * @param adminUser
-     *            The AdminUser who made the search
-     * @param locale
-     *            The locale to use for the search
-     * @return the list of DirectoryRecordItem retain from the given list of DirectoryRecordItem and the result of the search
+     *          The text to search
+     * @return the list of the identifier of the Record from the result of the search of the given text
+     * @throws ParseException 
+     * @throws IOException 
      */
-    private List<DirectoryRecordItem> buildDirectoryRecordItemSearchResult( List<DirectoryRecordItem> listDirectoryRecordItem, String strSearchText,
-            AdminUser adminUser, Locale locale )
+    private List<Integer> searchIdRecordList( String strSearchText ) throws ParseException, IOException
     {
-        List<DirectoryRecordItem> listDirectoryRecordItemResult = new ArrayList<>( );
+        List<Integer> listIdRecordResult = new ArrayList<>( );
 
-        // Retrieve the list of directory to use for filter the records
-        DirectoryFilter directoryFilter = new DirectoryFilter( );
-        List<Directory> listDirectories = DirectoryHome.getDirectoryList( directoryFilter, DirectoryMultiviewPlugin.getPlugin( ) );
-
-        // For each directory, compute the plain text search
-        if ( listDirectories != null && !listDirectories.isEmpty( ) )
+        Query querySearch = prepareQuery( strSearchText );
+        
+        IndexSearcher indexSearcher = _indexSearcher;
+        if ( indexSearcher == null && _directorySearchFactory != null )
         {
-            // Retrieve the list of the id record of the result of the search
-            List<Integer> listIdRecord = retrieveListRecordResultSearch( listDirectories, strSearchText, adminUser, locale );
-
-            // Keep only the record which are contains in the result list
-            for ( DirectoryRecordItem directoryRecordItem : listDirectoryRecordItem )
+            indexSearcher = _directorySearchFactory.getIndexSearcher( );
+        }
+        
+        TopDocs topDocs = indexSearcher.search( querySearch, LuceneSearchEngine.MAX_RESPONSES );
+        if ( topDocs != null && topDocs.scoreDocs != null )
+        {
+            for ( ScoreDoc scoreDoc : topDocs.scoreDocs )
             {
-                Integer nIdRecord = directoryRecordItem.getIdRecord( );
-                if ( listIdRecord.contains( nIdRecord ) )
+                int nIdRecord = retrieveIdRecordFromDoc( indexSearcher, scoreDoc );
+                if ( nIdRecord != NumberUtils.INTEGER_MINUS_ONE )
                 {
-                    listDirectoryRecordItemResult.add( directoryRecordItem );
+                    listIdRecordResult.add( nIdRecord );
                 }
             }
         }
 
-        return listDirectoryRecordItemResult;
+        return listIdRecordResult;
     }
-
+    
     /**
-     * Retrieve the list of the id record of the result of the search
+     * Prepare the query to execute with the given text to make the search
      * 
-     * @param listDirectories
-     *            The list of directory on which the search is based
      * @param strSearchText
-     *            The text which must be searched
-     * @param adminUser
-     *            The AdminUser who made the search
-     * @param locale
-     *            The locale to use for the search
-     * @return the list of the id record of the result of the search
+     *          The text to search
+     * @return the query to execute with the given text to make the search
+     * @throws ParseException 
      */
-    private List<Integer> retrieveListRecordResultSearch( List<Directory> listDirectories, String strSearchText, AdminUser adminUser, Locale locale )
+    private Query prepareQuery( String strSearchText ) throws ParseException
     {
-        List<Integer> listIdRecord = new ArrayList<>( );
+        QueryParser queryParser = new QueryParser( DirectorySearchItem.FIELD_CONTENTS, _analyzer );
+        Query queryParsed = queryParser.parse( strSearchText );
+        
+        return queryParsed;
+    }
+    
+    /**
+     * Retrieve the id of the Record with the given searcher for the specified ScoreDoc
+     * 
+     * @param indexSearcher
+     *          The searcher used to retrieve the Document
+     * @param scoreDoc
+     *          The scoreDoc to retrieve the id Record from
+     * @return the id of the Record of the given ScoreDoc or -1 if not found or if a problem occurred
+     * @throws IOException 
+     */
+    private int retrieveIdRecordFromDoc( IndexSearcher indexSearcher, ScoreDoc scoreDoc ) throws IOException
+    {
+        int nIdRecord = NumberUtils.INTEGER_MINUS_ONE;
 
-        for ( Directory directory : listDirectories )
+        if ( scoreDoc != null )
         {
-            // Create the list of entry to search on
-            List<IEntry> listEntry = retrieveDirectoryListEntry( directory, DirectoryMultiviewPlugin.getPlugin( ) );
-
-            // Create the query map
-            HashMap<String, List<RecordField>> mapSearchRecordField = createMapSearchRecordField( listEntry, strSearchText );
-
-            // If the map contains entry to search on we will make the search
-            if ( !mapSearchRecordField.isEmpty( ) )
+            int nIdDoc = scoreDoc.doc;
+            Document document = indexSearcher.doc( nIdDoc );
+            if ( document != null )
             {
-                List<Integer> listResultSearchIdRecord = populateIdRecordResultSearchList( adminUser, directory, mapSearchRecordField, locale );
-                listIdRecord.addAll( listResultSearchIdRecord );
+                String strIdRecord = document.get( DirectorySearchItem.FIELD_ID_DIRECTORY_RECORD );
+                nIdRecord = NumberUtils.toInt( strIdRecord, NumberUtils.INTEGER_MINUS_ONE );
             }
         }
-
-        return listIdRecord;
+        
+        return nIdRecord;
     }
-
+    
     /**
-     * Retrieve the list of all entry to search on for a given directory
+     * Remove the DirectoryRecordItem which are not associated to a Record which are absent from the list of search result
      * 
-     * @param directory
-     *            The directory to retrieve the entry from
-     * @param plugin
-     *            The plugin used for the search
-     * @return the list of entry to search on for the given directory
+     * @param recordPanel
+     *          The RecordPael to remove the DirectoryRecordItem which are not present in the search
+     * @param listIdRecord
+     *          The list of all id of the Record which are the result of the search
      */
-    private List<IEntry> retrieveDirectoryListEntry( Directory directory, Plugin plugin )
+    private void removeDirectoryItemOutsideSearchResult( IRecordPanel recordPanel, List<Integer> listIdRecord )
     {
-        // Set the operator OR for search
-        directory.setSearchOperatorOr( true );
+        List<DirectoryRecordItem> listDirectoryRecordItem = recordPanel.getDirectoryRecordItemList( );
+        Iterator<DirectoryRecordItem> iteratorDirectoryRecordItem = listDirectoryRecordItem.iterator( );
 
-        // Compute the search fields
-        EntryFilter filter = new EntryFilter( );
-        filter.setIdDirectory( directory.getIdDirectory( ) );
-        List<IEntry> listParentEntry = DirectoryUtils.getFormEntriesByFilter( filter, plugin );
-
-        // Return the list of all children entry
-        return getListOfAllChildren( listParentEntry );
-    }
-
-    /**
-     * Return the list of all entry which are not belong to a group and of all children of entry of type group.
-     * 
-     * @param listEntry
-     *            The list of entry of type group or which are not belong to a group
-     * @return the list of all children of all given entry of type group and all entry which are not belong to a group
-     */
-    private List<IEntry> getListOfAllChildren( List<IEntry> listEntry )
-    {
-        List<IEntry> listEntryResult = new ArrayList<>( );
-
-        if ( listEntry != null && !listEntry.isEmpty( ) )
+        while ( iteratorDirectoryRecordItem.hasNext( ) )
         {
-            for ( IEntry entry : listEntry )
+            DirectoryRecordItem directoryRecordItem = iteratorDirectoryRecordItem.next( );
+            int nIdRecord = directoryRecordItem.getIdRecord( );
+
+            if ( !listIdRecord.contains( nIdRecord ) )
             {
-                List<IEntry> listChildrenEntry = entry.getChildren( );
-                if ( listChildrenEntry != null && !listChildrenEntry.isEmpty( ) )
-                {
-                    List<IEntry> listAllChildren = getListOfAllChildren( listChildrenEntry );
-                    listEntryResult.addAll( listAllChildren );
-                }
-                else
-                {
-                    listEntryResult.add( entry );
-                }
+                iteratorDirectoryRecordItem.remove( );
             }
         }
-
-        return listEntryResult;
-    }
-
-    /**
-     * Create the map of all RecordField with the specified text to search for each entry of the given list which are indexed as summary.
-     * 
-     * @param listEntry
-     *            The list of entry to search on
-     * @param strSearchText
-     *            The text to find as record field value
-     * @return the map which contains all RecordField with the given search text as value for each indexed entry for the specified list
-     */
-    private HashMap<String, List<RecordField>> createMapSearchRecordField( List<IEntry> listEntry, String strSearchText )
-    {
-        HashMap<String, List<RecordField>> mapSearchRecordField = new HashMap<>( );
-
-        if ( listEntry != null && !listEntry.isEmpty( ) )
-        {
-            for ( IEntry entry : listEntry )
-            {
-                List<RecordField> listRecordFields = new ArrayList<>( );
-                RecordField recordField = new RecordField( );
-                recordField.setEntry( entry );
-                recordField.setValue( strSearchText );
-                listRecordFields.add( recordField );
-                mapSearchRecordField.put( Integer.toString( entry.getIdEntry( ) ), listRecordFields );
-            }
-        }
-
-        return mapSearchRecordField;
-    }
-
-    /**
-     * Return the list of id record with the id record of the search result for the given directory for the given map of RecordField
-     * 
-     * @param adminUser
-     *            The adminUser who made the search
-     * @param directory
-     *            The directory to make the search on
-     * @param mapSearchRecordField
-     *            The map which contains the field to find
-     * @param locale
-     *            The locale
-     * @return the the list of id record with the id record of the search result for the given directory for the given map of RecordField
-     */
-    private List<Integer> populateIdRecordResultSearchList( AdminUser adminUser, Directory directory, HashMap<String, List<RecordField>> mapSearchRecordField,
-            Locale locale )
-    {
-        // Create the search fields object
-        DirectoryAdminSearchFields searchFields = new DirectoryAdminSearchFields( );
-        searchFields.setIdDirectory( directory.getIdDirectory( ) );
-        searchFields.setMapQuery( mapSearchRecordField );
-
-        // Compute the search
-        boolean bWorkflowServiceEnable = Boolean.TRUE;
-        boolean bUseFilterDirectory = Boolean.TRUE;
-        List<Integer> listIdRecord = DirectoryUtils.getListResults( null, directory, bWorkflowServiceEnable, bUseFilterDirectory, searchFields, adminUser,
-                locale );
-
-        return listIdRecord;
     }
 }
