@@ -45,7 +45,7 @@ public class RecordPanelDirectoryInitializerQueryPart extends AbstractRecordPane
     // Constants
     private static final String RECORD_DIRECTORY_SELECT_QUERY = "directory.id_directory, record.id_record";
     private static final String RECORD_DIRECTORY_FROM_QUERY = "directory_directory AS directory";
-    private static final String RECORd_DIRECTORY_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
+    private static final String RECORD_DIRECTORY_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
 
     /**
      * Constructor
@@ -55,7 +55,7 @@ public class RecordPanelDirectoryInitializerQueryPart extends AbstractRecordPane
         super( );
         setRecordPanelInitializerSelectQuery( RECORD_DIRECTORY_SELECT_QUERY );
         setRecordPanelInitializerFromQuery( RECORD_DIRECTORY_FROM_QUERY );
-        setRecordPanelInitializerJoinQueriesList( Arrays.asList( RECORd_DIRECTORY_JOIN_QUERY ) );
+        setRecordPanelInitializerJoinQueriesList( Arrays.asList( RECORD_DIRECTORY_JOIN_QUERY ) );
     }
 
     /**
