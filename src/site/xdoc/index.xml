@@ -11,63 +11,601 @@
             </p>
             -->
             <subsection name="Introduction">
-                <p>This module proposes a view of multiple directories and directory records filtered by user, 
-                    depending on his unit membership in unitTree, and proposes a dashboard of those directory records 
-                    filtered by the workflow state of the records.
+                <p>
+                	This module propose a single view to see all records of multiple directories. The records displayed by this view can be filtered by multiple filters and a search bar which allow to search a term which is present among the responses of a record.
                 </p>
                 <p>
-                    The ViewFilter has different properties :
-                            <ul>
-                                <li>The id of the directory  </li>
-                                <li>The filter name </li>
-                                <li>The rendering style for the number of records corresponding to this filter </li>
-                                <li>The display position in the dashboard</li>
-                                <li>The entry to display to represent the record in multi-type records list</li>
-                            </ul>
+                	It is possible to click on each line of the table to access the details of the selected record. 
+                	Then we access to all information of the record and the possibility to launch several actions associated to the workflow on which the record is linked.
                 </p>
                 <p>
-                    The ViewFilter condition has different properties :
-                            <ul>
-                                
-                                <li>The entry Id of the directory record whose value must match the condition</li>
-                                    <li>The operator for the condition (default : "equals") </li>
-                                    <li>The Type of the condition (default : unit Tree filter =
-                                        the value of the entry must match a unit bound to the user )</li>
-                            </ul>
+                    It is possible to change the templates of the tasks for a specific action of the workflow to tell it if the redirection must be made on the details of the record or on the table of all records when the action is done. 
+                    The default page of the redirection of an action will be the page of the details of the record on which the action has been made.
                 </p>
                 <p>
-                    The ViewFilter action has different properties :
-                            <ul>
-                                <li>the state of the workflow 
-                            chosen for displaying the dashboard of the number of records 
-                            corresponding to this state, filtered by the filter condition                                 </li>
-                                <li>The display position by action in the dashboard (not used yet)</li>
-                                <li>The rendeding style (not used yet)  	</li>
-                                <li>The maximum of item to display in result lists (not used yet)</li>                
-                            </ul>
-                    
+                	All the elements of the view are configurable thanks to the context file of the module. To achieve that it's simply needed to add the desired bean of the element in the context file of the module which wants to modify the table.
                 </p>
                 <p>
-                    It is possible to modify task templates for an action of a workflow to indicate if it must be redirected
-                    to the page of the directory record or on the page of the list of all records when the action has been done.
-                    The default page of the redirection when the action is done is the page of the record of the directory on
-                    which the action has been made.
+                	There are several kinds of elements:
+                	<ul>
+                		<li>
+                			<p>
+                				<b>The panels</b>
+                			</p>
+                			<p>
+                				The panels allow to toggle the view from one way to another by clicking directly on its associated tab at the top of the table. 
+                				A panel contains a set of panels initializers which will be automatically applied on the view when it will be activated.
+                				There must be at least one defined panel in the context file in other cases the table will not be displayed.
+                			</p>
+                		</li>
+                		<li>
+                			<p>
+                				<b>The panels initializers</b>
+                			</p>
+                			<p>
+                				There are the elements which will add the conditions to applied when a panel will be selected in order to restrict the records to display in the view to the desired set. 
+                				These elements have no graphical parts and can't be changed through the HMI.            				
+                			</p>
+                		</li>
+                		<li>
+                			<p>
+                				<b>The columns</b>
+                			</p>
+                			<p>
+                				The columns represent the central elements of the board. They are the ones which contains all information of the records to displayed to the user. 
+                				Each column display a particular information of the record (for example the directory on which the record is linked or its date of creation).
+                				If none column are defined in a context file the table will not be displayed.
+                			</p>
+                		</li>
+                		<li>
+                			<p>
+                				<b>The filters</b>
+                			</p>
+                			<p>
+                				The filter condition the records to select for the displaying of the board. 
+                				They correspond to drop down lists with values which are linked to a particular element of a record (for example the name of the directory on which the record is linked). 
+                				The filters are displayed above the panels.
+                			</p>
+                			<p>
+                				There are two kinds of filters:
+                				<ul>
+                					<li>
+                						the "standards" filters: those filters allow to add conditions on records properties (its creation date, the directory on which it is linked, etc...)
+                					</li>
+                					<li>
+                						the filters which are linked to an entry of a directory: those filters condition the records to retrieve according to the values linked to one (or several) directory entry. 
+                						The entries on which to based on are defined in a particular configuration which will be linked to the filter (the detail of the configuration will be explained in the  "Configuration" part).
+                					</li>
+                				</ul>
+                			</p>
+                			<p>
+                				The values of the filters may can changed. Some of them have fixed values defined from information contains on the records given by the panel which not used panels initializers and with no selected values for each filter. 
+                				Others contains values independent from the displayed records (for example the filter on the directory which allow to filter on all existing directory in database even if they have no records). 
+                				Others contains conditional values from other filter (for example the filter on the workflow state which is displayed when a value has been chosen on the directory filter).
+                			</p>
+                			<p>
+                				It is possible to have no filters on the view of the table.
+                			</p>
+                		</li>
+                	</ul>
                 </p>
             </subsection>
             <subsection name="Configuration">
-                <p>requires at least  a form / workflow / directory complete configuration</p>
-                <p>requires the conditions and actions filter configuration</p>
+                <p>
+                	<pre>Prerequisite : the configurations of the different used workflow and the directories must be set.</pre>
+                </p>
+                <p>
+                	Each element of the board defined in the "Introduction" part need to have a particular configuration. 
+                	They are several kinds of objects to implement to properly configure the elements of the board.
+                	<ul>
+                		<li>
+                			<p>
+                				<b>The configurations</b>
+                			</p>
+                			<p>
+                				It exists several kinds of objects to use to make the configuration:
+                				<ul>
+                					<li>
+                						<p>
+                							The configuration of the panels: <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.configuration.RecordPanelConfiguration</code>
+                						</p>
+                						<p>
+                							This configuration is linked to an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel</code>. 
+                							It has all information linked to a panel:
+                							<ul>
+                								<li>
+                									a position: the position of the panel of the table
+                								</li>
+                								<li>
+                									a title: the title of the panel which will be displayed on the associated tab
+                								</li>
+                								<li>
+                									a technical code: a unique code for each panel in order to distinguish them to manage the active panel (which is selected on the HMI)
+                								</li>
+                								<li>
+                									the list of panels initializers: this list contains all the panels initializers associated to the panel in order to specify the set of its own records
+                								</li>
+                							</ul>
+                						</p>
+                					</li>
+                					<li>
+                						<p>
+                							The configuration of the filters: <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration</code>
+                						</p>
+                						<p>
+                							This configuration is linked to an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter</code>.
+                							It has all information linked to a filter for its display on the HMI:
+                							<ul>
+                								<li>a position: which correspond to the position of the filter on the global view of the board</li>
+                								<li>a label: which correspond to the default label of the filter</li>
+                							</ul>
+                						</p>
+                					</li>
+                					<li>
+                						<p>
+                							The configuration of the filters which are linked to the values of the entry of directory: <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterEntryConfiguration</code>
+                						</p>
+                						<p>
+                							This configuration is also linked to an object of filter's type but for a filter linked to directory entries.
+                							It inherits of <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration</code>
+                							but it has an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn</code> in addition. 
+                							It is the object <code>IRecordColumn</code> which contains the list of entries on which the associated filter retrieve the different values on which the user can be filter the records on the displayed of the HMI.
+                						</p>
+                					</li>
+                				</ul> 
+                			</p>
+                			<p>
+                				<pre>Note: all the configurations must be defined as bean in the context file.</pre>
+                			</p>
+                		</li>
+                		<li>
+                			<p>
+                				<b>The QueryParts</b>
+                			</p>
+                			<p>
+                				The objects of kind QueryParts are used for adding parts of SQL query which will be used to build the final query which will serve to retrieve all the records of the table. 
+                				There are several type of QueryParts in terms of the element on which it is based:
+                				<ul>
+                					<li>
+                						<code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.IRecordColumnQueryPart</code>
+                						which correspond to the QueryPart linked to an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn</code>
+                					</li>
+                					<li>
+                						<code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.IRecordFilterQueryPart</code>
+                						which correspond to the QueryPart linked to an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter</code>
+                					</li>
+                					<li>
+                						<code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.IRecordPanelInitializerQueryPart</code>
+                						which correspond to the QueryPart linked to an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer</code>
+                					</li>
+                				</ul>
+                			</p>
+                		</li>
+                		<li>
+                			<p>
+                				<b>The Displays</b>
+                			</p>
+                			<p>
+                				The objects of kind Display are used to retrieve the necessary information from the request for giving them to the object that they represent (for building the associated query parts later) and to build the template of the different elements.
+                				They are several type of Displays in term of element on which it is based:
+                				<ul>
+                					<li>
+                						<code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.IRecordColumnDisplay</code>
+                						which correspond to the display part of an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn</code>
+                					</li>
+                					<li>
+                						<code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.IRecordFilterDisplay</code>
+                						which correspond to the display part of an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter</code>
+                					</li>
+                					<li>
+                						<code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay</code>
+                						which correspond to the display part of an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel</code>
+                					</li>
+                					<li>
+                						<code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.IRecordPanelDisplayInitializer</code>
+                						which correspond to the display part of an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer</code>
+                					</li>
+                				</ul>
+                			</p>
+                		</li>
+                		<li>
+                			<p>
+                				<b>The Factories</b>
+                			</p>
+                			<p>
+                				It exists two kinds of Factories:
+                				<ul>
+                					<li>
+                						<p>
+                							the Factories which are linked to object of type "QueryParts": during the construction of the final query the Factories will be ran to retrieve all the records to display in the table. 
+                							There are several type of Factory linked to each type of element of the table:
+                						</p>
+                						<p>
+                							<ul>
+                								<li>
+                									<code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.factory.IRecordColumnQueryPartFactory</code>
+	                								which correspond to the Factory of a QueryPart linked to a <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn</code>
+                								</li>
+                								<li>
+                									<code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.IRecordFilterQueryPartFactory</code>
+                									which correspond to the Factory of a QueryPart linked to a <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter</code>
+                								</li>
+                								<li>
+                									<code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.factory.IRecordPanelInitializerQueryPartFactory</code>
+                									which correspond to the Factory of a QueryPart linked to a <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer</code>
+                								</li>
+                							</ul>
+                						</p>
+                						<p>
+                							Each Factory of a QueryPart will retrieve the element of the type from which it is associated and it will retrieve the query parts to used.
+                						</p>
+                						<p>
+                						</p>
+                					</li>
+                					<li>
+                						<p>
+                							The Factories linked to the element's display: those Factories are used to build the objects which are linked to the display of their associated elements. 
+                							There are several types of those Factories in term of the type it belongs to:
+                						</p>
+                						<p>
+                							<ul>
+                								<li>
+                									<code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.IRecordColumnDisplayFactory</code>
+	                								this Factory is linked to an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn</code>
+                								</li>
+                								<li>
+                									<code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.IRecordFilterDisplayFactory</code>
+                									this Factory is linked to an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter</code>
+                								</li>
+                								<li>
+                									<code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory.IRecordPanelDisplayFactory</code>
+	                								this Factory is linked to an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel</code>
+                								</li>
+                								<li>
+                									<code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.factory.IRecordPanelDisplayInitializerFactory</code>
+                									this Factory is linked to an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer</code>
+                								</li>
+                							</ul>
+                						</p>
+                						<p>
+                							<pre>Note: all the Factories must be defined as bean in the context file.</pre>
+                						</p>
+                					</li>
+                				</ul>
+                			</p>
+                		</li>
+                	</ul>
+                </p>
             </subsection>
             <subsection name="Usage">
-                 <p>/!\ the directory entry containing the unitTree value should be indexed !</p>
                  <p>
-                     To allow the redirection on the wanted page when the action of the workflow is done you simply need to put the following
-                     line on the template of the task:
-                             <code>&lt;input type="hidden" name="workflow_action_redirection" value="list"/&gt;</code>
-                     There are two possible values for this parameter:
+                 	It is possible to make a search by a term on a record via the search bar. To make it work properly it is necessary that all the records of directories had been indexed.
+                 </p>
+                 <p>
+                	Now we will detail how to create every elements of the "Introduction" part with the components defined in the "Configuration" part.
+                	<ul>
+                		<li>
+                		    <p>
+                				<b>The panels</b>
+                			</p>
+                			<p>
+                				<p>
+                					To define a new panel it simply need to add a new implementation of the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel</code> 
+                					or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.impl.AbstractRecordPanel</code> to have to only implement the specifics methods for each panels. 
+                					Then it is necessary to give to it a <code>RecordPanelConfiguration</code> to use.
+                				</p>
+                				<p>
+                					A complete example of the declaration of a panel will be like:
+                				</p>
+                				<p>
+                					<code>
+                						&lt;bean id="directory-multiview.panelRecords" 
+                							class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.impl.RecordPanelRecords"&gt;
+												&lt;constructor-arg name="recordPanelConfiguration" 
+														type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.configuration.RecordPanelConfiguration" 
+														ref="directory-multiview.recordsPanel.panelConfiguration"/&gt;
+										&lt;/bean&gt;
+									</code>
+								</p>
+									
+								<p>
+									The configuration to define will be like:
+								</p>
+								<p>
+									<code>
+										&lt;bean id="directory-multiview.recordsPanel.panelConfiguration" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.configuration.RecordPanelConfiguration"&gt;
+											&lt;constructor-arg name="strTechnicalCode" type="java.lang.String" value="records"/&gt;
+											&lt;constructor-arg name="nPosition" type="int" value="1"/&gt;
+											&lt;constructor-arg name="strTitle" type="java.lang.String" value="D&#233;marche(s)"/&gt;
+											&lt;constructor-arg name="listRecordPanelInitializer"&gt;
+												&lt;list value-type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer"&gt;
+													&lt;ref bean="directory-multiview.recordPanelInitializer.panelDirectory"/&gt;
+													&lt;ref bean="directory-multiview.recordPanelInitializer.panelRecords"/&gt;
+													&lt;ref bean="directory-multiviewgra.recordPanelInitializer.panelMyUnitAssignment"/&gt;
+												&lt;/list&gt;
+											&lt;/constructor-arg&gt;
+										&lt;/bean&gt;
+									</code>
+								</p>
+								<p>
+									As we detailed earlier the configuration contains all information linked to a panel whose list of its own panels initializers. 
+									The creation of a panel initializer will be explained later.
+                				</p>
+                				<p>
+                					Then we need to implement the part which manage the display of a panel. To do that we will implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay</code> 
+                					 or inherit the bastract class <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.impl.AbstractRecordPanelDisplay</code>.
+                					It is recommend to inherit the abstract class rather than implement directly the interface.
+                				</p>
+                				<p>
+                					The class <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.impl.RecordPanelRecordsDisplay</code> is an example of an implementation of the interface.
+                				</p>
+                				<p>
+                					<pre>Note: it is not necessary to declare this bean in the context file of the module.</pre>
+                				</p>
+                			</p>
+                		</li>
+                		<li>
+                			<p>
+                				<b>The panels initializers</b>
+                			</p>
+                			<p>
+                				<p>
+                					To create a new panel initializer it's only needed to add a new implementation of the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.IRecordPanelInitializer</code> 
+                					or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl.AbstractRecordPanelInitializer</code>.
+                					Except for specifics needed it is recommend to inherit the abstract class rather than to implement directly the interface.
+                				</p>
+                				<p>
+                					A complete example of the declaration of a panel initializer will be like:
+                				</p>
+                				<p>
+                					<code>
+                						&lt;bean id="directory-multiview.recordPanelInitializer.panelDirectory" 
+                							class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl.RecordPanelDirectoryInitializer"/&gt;
+                					</code>
+                				</p>
+                				
+                				<p>
+                					When the declaration of the panel initializer will be done it's needed to add an implementation of the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.IRecordPanelInitializerQueryPart</code>
+                					or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl.AbstractRecordPanelInitializerQueryPart</code>.
+                					This implementation will indicate which parts of the query must be used for this initializer during the construction of the final query which will be used to build the set of records to display on the board.
+                				</p>
+                				<p>
+                					The class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl.RecordPanelDirectoryInitializerQueryPart</code> is an example of the implementation of the interface.
+                				</p>
+                				<p>
+                					<pre>Note: it is not necessary to declare this bean in the context file of the module.</pre>
+                				</p>
+                					
+                				<p>
+                					When this implementation is done it is necessary to implement a Factory for the QueryPart linked to this bean. 
+                					To do that it's needed to make an implementation of the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.factory.IRecordPanelInitializerQueryPartFactory</code>.
+                					An example of declaration of a such Factory is like:
+                				</p>
+                				<p>
+                					<code>
+                						&lt;bean id="directory-multiview.recordPanelInitializer.panelDirectory.queryPart.factory" 
+                							class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.factory.impl.RecordPanelDirectoryInitializerQueryPartFactory"/&gt;
+                					</code>
+                				</p>
+                					
+                				<p>
+                					Then it still the part which correspond to the web part of the initializer which is the retrieving of the information which it needs from the request. 
+                					To doing this it's needed implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.IRecordPanelDisplayInitializer</code>
+                					or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.impl.AbstractRecordPanelDisplayInitializer</code>.
+                					This implementation will allow to create an object of type <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters</code> which contains all necessaries data for the building of the query.
+                				</p>
+                				<p>
+                					The class <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.impl.RecordPanelDirectoryDisplayInitializer</code> is an example of the implementation of this interface.
+                				</p>
+                				<p>
+                					<pre>Note: it is not necessary to declare this bean in the context file of the module.</pre>
+                				</p> 
+                					
+                				<p>
+                					The last step needed to create a panel initializer is to create a Factory associated to this implementation. 
+                					It's needed to make an implementation of the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.IRecordPanelDisplayInitializer</code>
+                					or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.impl.AbstractRecordPanelDisplayInitializer</code>.
+                				</p>
+                				<p>
+                					An example of declaration of this kind of Factory is like:
+                				</p>
+                				<p>
+                					<code>
+                						&lt;bean id="directory-multiview.recordsPanelInitializer.panelDirectory.display.factory" 
+                							class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.factory.impl.RecordPanelDirectoryDisplayInitializerFactory"/&gt;
+                					</code>
+                				</p>
+                			</p>
+                		</li>
+                		<li>
+                			<p>
+                				<b>The columns</b>
+                			</p>
+                			<p>
+                				To create a new column we need to implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn</code>
+                				or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.AbstractRecordColumn</code>.
+                				A column can be declared as below:
+                			</p>
+                			<p>
+                				<code>
+                					&lt;bean id="directory-multiview.workflowState.column" 
+                						class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnWorkflowState"&gt;
+										&lt;constructor-arg name="nRecordColumnPosition" type="int" value="1"/&gt;
+										&lt;constructor-arg name="strRecordColumnTitle" type="java.lang.String" value="&#201;tat"/&gt;
+									&lt;/bean&gt;
+                				</code>
+                			</p>
+                			<p>
+                				The column constructor must take as argument:
+                				<ul>
+                					<li>a position: which correspond to the position of the column on the table</li>
+                					<li>a title: which correspond to the value displayed on the column header of the table</li>
+                				</ul>
+                			</p>
+                			<p>
+                				The columns can be associated to directory entries values. 
+                				It is necessary to add another argument to the constructor of the column which is a list of <code>java.lang.String</code> where each <code>String</code> correspond to a title of an entry.
+                			</p>
+                			<p>
+                				An example of the adding of this list to the previous bean is to add another parameter like shown below:
+                			</p>
+                			<p>
+                				<code>
+                					&lt;constructor-arg name="listEntryTitle"&gt;
+										&lt;list value-type="java.lang.String"&gt;
+											&lt;value>Votre prénom&lt;/value&gt;
+											&lt;value>Votre nom&lt;/value&gt;
+										&lt;/list&gt;
+									&lt;/constructor-arg&gt;
+                				</code>
+                			</p>
+                			<p>
+                				When the column is defined it's needed to make the implementation of the QueryPart which is linked to it.
+                				It's needed to implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.IRecordColumnQueryPart</code> 
+                				or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.impl.AbstractRecordColumnQueryPart</code>.
+                				Except for specifics needed it is recommend to inherit the abstract class rather than directly implement the interface.
+                			</p>
+                			<p>
+                				The class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.impl.RecordColumnDirectoryQueryPart</code> is an example of the implementation of the interface.
+                			</p>
+                			<p>
+                				<pre>Note: it is not necessary to declare this bean in the context file of the module.</pre>
+                			</p>
+                			<p>
+                				When the QueryPart is defined it is necessary to implement a Factory linked to the QueryPart of this column. 
+                				It is needed to implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.factory.IRecordColumnQueryPartFactory</code>. 
+                				After that it still to declare the bean like shown below:
+                			</p>
+                			<p>
+                				<code>
+                					&lt;bean id="directory-multiview.recordColumn.workflowState.queryPart.factory" 
+                						class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.factory.impl.RecordColumnWorkflowStateQueryPartFactory"/&gt;
+                				</code>
+                			</p>
+                			<p>
+                				It is needed to make an implementation of the bean which manage the display of the column. 
+                				It is needed implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.IRecordColumnDisplay</code>  
+                				or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.impl.AbstractRecordColumnDisplay</code>. 
+                				Except for specifics needed it is recommend to inherit the abstract class rather than directly implement the interface.
+                			</p>
+                			<p>
+                				The class <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.impl.RecordColumnDisplayDirectory</code> is an example of the implementation of this interface.
+                			</p>
+                			<p>
+                				<pre>Note: it is not necessary to declare this bean in the context file of the module.</pre>
+                			</p>
+                			<p>
+                				The last step is to create a Factory associated to the display of that column for this it's needed to implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.IRecordColumnDisplayFactory</code>.
+                			</p>
+                			<p>
+                				An example of declaration of this kind of Factory is like shown below:
+                			</p>
+                			<p>
+                				<code>
+                					&lt;bean id="directory-multiview.workflowState.column.display.factory" 
+                						class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayWorkflowStateFactory"/&gt;
+                				</code>
+                			</p>
+                			<p>
+                				For all the new created columns it is necessary to modify the context file of the plugin (the file directory-multiview_context.xml).
+                				The declaration of the bean <code>directory-multiview.recordColumn.factory</code> must be changed in order to configure the list of all columns to used on the board.
+                			</p>
+                		</li>
+                		<li>
+                			<p>
+                				<b>The filters</b>
+                			</p>
+                			<p>
+                				The first step to create a filter is to create its configuration. 
+                				For this it's simply needed to create a bean in the context file which will contains all information of the filter.
+                			</p>
+                			<p>
+                				An example of the declaration of a such bean is like shown below:
+                			</p>
+                			<p>
+                				<code>
+                					&lt;bean id="directory-multiview.directoryRecord.filterConfiguration" 
+                						class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration"&gt;
+										&lt;constructor-arg name="nPosition" type="int" value="1"/&gt;
+										&lt;constructor-arg name="strRecordFilterLabel" type="java.lang.String" value="-"/&gt;
+									&lt;/bean&gt;
+                				</code>
+                			</p>
+                			<p>
+                				Then it's needed to create the filter itself by implementing the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter</code> 
+                				or by inheriting the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.AbstractRecordFilter</code>. 
+                				Except for specifics needed it is recommend to inherit the abstract class rather than directly implement the interface.
+                			</p>
+                			<p>
+                				We will declare the bean in the context file by giving to it the configuration as a parameter. 
+                				The following example will show how to declare the bean:
+                			</p>
+                			<p>
+                				<code>
+                					&lt;bean id="directory-multiview.direcoryRecord.filter" 
+                						class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterDirectory"&gt;
+										&lt;constructor-arg name="recordFilterConfiguration" 
+											type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration" ref="directory-multiview.directoryRecord.filterConfiguration"/&gt;
+									&lt;/bean&gt;
+                				</code>
+                			</p>
+                			<p>
+                				When the filter is defined it is needed to implement the associated QueryPart. 
+                				To do that it is simply needed implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.IRecordFilterQueryPart</code> 
+                				or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.AbstractRecordFilterQueryPart</code>. 
+                				Except for specifics needed it is recommend to inherit the abstract class rather than directly implement the interface.
+                			</p>
+                			<p>
+                				The class <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.impl.RecordFilterDisplayDirectory</code> is an example of the implementation of this interface.
+                			</p>
+                			<p>
+                				<pre>Note: it is not necessary to declare this bean in the context file of the module.</pre>
+                			</p>
+                			<p>
+                				The next step is to create the Factory linked to the QueryPart previously defined. 
+                				For this it is needed implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.IRecordFilterQueryPartFactory</code>. 
+                				The bean must be declared as followed:
+                			</p>
+                			<p>
+                				<code>
+                					&lt;bean id="directory-multiview.recordFilter.directoryRecord.queryPart.factory" 
+                						class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterDirectoryQueryPartFactory"/&gt;
+                				</code>
+                			</p>
+                			<p>
+                				To define the bean which manage the display of the filter it is needed implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.IRecordFilterDisplay</code> 
+                				or to inherit the abstract class <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.impl.AbstractRecordFilterDisplay</code>. 
+                				Except for specifics needed it is recommend to inherit the abstract class rather than directly implement the interface.
+                			</p>
+                			<p>
+                				The class <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.impl.RecordFilterDisplayDirectory</code> is an example of the implementation of this interface.
+                			</p>
+                			<p>
+                				<pre>Note: it is not necessary to declare this bean in the context file of the module.</pre>
+                			</p>
+                			<p>
+                				The last step is to create the Factory linked to the display of the filter. For doing that it is needed to implement the interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.IRecordFilterDisplayFactory</code>. 
+                				An example of the declaration of this bean is shown below:
+                			</p>
+                			<p>
+                				<code>
+                					&lt;bean id="directory-multiview.directoryRecord.filter.display.factory" 
+                						class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayDirectoryFactory"/&gt;
+                				</code>
+                			</p>
+                		</li>
+                	</ul>
+                </p>
+                <p>
+                	<b>Management of the redirections</b>
+                </p>
+                 <p>
+                     To make the redirection to the desired page when the action of the workflow is done, it simply needs to add the following line in the template of the task:
+                             <code>&lt;input type="hidden" name="workflow_action_redirection" value="list"/&gt;</code>.
+                     There are two possibles values for this parameter:
                      <ul>
-                         <li><code>list</code>: allow to redirect on the page with the list of all records</li>
-                         <li><code>details</code>: allow to redirect on the page of the record on which the action has been made</li>
+                         <li><code>list</code>: allow to make the redirection to the page which display all the records</li>
+                         <li><code>details</code>: allow to redirect to the page of the record of the directory on which the action has been made</li>
                      </ul>
                  </p>
             </subsection>
