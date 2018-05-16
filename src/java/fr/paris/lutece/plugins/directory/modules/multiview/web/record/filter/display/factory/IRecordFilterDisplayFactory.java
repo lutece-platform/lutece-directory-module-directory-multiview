@@ -42,11 +42,11 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.dis
 public interface IRecordFilterDisplayFactory
 {
     /**
-     * Build the IFilterDisplay associated to the given RecordFilter
+     * Build the IRecordFilterDisplay associated to the given RecordFilter
      * 
      * @param recordFilter
      *            The RecordFilter to use for building the FilterDisplay
-     * @return the IFilterDisplay associated to the given RecordFilter or null if the specified RecordFilter is not linked to the type of the
+     * @return the IRecordFilterDisplay associated to the given RecordFilter or null if the specified RecordFilter is not linked to the type of the
      *         FilterDisplayFactory
      */
     IRecordFilterDisplay buildFilterDisplay( IRecordFilter recordFilter );

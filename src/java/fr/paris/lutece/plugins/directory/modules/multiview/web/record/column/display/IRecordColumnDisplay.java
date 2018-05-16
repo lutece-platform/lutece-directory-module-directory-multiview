@@ -63,13 +63,13 @@ public interface IRecordColumnDisplay extends IRecordListPosition
     String buildRecordColumnHeaderTemplate( String strSortUrl, Locale locale );
 
     /**
-     * Build the template of the RecordColumnCell
+     * Build the template of the given RecordColumnCell for the RecordColumn
      * 
      * @param recordColumnCell
      *            The RecordColumnCell to use for build the template of the RecordColumnDisplay
      * @param locale
      *            The locale to use for build the template
-     * @return the record column cell template
+     * @return the template of the given RecordColumnCell
      */
     String buildRecordColumnCellTemplate( RecordColumnCell recordColumnCell, Locale locale );
 
@@ -81,10 +81,10 @@ public interface IRecordColumnDisplay extends IRecordListPosition
     IRecordColumn getRecordColumn( );
 
     /**
-     * Set the RecordColumn of the RecordColumnDisplay
+     * Set the RecordColumn associated to the current RecordColumnDisplay
      * 
      * @param recordColumn
-     *            The RecordColumn of the RecordColumnDisplay
+     *            The RecordColumn to associate to the RecordColumnDisplay
      */
     void setRecordColumn( IRecordColumn recordColumn );
 }

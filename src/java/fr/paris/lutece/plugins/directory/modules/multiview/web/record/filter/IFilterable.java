@@ -59,7 +59,7 @@ public interface IFilterable
     IRecordFilter getRecordFilter( );
 
     /**
-     * Create a RecordParameters for the filter with the data in the request
+     * Create a RecordParameters for the filter with the data in the given request
      * 
      * @param request
      *            The request to retrieve the data of the filter

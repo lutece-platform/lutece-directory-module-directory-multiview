@@ -66,22 +66,22 @@ public interface IRecordColumnQueryPart
     List<String> getRecordColumnJoinQueries( );
 
     /**
-     * Set the record column to the record column query part
+     * Set the record column to the RecordColumnQueryPart
      * 
      * @param recordColumn
-     *            The RecordColumn to set to the query part
+     *            The RecordColumn to set to the RecordColumnQueryPart
      */
     void setRecordColumn( IRecordColumn recordColumn );
 
     /**
      * Return the RecordColumn of the RecordColumnQueryPart
      * 
-     * @return the RecordColumn of query part
+     * @return the RecordColumn of the RecordColumnQueryPart
      */
     IRecordColumn getRecordColumn( );
 
     /**
-     * Return the RecordColumnCell of the record column query part
+     * Return the RecordColumnCell of the RecordColumnQueryPart
      * 
      * @param daoUtil
      *            The daoUtil to retrieve the values to retrieve to the record column

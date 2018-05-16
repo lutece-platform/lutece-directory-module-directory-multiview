@@ -46,7 +46,7 @@ public interface IRecordPanelDisplayInitializerFactory
      * 
      * @param recordPanelInitializer
      *            The RecordPanelInitializer to use for build the RecordPanelDisplayInitializer
-     * @return the IRecordPanelDisplayInitializer associated to the given recordPanelInitializer or null if not found
+     * @return the IRecordPanelDisplayInitializer associated to the given IRecordPanelInitializer or null if not found
      */
     IRecordPanelDisplayInitializer buildRecordPanelDisplay( IRecordPanelInitializer recordPanelInitializer );
 }

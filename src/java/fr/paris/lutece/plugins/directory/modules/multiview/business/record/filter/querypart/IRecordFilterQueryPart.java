@@ -49,9 +49,9 @@ public interface IRecordFilterQueryPart
     void buildRecordFilterQuery( RecordParameters recordParameters );
 
     /**
-     * Return the query of the RecordFilter
+     * Return the built query of the RecordFilter
      * 
-     * @return the query of the record filter
+     * @return the built query of the record filter
      */
     String getRecordFilterQuery( );
 }

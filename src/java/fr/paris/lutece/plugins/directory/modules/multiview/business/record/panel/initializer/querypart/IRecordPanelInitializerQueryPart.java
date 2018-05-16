@@ -43,7 +43,8 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.Recor
 public interface IRecordPanelInitializerQueryPart
 {
     /**
-     * Build the query of the RecordPanelInitializer from the given RecordParameters
+     * Build the query of the RecordPanelInitializer from the given RecordParameters. This method will use all the information of the RecordParameters to build
+     * the query associated to the current PanelInitializer.
      * 
      * @param recordParameters
      *            The RecordParameters to use for building the query

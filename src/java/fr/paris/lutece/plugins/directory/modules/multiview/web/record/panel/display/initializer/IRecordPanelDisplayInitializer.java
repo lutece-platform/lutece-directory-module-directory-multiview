@@ -58,7 +58,8 @@ public interface IRecordPanelDisplayInitializer
     void setRecordPanelInitializer( IRecordPanelInitializer recordPanelInitializer );
 
     /**
-     * Build the RecordParameters associated to the RecordPanelDisplayInitializer
+     * Build the RecordParameters associated to the RecordPanelDisplayInitializer. This method will retrieve from the request all the necessary information for
+     * the current IRecordPanelDisplayInitializer and create a RecordParameters object.
      * 
      * @param request
      *            The request use to build the RecordParameters for the RecordPanelDisplayInitializer

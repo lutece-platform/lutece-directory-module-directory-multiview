@@ -54,17 +54,17 @@ public interface IRecordColumn
     void setRecordColumnPosition( int nPosition );
 
     /**
-     * Return the title of the RecordColumn
+     * Return the title of the RecordColumn which will be displayed on the table
      * 
-     * @return the title of the RecordColumn
+     * @return the title of the RecordColumn which will be displayed on the table
      */
     String getRecordColumnTitle( );
 
     /**
-     * Set the title of the RecordColumn
+     * Set the title of the RecordColumn which will be displayed on the table
      * 
      * @param strRecordColumnTitle
-     *            The title to set to the RecordColumn
+     *            The title to set to the RecordColumn which will be displayed on the table
      */
     void setRecordColumnTitle( String strRecordColumnTitle );
 }

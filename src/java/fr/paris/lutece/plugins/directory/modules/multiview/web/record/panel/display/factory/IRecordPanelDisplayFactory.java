@@ -42,11 +42,11 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.disp
 public interface IRecordPanelDisplayFactory
 {
     /**
-     * Build the IRecordPanelDisplay associated to the given RecordFilter
+     * Build the IRecordPanelDisplay associated to the given IRecordPanel
      * 
      * @param recordPanel
-     *            The record panel to use for build the FilterDisplay
-     * @return the IRecordPanelDisplay associated to the given RecordFilter or null if the specified RecordFilter is not linked to the type of the
+     *            The IRecordPanel to use for build the IRecordPanelDisplay
+     * @return the IRecordPanelDisplay associated to the given IRecordPanel or null if the specified IRecordPanel is not linked to the type of the
      *         IRecordPanelDisplayFactory
      */
     IRecordPanelDisplay buildRecordPanelDisplay( IRecordPanel recordPanel );

@@ -44,21 +44,22 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel
 public interface IRecordPanel
 {
     /**
-     * Return the RecordPanelConfiguration of the RecordPanel
+     * Return the RecordPanelConfiguration of the RecordPanel. This configuration contains all informations of the RecordPanel.
      * 
      * @return the RecordPanelConfiguration of the RecordPanel
      */
     RecordPanelConfiguration getRecordPanelConfiguration( );
 
     /**
-     * Return the title of the panel from the configuration
+     * Return the title of the panel from the configuration. This is the title which will be display on the table view.
      * 
      * @return the title of the panel from the configuration
      */
     String getTitle( );
 
     /**
-     * Return the technical code of the panel from the configuration
+     * Return the technical code of the panel from the configuration. This code is used as unique identifier for a RecordPanel to manage the case of the
+     * selected RecordPanel.
      * 
      * @return the technical code of the panel from the configuration
      */

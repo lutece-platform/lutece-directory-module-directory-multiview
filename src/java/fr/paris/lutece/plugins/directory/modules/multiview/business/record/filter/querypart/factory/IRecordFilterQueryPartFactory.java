@@ -45,8 +45,8 @@ public interface IRecordFilterQueryPartFactory
      * Build the IRecordFilterQueryPart associated to the given IRecordFilter
      * 
      * @param recordFilter
-     *            The IRecordFilter to build the RecordFilterqueryPart from
-     * @return the IrecordFilterQueryPart associated to the given IRecordFilter
+     *            The IRecordFilter from which to build the RecordFilterqueryPart
+     * @return the IRecordFilterQueryPart associated to the given IRecordFilter
      */
     IRecordFilterQueryPart buildRecordFilterQueryPart( IRecordFilter recordFilter );
 }

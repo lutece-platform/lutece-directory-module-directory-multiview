@@ -57,9 +57,9 @@ public interface IRecordFilter
     void setRecordParameters( RecordParameters recordParameters );
 
     /**
-     * Return the RecordFilterConfiguration for the RecordFilter
+     * Return the RecordFilterConfiguration of the RecordFilter
      * 
-     * @return the RecordFilterConfiguration for the RecordFilter
+     * @return the RecordFilterConfiguration of the RecordFilter
      */
     RecordFilterConfiguration getRecordFilterConfiguration( );
 

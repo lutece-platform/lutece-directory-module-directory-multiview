@@ -44,21 +44,21 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.IReco
 public interface IRecordFilterDisplay extends IFilterable, IRecordListPosition
 {
     /**
-     * Return the value of the the template of the FilterDisplay
+     * Return the value of the the template of the RecordFilterDisplay
      * 
-     * @return the value of the FilterDisplay
+     * @return the value of the RecordFilterDisplay
      */
     String getValue( );
 
     /**
-     * Return the template of the FilterDisplay
+     * Return the template of the RecordFilterDisplay
      * 
-     * @return the template of the FilterDisplay
+     * @return the template of the RecordFilterDisplay
      */
     String getTemplate( );
 
     /**
-     * Build the Template of the FilterDisplay
+     * Build the Template of the RecordFilterDisplay
      * 
      * @param request
      *            The HttpServletRequest to use to build the template of the filter
