@@ -88,7 +88,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );
         assertThat( strRecordFilterQuery, is( strRecordFilterExpected ) );
-        
+
         List<String> listUsedParameterValues = recordFilterItem.getListUsedParametersValue( );
         assertThat( listUsedParameterValues.size( ), is( NumberUtils.INTEGER_ONE ) );
         assertThat( listUsedParameterValues.get( NumberUtils.INTEGER_ZERO ), is( "4" ) );
@@ -150,7 +150,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );
         assertThat( strRecordFilterQuery, is( strRecordFilterExpected ) );
-        
+
         List<String> listUsedParameterValues = recordFilterItem.getListUsedParametersValue( );
         assertThat( listUsedParameterValues.size( ), is( 2 ) );
         assertThat( listUsedParameterValues.get( NumberUtils.INTEGER_ZERO ), is( "4" ) );

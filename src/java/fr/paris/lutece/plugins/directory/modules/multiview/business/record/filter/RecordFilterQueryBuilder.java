@@ -100,16 +100,16 @@ public final class RecordFilterQueryBuilder
                     {
                         String strParameterValue = String.valueOf( objParameterValue );
                         listParameterValuesToUse.add( strParameterValue );
-                        
+
                         String strParameterNameBuilt = buildParameterNameToReplace( strParameterName );
                         strRecordFilterQuery = strRecordFilterQuery.replaceAll( Pattern.quote( strParameterNameBuilt ), PARAMETER_TO_REPLACE_SYMBOL );
                     }
                 }
             }
-            
+
             recordParameters.setListUsedParametersValue( listParameterValuesToUse );
         }
-        
+
         return strRecordFilterQuery;
     }
 

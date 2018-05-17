@@ -197,7 +197,7 @@ public class QueryBuilderTest extends LuteceTestCase
         _listRecordFilterQueryPart.add( recordFilterDirectoryQueryPart );
 
         checkQueryToBuilt( strQueryToFind );
-        
+
         List<String> listParametersValue = recordFilterItemDirectory.getListUsedParametersValue( );
         assertThat( listParametersValue.size( ), is( NumberUtils.INTEGER_ONE ) );
         assertThat( listParametersValue.get( NumberUtils.INTEGER_ZERO ), is( "4" ) );
@@ -238,11 +238,11 @@ public class QueryBuilderTest extends LuteceTestCase
         _listRecordFilterQueryPart.add( recordFilterWorkflowStateQueryPart );
 
         checkQueryToBuilt( strQueryToFind );
-        
+
         List<String> listUsedParametersDirectoryValue = recordFilterItemDirectory.getListUsedParametersValue( );
         assertThat( listUsedParametersDirectoryValue.size( ), is( NumberUtils.INTEGER_ONE ) );
         assertThat( listUsedParametersDirectoryValue.get( NumberUtils.INTEGER_ZERO ), is( "4" ) );
-        
+
         List<String> listUsedParametersWorkflowValue = recordFilterItemWorkflowState.getListUsedParametersValue( );
         assertThat( listUsedParametersWorkflowValue.size( ), is( NumberUtils.INTEGER_ONE ) );
         assertThat( listUsedParametersWorkflowValue.get( NumberUtils.INTEGER_ZERO ), is( "12" ) );
@@ -367,10 +367,10 @@ public class QueryBuilderTest extends LuteceTestCase
         _listRecordFilterQueryPart.add( recordFilterEntryRecordFieldQueryPart );
 
         checkQueryToBuilt( strQueryToFind );
-        
+
         List<String> listUsedParametersValue = recordFilterItemEntryRecordField.getListUsedParametersValue( );
         assertThat( listUsedParametersValue.size( ), is( NumberUtils.INTEGER_ONE ) );
-        assertThat( listUsedParametersValue.get( NumberUtils.INTEGER_ZERO ), is( "test colonne 5"  ) );
+        assertThat( listUsedParametersValue.get( NumberUtils.INTEGER_ZERO ), is( "test colonne 5" ) );
     }
 
     /**

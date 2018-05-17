@@ -46,7 +46,7 @@ public class RecordParameters
     // Variables
     private List<String> _listUsedParametersValue = new ArrayList<>( );
     private Map<String, Object> _mapRecordParameters = new LinkedHashMap<>( );
-    
+
     /**
      * Return the list of all values of the parameters which will be used for the creation of the final query
      * 
@@ -56,12 +56,12 @@ public class RecordParameters
     {
         return _listUsedParametersValue;
     }
-    
+
     /**
      * Set the list of values of all parameters which will be used for build the final query
      * 
      * @param listUsedParametersValue
-     *          The list of all values to used for build the final query
+     *            The list of all values to used for build the final query
      */
     public void setListUsedParametersValue( List<String> listUsedParametersValue )
     {
