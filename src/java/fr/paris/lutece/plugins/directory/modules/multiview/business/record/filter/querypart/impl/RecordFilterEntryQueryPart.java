@@ -51,7 +51,7 @@ public class RecordFilterEntryQueryPart extends AbstractRecordFilterQueryPart
     // Constants
     private static final int DEFAULT_POSITION = NumberUtils.INTEGER_MINUS_ONE;
     private static final String ENTRY_VALUE_QUERY_PATTERN = "column_%1$s.column_%1$s_value = ";
-    private static final String ENTRY_VALUE_NAME_PATTERN = "'$column_%s$'";
+    private static final String ENTRY_VALUE_NAME_PATTERN = "$column_%s$";
 
     /**
      * {@inheritDoc}

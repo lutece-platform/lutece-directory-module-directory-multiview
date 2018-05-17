@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,7 +44,29 @@ import java.util.Map;
 public class RecordParameters
 {
     // Variables
+    private List<String> _listUsedParametersValue = new ArrayList<>( );
     private Map<String, Object> _mapRecordParameters = new LinkedHashMap<>( );
+    
+    /**
+     * Return the list of all values of the parameters which will be used for the creation of the final query
+     * 
+     * @return the list of all values of the parameters which will be used for the creation of the final query
+     */
+    public List<String> getListUsedParametersValue( )
+    {
+        return _listUsedParametersValue;
+    }
+    
+    /**
+     * Set the list of values of all parameters which will be used for build the final query
+     * 
+     * @param listUsedParametersValue
+     *          The list of all values to used for build the final query
+     */
+    public void setListUsedParametersValue( List<String> listUsedParametersValue )
+    {
+        _listUsedParametersValue = listUsedParametersValue;
+    }
 
     /**
      * Return the map which associate for each parameter name its value

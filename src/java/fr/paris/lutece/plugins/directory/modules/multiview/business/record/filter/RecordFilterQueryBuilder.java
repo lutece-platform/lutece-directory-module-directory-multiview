@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -50,6 +52,7 @@ public final class RecordFilterQueryBuilder
     private static final String DEFAULT_QUERY_VALUE = StringUtils.EMPTY;
     private static final String KEY_NAME_SEPARATOR = "$";
     private static final String DEFAULT_ITEM_VALUE = "-1";
+    private static final String PARAMETER_TO_REPLACE_SYMBOL = "?";
 
     /**
      * Constructor
@@ -71,6 +74,7 @@ public final class RecordFilterQueryBuilder
     public static String buildRecordFilterQuery( String strRecordFilterQueryPattern, RecordParameters recordParameters )
     {
         String strRecordFilterQuery = DEFAULT_QUERY_VALUE;
+        List<String> listParameterValuesToUse = new ArrayList<>( );
 
         if ( StringUtils.isNotBlank( strRecordFilterQueryPattern ) && recordParameters != null )
         {
@@ -95,13 +99,17 @@ public final class RecordFilterQueryBuilder
                     else
                     {
                         String strParameterValue = String.valueOf( objParameterValue );
+                        listParameterValuesToUse.add( strParameterValue );
+                        
                         String strParameterNameBuilt = buildParameterNameToReplace( strParameterName );
-                        strRecordFilterQuery = strRecordFilterQuery.replaceAll( Pattern.quote( strParameterNameBuilt ), strParameterValue );
+                        strRecordFilterQuery = strRecordFilterQuery.replaceAll( Pattern.quote( strParameterNameBuilt ), PARAMETER_TO_REPLACE_SYMBOL );
                     }
                 }
             }
+            
+            recordParameters.setListUsedParametersValue( listParameterValuesToUse );
         }
-
+        
         return strRecordFilterQuery;
     }
 

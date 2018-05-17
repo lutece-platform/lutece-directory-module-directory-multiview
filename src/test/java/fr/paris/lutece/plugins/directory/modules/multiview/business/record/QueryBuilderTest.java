@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnEntry;
@@ -180,7 +181,7 @@ public class QueryBuilderTest extends LuteceTestCase
     {
         String strQueryToFind = "SELECT id_directory, id_record, id_directory, title "
                 + "FROM directory_directory AS directory INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory "
-                + "WHERE 1=1 AND ( directory.id_directory = 4 )";
+                + "WHERE 1=1 AND ( directory.id_directory = ? )";
 
         _listRecordColumnQueryPart.add( new RecordColumnDirectoryQueryPartMock( ) );
 
@@ -196,6 +197,10 @@ public class QueryBuilderTest extends LuteceTestCase
         _listRecordFilterQueryPart.add( recordFilterDirectoryQueryPart );
 
         checkQueryToBuilt( strQueryToFind );
+        
+        List<String> listParametersValue = recordFilterItemDirectory.getListUsedParametersValue( );
+        assertThat( listParametersValue.size( ), is( NumberUtils.INTEGER_ONE ) );
+        assertThat( listParametersValue.get( NumberUtils.INTEGER_ZERO ), is( "4" ) );
     }
 
     /**
@@ -207,7 +212,7 @@ public class QueryBuilderTest extends LuteceTestCase
                 + "directory INNER JOIN directory_record AS record ON record.id_directory = "
                 + "directory.id_directory LEFT JOIN workflow_resource_workflow AS wf_resource_workflow ON wf_resource_workflow.id_resource = record.id_record "
                 + "LEFT JOIN workflow_state AS ws_workflow_state ON ws_workflow_state.id_state = wf_resource_workflow.id_state WHERE 1=1 AND "
-                + "( directory.id_directory = 4 ) AND ( ws_workflow_state.id_state = 12 )";
+                + "( directory.id_directory = ? ) AND ( ws_workflow_state.id_state = ? )";
 
         _listRecordColumnQueryPart.add( new RecordColumnDirectoryQueryPartMock( ) );
         _listRecordColumnQueryPart.add( new RecordColumnWorkflowStateQueryPartMock( ) );
@@ -233,6 +238,14 @@ public class QueryBuilderTest extends LuteceTestCase
         _listRecordFilterQueryPart.add( recordFilterWorkflowStateQueryPart );
 
         checkQueryToBuilt( strQueryToFind );
+        
+        List<String> listUsedParametersDirectoryValue = recordFilterItemDirectory.getListUsedParametersValue( );
+        assertThat( listUsedParametersDirectoryValue.size( ), is( NumberUtils.INTEGER_ONE ) );
+        assertThat( listUsedParametersDirectoryValue.get( NumberUtils.INTEGER_ZERO ), is( "4" ) );
+        
+        List<String> listUsedParametersWorkflowValue = recordFilterItemWorkflowState.getListUsedParametersValue( );
+        assertThat( listUsedParametersWorkflowValue.size( ), is( NumberUtils.INTEGER_ONE ) );
+        assertThat( listUsedParametersWorkflowValue.get( NumberUtils.INTEGER_ZERO ), is( "12" ) );
     }
 
     /**
@@ -330,7 +343,7 @@ public class QueryBuilderTest extends LuteceTestCase
                 + "AS id_record_5, record_field_5.record_field_value AS column_5_value FROM directory_record_field AS record_field_5 INNER "
                 + "JOIN directory_record AS record_5 ON record_field_5.id_record = record_5.id_record INNER JOIN directory_entry AS entry_5 "
                 + "ON entry_5.id_entry = record_field_5.id_entry WHERE entry_5.title IN ( 'Date de naissance' ) ) AS column_5 ON "
-                + "column_5.id_record_5 = record.id_record WHERE 1=1 AND ( column_5.column_5_value = 'test colonne 5' )";
+                + "column_5.id_record_5 = record.id_record WHERE 1=1 AND ( column_5.column_5_value = ? )";
 
         IRecordColumn recordColumnEntryRecordFieldOne = new RecordColumnEntry( 3, "Colonne 3", Arrays.asList( "Nom", "Prénom" ) );
         RecordColumnEntryQueryPart recordColumnEntryRecordFieldQueryPartOne = new RecordColumnEntryRecordFieldQueryPartMock( 3 );
@@ -354,6 +367,10 @@ public class QueryBuilderTest extends LuteceTestCase
         _listRecordFilterQueryPart.add( recordFilterEntryRecordFieldQueryPart );
 
         checkQueryToBuilt( strQueryToFind );
+        
+        List<String> listUsedParametersValue = recordFilterItemEntryRecordField.getListUsedParametersValue( );
+        assertThat( listUsedParametersValue.size( ), is( NumberUtils.INTEGER_ONE ) );
+        assertThat( listUsedParametersValue.get( NumberUtils.INTEGER_ZERO ), is( "test colonne 5"  ) );
     }
 
     /**

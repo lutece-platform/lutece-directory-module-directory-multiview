@@ -39,9 +39,11 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.test.LuteceTestCase;
@@ -74,7 +76,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
      */
     public void testBuildRecordFilterQueryWithDirectoryPattern( )
     {
-        String strRecordFilterExpected = "directory.id_directory = 4";
+        String strRecordFilterExpected = "directory.id_directory = ?";
 
         String strRecordFilterQueryPattern = "directory.id_directory = $id_directory$";
 
@@ -86,6 +88,10 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );
         assertThat( strRecordFilterQuery, is( strRecordFilterExpected ) );
+        
+        List<String> listUsedParameterValues = recordFilterItem.getListUsedParametersValue( );
+        assertThat( listUsedParameterValues.size( ), is( NumberUtils.INTEGER_ONE ) );
+        assertThat( listUsedParameterValues.get( NumberUtils.INTEGER_ZERO ), is( "4" ) );
     }
 
     /**
@@ -131,7 +137,7 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
      */
     public void testBuildRecordFilterQueryWithMultipleName( )
     {
-        String strRecordFilterExpected = "directory.id_directory = 4 AND workflow_state.id_workflow_state = 42";
+        String strRecordFilterExpected = "directory.id_directory = ? AND workflow_state.id_workflow_state = ?";
 
         String strRecordFilterQueryPattern = "directory.id_directory = $id_directory$ " + "AND workflow_state.id_workflow_state = $id_workflow_state$";
 
@@ -144,6 +150,11 @@ public class RecordFilterQueryBuilderTest extends LuteceTestCase
         String strRecordFilterQuery = RecordFilterQueryBuilder.buildRecordFilterQuery( strRecordFilterQueryPattern, recordFilterItem );
         assertThat( strRecordFilterQuery, is( not( nullValue( ) ) ) );
         assertThat( strRecordFilterQuery, is( strRecordFilterExpected ) );
+        
+        List<String> listUsedParameterValues = recordFilterItem.getListUsedParametersValue( );
+        assertThat( listUsedParameterValues.size( ), is( 2 ) );
+        assertThat( listUsedParameterValues.get( NumberUtils.INTEGER_ZERO ), is( "4" ) );
+        assertThat( listUsedParameterValues.get( NumberUtils.INTEGER_ONE ), is( "42" ) );
     }
 
     /**

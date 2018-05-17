@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.QueryBuilder;
+import fr.paris.lutece.plugins.directory.modules.multiview.business.record.RecordParameters;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnCell;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.IRecordColumnQueryPart;
@@ -76,10 +77,13 @@ public class RecordListDAO implements IRecordListDAO
             return;
         }
 
+        // Create the list of all values of the parameter to used
+        List<String> listQueryParametersPositionValue = new ArrayList<>( );
+        
         // Build the list of query part from the recordPanel, the list of columns and the list of filters
-        List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart = buildRecordPanelInitializerQueryPartList( recordPanel );
+        List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart = buildRecordPanelInitializerQueryPartList( recordPanel, listQueryParametersPositionValue );
         List<IRecordColumnQueryPart> listRecordColumnQueryPart = buildRecordColumnQueryPartList( listRecordColumn );
-        List<IRecordFilterQueryPart> listRecordFilterQueryPart = buildRecordFilterQueryPartList( listRecordFilter );
+        List<IRecordFilterQueryPart> listRecordFilterQueryPart = buildRecordFilterQueryPartList( listRecordFilter, listQueryParametersPositionValue );
 
         // Build the query to execute
         String strQuery = QueryBuilder.buildQuery( listRecordPanelInitializerQueryPart, listRecordColumnQueryPart, listRecordFilterQueryPart );
@@ -89,6 +93,7 @@ public class RecordListDAO implements IRecordListDAO
         if ( StringUtils.isNotBlank( strQuery ) )
         {
             DAOUtil daoUtil = new DAOUtil( strQuery );
+            fillDAOUtilParameterValues( daoUtil, listQueryParametersPositionValue );
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
@@ -108,6 +113,34 @@ public class RecordListDAO implements IRecordListDAO
         }
 
         recordPanel.setDirectoryRecordItemList( listDirectoryRecordItem );
+    }
+    
+    /**
+     * Fill the values to used to prepare the query of the given DAOUtil
+     * 
+     * @param daoUtil
+     *          The DAOUtil on which the values must be set to prepare the query
+     * @param listQueryParametersPositionValue
+     *          The list of all parameter values to used to fill the given DAOUtil statement
+     */
+    private void fillDAOUtilParameterValues( DAOUtil daoUtil, List<String> listQueryParametersPositionValue )
+    {
+        if ( !CollectionUtils.isEmpty( listQueryParametersPositionValue ) )
+        {
+            int nIndex = 1;
+            for ( String strParameterValue : listQueryParametersPositionValue )
+            {
+                try
+                {
+                    int nParameterValue = Integer.parseInt( strParameterValue );
+                    daoUtil.setInt( nIndex++, nParameterValue );
+                }
+                catch ( NumberFormatException exception )
+                {
+                    daoUtil.setString( nIndex++, strParameterValue );    
+                }
+            }
+        }
     }
 
     /**
@@ -131,9 +164,11 @@ public class RecordListDAO implements IRecordListDAO
      * 
      * @param recordPanel
      *            The RecordPanel used to retrieve the list of all RecordPanelInitializer to retrieve the list of RecordPanelInitializerQueryPart
+     @param listQueryParametersPositionValue
+     *          The list of all parameter values to used to fill the DAOUtil statement
      * @return the list of all RecordPanelInitializerQueryPart associate to all the RecordPanelInitializer to retrieve from the given RecordPanel
      */
-    private static List<IRecordPanelInitializerQueryPart> buildRecordPanelInitializerQueryPartList( IRecordPanel recordPanel )
+    private static List<IRecordPanelInitializerQueryPart> buildRecordPanelInitializerQueryPartList( IRecordPanel recordPanel, List<String> listQueryParametersPositionValue )
     {
         List<IRecordPanelInitializerQueryPart> listRecordPanelInitializerQueryPart = new ArrayList<>( );
 
@@ -145,7 +180,7 @@ public class RecordListDAO implements IRecordListDAO
 
             for ( IRecordPanelInitializer recordPanelInitializer : listRecordPanelInitializer )
             {
-                IRecordPanelInitializerQueryPart recordPanelInitializerQueryPart = retrieveRecordPanelInitializerQueryPart( recordPanelInitializer );
+                IRecordPanelInitializerQueryPart recordPanelInitializerQueryPart = retrieveRecordPanelInitializerQueryPart( recordPanelInitializer, listQueryParametersPositionValue );
                 if ( recordPanelInitializerQueryPart != null )
                 {
                     listRecordPanelInitializerQueryPart.add( recordPanelInitializerQueryPart );
@@ -161,9 +196,11 @@ public class RecordListDAO implements IRecordListDAO
      * 
      * @param recordPanelInitializer
      *            The RecordPanelInitializer used to retrieve the associated IRecordPanelInitializerQueryPart
+     * @param listQueryParametersPositionValue
+     *          The list of all parameter values to used to fill the DAOUtil statement
      * @return the IRecordPanelInitializerQueryPart associate to the given RecordPanelInitializer or null if not found
      */
-    private static IRecordPanelInitializerQueryPart retrieveRecordPanelInitializerQueryPart( IRecordPanelInitializer recordPanelInitializer )
+    private static IRecordPanelInitializerQueryPart retrieveRecordPanelInitializerQueryPart( IRecordPanelInitializer recordPanelInitializer, List<String> listQueryParametersPositionValue )
     {
         IRecordPanelInitializerQueryPart recordPanelInitializerQueryPartResult = null;
 
@@ -173,7 +210,11 @@ public class RecordListDAO implements IRecordListDAO
 
             if ( recordPanelInitializerQueryPartResult != null )
             {
-                recordPanelInitializerQueryPartResult.buildRecordPanelInitializerQuery( recordPanelInitializer.getRecordParameters( ) );
+                RecordParameters recordParameters = recordPanelInitializer.getRecordParameters( );
+                recordPanelInitializerQueryPartResult.buildRecordPanelInitializerQuery( recordParameters );
+                
+                List<String> listUsedParametersValues = recordParameters.getListUsedParametersValue( );
+                listQueryParametersPositionValue.addAll( listUsedParametersValues );
             }
         }
 
@@ -231,17 +272,19 @@ public class RecordListDAO implements IRecordListDAO
      * 
      * @param listRecordFilter
      *            The list of record filter to build the list of record filter query part from
+     * @param listQueryParametersPositionValue
+     *          The list of all parameter values to used to fill the DAOUtil statement
      * @return the list of record filter query part from the given list of record filter
      */
-    private static List<IRecordFilterQueryPart> buildRecordFilterQueryPartList( List<IRecordFilter> listRecordFilter )
+    private static List<IRecordFilterQueryPart> buildRecordFilterQueryPartList( List<IRecordFilter> listRecordFilter, List<String> listQueryParametersPositionValue )
     {
         List<IRecordFilterQueryPart> listRecordFilterQueryPart = new ArrayList<>( );
-
+        
         if ( listRecordFilter != null && !listRecordFilter.isEmpty( ) )
         {
             for ( IRecordFilter recordFilter : listRecordFilter )
             {
-                IRecordFilterQueryPart recordFilterQueryPart = retrieveRecordFilterQueryPart( recordFilter );
+                IRecordFilterQueryPart recordFilterQueryPart = retrieveRecordFilterQueryPart( recordFilter, listQueryParametersPositionValue );
                 if ( recordFilterQueryPart != null )
                 {
                     listRecordFilterQueryPart.add( recordFilterQueryPart );
@@ -257,9 +300,11 @@ public class RecordListDAO implements IRecordListDAO
      * 
      * @param recordFilter
      *            The RecordFilter to build the query
+     * @param listQueryParametersPositionValue
+     *          The list of all parameter values to used to fill the DAOUtil statement        
      * @return the record filter query part associated to the given record filter
      */
-    private static IRecordFilterQueryPart retrieveRecordFilterQueryPart( IRecordFilter recordFilter )
+    private static IRecordFilterQueryPart retrieveRecordFilterQueryPart( IRecordFilter recordFilter, List<String> listQueryParametersPositionValue )
     {
         IRecordFilterQueryPart recordFilterQueryPartResult = null;
 
@@ -268,8 +313,12 @@ public class RecordListDAO implements IRecordListDAO
             IRecordFilterQueryPart recordFilterQueryPart = new RecordFilterQueryPartFacade( ).getRecordFilterQueryPart( recordFilter );
             if ( recordFilterQueryPart != null )
             {
-                recordFilterQueryPart.buildRecordFilterQuery( recordFilter.getRecordParameters( ) );
+                RecordParameters recordParameters = recordFilter.getRecordParameters( );
+                recordFilterQueryPart.buildRecordFilterQuery( recordParameters );
                 recordFilterQueryPartResult = recordFilterQueryPart;
+                
+                List<String> listUsedParametersValue = recordParameters.getListUsedParametersValue( );
+                listQueryParametersPositionValue.addAll( listUsedParametersValue );
             }
         }
 
