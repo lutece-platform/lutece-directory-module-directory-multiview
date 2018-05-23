@@ -136,15 +136,4 @@
 	
 	<!-- Panels Display Factories -->
 	<bean id="directory-multiview.panelRecords.panel.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory.impl.RecordPanelRecordsDisplayFactory"/>
-		
-    <!-- IdentityService -->
-    <bean id="directory-multiview.identitystore.httpTransport" class="fr.paris.lutece.plugins.identitystore.web.rs.service.IdentityTransportRest">
-        <property name="IdentityStoreEndPoint">
-            <value>http://localhost:8080/identitystore/rest/identitystore</value>
-        </property>
-    </bean>
-    <bean id="directory-multiview.identitystore.service" class="fr.paris.lutece.plugins.identitystore.web.service.IdentityService">
-        <constructor-arg ref="directory-multiview.identitystore.httpTransport"/>
-    </bean>
-    
 </beans>
