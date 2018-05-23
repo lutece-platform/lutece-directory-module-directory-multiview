@@ -41,21 +41,21 @@ public class ObjectItemMock
     // Variables
     private final String _strName;
     private final int _nCode;
-    
+
     /**
      * Constructor
      * 
      * @param strName
-     *          The name of the mock item
+     *            The name of the mock item
      * @param nCode
-     *          The code of the mock item
+     *            The code of the mock item
      */
     public ObjectItemMock( String strName, int nCode )
     {
         _strName = strName;
         _nCode = nCode;
     }
-    
+
     /**
      * Return the name of the mock item
      * 
@@ -65,7 +65,7 @@ public class ObjectItemMock
     {
         return _strName;
     }
-    
+
     /**
      * Return the code of the mock item
      * 
@@ -75,7 +75,7 @@ public class ObjectItemMock
     {
         return _nCode;
     }
-    
+
     /**
      * Return the code as String value of the mock item
      * 

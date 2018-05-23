@@ -44,7 +44,7 @@ public class RecordViewModelProcessorFactory
 {
     // Variables
     private final List<IRecordViewModelProcessor> _listRecordViewModelProcessor = SpringContextService.getBeansOfType( IRecordViewModelProcessor.class );
-    
+
     /**
      * Return the list of all RecordViewModelProcessor
      * 

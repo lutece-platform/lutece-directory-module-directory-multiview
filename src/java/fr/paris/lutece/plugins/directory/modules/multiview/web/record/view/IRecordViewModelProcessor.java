@@ -47,13 +47,13 @@ public interface IRecordViewModelProcessor
      * Populate the given model for the processor for the record associated to the given identifier
      * 
      * @param request
-     *          The request to use to retrieve the parameters from the request
+     *            The request to use to retrieve the parameters from the request
      * @param mapModel
-     *          The model to populate with the data of the current processor
+     *            The model to populate with the data of the current processor
      * @param nIdRecord
-     *          The identifier of the record on which the model must be build
+     *            The identifier of the record on which the model must be build
      * @param locale
-     *          The locale to used for build the model
+     *            The locale to used for build the model
      */
-    void populateModel( HttpServletRequest request, Map<String,Object> mapModel, int nIdRecord, Locale locale );
+    void populateModel( HttpServletRequest request, Map<String, Object> mapModel, int nIdRecord, Locale locale );
 }

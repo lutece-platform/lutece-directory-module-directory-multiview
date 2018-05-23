@@ -58,7 +58,7 @@ public class DirectoryMultiviewServiceTest extends LuteceTestCase
     {
         super.setUp( );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -67,7 +67,7 @@ public class DirectoryMultiviewServiceTest extends LuteceTestCase
     {
         super.tearDown( );
     }
-    
+
     /**
      * Test of the method {@link fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService#findActiveRecordPanel(java.util.List)}
      */
@@ -75,16 +75,16 @@ public class DirectoryMultiviewServiceTest extends LuteceTestCase
     {
         IRecordPanelDisplay recordPanelDisplayExpected = new RecordPanelRecordsDisplay( );
         recordPanelDisplayExpected.setActive( Boolean.TRUE );
-        
+
         List<IRecordPanelDisplay> listRecordPanelDisplay = new ArrayList<>( );
         listRecordPanelDisplay.add( recordPanelDisplayExpected );
-        
+
         DirectoryMultiviewService directoryMultiviewService = new DirectoryMultiviewService( );
         IRecordPanelDisplay recordPanelDisplayResult = directoryMultiviewService.findActiveRecordPanel( listRecordPanelDisplay );
-        
+
         assertThat( recordPanelDisplayResult, is( recordPanelDisplayExpected ) );
     }
-    
+
     /**
      * Test of the method {@link fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService#findActiveRecordPanel(java.util.List)}
      * with several panels
@@ -93,18 +93,18 @@ public class DirectoryMultiviewServiceTest extends LuteceTestCase
     {
         IRecordPanelDisplay recordPanelDisplayExpected = new RecordPanelRecordsDisplay( );
         recordPanelDisplayExpected.setActive( Boolean.TRUE );
-        
+
         List<IRecordPanelDisplay> listRecordPanelDisplay = new ArrayList<>( );
         listRecordPanelDisplay.add( new RecordPanelDisplayMockOne( ) );
         listRecordPanelDisplay.add( recordPanelDisplayExpected );
         listRecordPanelDisplay.add( new RecordPanelDisplayMockTwo( ) );
-        
+
         DirectoryMultiviewService directoryMultiviewService = new DirectoryMultiviewService( );
         IRecordPanelDisplay recordPanelDisplayResult = directoryMultiviewService.findActiveRecordPanel( listRecordPanelDisplay );
-        
+
         assertThat( recordPanelDisplayResult, is( recordPanelDisplayExpected ) );
     }
-    
+
     /**
      * Test of the method {@link fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService#findActiveRecordPanel(java.util.List)}
      * with null list of RecordPanelDisplay
@@ -112,15 +112,15 @@ public class DirectoryMultiviewServiceTest extends LuteceTestCase
     public void testFindActiveRecordPanelWithNullList( )
     {
         IRecordPanelDisplay recordPanelDisplayExpected = null;
-        
+
         List<IRecordPanelDisplay> listRecordPanelDisplay = null;
-        
+
         DirectoryMultiviewService directoryMultiviewService = new DirectoryMultiviewService( );
         IRecordPanelDisplay recordPanelDisplayResult = directoryMultiviewService.findActiveRecordPanel( listRecordPanelDisplay );
-        
+
         assertThat( recordPanelDisplayResult, is( recordPanelDisplayExpected ) );
     }
-    
+
     /**
      * Test of the method {@link fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService#findActiveRecordPanel(java.util.List)}
      * with empty list of RecordPanelDisplay
@@ -128,15 +128,15 @@ public class DirectoryMultiviewServiceTest extends LuteceTestCase
     public void testFindActiveRecordPanelWithEmptyList( )
     {
         IRecordPanelDisplay recordPanelDisplayExpected = null;
-        
+
         List<IRecordPanelDisplay> listRecordPanelDisplay = new ArrayList<>( );
-        
+
         DirectoryMultiviewService directoryMultiviewService = new DirectoryMultiviewService( );
         IRecordPanelDisplay recordPanelDisplayResult = directoryMultiviewService.findActiveRecordPanel( listRecordPanelDisplay );
-        
+
         assertThat( recordPanelDisplayResult, is( recordPanelDisplayExpected ) );
     }
-    
+
     /**
      * Test of the method {@link fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService#findActiveRecordPanel(java.util.List)}
      * with none active panels
@@ -144,17 +144,17 @@ public class DirectoryMultiviewServiceTest extends LuteceTestCase
     public void testFindActiveRecordPanelWithNoneActivePanels( )
     {
         IRecordPanelDisplay recordPanelDisplayExpected = null;
-        
+
         List<IRecordPanelDisplay> listRecordPanelDisplay = new ArrayList<>( );
         listRecordPanelDisplay.add( new RecordPanelDisplayMockOne( ) );
         listRecordPanelDisplay.add( new RecordPanelDisplayMockTwo( ) );
-        
+
         DirectoryMultiviewService directoryMultiviewService = new DirectoryMultiviewService( );
         IRecordPanelDisplay recordPanelDisplayResult = directoryMultiviewService.findActiveRecordPanel( listRecordPanelDisplay );
-        
+
         assertThat( recordPanelDisplayResult, is( recordPanelDisplayExpected ) );
     }
-    
+
     /**
      * Test of the method {@link fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService#findActiveRecordPanel(java.util.List)}
      * with several active panels
@@ -163,28 +163,32 @@ public class DirectoryMultiviewServiceTest extends LuteceTestCase
     {
         IRecordPanelDisplay recordPanelDisplayExpected = new RecordPanelDisplayMockTwo( );
         recordPanelDisplayExpected.setActive( Boolean.TRUE );
-        
+
         List<IRecordPanelDisplay> listRecordPanelDisplay = new ArrayList<>( );
         listRecordPanelDisplay.add( new RecordPanelDisplayMockOne( ) );
         listRecordPanelDisplay.add( recordPanelDisplayExpected );
-        
+
         IRecordPanelDisplay recordPanelRecordsDisplay = new RecordPanelRecordsDisplay( );
         recordPanelRecordsDisplay.setActive( Boolean.TRUE );
         listRecordPanelDisplay.add( recordPanelRecordsDisplay );
-        
+
         DirectoryMultiviewService directoryMultiviewService = new DirectoryMultiviewService( );
         IRecordPanelDisplay recordPanelDisplayResult = directoryMultiviewService.findActiveRecordPanel( listRecordPanelDisplay );
-        
+
         assertThat( recordPanelDisplayResult, is( recordPanelDisplayExpected ) );
     }
-    
+
     /**
      * Mock implementation of the IRecordPanelDisplay
      */
-    private class RecordPanelDisplayMockOne extends AbstractRecordPanelDisplay { }
-    
+    private class RecordPanelDisplayMockOne extends AbstractRecordPanelDisplay
+    {
+    }
+
     /**
      * Other mock implementation of the IRecordPanelDisplay
      */
-    private class RecordPanelDisplayMockTwo extends AbstractRecordPanelDisplay { }
+    private class RecordPanelDisplayMockTwo extends AbstractRecordPanelDisplay
+    {
+    }
 }

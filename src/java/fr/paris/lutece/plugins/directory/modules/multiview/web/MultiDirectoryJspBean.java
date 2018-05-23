@@ -428,7 +428,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     {
         AdminUser adminUser = getUser( );
         Plugin pluginDirectoryMultiview = DirectoryMultiviewPlugin.getPlugin( );
-        
+
         String strIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD );
         int nIdRecord = NumberUtils.toInt( strIdRecord, NumberUtils.INTEGER_MINUS_ONE );
         Record record = _recordService.findByPrimaryKey( nIdRecord, pluginDirectoryMultiview );
@@ -447,10 +447,10 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         // List directory actions
         Locale locale = getLocale( );
-        List<DirectoryAction> listActionsForDirectoryEnable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_ENABLE, pluginDirectoryMultiview,
-                locale );
-        List<DirectoryAction> listActionsForDirectoryDisable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_DISABLE, pluginDirectoryMultiview,
-                locale );
+        List<DirectoryAction> listActionsForDirectoryEnable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_ENABLE,
+                pluginDirectoryMultiview, locale );
+        List<DirectoryAction> listActionsForDirectoryDisable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_DISABLE,
+                pluginDirectoryMultiview, locale );
 
         listActionsForDirectoryEnable = (List<DirectoryAction>) RBACService
                 .getAuthorizedActionsCollection( listActionsForDirectoryEnable, directory, adminUser );
@@ -469,13 +469,13 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         model.put( MARK_ID_ENTRY_TYPE_GEOLOCATION, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_GEOLOCATION, 16 ) );
         model.put( MARK_ID_ENTRY_TYPE_IMAGE, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_IMAGE, 10 ) );
         model.put( MARK_ID_ENTRY_TYPE_MYLUTECE_USER, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_MYLUTECE_USER, 19 ) );
-        model.put( MARK_PERMISSION_VISUALISATION_MYLUTECE_USER, RBACService.isAuthorized( Directory.RESOURCE_TYPE, Integer.toString( directory.getIdDirectory( ) ),
-                DirectoryResourceIdService.PERMISSION_VISUALISATION_MYLUTECE_USER, adminUser ) );
+        model.put( MARK_PERMISSION_VISUALISATION_MYLUTECE_USER, RBACService.isAuthorized( Directory.RESOURCE_TYPE,
+                Integer.toString( directory.getIdDirectory( ) ), DirectoryResourceIdService.PERMISSION_VISUALISATION_MYLUTECE_USER, adminUser ) );
         model.put( MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD, DirectoryUtils.getMapIdEntryListRecordField( listEntry, nIdRecord, pluginDirectoryMultiview ) );
 
         model.put( MARK_SHOW_DATE_CREATION_RECORD, directory.isDateShownInResultRecord( ) );
         model.put( MARK_SHOW_DATE_MODIFICATION_RECORD, directory.isDateModificationShownInResultRecord( ) );
-        
+
         // Get asynchronous file names
         boolean bGetFileName = true;
         model.put(
@@ -483,11 +483,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 DirectoryService.getInstance( ).getResourceAction( record, directory, listEntry, adminUser, listActionsForDirectoryEnable,
                         listActionsForDirectoryDisable, bGetFileName, pluginDirectoryMultiview ) );
         model.put( MARK_HISTORY_WORKFLOW_ENABLED, bHistoryEnabled );
-        model.put(
-                MARK_RESOURCE_HISTORY,
-                workflowService.getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, directory.getIdWorkflow( ), request,
-                        locale, model, TEMPLATE_RECORD_HISTORY ) );
-        
+        model.put( MARK_RESOURCE_HISTORY, workflowService.getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, directory.getIdWorkflow( ),
+                request, locale, model, TEMPLATE_RECORD_HISTORY ) );
+
         // Build the model of all ModelProcessors
         RecordViewModelProcessorFactory recordViewModelProcessorFactory = new RecordViewModelProcessorFactory( );
         List<IRecordViewModelProcessor> listRecordViewModelProcesor = recordViewModelProcessorFactory.buildRecordViewModelProcessorList( );
@@ -529,7 +527,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         boolean bHasSucceed = false;
         Plugin pluginDirectoryMultiview = getPlugin( );
         Record record = _recordService.findByPrimaryKey( nIdRecord, pluginDirectoryMultiview );
-        
+
         try
         {
             if ( record != null )
@@ -570,7 +568,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     {
         int nIdRecord = NumberUtils.toInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ), NumberUtils.INTEGER_MINUS_ONE );
         int nIdAction = NumberUtils.toInt( request.getParameter( PARAMETER_ID_ACTION ), NumberUtils.INTEGER_MINUS_ONE );
-        
+
         if ( nIdAction == NumberUtils.INTEGER_MINUS_ONE || nIdRecord == NumberUtils.INTEGER_MINUS_ONE )
         {
             return redirectView( request, VIEW_RECORD_VISUALISATION );
@@ -599,10 +597,10 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     {
         int nIdRecord = NumberUtils.toInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ), NumberUtils.INTEGER_MINUS_ONE );
         int nIdAction = NumberUtils.toInt( request.getParameter( PARAMETER_ID_ACTION ), NumberUtils.INTEGER_MINUS_ONE );
-        
+
         Record record = RecordHome.findByPrimaryKey( nIdRecord, getPlugin( ) );
         int nIdDirectory = ( record != null && record.getDirectory( ) != null ) ? record.getDirectory( ).getIdDirectory( ) : NumberUtils.INTEGER_MINUS_ONE;
-        
+
         if ( WorkflowService.getInstance( ).canProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, false ) )
         {
             try

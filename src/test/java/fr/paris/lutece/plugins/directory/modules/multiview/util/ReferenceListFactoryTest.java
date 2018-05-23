@@ -58,7 +58,7 @@ public class ReferenceListFactoryTest extends LuteceTestCase
     private static final String ATTRIBUTE_NAME = "name";
     private static final String DEFAULT_ATTRIBUTE_NAME = DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_NAME;
     private static final String DEFAULT_ATTRIBUTE_CODE = DirectoryMultiviewConstants.REFERENCE_ITEM_DEFAULT_CODE;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -67,7 +67,7 @@ public class ReferenceListFactoryTest extends LuteceTestCase
     {
         super.setUp( );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -76,77 +76,75 @@ public class ReferenceListFactoryTest extends LuteceTestCase
     {
         super.tearDown( );
     }
-    
+
     /**
      * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()}
      */
     public void testCreateReferenceList( )
-    {       
+    {
         List<String> listName = Arrays.asList( DEFAULT_ATTRIBUTE_NAME, "code_3", "code_1", "code_2" );
         List<String> listCode = Arrays.asList( DEFAULT_ATTRIBUTE_CODE, "3", "1", "2" );
         ReferenceList referenceListExpected = createExpectedReferencelist( listName, listCode );
-        
+
         Collection<Object> collection = new ArrayList<>( );
         collection.add( new ObjectItemMock( "code_3", 3 ) );
         collection.add( new ObjectItemMock( "code_1", 1 ) );
         collection.add( new ObjectItemMock( "code_2", 2 ) );
-        
+
         ReferenceListFactory referenceListFactory = new ReferenceListFactory( collection, ATTRIBUTE_CODE, ATTRIBUTE_NAME );
         ReferenceList referenceListResult = referenceListFactory.createReferenceList( );
-        
+
         assertThat( referenceListResult, is( not( nullValue( ) ) ) );
         manageReferenceListComparison( referenceListExpected, referenceListResult );
     }
-    
+
     /**
-     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()}
-     * without numeric code
+     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()} without numeric code
      */
     public void testCreateReferenceListWithoutNumericCode( )
-    {       
+    {
         List<String> listName = Arrays.asList( DEFAULT_ATTRIBUTE_NAME, "code_3", "code_1", "code_2" );
-        List<String> listCode = Arrays.asList( DEFAULT_ATTRIBUTE_CODE, "3", "1", "2"  );
+        List<String> listCode = Arrays.asList( DEFAULT_ATTRIBUTE_CODE, "3", "1", "2" );
         ReferenceList referenceListExpected = createExpectedReferencelist( listName, listCode );
-        
+
         Collection<Object> collection = new ArrayList<>( );
         collection.add( new ObjectItemMock( "code_3", 3 ) );
         collection.add( new ObjectItemMock( "code_1", 1 ) );
         collection.add( new ObjectItemMock( "code_2", 2 ) );
-        
+
         ReferenceListFactory referenceListFactory = new ReferenceListFactory( collection, ATTRIBUTE_STRING_CODE, ATTRIBUTE_NAME, Boolean.FALSE );
         ReferenceList referenceListResult = referenceListFactory.createReferenceList( );
-        
+
         assertThat( referenceListResult, is( not( nullValue( ) ) ) );
         manageReferenceListComparison( referenceListExpected, referenceListResult );
     }
-    
+
     /**
-     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()}
-     * with sort
+     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()} with sort
      */
     public void testCreateReferenceListWithSort( )
-    {       
+    {
         List<String> listName = Arrays.asList( DEFAULT_ATTRIBUTE_NAME, "code_1", "code_2", "code_3", "code_4" );
         List<String> listCode = Arrays.asList( DEFAULT_ATTRIBUTE_CODE, "1", "2", "3", "4" );
         ReferenceList referenceListExpected = createExpectedReferencelist( listName, listCode );
-        
+
         Collection<Object> collection = new ArrayList<>( );
         collection.add( new ObjectItemMock( "code_2", 2 ) );
         collection.add( new ObjectItemMock( "code_3", 3 ) );
         collection.add( new ObjectItemMock( "code_1", 1 ) );
         collection.add( new ObjectItemMock( "code_4", 4 ) );
-        
+
         ReferenceListFactory referenceListFactory = new ReferenceListFactory( collection, ATTRIBUTE_CODE, ATTRIBUTE_NAME );
         referenceListFactory.setDefaultSortNeeded( Boolean.TRUE );
         ReferenceList referenceListResult = referenceListFactory.createReferenceList( );
-        
+
         assertThat( referenceListResult, is( not( nullValue( ) ) ) );
         manageReferenceListComparison( referenceListExpected, referenceListResult );
     }
-    
+
     /**
-     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()}
-     * with a changed default name
+     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()} with a changed default
+     * name
      */
     public void testCreateReferenceListWithChangedDefaultName( )
     {
@@ -154,113 +152,112 @@ public class ReferenceListFactoryTest extends LuteceTestCase
         List<String> listName = Arrays.asList( strDefaultLabel, "code_3", "code_1", "code_2" );
         List<String> listCode = Arrays.asList( DEFAULT_ATTRIBUTE_CODE, "3", "1", "2" );
         ReferenceList referenceListExpected = createExpectedReferencelist( listName, listCode );
-        
+
         Collection<Object> collection = new ArrayList<>( );
         collection.add( new ObjectItemMock( "code_3", 3 ) );
         collection.add( new ObjectItemMock( "code_1", 1 ) );
         collection.add( new ObjectItemMock( "code_2", 2 ) );
-        
+
         ReferenceListFactory referenceListFactory = new ReferenceListFactory( collection, ATTRIBUTE_CODE, ATTRIBUTE_NAME );
         referenceListFactory.setDefaultName( strDefaultLabel );
         ReferenceList referenceListResult = referenceListFactory.createReferenceList( );
-        
+
         assertThat( referenceListResult, is( not( nullValue( ) ) ) );
         manageReferenceListComparison( referenceListExpected, referenceListResult );
     }
-    
+
     /**
-     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()}
-     * with duplicates
+     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()} with duplicates
      */
     public void testCreateReferenceListWithDuplicates( )
     {
         List<String> listName = Arrays.asList( DEFAULT_ATTRIBUTE_NAME, "code_3", "code_1", "code_2" );
         List<String> listCode = Arrays.asList( DEFAULT_ATTRIBUTE_CODE, "3", "1", "2" );
         ReferenceList referenceListExpected = createExpectedReferencelist( listName, listCode );
-        
+
         Collection<Object> collection = new ArrayList<>( );
         collection.add( new ObjectItemMock( "code_3", 3 ) );
         collection.add( new ObjectItemMock( "code_1", 1 ) );
         collection.add( new ObjectItemMock( "code_3", 3 ) );
         collection.add( new ObjectItemMock( "code_2", 2 ) );
         collection.add( new ObjectItemMock( "code_1", 1 ) );
-        
+
         ReferenceListFactory referenceListFactory = new ReferenceListFactory( collection, ATTRIBUTE_CODE, ATTRIBUTE_NAME );
         ReferenceList referenceListResult = referenceListFactory.createReferenceList( );
-        
+
         assertThat( referenceListResult, is( not( nullValue( ) ) ) );
         manageReferenceListComparison( referenceListExpected, referenceListResult );
     }
-    
+
     /**
-     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()}
-     * and verify that the missing name are replaced
+     * Test for the method {@link fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory#createReferenceList()} and verify that the
+     * missing name are replaced
      */
     public void testCreateReferenceLisCheckedNameReplacement( )
     {
         List<String> listName = Arrays.asList( DEFAULT_ATTRIBUTE_NAME, "", "code_1", "" );
         List<String> listCode = Arrays.asList( DEFAULT_ATTRIBUTE_CODE, "3", "1", "2" );
         ReferenceList referenceListExpected = createExpectedReferencelist( listName, listCode );
-        
+
         Collection<Object> collection = new ArrayList<>( );
         collection.add( new ObjectItemMock( null, 3 ) );
         collection.add( new ObjectItemMock( "code_1", 1 ) );
         collection.add( new ObjectItemMock( null, 2 ) );
-        
+
         ReferenceListFactory referenceListFactory = new ReferenceListFactory( collection, ATTRIBUTE_CODE, ATTRIBUTE_NAME );
         ReferenceList referenceListResult = referenceListFactory.createReferenceList( );
-        
+
         assertThat( referenceListResult, is( not( nullValue( ) ) ) );
         manageReferenceListComparison( referenceListExpected, referenceListResult );
     }
-    
+
     /**
      * Create the expected ReferenceList
      * 
      * @param listName
-     *          The list of all names of the ReferenceItem
+     *            The list of all names of the ReferenceItem
      * @param listCode
-     *          The list of all codes of the ReferenceItem
+     *            The list of all codes of the ReferenceItem
      * @return the expected ReferenceList
      */
     private ReferenceList createExpectedReferencelist( List<String> listName, List<String> listCode )
     {
         ReferenceList referenceList = new ReferenceList( );
-        
-        for( int index = 0; index < listName.size( ); index++ )
+
+        for ( int index = 0; index < listName.size( ); index++ )
         {
             ReferenceItem referenceItem = new ReferenceItem( );
             referenceItem.setName( listName.get( index ) );
             referenceItem.setCode( listCode.get( index ) );
-            
+
             referenceList.add( referenceItem );
         }
-        
+
         return referenceList;
     }
-    
+
     /**
      * Compare the two given ReferenceList one which represent the expected ReferenceList and the other which represent the result ReferenceList
      * 
      * @param referenceListExpected
-     *          The ReferenceList which is expected
+     *            The ReferenceList which is expected
      * @param referenceListResult
-     *          The ReferenceList which must be compared with the expected ReferenceList
+     *            The ReferenceList which must be compared with the expected ReferenceList
      */
     private void manageReferenceListComparison( ReferenceList referenceListExpected, ReferenceList referenceListResult )
     {
         if ( referenceListExpected != null && referenceListResult != null )
         {
-           assertThat( referenceListResult.size( ), is( referenceListExpected.size( ) ) ) ;
-           
-           for( int index = 0; index < referenceListExpected.size( ); index++ )
-           {
-               ReferenceItem referenceItemExpected = referenceListExpected.get( index );
-               ReferenceItem referenceItemResult = referenceListResult.get( index );
-               
-               assertThat( referenceItemResult.getCode( ), is( referenceItemExpected.getCode( ) ) );
-               assertThat( referenceItemResult.getName( ), is( referenceItemExpected.getName( ) ) );
-           }
+            assertThat( referenceListResult.size( ), is( referenceListExpected.size( ) ) );
+
+            for ( int index = 0; index < referenceListExpected.size( ); index++ )
+            {
+                ReferenceItem referenceItemExpected = referenceListExpected.get( index );
+                ReferenceItem referenceItemResult = referenceListResult.get( index );
+
+                assertThat( referenceItemResult.getCode( ), is( referenceItemExpected.getCode( ) ) );
+                assertThat( referenceItemResult.getName( ), is( referenceItemExpected.getName( ) ) );
+            }
         }
     }
 }
