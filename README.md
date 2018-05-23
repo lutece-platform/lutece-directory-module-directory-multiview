@@ -187,6 +187,8 @@ Note: it is not necessary to declare this bean in the context file of the module
 
 
 
+These information allow to create a new type of panel and a panel of this type. To create a panel of an existing type it simply needs to declare a bean which correspond to the configuration of the panel and declare another bean which correspond to the panel of the desired type which used the previous configuration.
+
 * 
  **The panels initializers** 
 
@@ -227,6 +229,8 @@ An example of declaration of this kind of Factory is like:
 
  `<bean id="directory-multiview.recordsPanelInitializer.panelDirectory.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.factory.impl.RecordPanelDirectoryDisplayInitializerFactory"/>` 
 
+
+These information allow to create a new type of panel initializer and a panel initializer. To create a panel initializer of an existing type it simply needs to declare a bean of a panel initializer of the desired type.
 
 * 
  **The columns** 
@@ -279,6 +283,8 @@ An example of declaration of this kind of Factory is like shown below:
 
 For all the new created columns it is necessary to modify the context file of the plugin (the file directory-multiview_context.xml). The declaration of the bean `directory-multiview.recordColumn.factory` must be changed in order to configure the list of all columns to used on the board.
 
+These information allow to create a new type of column and a column of this type. To create a column of an existing type it simply needs to declare a bean associated to the desired type of column.
+
 * 
  **The filters** 
 
@@ -322,6 +328,8 @@ The last step is to create the Factory linked to the display of the filter. For 
 
  `<bean id="directory-multiview.directoryRecord.filter.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayDirectoryFactory"/>` 
 
+These information allow to create a new type of filter and a filter of this type. To create a new filter of an existing type it simply needs to declare a bean which represent the configuration of the filter and another bean which is associated to the desired type of filter to use with the configuration previously defined.
+
 
 
  **Management of the redirections** 
@@ -330,6 +338,16 @@ To make the redirection to the desired page when the action of the workflow is d
  
 *  `list` : allow to make the redirection to the page which display all the records
 *  `details` : allow to redirect to the page of the record of the directory on which the action has been made
+
+
+ **Generation of the model of the template** 
+
+It is possible to dynamically add data into the model which will be used to create the template which manage the page with information of a record. For doing this it is necessary to implement the interface `fr.paris.lutece.plugins.directory.modules.multiview.web.record.view.IRecordViewModelProcessor` . When the implementation has been done it must be declared in the context file of a module.The controller will use all the implementations defines in the context files for build the model to use for the template of a record.
+
+
+```
+Note: All implementations which are not declared in a context file will not be used during the generation of the model.
+```
 
 
 

@@ -343,6 +343,10 @@
                 					<pre>Note: Il n'est pas nécessaire de déclarer ce bean dans le fichier de contexte du plugin.</pre>
                 				</p>
                 			</p>
+                            <p>
+                                Ces informations permettent de créer un nouveau type de panneau ainsi qu'un panneau de ce type.
+                                Pour créer un panneau d'un type existant il suffit de déclarer un bean correspondant à la configuration du panneau et déclarer un bean correspond au panneau utilisant le type souhaité ainsi que la configuration créée.
+                            </p>
                 		</li>
                 		<li>
                 			<p>
@@ -363,7 +367,6 @@
                 							class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl.RecordPanelDirectoryInitializer"/&gt;
                 					</code>
                 				</p>
-                				
                 				<p>
                 					Une fois la déclaration faite il faut ajouter une implémentation de <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.IRecordPanelInitializerQueryPart</code>
                 					ou bien hériter de la classe <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.impl.AbstractRecordPanelInitializerQueryPart</code>.
@@ -375,7 +378,6 @@
                 				<p>
                 					<pre>Note: Il n'est pas nécessaire de déclarer cette implémentation en tant que bean dans un fichier de contexte.</pre>
                 				</p>
-                					
                 				<p>
                 					Une fois cette implémentation faite, il est ensuite nécessaire d'implémenter une Factory pour la QueryPart associé à ce bean. 
                 					Pour ce faire, il suffit de réaliser une implémentation de l'interface <code>fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.factory.IRecordPanelInitializerQueryPartFactory</code>.
@@ -387,7 +389,6 @@
                 							class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.querypart.factory.impl.RecordPanelDirectoryInitializerQueryPartFactory"/&gt;
                 					</code>
                 				</p>
-                					
                 				<p>
                 					Il reste ensuite la partie correspondant aux éléments "web" de l'initialiseur à savoir, la récupération des informations dont il a besoin depuis la requête. 
                 					Pour ce faire il faut implémenter l'interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.IRecordPanelDisplayInitializer</code>
@@ -399,8 +400,7 @@
                 				</p>
                 				<p>
                 					<pre>Note: Il n'est pas nécessaire de déclarer cette implémentation dans un fichier de contexte.</pre>
-                				</p> 
-                					
+                				</p>
                 				<p>
                 					La dernière étape pour finir de créer un initialiseur de panneau est de créer une Factory correspondant à cette implémentation. 
                 					Il faut réaliser une implémentation de l'interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.initializer.IRecordPanelDisplayInitializer</code>
@@ -416,6 +416,10 @@
                 					</code>
                 				</p>
                 			</p>
+                            <p>
+                                Ces informations permettent de créer un nouveau type d'initialiseur de panneau et un bean de ce type.
+                                Pour créer un initialiseur de panneau d'un type existant il suffit de déclarer un bean du type de l'initialiseur souhaité.
+                            </p>
                 		</li>
                 		<li>
                 			<p>
@@ -510,6 +514,10 @@
                 				Pour toutes les nouvelles colonnes créées il est nécessaire de modifier le fichier de context du plugin (le fichier directory-multiview_context.xml).
                 				Il faut modifier la déclaration du bean <code>directory-multiview.recordColumn.factory</code> afin de configurer la liste de toutes les colonnes à utiliser dans le tableau.
                 			</p>
+                            <p>
+                                Ces informations permettent de créer un nouveau type de colonne ainsi qu'une colonne de ce type.
+                                Pour créer une colonne d'un type existant il suffit de déclarer un bean associé au type de colonne souhaité.
+                            </p>
                 		</li>
                 		<li>
                 			<p>
@@ -593,6 +601,10 @@
                 						class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.factory.RecordFilterDisplayDirectoryFactory"/&gt;
                 				</code>
                 			</p>
+                            <p>
+                                Ces informations permettent de créer un nouveau type de filtre ainsi qu'un filtre de ce type.
+                                Pour créer un filtre à partir d'un type existant il suffit de déclarer un bean représentant la configuration de ce filtre ainsi qu'un bean associé au filtre du type souhaité avec cette configuration.
+                            </p>
                 		</li>
                 	</ul>
                 </p>
@@ -607,6 +619,18 @@
                          <li><code>list</code>: permet de rediriger vers la page affichant toutes les fiches disponibles</li>
                          <li><code>details</code>: permet de rediriger vers la fiche de l'annuaire sur laquelle a été faite l'action</li>
                      </ul>
+                 </p>
+                 <p>
+                     <b>Génération du modèle du template</b>
+                 </p>
+                 <p>
+                     Il est possible de rajouter dynamiquement des données dans le modèle qui sera utilisé pour la création du template gérant la page contenant les informations d'une fiche. 
+                     Pour ce faire, il faut réaliser une implémentation de l'interface <code>fr.paris.lutece.plugins.directory.modules.multiview.web.record.view.IRecordViewModelProcessor</code>.
+                     Une fois l'implémentation réalisée, il est nécessaire de la déclarer dans un fichier de contexte.
+                     Le contrôleur utilisera toutes les implémentations définit dans les fichiers de contexte pour construire le modèle à utiliser par le template d'une fiche.
+                 </p>
+                 <p>
+                     <pre>Note: Toute implémentation non déclarée dans un fichier de contexte ne sera pas utilisé lors de la génération du modèle.</pre>
                  </p>
             </subsection>
         </section>
