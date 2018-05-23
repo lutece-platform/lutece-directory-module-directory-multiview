@@ -90,6 +90,7 @@ import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
@@ -542,7 +543,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 AppLogService.error( "Error processing action for id record '" + nIdRecord + "' - cause : the record doesn't exist " );
             }
         }
-        catch( Exception e )
+        catch( AppException e )
         {
             AppLogService.error( "Error processing action for id record '" + nIdRecord + "' - cause : " + e.getMessage( ), e );
         }
@@ -615,7 +616,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 }
 
             }
-            catch( Exception e )
+            catch( AppException e )
             {
                 AppLogService.error( "Error processing action for record '" + nIdRecord, e );
 
