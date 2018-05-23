@@ -43,7 +43,6 @@ public class RecordColumnLineTemplate
 {
     // Variables
     private final int _nIdRecord;
-    private final int _nIdDirectory;
     private List<String> _listRecordColumnCellTemplate;
 
     /**
@@ -51,13 +50,10 @@ public class RecordColumnLineTemplate
      * 
      * @param nIdRecord
      *            The identifier of the Record associate to the RecordColumnLineTemplate
-     * @param nIdDirectory
-     *            The identifier of the Directory associated to the RecordColumnLineTemplate
      */
-    public RecordColumnLineTemplate( int nIdRecord, int nIdDirectory )
+    public RecordColumnLineTemplate( int nIdRecord )
     {
         _nIdRecord = nIdRecord;
-        _nIdDirectory = nIdDirectory;
         _listRecordColumnCellTemplate = new ArrayList<>( );
     }
 
@@ -69,16 +65,6 @@ public class RecordColumnLineTemplate
     public int getIdRecord( )
     {
         return _nIdRecord;
-    }
-
-    /**
-     * Return the identifier of the Directory of the RecordColumnLineTemplate
-     * 
-     * @return the identifier of the Directory of the RecordColumnLineTemplate
-     */
-    public int getIdDirectory( )
-    {
-        return _nIdDirectory;
     }
 
     /**

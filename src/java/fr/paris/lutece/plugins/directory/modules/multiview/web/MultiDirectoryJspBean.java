@@ -54,6 +54,7 @@ import fr.paris.lutece.plugins.directory.business.DirectoryActionHome;
 import fr.paris.lutece.plugins.directory.business.DirectoryHome;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.Record;
+import fr.paris.lutece.plugins.directory.business.RecordHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItemComparator;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItemComparatorConfig;
@@ -145,7 +146,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_PERMISSION_VISUALISATION_MYLUTECE_USER = "permission_visualisation_mylutece_user";
     private static final String MARK_ID_DIRECTORY_RECORD = "id_directory_record";
     private static final String MARK_ID_ACTION = "id_action";
-    private static final String MARK_ID_DIRECTORY = "id_directory";
     private static final String MARK_TASK_FORM = "tasks_form";
     private static final String MARK_SEARCH_TEXT = "search_text";
     private static final String MARK_RECORD_PANEL_LIST = "record_panel_list";
@@ -157,7 +157,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String JSP_MANAGE_MULTIVIEW = "jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp";
 
     // Parameters
-    private static final String PARAMETER_ID_DIRECTORY = "id_directory";
     private static final String PARAMETER_ID_ACTION = "id_action";
     private static final String PARAMETER_ID_DIRECTORY_RECORD = "id_directory_record";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
@@ -431,20 +430,18 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         
         String strIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD );
         int nIdRecord = NumberUtils.toInt( strIdRecord, NumberUtils.INTEGER_MINUS_ONE );
-        String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
-        int nIdDirectory = NumberUtils.toInt( strIdDirectory, NumberUtils.INTEGER_MINUS_ONE );
-        Directory directory = DirectoryHome.findByPrimaryKey( nIdDirectory, getPlugin( ) );
         Record record = _recordService.findByPrimaryKey( nIdRecord, pluginDirectoryMultiview );
 
         boolean bRBACAuthorization = RBACService.isAuthorized( Directory.RESOURCE_TYPE, Integer.toString( nIdRecord ),
                 DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, adminUser );
         boolean bAuthorizedRecord = _directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
 
-        if ( record == null || directory == null || !bRBACAuthorization || !bAuthorizedRecord )
+        if ( record == null || record.getDirectory( ) == null || !bRBACAuthorization || !bAuthorizedRecord )
         {
             throw new AccessDeniedException( MESSAGE_ACCESS_DENIED );
         }
 
+        Directory directory = DirectoryHome.findByPrimaryKey( record.getDirectory( ).getIdDirectory( ), pluginDirectoryMultiview );
         List<IEntry> listEntry = DirectoryUtils.getFormEntries( directory.getIdDirectory( ), pluginDirectoryMultiview, adminUser );
 
         // List directory actions
@@ -515,28 +512,35 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     public String doProcessWorkflowAction( HttpServletRequest request )
     {
         // Get parameters from request
-        int nIdRecord = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) );
-        int nIdAction = Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) );
-        int nIdDirectory = Integer.parseInt( request.getParameter( PARAMETER_ID_DIRECTORY ) );
+        int nIdRecord = NumberUtils.toInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ), NumberUtils.INTEGER_MINUS_ONE );
+        int nIdAction = NumberUtils.toInt( request.getParameter( PARAMETER_ID_ACTION ), NumberUtils.INTEGER_MINUS_ONE );
 
-        if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( ) ) )
+        Locale locale = getLocale( );
+        if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, locale ) )
         {
             Map<String, String> model = new LinkedHashMap<>( );
             model.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
             model.put( PARAMETER_ID_ACTION, String.valueOf( nIdAction ) );
-            model.put( PARAMETER_ID_DIRECTORY, String.valueOf( nIdDirectory ) );
 
             return redirect( request, VIEW_TASKS_FORM, model );
         }
 
         boolean bHasSucceed = false;
-
+        Plugin pluginDirectoryMultiview = getPlugin( );
+        Record record = _recordService.findByPrimaryKey( nIdRecord, pluginDirectoryMultiview );
+        
         try
         {
-
-            WorkflowService.getInstance( ).doProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, request.getLocale( ),
-                    false );
-            bHasSucceed = true;
+            if ( record != null )
+            {
+                int nIdDirectory = record.getDirectory( ).getIdDirectory( );
+                WorkflowService.getInstance( ).doProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, locale, false );
+                bHasSucceed = true;
+            }
+            else
+            {
+                AppLogService.error( "Error processing action for id record '" + nIdRecord + "' - cause : the record doesn't exist " );
+            }
         }
         catch( Exception e )
         {
@@ -546,8 +550,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         if ( bHasSucceed )
         {
             // Update record modification date (for directory plugin)
-            Record record = _recordService.findByPrimaryKey( nIdRecord, getPlugin( ) );
-            _recordService.update( record, getPlugin( ) );
+            _recordService.update( record, pluginDirectoryMultiview );
         }
 
         // Redirect to the correct view
@@ -564,14 +567,12 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     @View( value = VIEW_TASKS_FORM )
     public String getTaskForm( HttpServletRequest request )
     {
-        Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
-                .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
-        Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
-
-        if ( nIdAction == null || nIdRecord == null )
+        int nIdRecord = NumberUtils.toInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ), NumberUtils.INTEGER_MINUS_ONE );
+        int nIdAction = NumberUtils.toInt( request.getParameter( PARAMETER_ID_ACTION ), NumberUtils.INTEGER_MINUS_ONE );
+        
+        if ( nIdAction == NumberUtils.INTEGER_MINUS_ONE || nIdRecord == NumberUtils.INTEGER_MINUS_ONE )
         {
             return redirectView( request, VIEW_RECORD_VISUALISATION );
-
         }
 
         String strHtmlTasksForm = WorkflowService.getInstance( )
@@ -580,9 +581,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         Map<String, Object> model = getModel( );
         model.put( MARK_ID_DIRECTORY_RECORD, nIdRecord );
         model.put( MARK_ID_ACTION, nIdAction );
-
-        int nIdDirectory = NumberUtils.toInt( request.getParameter( MARK_ID_DIRECTORY ), NumberUtils.INTEGER_MINUS_ONE );
-        model.put( MARK_ID_DIRECTORY, nIdDirectory );
         model.put( MARK_TASK_FORM, strHtmlTasksForm );
 
         return getPage( MESSAGE_MULTIVIEW_TITLE, TEMPLATE_TASK_FORM, model );
@@ -598,14 +596,14 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     @Action( value = ACTION_SAVE_TASK_FORM )
     public String doSaveTaskForm( HttpServletRequest request )
     {
-        Integer nIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) != null ? Integer.parseInt( request
-                .getParameter( PARAMETER_ID_DIRECTORY_RECORD ) ) : null;
-        Integer nIdAction = request.getParameter( PARAMETER_ID_ACTION ) != null ? Integer.parseInt( request.getParameter( PARAMETER_ID_ACTION ) ) : null;
-        int nIdDirectory = NumberUtils.toInt( request.getParameter( MARK_ID_DIRECTORY ), NumberUtils.INTEGER_MINUS_ONE );
-
+        int nIdRecord = NumberUtils.toInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ), NumberUtils.INTEGER_MINUS_ONE );
+        int nIdAction = NumberUtils.toInt( request.getParameter( PARAMETER_ID_ACTION ), NumberUtils.INTEGER_MINUS_ONE );
+        
+        Record record = RecordHome.findByPrimaryKey( nIdRecord, getPlugin( ) );
+        int nIdDirectory = ( record != null && record.getDirectory( ) != null ) ? record.getDirectory( ).getIdDirectory( ) : NumberUtils.INTEGER_MINUS_ONE;
+        
         if ( WorkflowService.getInstance( ).canProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, false ) )
         {
-
             try
             {
                 String strError = WorkflowService.getInstance( ).doSaveTasksForm( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request,

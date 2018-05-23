@@ -46,9 +46,6 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel
  */
 public class RecordListDAOMock implements IRecordListDAO
 {
-    // Constants
-    private static final int ID_DIRECTORY = 14;
-
     // Variables
     private final List<Integer> _listIdAuthorizedRecord;
 
@@ -74,7 +71,6 @@ public class RecordListDAOMock implements IRecordListDAO
         for ( Integer nIdRecord : _listIdAuthorizedRecord )
         {
             DirectoryRecordItem directoryRecordItem = new DirectoryRecordItem( );
-            directoryRecordItem.setIdDirectory( ID_DIRECTORY );
             directoryRecordItem.setIdRecord( nIdRecord );
 
             listDirectoryRecordItem.add( directoryRecordItem );

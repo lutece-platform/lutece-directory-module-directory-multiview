@@ -154,8 +154,7 @@ public final class RecordListTemplateBuilder
             for ( DirectoryRecordItem directoryRecordItem : listDirectoryRecordItem )
             {
                 int nIdRecord = directoryRecordItem.getIdRecord( );
-                int nIdDirectory = directoryRecordItem.getIdDirectory( );
-                RecordColumnLineTemplate recordColumnLineTemplate = new RecordColumnLineTemplate( nIdRecord, nIdDirectory );
+                RecordColumnLineTemplate recordColumnLineTemplate = new RecordColumnLineTemplate( nIdRecord );
 
                 List<RecordColumnCell> listRecordColumnCell = directoryRecordItem.getDirectoryRecordCellValues( );
                 populateLineTemplateFromCellValues( recordColumnLineTemplate, listRecordColumnCell, listRecordColumnDisplay, locale );

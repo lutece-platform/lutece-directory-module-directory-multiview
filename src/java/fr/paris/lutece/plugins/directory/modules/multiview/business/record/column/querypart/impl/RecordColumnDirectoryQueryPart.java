@@ -49,7 +49,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class RecordColumnDirectoryQueryPart extends AbstractRecordColumnQueryPart
 {
     // Constants
-    private static final String DIRECTORY_SELECT_QUERY_PART = "directory.id_directory, directory.title";
+    private static final String DIRECTORY_SELECT_QUERY_PART = "directory.title";
     private static final String DIRECTORY_FORM_QUERY_PART = StringUtils.EMPTY;
     private static final String DIRECTORY_JOIN_QUERY_PART = StringUtils.EMPTY;
 

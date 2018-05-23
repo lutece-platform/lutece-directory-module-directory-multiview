@@ -43,7 +43,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.Recor
 public class RecordPanelDirectoryInitializerQueryPart extends AbstractRecordPanelInitializerQueryPart
 {
     // Constants
-    private static final String RECORD_DIRECTORY_SELECT_QUERY = "directory.id_directory, record.id_record";
+    private static final String RECORD_DIRECTORY_SELECT_QUERY = "record.id_record";
     private static final String RECORD_DIRECTORY_FROM_QUERY = "directory_directory AS directory";
     private static final String RECORD_DIRECTORY_JOIN_QUERY = "INNER JOIN directory_record AS record ON record.id_directory = directory.id_directory";
 

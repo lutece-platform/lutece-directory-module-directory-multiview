@@ -39,12 +39,11 @@ import java.util.List;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnCell;
 
 /**
- * This object represent the couple of the identifier of a directory and the identifier of a record for a line of the Multiview record list
+ * This object represent the identifier of a record of a line of the Multiview record list with the list of all its RecordColumnCell
  */
 public class DirectoryRecordItem
 {
     // Variables
-    private int _nIdDirectory;
     private int _nIdRecord;
     private final List<RecordColumnCell> _listRecordColumnCell;
 
@@ -54,27 +53,6 @@ public class DirectoryRecordItem
     public DirectoryRecordItem( )
     {
         _listRecordColumnCell = new ArrayList<>( );
-    }
-
-    /**
-     * Return the identifier of the directory of the DirectoryRecordItem
-     * 
-     * @return the nIdDirectory
-     */
-    public int getIdDirectory( )
-    {
-        return _nIdDirectory;
-    }
-
-    /**
-     * Set the identifier of the Directory
-     * 
-     * @param nIdDirectory
-     *            The identifier of the directory to set
-     */
-    public void setIdDirectory( int nIdDirectory )
-    {
-        _nIdDirectory = nIdDirectory;
     }
 
     /**

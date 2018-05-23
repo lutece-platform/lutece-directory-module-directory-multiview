@@ -62,7 +62,6 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class RecordListDAO implements IRecordListDAO
 {
     // Constants
-    private static final String ID_DIRECTORY_COLUMN_NAME = "id_directory";
     private static final String ID_RECORD_COLUMN_NAME = "id_record";
 
     /**
@@ -154,7 +153,6 @@ public class RecordListDAO implements IRecordListDAO
     private DirectoryRecordItem createDirectoryItem( DAOUtil daoUtil )
     {
         DirectoryRecordItem directoryRecordItem = new DirectoryRecordItem( );
-        directoryRecordItem.setIdDirectory( daoUtil.getInt( ID_DIRECTORY_COLUMN_NAME ) );
         directoryRecordItem.setIdRecord( daoUtil.getInt( ID_RECORD_COLUMN_NAME ) );
 
         return directoryRecordItem;
