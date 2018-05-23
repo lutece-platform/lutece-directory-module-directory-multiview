@@ -3,6 +3,7 @@
 .label-record-history{ padding-top:initial !important; }
 .records-filter{ display:inline-block; }
 .filter-label{ color:#fff; font-size:1.5rem; font-weight:500; margin-left:10px }
+.header-records{ min-height: 10em }
 
 #record-header{ color:#fff }
 #record-header > small{ color:#fff }

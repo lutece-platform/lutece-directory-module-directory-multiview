@@ -38,11 +38,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -61,9 +63,9 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.RecordFilterFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.RecordPanelFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewAuthorizationService;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.IDirectoryMultiviewService;
-import fr.paris.lutece.plugins.directory.modules.multiview.service.UserIdentityService;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.search.IDirectoryMultiviewSearchService;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.DirectoryMultiviewConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.IRecordColumnDisplay;
@@ -75,13 +77,16 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.disp
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListPositionComparator;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListTemplateBuilder;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.RecordListUtil;
-import fr.paris.lutece.plugins.directory.modules.multiview.web.user.UserFactory;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.view.IRecordViewModelProcessor;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.view.RecordViewModelProcessorFactory;
 import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
 import fr.paris.lutece.plugins.directory.service.DirectoryService;
 import fr.paris.lutece.plugins.directory.service.record.IRecordService;
 import fr.paris.lutece.plugins.directory.service.record.RecordService;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
+import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -138,8 +143,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
     private static final String MARK_HISTORY_WORKFLOW_ENABLED = "history_workflow";
     private static final String MARK_PERMISSION_VISUALISATION_MYLUTECE_USER = "permission_visualisation_mylutece_user";
-    private static final String MARK_USER_FACTORY = "user_factory";
-    private static final String MARK_USER_ATTRIBUTES = "user_attributes";
     private static final String MARK_ID_DIRECTORY_RECORD = "id_directory_record";
     private static final String MARK_ID_ACTION = "id_action";
     private static final String MARK_ID_DIRECTORY = "id_directory";
@@ -423,16 +426,18 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     @View( value = VIEW_RECORD_VISUALISATION )
     public String getRecordVisualisation( HttpServletRequest request ) throws AccessDeniedException
     {
+        AdminUser adminUser = getUser( );
+        Plugin pluginDirectoryMultiview = DirectoryMultiviewPlugin.getPlugin( );
+        
         String strIdRecord = request.getParameter( PARAMETER_ID_DIRECTORY_RECORD );
         int nIdRecord = NumberUtils.toInt( strIdRecord, NumberUtils.INTEGER_MINUS_ONE );
-        Record record = _recordService.findByPrimaryKey( nIdRecord, getPlugin( ) );
-
         String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
         int nIdDirectory = NumberUtils.toInt( strIdDirectory, NumberUtils.INTEGER_MINUS_ONE );
         Directory directory = DirectoryHome.findByPrimaryKey( nIdDirectory, getPlugin( ) );
+        Record record = _recordService.findByPrimaryKey( nIdRecord, pluginDirectoryMultiview );
 
         boolean bRBACAuthorization = RBACService.isAuthorized( Directory.RESOURCE_TYPE, Integer.toString( nIdRecord ),
-                DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, getUser( ) );
+                DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, adminUser );
         boolean bAuthorizedRecord = _directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
 
         if ( record == null || directory == null || !bRBACAuthorization || !bAuthorizedRecord )
@@ -440,58 +445,60 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             throw new AccessDeniedException( MESSAGE_ACCESS_DENIED );
         }
 
-        List<IEntry> listEntry = DirectoryUtils.getFormEntries( record.getDirectory( ).getIdDirectory( ), getPlugin( ), getUser( ) );
+        List<IEntry> listEntry = DirectoryUtils.getFormEntries( directory.getIdDirectory( ), pluginDirectoryMultiview, adminUser );
 
         // List directory actions
-        List<DirectoryAction> listActionsForDirectoryEnable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_ENABLE, getPlugin( ),
-                getLocale( ) );
-        List<DirectoryAction> listActionsForDirectoryDisable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_DISABLE, getPlugin( ),
-                getLocale( ) );
+        Locale locale = getLocale( );
+        List<DirectoryAction> listActionsForDirectoryEnable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_ENABLE, pluginDirectoryMultiview,
+                locale );
+        List<DirectoryAction> listActionsForDirectoryDisable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_DISABLE, pluginDirectoryMultiview,
+                locale );
 
         listActionsForDirectoryEnable = (List<DirectoryAction>) RBACService
-                .getAuthorizedActionsCollection( listActionsForDirectoryEnable, directory, getUser( ) );
+                .getAuthorizedActionsCollection( listActionsForDirectoryEnable, directory, adminUser );
         listActionsForDirectoryDisable = (List<DirectoryAction>) RBACService.getAuthorizedActionsCollection( listActionsForDirectoryDisable, directory,
-                getUser( ) );
+                adminUser );
 
-        boolean bHistoryEnabled = WorkflowService.getInstance( ).isAvailable( ) && ( directory.getIdWorkflow( ) != DirectoryUtils.CONSTANT_ID_NULL );
-
-        // Get asynchronous file names
-        boolean bGetFileName = true;
-
-        // Get the guid
-        String strGuid = UserIdentityService.getUserGuid( listEntry, nIdRecord, getPlugin( ) );
+        int nIdWorkflow = directory.getIdWorkflow( );
+        WorkflowService workflowService = WorkflowService.getInstance( );
+        boolean bHistoryEnabled = workflowService.isAvailable( ) && ( nIdWorkflow != DirectoryUtils.CONSTANT_ID_NULL );
 
         Map<String, Object> model = new HashMap<>( );
-
         model.put( MARK_RECORD, record );
         model.put( MARK_ENTRY_LIST, listEntry );
         model.put( MARK_DIRECTORY, directory );
-        model.put( MARK_LOCALE, getLocale( ) );
+        model.put( MARK_LOCALE, locale );
         model.put( MARK_ID_ENTRY_TYPE_GEOLOCATION, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_GEOLOCATION, 16 ) );
         model.put( MARK_ID_ENTRY_TYPE_IMAGE, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_IMAGE, 10 ) );
         model.put( MARK_ID_ENTRY_TYPE_MYLUTECE_USER, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_MYLUTECE_USER, 19 ) );
-        model.put( MARK_PERMISSION_VISUALISATION_MYLUTECE_USER, RBACService.isAuthorized( Directory.RESOURCE_TYPE, Integer.toString( nIdDirectory ),
-                DirectoryResourceIdService.PERMISSION_VISUALISATION_MYLUTECE_USER, getUser( ) ) );
-        model.put( MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD, DirectoryUtils.getMapIdEntryListRecordField( listEntry, nIdRecord, getPlugin( ) ) );
+        model.put( MARK_PERMISSION_VISUALISATION_MYLUTECE_USER, RBACService.isAuthorized( Directory.RESOURCE_TYPE, Integer.toString( directory.getIdDirectory( ) ),
+                DirectoryResourceIdService.PERMISSION_VISUALISATION_MYLUTECE_USER, adminUser ) );
+        model.put( MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD, DirectoryUtils.getMapIdEntryListRecordField( listEntry, nIdRecord, pluginDirectoryMultiview ) );
 
         model.put( MARK_SHOW_DATE_CREATION_RECORD, directory.isDateShownInResultRecord( ) );
         model.put( MARK_SHOW_DATE_MODIFICATION_RECORD, directory.isDateModificationShownInResultRecord( ) );
+        
+        // Get asynchronous file names
+        boolean bGetFileName = true;
         model.put(
                 MARK_RESOURCE_ACTIONS,
-                DirectoryService.getInstance( ).getResourceAction( record, directory, listEntry, getUser( ), listActionsForDirectoryEnable,
-                        listActionsForDirectoryDisable, bGetFileName, getPlugin( ) ) );
+                DirectoryService.getInstance( ).getResourceAction( record, directory, listEntry, adminUser, listActionsForDirectoryEnable,
+                        listActionsForDirectoryDisable, bGetFileName, pluginDirectoryMultiview ) );
         model.put( MARK_HISTORY_WORKFLOW_ENABLED, bHistoryEnabled );
-
-        model.put( MARK_USER_FACTORY, UserFactory.getInstance( ) );
         model.put(
                 MARK_RESOURCE_HISTORY,
-                WorkflowService.getInstance( ).getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, directory.getIdWorkflow( ), request,
-                        getLocale( ), model, TEMPLATE_RECORD_HISTORY ) );
-
-        // Add the user attributes
-        if ( strGuid != null )
+                workflowService.getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, directory.getIdWorkflow( ), request,
+                        locale, model, TEMPLATE_RECORD_HISTORY ) );
+        
+        // Build the model of all ModelProcessors
+        RecordViewModelProcessorFactory recordViewModelProcessorFactory = new RecordViewModelProcessorFactory( );
+        List<IRecordViewModelProcessor> listRecordViewModelProcesor = recordViewModelProcessorFactory.buildRecordViewModelProcessorList( );
+        if ( !CollectionUtils.isEmpty( listRecordViewModelProcesor ) )
         {
-            model.put( MARK_USER_ATTRIBUTES, UserIdentityService.getUserAttributes( strGuid ) );
+            for ( IRecordViewModelProcessor recordViewModelProcessor : listRecordViewModelProcesor )
+            {
+                recordViewModelProcessor.populateModel( request, model, nIdRecord, locale );
+            }
         }
 
         return getPage( MESSAGE_MULTIVIEW_TITLE, TEMPLATE_VIEW_DIRECTORY_RECORD, model );

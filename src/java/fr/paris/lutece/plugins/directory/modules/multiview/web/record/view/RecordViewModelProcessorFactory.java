@@ -31,79 +31,27 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.directory.modules.multiview.web.user;
+package fr.paris.lutece.plugins.directory.modules.multiview.web.record.view;
 
 import java.util.List;
 
-import fr.paris.lutece.plugins.unittree.business.unit.Unit;
-import fr.paris.lutece.plugins.unittree.business.unit.UnitHome;
-import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.business.user.AdminUserHome;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
- * Factory of User. Designed as a singleton
- *
+ * Factory used to retrieve all the implementation of the IRecordViewModelProcessor
  */
-public final class UserFactory
+public class RecordViewModelProcessorFactory
 {
-    private static UserFactory _instance;
-
+    // Variables
+    private final List<IRecordViewModelProcessor> _listRecordViewModelProcessor = SpringContextService.getBeansOfType( IRecordViewModelProcessor.class );
+    
     /**
-     * Default constructor
-     */
-    private UserFactory( )
-    {
-    }
-
-    /**
-     * Creates a User
+     * Return the list of all RecordViewModelProcessor
      * 
-     * @param IdAdminUser
-     *            the idUser used to select the correct AdminUser
-     * @return the User
+     * @return the list of all RecordViewModelProcessor
      */
-    public User create( int nIdUser )
+    public List<IRecordViewModelProcessor> buildRecordViewModelProcessorList( )
     {
-        User user = new User( );
-
-        AdminUser adminUser = AdminUserHome.findByPrimaryKey( nIdUser );
-
-        if ( adminUser == null )
-        {
-            return null;
-        }
-
-        adminUser.setRoles( AdminUserHome.getRolesListForUser( adminUser.getUserId( ) ) );
-
-        List<Unit> listUnits = UnitHome.findByIdUser( nIdUser );
-
-        user.setIdUser( adminUser.getUserId( ) );
-
-        user.setFirstName( adminUser.getFirstName( ) );
-
-        user.setLastName( adminUser.getLastName( ) );
-
-        user.setEmail( adminUser.getEmail( ) );
-
-        user.setUnit( listUnits );
-
-        return user;
-    }
-
-    /**
-     * Creates a User
-     * 
-     * @param id
-     *            of user
-     * @return The User
-     */
-    public static UserFactory getInstance( )
-    {
-        if ( _instance == null )
-        {
-            _instance = new UserFactory( );
-        }
-
-        return _instance;
+        return _listRecordViewModelProcessor;
     }
 }
