@@ -110,13 +110,13 @@
 	<bean id="directory-multiview.recordColumn.workflowState.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.querypart.factory.impl.RecordColumnWorkflowStateQueryPartFactory"/>	
 	
 	<!-- Columns -->
-	<bean id="directory-multiview.workflowState.column" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnWorkflowState">
-		<constructor-arg name="nRecordColumnPosition" type="int" value="1"/>		
-		<constructor-arg name="strRecordColumnTitle" type="java.lang.String" value="&#201;tat"/>
-	</bean>
 	<bean id="directory-multiview.directory.column" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnDirectory">
-		<constructor-arg name="nRecordColumnPosition" type="int" value="2"/>
-		<constructor-arg name="strRecordColumnTitle" type="java.lang.String" value="Nature"/>
+		<constructor-arg name="nRecordColumnPosition" type="int" value="1"/>
+		<constructor-arg name="strRecordColumnTitle" type="java.lang.String" value="Annuaire"/>
+	</bean>
+	<bean id="directory-multiview.workflowState.column" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnWorkflowState">
+		<constructor-arg name="nRecordColumnPosition" type="int" value="2"/>		
+		<constructor-arg name="strRecordColumnTitle" type="java.lang.String" value="&#201;tat"/>
 	</bean>
 	<bean id="directory-multiview.recordCreationDate.column" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.impl.RecordColumnRecordDateCreation">
 		<constructor-arg name="nRecordColumnPosition" type="int" value="3"/>
