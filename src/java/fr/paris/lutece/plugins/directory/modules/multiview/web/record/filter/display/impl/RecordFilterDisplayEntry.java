@@ -223,19 +223,19 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
             {
                 RecordFieldFilter recordFieldFilter = new RecordFieldFilter( );
                 recordFieldFilter.setIdEntry( entry.getIdEntry( ) );
-                
+
                 listRecordFieldResult.addAll( RecordFieldHome.getRecordFieldList( recordFieldFilter, DirectoryMultiviewPlugin.getPlugin( ) ) );
             }
         }
 
         return listRecordFieldResult;
     }
-    
+
     /**
      * Clean the given list of RecordField by removing all of those which have empty value
      * 
      * @param listRecordField
-     *          The list to remove the RecordField with empty value
+     *            The list to remove the RecordField with empty value
      */
     private static void cleanListRecordField( List<RecordField> listRecordField )
     {
