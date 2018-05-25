@@ -34,12 +34,14 @@
 package fr.paris.lutece.plugins.directory.modules.multiview.web.record.filter.display.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -131,6 +133,7 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
 
         // Build the list of RecordFilter to use for the filter from the list of entry to search on
         List<RecordField> listRecordField = getRecordFieldList( listIEntryToRetrieveValueFrom );
+        cleanListRecordField( listRecordField );
         ReferenceListFactory referenceListFactory = new ReferenceListFactory( listRecordField, ENTRY_VALUE_ATTRIBUTE, ENTRY_VALUE_ATTRIBUTE, Boolean.FALSE );
 
         String strDefaultReferenceListName = getRecordFilterDisplayLabel( );
@@ -216,15 +219,38 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
 
         if ( listIEntryToRetrieveValueFrom != null && !listIEntryToRetrieveValueFrom.isEmpty( ) )
         {
-            RecordFieldFilter recordFieldFilter = new RecordFieldFilter( );
             for ( IEntry entry : listIEntryToRetrieveValueFrom )
             {
+                RecordFieldFilter recordFieldFilter = new RecordFieldFilter( );
                 recordFieldFilter.setIdEntry( entry.getIdEntry( ) );
+                
                 listRecordFieldResult.addAll( RecordFieldHome.getRecordFieldList( recordFieldFilter, DirectoryMultiviewPlugin.getPlugin( ) ) );
             }
         }
 
         return listRecordFieldResult;
+    }
+    
+    /**
+     * Clean the given list of RecordField by removing all of those which have empty value
+     * 
+     * @param listRecordField
+     *          The list to remove the RecordField with empty value
+     */
+    private static void cleanListRecordField( List<RecordField> listRecordField )
+    {
+        if ( !CollectionUtils.isEmpty( listRecordField ) )
+        {
+            Iterator<RecordField> iteratorRecordField = listRecordField.iterator( );
+            while ( iteratorRecordField.hasNext( ) )
+            {
+                RecordField recordField = iteratorRecordField.next( );
+                if ( recordField != null && StringUtils.isBlank( recordField.getValue( ) ) )
+                {
+                    iteratorRecordField.remove( );
+                }
+            }
+        }
     }
 
     /**
