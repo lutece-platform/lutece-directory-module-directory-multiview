@@ -161,7 +161,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
         {
             throw new AccessDeniedException( MESSAGE_ACCESS_DENIED );
         }
-        
+
         // Build the base model for the page of the details of a Record
         Map<String, Object> model = buildRecordDetailsModel( request, record );
 
@@ -179,14 +179,14 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
 
         return getPage( MESSAGE_MULTIVIEW_TITLE, TEMPLATE_VIEW_DIRECTORY_RECORD, model );
     }
-    
+
     /**
      * Build the model of the page which display the details of a Record
      * 
      * @param request
-     *          The request on which the parameters must be retrieve
+     *            The request on which the parameters must be retrieve
      * @param record
-     *          The record on which the model must be built
+     *            The record on which the model must be built
      * @return the model associate for the details of the given record
      */
     private Map<String, Object> buildRecordDetailsModel( HttpServletRequest request, Record record )
@@ -194,10 +194,10 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
         AdminUser adminUser = getUser( );
         Locale locale = getLocale( );
         Plugin pluginDirectoryMultiview = DirectoryMultiviewPlugin.getPlugin( );
-        
+
         Directory directory = DirectoryHome.findByPrimaryKey( record.getDirectory( ).getIdDirectory( ), pluginDirectoryMultiview );
         List<IEntry> listEntry = DirectoryUtils.getFormEntries( directory.getIdDirectory( ), pluginDirectoryMultiview, adminUser );
-        
+
         List<DirectoryAction> listActionsForDirectoryEnable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_ENABLE,
                 pluginDirectoryMultiview, locale );
         List<DirectoryAction> listActionsForDirectoryDisable = DirectoryActionHome.selectActionsRecordByFormState( Directory.STATE_DISABLE,
@@ -208,7 +208,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
         listActionsForDirectoryDisable = (List<DirectoryAction>) RBACService.getAuthorizedActionsCollection( listActionsForDirectoryDisable, directory,
                 adminUser );
         int nIdRecord = record.getIdRecord( );
-        
+
         Map<String, Object> mapRecordDetailsModel = new HashMap<>( );
         mapRecordDetailsModel.put( MARK_RECORD, record );
         mapRecordDetailsModel.put( MARK_ENTRY_LIST, listEntry );
@@ -219,7 +219,8 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
         mapRecordDetailsModel.put( MARK_ID_ENTRY_TYPE_MYLUTECE_USER, AppPropertiesService.getPropertyInt( PROPERTY_ENTRY_TYPE_MYLUTECE_USER, 19 ) );
         mapRecordDetailsModel.put( MARK_PERMISSION_VISUALISATION_MYLUTECE_USER, RBACService.isAuthorized( Directory.RESOURCE_TYPE,
                 Integer.toString( directory.getIdDirectory( ) ), DirectoryResourceIdService.PERMISSION_VISUALISATION_MYLUTECE_USER, adminUser ) );
-        mapRecordDetailsModel.put( MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD, DirectoryUtils.getMapIdEntryListRecordField( listEntry, nIdRecord, pluginDirectoryMultiview ) );
+        mapRecordDetailsModel.put( MARK_MAP_ID_ENTRY_LIST_RECORD_FIELD,
+                DirectoryUtils.getMapIdEntryListRecordField( listEntry, nIdRecord, pluginDirectoryMultiview ) );
 
         mapRecordDetailsModel.put( MARK_SHOW_DATE_CREATION_RECORD, directory.isDateShownInResultRecord( ) );
         mapRecordDetailsModel.put( MARK_SHOW_DATE_MODIFICATION_RECORD, directory.isDateModificationShownInResultRecord( ) );
@@ -229,15 +230,15 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
         int nIdWorkflow = directory.getIdWorkflow( );
         WorkflowService workflowService = WorkflowService.getInstance( );
         boolean bHistoryEnabled = workflowService.isAvailable( ) && ( nIdWorkflow != DirectoryUtils.CONSTANT_ID_NULL );
-        
+
         mapRecordDetailsModel.put(
                 MARK_RESOURCE_ACTIONS,
                 DirectoryService.getInstance( ).getResourceAction( record, directory, listEntry, adminUser, listActionsForDirectoryEnable,
                         listActionsForDirectoryDisable, bGetFileName, pluginDirectoryMultiview ) );
         mapRecordDetailsModel.put( MARK_HISTORY_WORKFLOW_ENABLED, bHistoryEnabled );
-        mapRecordDetailsModel.put( MARK_RESOURCE_HISTORY, workflowService.getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, directory.getIdWorkflow( ),
-                request, locale, mapRecordDetailsModel, TEMPLATE_RECORD_HISTORY ) );
-        
+        mapRecordDetailsModel.put( MARK_RESOURCE_HISTORY, workflowService.getDisplayDocumentHistory( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE,
+                directory.getIdWorkflow( ), request, locale, mapRecordDetailsModel, TEMPLATE_RECORD_HISTORY ) );
+
         return mapRecordDetailsModel;
     }
 
@@ -276,7 +277,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
                 boolean bIsAutomaticAction = Boolean.FALSE;
                 int nIdDirectory = record.getDirectory( ).getIdDirectory( );
                 workflowService.doProcessAction( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE, nIdAction, nIdDirectory, request, locale, bIsAutomaticAction );
-                
+
                 // Update record modification date
                 _recordService.update( record, pluginDirectoryMultiview );
             }
