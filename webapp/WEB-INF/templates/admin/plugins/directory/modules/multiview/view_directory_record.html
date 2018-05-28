@@ -58,7 +58,7 @@
 <#macro display_actions resource_actions >
 <#if resource_actions.workflow_action_list?exists>
 	<#list resource_actions.workflow_action_list as action>
-		<a class="btn btn-lg btn-primary btn-block bg-gru-dark" href="jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp?action=doProcessAction&amp;id_action=${action.id}&amp;id_directory_record=${resource_actions.record.idRecord}">
+		<a class="btn btn-lg btn-primary btn-block bg-gru-dark" href="jsp/admin/plugins/directory/modules/multiview/ManageDirectoryRecordDetails.jsp?action=doProcessAction&amp;id_action=${action.id}&amp;id_directory_record=${resource_actions.record.idRecord}">
 			${action.name}
 		</a>
 	</#list>
