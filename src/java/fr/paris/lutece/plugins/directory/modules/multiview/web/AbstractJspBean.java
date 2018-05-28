@@ -117,7 +117,7 @@ public abstract class AbstractJspBean extends MVCAdminJspBean
     /**
      * reset current paginator page index to 1
      */
-    public void resetCurrentPaginatorPageIndex( )
+    protected void resetCurrentPaginatorPageIndex( )
     {
         _strCurrentPageIndex = "1";
     }
