@@ -89,12 +89,12 @@ public abstract class AbstractRecordPanelInitializerQueryPart implements IRecord
     /**
      * Set the From query part of the RecordPanelInitializer
      * 
-     * @param strRecordPanelInitializerFrolmQuery
+     * @param strRecordPanelInitializerFromQuery
      *            The from query part of the RecordPanelInitializer to set
      */
-    protected void setRecordPanelInitializerFromQuery( String strRecordPanelInitializerFrolmQuery )
+    protected void setRecordPanelInitializerFromQuery( String strRecordPanelInitializerFromQuery )
     {
-        _strRecordPanelInitializerFromQuery = strRecordPanelInitializerFrolmQuery;
+        _strRecordPanelInitializerFromQuery = strRecordPanelInitializerFromQuery;
     }
 
     /**

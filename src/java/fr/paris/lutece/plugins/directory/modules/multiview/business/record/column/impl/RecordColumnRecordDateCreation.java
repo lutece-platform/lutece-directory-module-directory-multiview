@@ -44,7 +44,7 @@ public class RecordColumnRecordDateCreation extends AbstractRecordColumn
      * @param nRecordColumnPosition
      *            The position of the RecordColumn
      * @param strRecordColumnTitle
-     *            The title of the RecrdColumn
+     *            The title of the RecordColumn
      */
     public RecordColumnRecordDateCreation( int nRecordColumnPosition, String strRecordColumnTitle )
     {

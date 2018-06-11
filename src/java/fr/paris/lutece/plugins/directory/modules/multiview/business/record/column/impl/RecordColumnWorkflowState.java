@@ -44,7 +44,7 @@ public class RecordColumnWorkflowState extends AbstractRecordColumn
      * @param nRecordColumnPosition
      *            The position of the RecordColumn
      * @param strRecordColumnTitle
-     *            The title of the RecrdColumn
+     *            The title of the RecordColumn
      */
     public RecordColumnWorkflowState( int nRecordColumnPosition, String strRecordColumnTitle )
     {

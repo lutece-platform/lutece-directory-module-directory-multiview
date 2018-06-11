@@ -65,10 +65,10 @@ public class RecordColumnDisplayWorkflowState extends AbstractRecordColumnDispla
         Map<String, Object> model = new LinkedHashMap<>( );
         model.put( MARK_WORKFLOW_STATE_COLUMN_TITLE, getRecordColumnTitle( ) );
 
-        String strRecordDateCreationHeaderTemplate = AppTemplateService.getTemplate( RECORD_COLUMN_HEADER_TEMPLATE, locale, model ).getHtml( );
-        setRecordColumnHeaderTemplate( strRecordDateCreationHeaderTemplate );
+        String strWorkflowStateHeaderTemplate = AppTemplateService.getTemplate( RECORD_COLUMN_HEADER_TEMPLATE, locale, model ).getHtml( );
+        setRecordColumnHeaderTemplate( strWorkflowStateHeaderTemplate );
 
-        return strRecordDateCreationHeaderTemplate;
+        return strWorkflowStateHeaderTemplate;
     }
 
     /**

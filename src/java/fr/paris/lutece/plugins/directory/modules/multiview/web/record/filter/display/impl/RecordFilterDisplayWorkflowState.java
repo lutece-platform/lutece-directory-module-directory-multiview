@@ -104,13 +104,13 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
     }
 
     /**
-     * Build the ReferenceList for the period of the record creation
+     * Build the ReferenceList for the workflow state associated to the form
      * 
      * @param request
      *            The request used to retrieve the values from
      * @param nIdDirectory
      *            The id of the Directory to retrieve the list of workflow state from
-     * @return the ReferenceList for the period of the record creation
+     * @return the ReferenceList for the workflow state associated to the form
      */
     private ReferenceList createReferenceList( HttpServletRequest request, int nIdDirectory )
     {

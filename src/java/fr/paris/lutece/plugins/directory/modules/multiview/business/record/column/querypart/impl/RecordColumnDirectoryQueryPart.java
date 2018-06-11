@@ -50,7 +50,7 @@ public class RecordColumnDirectoryQueryPart extends AbstractRecordColumnQueryPar
 {
     // Constants
     private static final String DIRECTORY_SELECT_QUERY_PART = "directory.title";
-    private static final String DIRECTORY_FORM_QUERY_PART = StringUtils.EMPTY;
+    private static final String DIRECTORY_FROM_QUERY_PART = StringUtils.EMPTY;
     private static final String DIRECTORY_JOIN_QUERY_PART = StringUtils.EMPTY;
 
     /**
@@ -68,7 +68,7 @@ public class RecordColumnDirectoryQueryPart extends AbstractRecordColumnQueryPar
     @Override
     public String getRecordColumnFromQuery( )
     {
-        return DIRECTORY_FORM_QUERY_PART;
+        return DIRECTORY_FROM_QUERY_PART;
     }
 
     /**

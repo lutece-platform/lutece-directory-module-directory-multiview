@@ -50,7 +50,7 @@ public class RecordColumnEntry extends AbstractRecordColumn
      * @param nRecordColumnPosition
      *            The position of the RecordColumn
      * @param strRecordColumnTitle
-     *            The title of the RecrodColumn
+     *            The title of the RecordColumn
      * @param listEntryTitle
      *            The list of Entry title on which the RecordColumn must be filter on
      */

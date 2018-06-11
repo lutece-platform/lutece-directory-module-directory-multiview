@@ -40,7 +40,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.disp
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.impl.RecordPanelRecordsDisplay;
 
 /**
- * Implementation of the IRecordFilterDAO for a Factory on a PanelRecords filter
+ * Implementation of the IRecordPanelDisplayFactory for a Factory on a PanelRecords
  */
 public class RecordPanelRecordsDisplayFactory implements IRecordPanelDisplayFactory
 {

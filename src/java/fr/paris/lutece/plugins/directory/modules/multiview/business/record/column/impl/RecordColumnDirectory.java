@@ -44,7 +44,7 @@ public class RecordColumnDirectory extends AbstractRecordColumn
      * @param nRecordColumnPosition
      *            The position of the RecordColumn
      * @param strRecordColumnTitle
-     *            The title of the RecrdColumn
+     *            The title of the RecordColumn
      */
     public RecordColumnDirectory( int nRecordColumnPosition, String strRecordColumnTitle )
     {
