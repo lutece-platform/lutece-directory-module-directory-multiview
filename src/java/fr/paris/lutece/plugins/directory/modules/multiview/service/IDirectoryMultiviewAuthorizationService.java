@@ -47,7 +47,7 @@ public interface IDirectoryMultiviewAuthorizationService
      * Return the boolean which tell if the connected user is authorized to access the record or not
      * 
      * @param request
-     *          The request to use to determine if the user can access the details of the given record  
+     *            The request to use to determine if the user can access the details of the given record
      * @param nIdRecord
      *            The identifier of the record to access
      * @return the boolean which tell if the connected user is authorized to access the record or not

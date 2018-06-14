@@ -90,7 +90,7 @@ public class DirectoryMultiviewAuthorizationService implements IDirectoryMultivi
             // Rebuild all the RecordPanelInitializer to reset the previous data
             RecordPanelDisplayFactory recordPanelDisplayFactory = new RecordPanelDisplayFactory( );
             recordPanelDisplayFactory.buildRecordPanelDisplayInitializer( request, _recordPanel );
-            
+
             _recordListFacade.populateRecordColumns( _recordPanel, listRecordColumn, new ArrayList<>( ) );
             List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
 
