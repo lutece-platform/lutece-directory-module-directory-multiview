@@ -155,7 +155,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
 
         boolean bRBACAuthorization = RBACService.isAuthorized( Directory.RESOURCE_TYPE, Integer.toString( nIdRecord ),
                 DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, adminUser );
-        boolean bAuthorizedRecord = _directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
+        boolean bAuthorizedRecord = _directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( request, nIdRecord );
 
         if ( record == null || record.getDirectory( ) == null || !bRBACAuthorization || !bAuthorizedRecord )
         {

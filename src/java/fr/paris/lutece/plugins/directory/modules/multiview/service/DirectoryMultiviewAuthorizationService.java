@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
@@ -44,6 +46,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.colum
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnFactory;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
+import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.factory.RecordPanelDisplayFactory;
 
 /**
  * Implementation of the IDirectoryMultiviewAuthorizationService interface
@@ -76,7 +79,7 @@ public class DirectoryMultiviewAuthorizationService implements IDirectoryMultivi
      * {@inheritDoc}
      */
     @Override
-    public boolean isUserAuthorizedOnRecord( int nIdRecord )
+    public boolean isUserAuthorizedOnRecord( HttpServletRequest request, int nIdRecord )
     {
         boolean bIsUserAuthorizedOnRecord = Boolean.FALSE;
 
@@ -84,6 +87,10 @@ public class DirectoryMultiviewAuthorizationService implements IDirectoryMultivi
         {
             List<IRecordColumn> listRecordColumn = _recordColumnFactory.buildRecordColumnList( );
 
+            // Rebuild all the RecordPanelInitializer to reset the previous data
+            RecordPanelDisplayFactory recordPanelDisplayFactory = new RecordPanelDisplayFactory( );
+            recordPanelDisplayFactory.buildRecordPanelDisplayInitializer( request, _recordPanel );
+            
             _recordListFacade.populateRecordColumns( _recordPanel, listRecordColumn, new ArrayList<>( ) );
             List<DirectoryRecordItem> listDirectoryRecordItem = _recordPanel.getDirectoryRecordItemList( );
 

@@ -161,7 +161,7 @@ public class RecordPanelDisplayFactory
      * @param recordPanel
      *            The IRecordPanel to the RecordPanelInitializer from
      */
-    private void buildRecordPanelDisplayInitializer( HttpServletRequest request, IRecordPanel recordPanel )
+    public void buildRecordPanelDisplayInitializer( HttpServletRequest request, IRecordPanel recordPanel )
     {
         List<IRecordPanelDisplayInitializerFactory> listRecordPanelDisplayInitializerFactory = new RecordDisplayInitializerFactoryFacade( )
                 .buildRecordPanelDisplayInitializerList( );

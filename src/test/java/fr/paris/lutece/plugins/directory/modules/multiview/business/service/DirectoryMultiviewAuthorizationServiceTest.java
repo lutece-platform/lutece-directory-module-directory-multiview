@@ -42,6 +42,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.RecordColumnFactory;
@@ -116,7 +117,7 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
         IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( _recordPanel,
                 recordListFacade, _recordColumnFactory );
 
-        boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
+        boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( new MockHttpServletRequest( ), nIdRecord );
         assertThat( bIsUserAuthorize, is( Boolean.TRUE ) );
     }
 
@@ -133,7 +134,7 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
         IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( _recordPanel,
                 recordListFacade, _recordColumnFactory );
 
-        boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
+        boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( new MockHttpServletRequest( ), nIdRecord );
         assertThat( bIsUserAuthorize, is( Boolean.FALSE ) );
     }
 
@@ -150,7 +151,7 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
         IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( _recordPanel,
                 recordListFacade, _recordColumnFactory );
 
-        boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
+        boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( new MockHttpServletRequest( ), nIdRecord );
         assertThat( bIsUserAuthorize, is( Boolean.FALSE ) );
     }
 
@@ -167,7 +168,7 @@ public class DirectoryMultiviewAuthorizationServiceTest extends LuteceTestCase
         IDirectoryMultiviewAuthorizationService directoryMultiviewAuthorizationService = new DirectoryMultiviewAuthorizationService( null, recordListFacade,
                 _recordColumnFactory );
 
-        boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( nIdRecord );
+        boolean bIsUserAuthorize = directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( new MockHttpServletRequest( ), nIdRecord );
         assertThat( bIsUserAuthorize, is( Boolean.FALSE ) );
     }
 }
