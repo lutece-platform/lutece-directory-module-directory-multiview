@@ -24,16 +24,3 @@
     </@columns>
 </div>
 </@tform>
-
-<script>
-$( document ).ready(function() {
-    $( "#multiview_id_directory" ).change( function( ) 
-    {
-        // reinit workflow states 
-        $( "#multiview_id_state_workflow" ).find( "option" ).remove( );
-
-        // submit to get new states
-        $( "#searchForm" ).submit( ) ;
-    });
-});
-</script>
