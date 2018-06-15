@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<plug-in>
+<?xml version="1.0" encoding="UTF-8"?><plug-in>
     <name>directory-multiview</name>
     <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
     <version>2.0.0-SNAPSHOT</version>
@@ -27,7 +26,7 @@
             <feature-description>module.directory.multiview.adminFeature.DirectoryMultiView.description</feature-description>
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/directory/modules/multiview/ManageMultiDirectoryRecords.jsp</feature-url>
-            <feature-icon-url></feature-icon-url>
+            <feature-icon-url/>
       </admin-feature>
     </admin-features>    
 
