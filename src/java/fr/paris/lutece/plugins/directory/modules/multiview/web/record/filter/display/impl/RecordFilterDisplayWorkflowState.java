@@ -46,6 +46,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.DirectoryHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
+import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordWorkflowStateNameConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
@@ -60,10 +61,10 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
 {
     // Constants
     private static final String PARAMETER_ID_WORKFLOW_STATE = "multiview_id_state_workflow";
-    private static final String PARAMETER_ID_DIRECTORY = "multiview_id_directory";
     private static final String WORKFLOW_STATE_CODE_ATTRIBUTE = "id";
     private static final String WORKFLOW_STATE_NAME_ATTRIBUTE = "name";
     private static final int DEFAULT_DIRECTORY_VALUE = NumberUtils.INTEGER_MINUS_ONE;
+    private static final int DEFAULT_PREVIOUS_DIRECTORY_VALUE = NumberUtils.INTEGER_MINUS_ONE;
     private static final int ID_WORKFLOW_UNSET = NumberUtils.INTEGER_ZERO;
 
     /**
@@ -74,13 +75,21 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
     {
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
 
+        int nIdDirectory = NumberUtils.toInt( request.getParameter( RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY ), DEFAULT_DIRECTORY_VALUE );
+        int nIdPreviousDirectory = NumberUtils.toInt( request.getParameter( RecordDirectoryNameConstants.PARAMETER_PREVIOUS_ID_DIRECTORY ), DEFAULT_PREVIOUS_DIRECTORY_VALUE );
         String strIdWorkflowState = request.getParameter( PARAMETER_ID_WORKFLOW_STATE );
-        setValue( strIdWorkflowState );
+        
+        if ( nIdDirectory != nIdPreviousDirectory )
+        {
+            strIdWorkflowState = StringUtils.EMPTY;
+        }
 
         if ( StringUtils.isNotBlank( strIdWorkflowState ) )
         {
             mapFilterNameValues.put( RecordWorkflowStateNameConstants.FILTER_ID_WORKFLOW_STATE, strIdWorkflowState );
         }
+        
+        setValue( strIdWorkflowState );
 
         return mapFilterNameValues;
     }
@@ -94,7 +103,7 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
         // If no directory has been selected we will return an empty list
         ReferenceList referenceList = new ReferenceList( );
 
-        int nIdDirectory = NumberUtils.toInt( request.getParameter( PARAMETER_ID_DIRECTORY ), DEFAULT_DIRECTORY_VALUE );
+        int nIdDirectory = NumberUtils.toInt( request.getParameter( RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY ), DEFAULT_DIRECTORY_VALUE );
         if ( nIdDirectory != DEFAULT_DIRECTORY_VALUE )
         {
             referenceList = createReferenceList( request, nIdDirectory );

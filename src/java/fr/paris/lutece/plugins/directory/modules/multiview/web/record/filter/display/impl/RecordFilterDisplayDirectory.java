@@ -48,15 +48,19 @@ import fr.paris.lutece.plugins.directory.business.DirectoryHome;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
  * Implementation of the IRecordFilterDisplay interface for the filter on directory
  */
 public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
 {
+    // Templates
+    private static final String DIRECTORY_FILTER_TEMPLATE_NAME = "admin/plugins/directory/modules/multiview/filter/record_directory_filter.html";
+    
     // Constants
-    private static final String PARAMETER_ID_DIRECTORY = "multiview_id_directory";
     private static final String DIRECTORY_CODE_ATTRIBUTE = "idDirectory";
     private static final String DIRECTORY_NAME_ATTRIBUTE = "title";
     private static final String DEFAULT_ID_DIRECTORY = "-1";
@@ -70,7 +74,7 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
         String strIdDirectoryValue = DEFAULT_ID_DIRECTORY;
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
 
-        String strIdDirectory = request.getParameter( PARAMETER_ID_DIRECTORY );
+        String strIdDirectory = request.getParameter( RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY );
         if ( StringUtils.isNotBlank( strIdDirectory ) )
         {
             mapFilterNameValues.put( RecordDirectoryNameConstants.FILTER_ID_DIRECTORY, strIdDirectory );
@@ -88,7 +92,21 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
     @Override
     public void buildTemplate( HttpServletRequest request )
     {
-        manageFilterTemplate( request, createReferenceList( ), PARAMETER_ID_DIRECTORY );
+        String strTemplateResult = StringUtils.EMPTY;
+
+        Map<String, Object> model = new LinkedHashMap<>( );
+        model.put( MARK_FILTER_LIST, createReferenceList( ) );
+        model.put( MARK_FILTER_LIST_VALUE, getValue( ) );
+        model.put( MARK_FILTER_NAME, RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY );
+        model.put( RecordDirectoryNameConstants.PARAMETER_PREVIOUS_ID_DIRECTORY, request.getParameter( RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY ) );
+
+        HtmlTemplate htmlTemplate = AppTemplateService.getTemplate( DIRECTORY_FILTER_TEMPLATE_NAME, request.getLocale( ), model );
+        if ( htmlTemplate != null )
+        {
+            strTemplateResult = htmlTemplate.getHtml( );
+        }
+
+        setTemplate( strTemplateResult );
     }
 
     /**

@@ -43,6 +43,10 @@ public final class RecordDirectoryNameConstants
 
     // Column Constants
     public static final String COLUMN_DIRECTORY_TITLE = "title";
+    
+    // Parameters
+    public static final String PARAMETER_ID_DIRECTORY = "multiview_id_directory";
+    public static final String PARAMETER_PREVIOUS_ID_DIRECTORY = "multiview_previous_id_directory";
 
     /**
      * Constructor
