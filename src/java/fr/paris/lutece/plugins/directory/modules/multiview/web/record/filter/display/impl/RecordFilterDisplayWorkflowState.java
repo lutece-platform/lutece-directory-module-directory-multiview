@@ -76,9 +76,10 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
 
         int nIdDirectory = NumberUtils.toInt( request.getParameter( RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY ), DEFAULT_DIRECTORY_VALUE );
-        int nIdPreviousDirectory = NumberUtils.toInt( request.getParameter( RecordDirectoryNameConstants.PARAMETER_PREVIOUS_ID_DIRECTORY ), DEFAULT_PREVIOUS_DIRECTORY_VALUE );
+        int nIdPreviousDirectory = NumberUtils.toInt( request.getParameter( RecordDirectoryNameConstants.PARAMETER_PREVIOUS_ID_DIRECTORY ),
+                DEFAULT_PREVIOUS_DIRECTORY_VALUE );
         String strIdWorkflowState = request.getParameter( PARAMETER_ID_WORKFLOW_STATE );
-        
+
         if ( nIdDirectory != nIdPreviousDirectory )
         {
             strIdWorkflowState = StringUtils.EMPTY;
@@ -88,7 +89,7 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
         {
             mapFilterNameValues.put( RecordWorkflowStateNameConstants.FILTER_ID_WORKFLOW_STATE, strIdWorkflowState );
         }
-        
+
         setValue( strIdWorkflowState );
 
         return mapFilterNameValues;

@@ -59,7 +59,7 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
 {
     // Templates
     private static final String DIRECTORY_FILTER_TEMPLATE_NAME = "admin/plugins/directory/modules/multiview/filter/record_directory_filter.html";
-    
+
     // Constants
     private static final String DIRECTORY_CODE_ATTRIBUTE = "idDirectory";
     private static final String DIRECTORY_NAME_ATTRIBUTE = "title";
