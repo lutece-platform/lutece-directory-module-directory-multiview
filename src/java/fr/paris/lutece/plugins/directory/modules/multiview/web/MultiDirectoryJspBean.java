@@ -196,7 +196,8 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      */
     private boolean isPaginationAndSortNotUsed( HttpServletRequest request )
     {
-        return request.getParameter( PARAMETER_PAGE_INDEX ) == null && request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION ) == null;
+        return request.getParameter( PARAMETER_PAGE_INDEX ) == null
+                && request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION ) == null;
     }
 
     /**
@@ -355,7 +356,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
     private String buildRedirectionDetailsBaseUrl( )
     {
         UrlItem urlRedirectionDetails = new UrlItem( MultiviewRecordDetailsJspBean.getMultiviewRecordDetailsBaseUrl( ) );
-        
+
         if ( !CollectionUtils.isEmpty( _listRecordFilterDisplay ) )
         {
             for ( IRecordFilterDisplay recordFilterDisplay : _listRecordFilterDisplay )
@@ -365,31 +366,31 @@ public class MultiDirectoryJspBean extends AbstractJspBean
                 if ( !StringUtils.isEmpty( strFilterValue ) )
                 {
                     String strFilterFullName = DirectoryMultiviewConstants.PARAMETER_URL_FILTER_PREFIX + recordFilterDisplay.getParameterName( );
-                    urlRedirectionDetails.addParameter( strFilterFullName, strFilterValue ); 
+                    urlRedirectionDetails.addParameter( strFilterFullName, strFilterValue );
                 }
             }
         }
-        
+
         // Add the search text
         if ( !StringUtils.isEmpty( _strSearchedText ) )
         {
             urlRedirectionDetails.addParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT, _strSearchedText );
         }
-        
+
         // Add the selected panel technical code
         urlRedirectionDetails.addParameter( DirectoryMultiviewConstants.PARAMETER_SELECTED_PANEL, _strSelectedPanelTechnicalCode );
-        
+
         // Add sort filter data to the url
         addFilterSortConfigToUrl( urlRedirectionDetails );
-        
+
         return urlRedirectionDetails.getUrl( );
     }
-    
+
     /**
      * Add the information for rebuild the used sort
      * 
      * @param urlRedirectionDetails
-     *          The UrlItem which represent the url to use for redirect to the records details page
+     *            The UrlItem which represent the url to use for redirect to the records details page
      */
     private void addFilterSortConfigToUrl( UrlItem urlRedirectionDetails )
     {
@@ -404,7 +405,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             urlRedirectionDetails.addParameter( DirectoryMultiviewConstants.PARAMETER_SORT_ASC_VALUE, strAscSort );
         }
     }
-    
+
     /**
      * Return the base url of the controller for the view which display the list of records
      * 

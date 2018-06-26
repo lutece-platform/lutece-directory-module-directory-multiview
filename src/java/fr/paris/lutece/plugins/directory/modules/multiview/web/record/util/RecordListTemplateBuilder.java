@@ -79,13 +79,13 @@ public final class RecordListTemplateBuilder
      * @param locale
      *            The locale to used for build template
      * @param strRedirectionDetailsBaseUrl
-     *          The base url to use for the redirection on the details page
+     *            The base url to use for the redirection on the details page
      * @param strSortUrl
      *            The url to use for sort a column
      * @return the global template of all RecordColumnDisplay objects
      */
     public static String buildTableTemplate( List<IRecordColumnDisplay> listRecordColumnDisplay, List<DirectoryRecordItem> listDirectoryRecordItem,
-             Locale locale, String strRedirectionDetailsBaseUrl, String strSortUrl )
+            Locale locale, String strRedirectionDetailsBaseUrl, String strSortUrl )
     {
         String strTableTemplate = StringUtils.EMPTY;
 

@@ -68,7 +68,7 @@ public class RecordFilterDisplayRecordDateCreation extends AbstractRecordFilterD
     {
         return PARAMETER_SEARCH_OPEN_SINCE;
     }
-    
+
     /**
      * {@inheritDoc}
      */

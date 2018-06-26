@@ -73,7 +73,7 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
     {
         return RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY;
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -82,7 +82,7 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
     {
         return buildElementName( PARAMETER_ENTRY_VALUE_PATTERN );
     }
-    
+
     /**
      * {@inheritDoc}
      */

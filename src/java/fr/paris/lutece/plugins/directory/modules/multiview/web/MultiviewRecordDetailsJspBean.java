@@ -97,7 +97,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
 {
     // Public properties
     private static final String CONTROLLER_JSP_NAME_WITH_PATH = "jsp/admin/plugins/directory/modules/multiview/ManageDirectoryRecordDetails.jsp";
-    
+
     // Generated serial UID
     private static final long serialVersionUID = -9068496856640551669L;
 
@@ -181,7 +181,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
         {
             throw new AccessDeniedException( MESSAGE_ACCESS_DENIED );
         }
-        
+
         // Build the base model for the page of the details of a Record
         Map<String, Object> model = buildRecordDetailsModel( request, record );
 
@@ -268,14 +268,14 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
 
         return mapRecordDetailsModel;
     }
-    
+
     /**
      * Populate the given model with the data associated to the filters from the request
      * 
      * @param mapFilterNameValues
-     *              The map which contains the name of all parameters used to filter and their values
+     *            The map which contains the name of all parameters used to filter and their values
      * @param model
-     *              The given model to populate
+     *            The given model to populate
      */
     private void populateModelWithFilterValues( Map<String, String> mapFilterNameValues, Map<String, Object> model )
     {
@@ -295,67 +295,70 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
             model.put( MARK_LIST_FILTER_VALUES, referenceListFilterValues );
         }
     }
-    
+
     /**
      * Fill the map which contains the values of all filters with the data of the request
      * 
      * @param request
-     *          The request used to retrieve the values of the parameters of the filters
+     *            The request used to retrieve the values of the parameters of the filters
      * @return the map which associate for each filter parameter its value
      */
     private Map<String, String> fillFilterMapValues( HttpServletRequest request )
     {
         Map<String, String> mapFilterValues = new LinkedHashMap<>( );
-        
+
         Set<String> setFilterParameterName = new LinkedHashSet<>( );
         Enumeration<String> enumerationParameterName = request.getParameterNames( );
-        
+
         if ( enumerationParameterName != null )
         {
             List<String> listFilterParameterName = Collections.list( enumerationParameterName );
-            setFilterParameterName = listFilterParameterName.stream( ).filter( strParameterName -> strParameterName.startsWith( DirectoryMultiviewConstants.PARAMETER_URL_FILTER_PREFIX ) ).collect( Collectors.toSet( ) );
+            setFilterParameterName = listFilterParameterName.stream( )
+                    .filter( strParameterName -> strParameterName.startsWith( DirectoryMultiviewConstants.PARAMETER_URL_FILTER_PREFIX ) )
+                    .collect( Collectors.toSet( ) );
         }
-        
+
         if ( !CollectionUtils.isEmpty( setFilterParameterName ) )
         {
             for ( String strFilterParameterName : setFilterParameterName )
             {
-                mapFilterValues.put( strFilterParameterName.split( DirectoryMultiviewConstants.PARAMETER_URL_FILTER_PREFIX )[1], request.getParameter( strFilterParameterName ) );
+                mapFilterValues.put( strFilterParameterName.split( DirectoryMultiviewConstants.PARAMETER_URL_FILTER_PREFIX ) [1],
+                        request.getParameter( strFilterParameterName ) );
             }
         }
-        
+
         String strParameterSearchedText = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT );
         if ( !StringUtils.isBlank( strParameterSearchedText ) )
         {
             mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT, strParameterSearchedText );
         }
-        
+
         String strSelectedTechnicalCode = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SELECTED_PANEL );
         if ( !StringUtils.isBlank( strSelectedTechnicalCode ) )
         {
             mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_CURRENT_SELECTED_PANEL, strSelectedTechnicalCode );
         }
-        
+
         if ( request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION ) != null )
         {
             addSortConfigParameterValues( request );
         }
-        
+
         return mapFilterValues;
     }
-    
+
     /**
      * Fill the map which contains the values of all filters with informations of the sort to use
      * 
      * @param request
-     *          The request to use to retrieve the value of the sort
+     *            The request to use to retrieve the value of the sort
      */
     private void addSortConfigParameterValues( HttpServletRequest request )
     {
         String strPositionToSort = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION );
         String strAttributeName = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_ATTRIBUTE_NAME );
         String strAscSort = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_ASC_VALUE );
-        
+
         _mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION, strPositionToSort );
         _mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_SORT_ATTRIBUTE_NAME, strAttributeName );
         _mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_SORT_ASC_VALUE, strAscSort );
@@ -577,11 +580,11 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
         catch( NumberFormatException exception )
         {
             AppLogService.error( "The given id directory record is not valid !" );
-            
+
             return redirect( request, buildRedirecUrlWithFilterValues( ) );
         }
     }
-    
+
     /**
      * Build the url with the values of the filter selected on the list view
      * 
@@ -590,7 +593,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
     private String buildRedirecUrlWithFilterValues( )
     {
         UrlItem urlRedirectWithFilterValues = new UrlItem( MultiDirectoryJspBean.getMultiviewBaseViewUrl( ) );
-        
+
         if ( !MapUtils.isEmpty( _mapFilterValues ) )
         {
             for ( Entry<String, String> entryFilterNameValue : _mapFilterValues.entrySet( ) )
@@ -601,18 +604,18 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
                 {
                     strFilterValue = URLEncoder.encode( strFilterValue, StandardCharsets.UTF_8.name( ) );
                 }
-                catch ( UnsupportedEncodingException exception )
+                catch( UnsupportedEncodingException exception )
                 {
                     AppLogService.debug( "Failed to encode url parameter value !" );
                 }
-                
+
                 urlRedirectWithFilterValues.addParameter( strFilterName, strFilterValue );
             }
         }
-        
+
         return urlRedirectWithFilterValues.getUrl( );
     }
-    
+
     /**
      * Return the default view base url for the MultiviewRecordDetailsJspBean
      * 

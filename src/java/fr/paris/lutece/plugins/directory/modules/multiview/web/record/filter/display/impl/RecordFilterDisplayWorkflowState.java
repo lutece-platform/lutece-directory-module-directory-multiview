@@ -75,7 +75,7 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
     {
         return PARAMETER_ID_WORKFLOW_STATE;
     }
-    
+
     /**
      * {@inheritDoc}
      */
