@@ -48,12 +48,16 @@ public final class DirectoryMultiviewConstants
     public static final String PARAMETER_SELECTED_PANEL = "selected_panel";
     public static final String PARAMETER_CURRENT_SELECTED_PANEL = "current_selected_panel";
     public static final String PARAMETER_WORKFLOW_ACTION_REDIRECTION = "workflow_action_redirection";
+    public static final String PARAMETER_SORT_COLUMN_POSITION = "column_position";
+    public static final String PARAMETER_SORT_ATTRIBUTE_NAME = "sorted_attribute_name";
+    public static final String PARAMETER_SORT_ASC_VALUE = "asc_sort";
 
     // Constants
     public static final String PREFIX_UNIT = "unit_";
     public static final String PREFIX_ADMIN_USER = "user_";
     public static final String REFERENCE_ITEM_DEFAULT_CODE = "-1";
     public static final String REFERENCE_ITEM_DEFAULT_NAME = "-";
+    public static final String PARAMETER_URL_FILTER_PREFIX = "filter_";
     public static final int DEFAULT_FILTER_VALUE = NumberUtils.INTEGER_MINUS_ONE;
 
     /**

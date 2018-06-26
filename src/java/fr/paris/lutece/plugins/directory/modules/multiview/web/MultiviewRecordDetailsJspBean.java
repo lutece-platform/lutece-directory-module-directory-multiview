@@ -33,15 +33,25 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.web;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -74,6 +84,10 @@ import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * Controller page for the details of the record and the managing of the actions of the workflow
@@ -81,6 +95,9 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 @Controller( controllerJsp = "ManageDirectoryRecordDetails.jsp", controllerPath = "jsp/admin/plugins/directory/modules/multiview/", right = "DIRECTORY_MULTIVIEW" )
 public class MultiviewRecordDetailsJspBean extends AbstractJspBean
 {
+    // Public properties
+    private static final String CONTROLLER_JSP_NAME_WITH_PATH = "jsp/admin/plugins/directory/modules/multiview/ManageDirectoryRecordDetails.jsp";
+    
     // Generated serial UID
     private static final long serialVersionUID = -9068496856640551669L;
 
@@ -101,6 +118,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
     // Parameters
     private static final String PARAMETER_ID_DIRECTORY_RECORD = "id_directory_record";
     private static final String PARAMETER_ID_ACTION = "id_action";
+    private static final String PARAMETER_BACK_FROM_ACTION = "back_form_action";
 
     // Marks
     private static final String MARK_LOCALE = "locale";
@@ -120,6 +138,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
     private static final String MARK_HISTORY_WORKFLOW_ENABLED = "history_workflow";
     private static final String MARK_PERMISSION_VISUALISATION_MYLUTECE_USER = "permission_visualisation_mylutece_user";
+    private static final String MARK_LIST_FILTER_VALUES = "list_filter_values";
 
     // Properties
     private static final String PROPERTY_ENTRY_TYPE_IMAGE = "directory.resource_rss.entry_type_image";
@@ -131,6 +150,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
     private static final String MESSAGE_MULTIVIEW_TITLE = "module.directory.multiview.pageTitle";
 
     // Variables
+    private Map<String, String> _mapFilterValues = new LinkedHashMap<>( );
     private final transient IRecordService _recordService = SpringContextService.getBean( RecordService.BEAN_SERVICE );
     private final transient IDirectoryMultiviewAuthorizationService _directoryMultiviewAuthorizationService = SpringContextService
             .getBean( IDirectoryMultiviewAuthorizationService.BEAN_NAME );
@@ -161,7 +181,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
         {
             throw new AccessDeniedException( MESSAGE_ACCESS_DENIED );
         }
-
+        
         // Build the base model for the page of the details of a Record
         Map<String, Object> model = buildRecordDetailsModel( request, record );
 
@@ -176,6 +196,13 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
                 recordViewModelProcessor.populateModel( request, model, nIdRecord, locale );
             }
         }
+
+        // Fill the map which store the values of all filters and search previously selected if we are not coming from an action
+        if ( request.getParameter( PARAMETER_BACK_FROM_ACTION ) == null )
+        {
+            _mapFilterValues = fillFilterMapValues( request );
+        }
+        populateModelWithFilterValues( _mapFilterValues, model );
 
         return getPage( MESSAGE_MULTIVIEW_TITLE, TEMPLATE_VIEW_DIRECTORY_RECORD, model );
     }
@@ -240,6 +267,98 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
                 directory.getIdWorkflow( ), request, locale, mapRecordDetailsModel, TEMPLATE_RECORD_HISTORY ) );
 
         return mapRecordDetailsModel;
+    }
+    
+    /**
+     * Populate the given model with the data associated to the filters from the request
+     * 
+     * @param mapFilterNameValues
+     *              The map which contains the name of all parameters used to filter and their values
+     * @param model
+     *              The given model to populate
+     */
+    private void populateModelWithFilterValues( Map<String, String> mapFilterNameValues, Map<String, Object> model )
+    {
+        if ( !MapUtils.isEmpty( mapFilterNameValues ) )
+        {
+            ReferenceList referenceListFilterValues = new ReferenceList( );
+
+            for ( Entry<String, String> entryFilterNameValue : mapFilterNameValues.entrySet( ) )
+            {
+                ReferenceItem referenceItem = new ReferenceItem( );
+                referenceItem.setCode( entryFilterNameValue.getKey( ) );
+                referenceItem.setName( entryFilterNameValue.getValue( ) );
+
+                referenceListFilterValues.add( referenceItem );
+            }
+
+            model.put( MARK_LIST_FILTER_VALUES, referenceListFilterValues );
+        }
+    }
+    
+    /**
+     * Fill the map which contains the values of all filters with the data of the request
+     * 
+     * @param request
+     *          The request used to retrieve the values of the parameters of the filters
+     * @return the map which associate for each filter parameter its value
+     */
+    private Map<String, String> fillFilterMapValues( HttpServletRequest request )
+    {
+        Map<String, String> mapFilterValues = new LinkedHashMap<>( );
+        
+        Set<String> setFilterParameterName = new LinkedHashSet<>( );
+        Enumeration<String> enumerationParameterName = request.getParameterNames( );
+        
+        if ( enumerationParameterName != null )
+        {
+            List<String> listFilterParameterName = Collections.list( enumerationParameterName );
+            setFilterParameterName = listFilterParameterName.stream( ).filter( strParameterName -> strParameterName.startsWith( DirectoryMultiviewConstants.PARAMETER_URL_FILTER_PREFIX ) ).collect( Collectors.toSet( ) );
+        }
+        
+        if ( !CollectionUtils.isEmpty( setFilterParameterName ) )
+        {
+            for ( String strFilterParameterName : setFilterParameterName )
+            {
+                mapFilterValues.put( strFilterParameterName.split( DirectoryMultiviewConstants.PARAMETER_URL_FILTER_PREFIX )[1], request.getParameter( strFilterParameterName ) );
+            }
+        }
+        
+        String strParameterSearchedText = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT );
+        if ( !StringUtils.isBlank( strParameterSearchedText ) )
+        {
+            mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT, strParameterSearchedText );
+        }
+        
+        String strSelectedTechnicalCode = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SELECTED_PANEL );
+        if ( !StringUtils.isBlank( strSelectedTechnicalCode ) )
+        {
+            mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_CURRENT_SELECTED_PANEL, strSelectedTechnicalCode );
+        }
+        
+        if ( request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION ) != null )
+        {
+            addSortConfigParameterValues( request );
+        }
+        
+        return mapFilterValues;
+    }
+    
+    /**
+     * Fill the map which contains the values of all filters with informations of the sort to use
+     * 
+     * @param request
+     *          The request to use to retrieve the value of the sort
+     */
+    private void addSortConfigParameterValues( HttpServletRequest request )
+    {
+        String strPositionToSort = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION );
+        String strAttributeName = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_ATTRIBUTE_NAME );
+        String strAscSort = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_ASC_VALUE );
+        
+        _mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION, strPositionToSort );
+        _mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_SORT_ATTRIBUTE_NAME, strAttributeName );
+        _mapFilterValues.put( DirectoryMultiviewConstants.PARAMETER_SORT_ASC_VALUE, strAscSort );
     }
 
     /**
@@ -377,6 +496,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
     {
         Map<String, String> mapParameters = new LinkedHashMap<>( );
         mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ) );
+        mapParameters.put( PARAMETER_BACK_FROM_ACTION, Boolean.TRUE.toString( ) );
 
         return redirect( request, VIEW_RECORD_DETAILS, mapParameters );
     }
@@ -420,7 +540,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
      */
     private String redirectToRecordList( HttpServletRequest request )
     {
-        return redirect( request, MultiDirectoryJspBean.getMultiviewBaseViewUrl( ) );
+        return redirect( request, buildRedirecUrlWithFilterValues( ) );
     }
 
     /**
@@ -450,14 +570,59 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
 
             Map<String, String> mapParameters = new LinkedHashMap<>( );
             mapParameters.put( PARAMETER_ID_DIRECTORY_RECORD, String.valueOf( nIdRecord ) );
+            mapParameters.put( PARAMETER_BACK_FROM_ACTION, Boolean.TRUE.toString( ) );
 
             return redirect( request, VIEW_RECORD_DETAILS, mapParameters );
         }
         catch( NumberFormatException exception )
         {
             AppLogService.error( "The given id directory record is not valid !" );
-
-            return redirect( request, MultiDirectoryJspBean.getMultiviewBaseViewUrl( ) );
+            
+            return redirect( request, buildRedirecUrlWithFilterValues( ) );
         }
+    }
+    
+    /**
+     * Build the url with the values of the filter selected on the list view
+     * 
+     * @return the url with the values of the filter selected on the list view
+     */
+    private String buildRedirecUrlWithFilterValues( )
+    {
+        UrlItem urlRedirectWithFilterValues = new UrlItem( MultiDirectoryJspBean.getMultiviewBaseViewUrl( ) );
+        
+        if ( !MapUtils.isEmpty( _mapFilterValues ) )
+        {
+            for ( Entry<String, String> entryFilterNameValue : _mapFilterValues.entrySet( ) )
+            {
+                String strFilterName = entryFilterNameValue.getKey( );
+                String strFilterValue = entryFilterNameValue.getValue( );
+                try
+                {
+                    strFilterValue = URLEncoder.encode( strFilterValue, StandardCharsets.UTF_8.name( ) );
+                }
+                catch ( UnsupportedEncodingException exception )
+                {
+                    AppLogService.debug( "Failed to encode url parameter value !" );
+                }
+                
+                urlRedirectWithFilterValues.addParameter( strFilterName, strFilterValue );
+            }
+        }
+        
+        return urlRedirectWithFilterValues.getUrl( );
+    }
+    
+    /**
+     * Return the default view base url for the MultiviewRecordDetailsJspBean
+     * 
+     * @return the default view base url for the MultiviewRecordDetailsJspBean
+     */
+    protected static String getMultiviewRecordDetailsBaseUrl( )
+    {
+        UrlItem urlRecordDetailsBase = new UrlItem( CONTROLLER_JSP_NAME_WITH_PATH );
+        urlRecordDetailsBase.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_RECORD_DETAILS );
+
+        return urlRecordDetailsBase.getUrl( );
     }
 }

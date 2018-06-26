@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.DirectoryRecordItem;
@@ -55,9 +56,10 @@ public final class RecordListTemplateBuilder
     private static final String TEMPLATE_MULTI_DIRECTORY_TABLE = "admin/plugins/directory/modules/multiview/includes/include_manage_multi_record_directory_table.html";
 
     // Marks
-    private static final String DIRECTORY_RECORD_ITEM_LIST = "directory_record_item_list";
-    private static final String RECORD_COLUMN_HEADER_TEMPLATE_LIST = "record_column_header_template_list";
-    private static final String RECORD_LINE_TEMPLATE_LIST = "record_line_template_list";
+    private static final String MARK_DIRECTORY_RECORD_ITEM_LIST = "directory_record_item_list";
+    private static final String MARK_RECORD_COLUMN_HEADER_TEMPLATE_LIST = "record_column_header_template_list";
+    private static final String MARK_RECORD_LINE_TEMPLATE_LIST = "record_line_template_list";
+    private static final String MARK_RECORD_DETAILS_REDIRECT_BASE_URL = "redirect_details_base_url";
 
     /**
      * Constructor
@@ -76,16 +78,18 @@ public final class RecordListTemplateBuilder
      *            The list of all DirectoryItem used to build the tab with all records
      * @param locale
      *            The locale to used for build template
+     * @param strRedirectionDetailsBaseUrl
+     *          The base url to use for the redirection on the details page
      * @param strSortUrl
      *            The url to use for sort a column
      * @return the global template of all RecordColumnDisplay objects
      */
     public static String buildTableTemplate( List<IRecordColumnDisplay> listRecordColumnDisplay, List<DirectoryRecordItem> listDirectoryRecordItem,
-            Locale locale, String strSortUrl )
+             Locale locale, String strRedirectionDetailsBaseUrl, String strSortUrl )
     {
         String strTableTemplate = StringUtils.EMPTY;
 
-        if ( listRecordColumnDisplay != null && !listRecordColumnDisplay.isEmpty( ) && listDirectoryRecordItem != null && !listDirectoryRecordItem.isEmpty( ) )
+        if ( !CollectionUtils.isEmpty( listRecordColumnDisplay ) && !CollectionUtils.isEmpty( listDirectoryRecordItem ) )
         {
             // Build the list of all record column header template
             List<String> listRecordColumnHeaderTemplate = buildRecordColumnHeaderTemplateList( listRecordColumnDisplay, locale, strSortUrl );
@@ -96,9 +100,10 @@ public final class RecordListTemplateBuilder
 
             // Build the model
             Map<String, Object> model = new LinkedHashMap<>( );
-            model.put( RECORD_COLUMN_HEADER_TEMPLATE_LIST, listRecordColumnHeaderTemplate );
-            model.put( DIRECTORY_RECORD_ITEM_LIST, listDirectoryRecordItem );
-            model.put( RECORD_LINE_TEMPLATE_LIST, listRecordColumnLineTemplate );
+            model.put( MARK_RECORD_COLUMN_HEADER_TEMPLATE_LIST, listRecordColumnHeaderTemplate );
+            model.put( MARK_DIRECTORY_RECORD_ITEM_LIST, listDirectoryRecordItem );
+            model.put( MARK_RECORD_LINE_TEMPLATE_LIST, listRecordColumnLineTemplate );
+            model.put( MARK_RECORD_DETAILS_REDIRECT_BASE_URL, strRedirectionDetailsBaseUrl );
 
             strTableTemplate = AppTemplateService.getTemplate( TEMPLATE_MULTI_DIRECTORY_TABLE, locale, model ).getHtml( );
         }

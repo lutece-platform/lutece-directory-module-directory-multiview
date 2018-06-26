@@ -44,11 +44,21 @@ import fr.paris.lutece.plugins.directory.modules.multiview.web.record.util.IReco
 public interface IRecordFilterDisplay extends IFilterable, IRecordListPosition
 {
     /**
-     * Return the value of the the template of the RecordFilterDisplay
+     * Return the value of the RecordFilterDisplay
      * 
      * @return the value of the RecordFilterDisplay
      */
     String getValue( );
+    
+    /**
+     * Return the name of the parameter associated to the RecordFilterDisplay. This name correspond to the name on which the filter 
+     * used to retrieve the value which has been selected on the screen by the user. If the name returned by this method doesn't match
+     * the name used to retrieve the value selected by the user this value will be lost during the redirection between the page of the 
+     * details of the records and the page which list all the records.
+     * 
+     * @return the name of the parameter associated to the RecordFilterDisplay
+     */
+    String getParameterName( );
 
     /**
      * Return the template of the RecordFilterDisplay

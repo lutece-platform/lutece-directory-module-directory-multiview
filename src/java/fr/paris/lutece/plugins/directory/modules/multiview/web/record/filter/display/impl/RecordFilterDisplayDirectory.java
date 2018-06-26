@@ -69,6 +69,15 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
      * {@inheritDoc}
      */
     @Override
+    public String getParameterName( )
+    {
+        return RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Map<String, Object> getFilterDisplayMapValues( HttpServletRequest request )
     {
         String strIdDirectoryValue = DEFAULT_ID_DIRECTORY;

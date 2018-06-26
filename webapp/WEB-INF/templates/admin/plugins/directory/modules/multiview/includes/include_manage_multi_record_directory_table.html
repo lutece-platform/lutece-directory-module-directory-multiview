@@ -12,7 +12,7 @@
         <tbody>
             <#if record_line_template_list?has_content>
                 <#list record_line_template_list as record_line_template>
-                    <tr data-url="jsp/admin/plugins/directory/modules/multiview/ManageDirectoryRecordDetails.jsp?view=view_record_details&id_directory_record=${record_line_template.idRecord}">
+                    <tr data-url="${redirect_details_base_url}&id_directory_record=${record_line_template.idRecord}">
                         <#if record_line_template.recordColumnCellTemplateList?has_content>
                             <#list record_line_template.recordColumnCellTemplateList as record_column_cell_template>
                                 ${record_column_cell_template}

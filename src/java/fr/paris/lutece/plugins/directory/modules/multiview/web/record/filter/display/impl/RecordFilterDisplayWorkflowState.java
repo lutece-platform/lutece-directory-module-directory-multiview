@@ -71,6 +71,15 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
      * {@inheritDoc}
      */
     @Override
+    public String getParameterName( )
+    {
+        return PARAMETER_ID_WORKFLOW_STATE;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Map<String, Object> getFilterDisplayMapValues( HttpServletRequest request )
     {
         Map<String, Object> mapFilterNameValues = new LinkedHashMap<>( );
@@ -80,7 +89,7 @@ public class RecordFilterDisplayWorkflowState extends AbstractRecordFilterDispla
                 DEFAULT_PREVIOUS_DIRECTORY_VALUE );
         String strIdWorkflowState = request.getParameter( PARAMETER_ID_WORKFLOW_STATE );
 
-        if ( nIdDirectory != nIdPreviousDirectory )
+        if ( nIdDirectory != nIdPreviousDirectory && request.getParameter( RecordDirectoryNameConstants.PARAMETER_PREVIOUS_ID_DIRECTORY ) != null )
         {
             strIdWorkflowState = StringUtils.EMPTY;
         }

@@ -10,6 +10,12 @@
 				
 			<#assign editModeValue = "ReadOnly">
 			<#assign viewNumberAttValue = "1">
+			
+			<#if list_filter_values?has_content>
+				<#list list_filter_values as filter_values>
+					<input type="hidden" name="${filter_values.code}" value="${filter_values.name}">		
+				</#list>
+			</#if>
 				
 			<div class="col-xs-12 btn-records">
 				<button class="btn btn-default" type="submit" >

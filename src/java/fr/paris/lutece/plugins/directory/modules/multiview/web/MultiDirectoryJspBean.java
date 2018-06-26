@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -70,6 +71,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.html.Paginator;
+import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * This class provides the user interface to manage form features ( manage, create, modify, remove)
@@ -108,9 +110,6 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
     // Parameters
     private static final String PARAMETER_PAGE_INDEX = "page_index";
-    private static final String PARAMETER_SORT_COLUMN_POSITION = "column_position";
-    private static final String PARAMETER_SORT_ATTRIBUTE_NAME = "sorted_attribute_name";
-    private static final String PARAMETER_SORT_ASC_VALUE = "asc_sort";
 
     // Constants
     private static final String BASE_SORT_URL_PATTERN = JSP_MANAGE_MULTIVIEW + "?current_selected_panel=%s";
@@ -175,9 +174,10 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
         // Add the template of column to the model
         String strSortUrl = String.format( BASE_SORT_URL_PATTERN, _strSelectedPanelTechnicalCode );
+        String strRedirectionDetailsBaseUrl = buildRedirectionDetailsBaseUrl( );
         List<DirectoryRecordItem> listDirectoryRecordItemToDisplay = buildDirectoryRecordItemListToDisplay( );
         String strTableTemplate = RecordListTemplateBuilder.buildTableTemplate( _listRecordColumnDisplay, listDirectoryRecordItemToDisplay, getLocale( ),
-                strSortUrl );
+                strRedirectionDetailsBaseUrl, strSortUrl );
         model.put( MARK_TABLE_TEMPLATE, strTableTemplate );
 
         // Add the list of all record panel
@@ -196,7 +196,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      */
     private boolean isPaginationAndSortNotUsed( HttpServletRequest request )
     {
-        return request.getParameter( PARAMETER_PAGE_INDEX ) == null && request.getParameter( PARAMETER_SORT_COLUMN_POSITION ) == null;
+        return request.getParameter( PARAMETER_PAGE_INDEX ) == null && request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION ) == null;
     }
 
     /**
@@ -316,7 +316,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      */
     private void sortDirectoryRecordItemList( HttpServletRequest request, List<DirectoryRecordItem> listDirectoryRecordItem )
     {
-        if ( request.getParameter( PARAMETER_SORT_COLUMN_POSITION ) != null )
+        if ( request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION ) != null )
         {
             buildDirectoryRecordItemComparatorConfiguration( request );
         }
@@ -336,17 +336,75 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      */
     private void buildDirectoryRecordItemComparatorConfiguration( HttpServletRequest request )
     {
-        String strColumnToSortPosition = request.getParameter( PARAMETER_SORT_COLUMN_POSITION );
+        String strColumnToSortPosition = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION );
         int nColumnToSortPosition = NumberUtils.toInt( strColumnToSortPosition, NumberUtils.INTEGER_MINUS_ONE );
 
-        String strSortKey = request.getParameter( PARAMETER_SORT_ATTRIBUTE_NAME );
+        String strSortKey = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_ATTRIBUTE_NAME );
 
-        String strAscSort = request.getParameter( PARAMETER_SORT_ASC_VALUE );
+        String strAscSort = request.getParameter( DirectoryMultiviewConstants.PARAMETER_SORT_ASC_VALUE );
         boolean bAscSort = Boolean.parseBoolean( strAscSort );
 
         _directoryRecordItemComparatorConfig = new DirectoryRecordItemComparatorConfig( nColumnToSortPosition, strSortKey, bAscSort );
     }
 
+    /**
+     * Build the base url to use for redirect to the page of the details of a record
+     * 
+     * @return the base url to use for redirect to the details page of a record
+     */
+    private String buildRedirectionDetailsBaseUrl( )
+    {
+        UrlItem urlRedirectionDetails = new UrlItem( MultiviewRecordDetailsJspBean.getMultiviewRecordDetailsBaseUrl( ) );
+        
+        if ( !CollectionUtils.isEmpty( _listRecordFilterDisplay ) )
+        {
+            for ( IRecordFilterDisplay recordFilterDisplay : _listRecordFilterDisplay )
+            {
+                // Add all the filters values
+                String strFilterValue = recordFilterDisplay.getValue( );
+                if ( !StringUtils.isEmpty( strFilterValue ) )
+                {
+                    String strFilterFullName = DirectoryMultiviewConstants.PARAMETER_URL_FILTER_PREFIX + recordFilterDisplay.getParameterName( );
+                    urlRedirectionDetails.addParameter( strFilterFullName, strFilterValue ); 
+                }
+            }
+        }
+        
+        // Add the search text
+        if ( !StringUtils.isEmpty( _strSearchedText ) )
+        {
+            urlRedirectionDetails.addParameter( DirectoryMultiviewConstants.PARAMETER_SEARCHED_TEXT, _strSearchedText );
+        }
+        
+        // Add the selected panel technical code
+        urlRedirectionDetails.addParameter( DirectoryMultiviewConstants.PARAMETER_SELECTED_PANEL, _strSelectedPanelTechnicalCode );
+        
+        // Add sort filter data to the url
+        addFilterSortConfigToUrl( urlRedirectionDetails );
+        
+        return urlRedirectionDetails.getUrl( );
+    }
+    
+    /**
+     * Add the information for rebuild the used sort
+     * 
+     * @param urlRedirectionDetails
+     *          The UrlItem which represent the url to use for redirect to the records details page
+     */
+    private void addFilterSortConfigToUrl( UrlItem urlRedirectionDetails )
+    {
+        if ( _directoryRecordItemComparatorConfig != null )
+        {
+            String strSortPosition = Integer.toString( _directoryRecordItemComparatorConfig.getColumnToSortPosition( ) );
+            String strAttributeName = _directoryRecordItemComparatorConfig.getSortAttributeName( );
+            String strAscSort = String.valueOf( _directoryRecordItemComparatorConfig.isAscSort( ) );
+
+            urlRedirectionDetails.addParameter( DirectoryMultiviewConstants.PARAMETER_SORT_COLUMN_POSITION, strSortPosition );
+            urlRedirectionDetails.addParameter( DirectoryMultiviewConstants.PARAMETER_SORT_ATTRIBUTE_NAME, strAttributeName );
+            urlRedirectionDetails.addParameter( DirectoryMultiviewConstants.PARAMETER_SORT_ASC_VALUE, strAscSort );
+        }
+    }
+    
     /**
      * Return the base url of the controller for the view which display the list of records
      * 
