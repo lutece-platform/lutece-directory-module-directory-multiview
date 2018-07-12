@@ -51,6 +51,7 @@ public final class RecordFilterQueryConstants
     public static final String RECORD_QUERY_BASE_PART = " id_record IN ( ";
     public static final String RECORD_QUERY_SELECT_DISTINCT_PART = " SELECT DISTINCT id_record ";
     public static final String RECORD_QUERY_FROM_PART = " FROM directory_record_field ";
+    public static final String GROUP_BY_RECORD_ID_CLAUSE = " GROUP BY record.id_record ";
 
     /**
      * Constructor

@@ -1,3 +1,5 @@
 <td>
-    ${entry_value!''}
+    <#list entry_value?split(',') as value>
+        ${value!''}<br>
+    </#list>
 </td>

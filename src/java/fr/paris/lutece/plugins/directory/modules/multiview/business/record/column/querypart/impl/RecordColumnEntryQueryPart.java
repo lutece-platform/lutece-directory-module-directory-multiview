@@ -53,7 +53,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class RecordColumnEntryQueryPart extends AbstractRecordColumnQueryPart
 {
     // Constants
-    private static final String ENTRY_SELECT_QUERY_PART = "column_%1$s.column_%1$s_value";
+    private static final String ENTRY_SELECT_QUERY_PART = "GROUP_CONCAT( DISTINCT column_%1$s.column_%1$s_value SEPARATOR ',') AS column_%1$s_value ";
     private static final String ENTRY_FROM_QUERY_PART = StringUtils.EMPTY;
     private static final String ENTRY_JOIN_SELECT_QUERY_PART = "LEFT JOIN ( SELECT record_%1$s.id_record AS id_record_%1$s, record_field_%1$s.record_field_value AS column_%1$s_value ";
     private static final String ENTRY_JOIN_FROM_QUERY_PART = " FROM directory_record_field AS record_field_%s ";
