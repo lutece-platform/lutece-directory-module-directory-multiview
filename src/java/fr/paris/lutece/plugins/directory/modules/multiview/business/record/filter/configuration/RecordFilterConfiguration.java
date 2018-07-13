@@ -50,7 +50,7 @@ public class RecordFilterConfiguration
      * @param strRecordFilterLabel
      *            The label of the RecordFilter
      */
-    public RecordFilterConfiguration( int nPosition, String strRecordFilterLabel )
+	public RecordFilterConfiguration( int nPosition, String strRecordFilterLabel )
     {
         _nPosition = nPosition;
         _strRecordFilterLabel = strRecordFilterLabel;

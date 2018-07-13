@@ -120,7 +120,7 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
     public void buildTemplate( HttpServletRequest request )
     {
         String strParameterName = buildElementName( PARAMETER_ENTRY_VALUE_PATTERN );
-        manageFilterTemplate( request, createReferenceList( ), strParameterName );
+        manageFilterTemplate( request, createReferenceList( request ), strParameterName );
     }
 
     /**
@@ -128,7 +128,7 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
      * 
      * @return the ReferenceList with all values of the Entry for an Entry column
      */
-    private ReferenceList createReferenceList( )
+    private ReferenceList createReferenceList( HttpServletRequest request )
     {
         List<IEntry> listIEntryToRetrieveValueFrom = new ArrayList<>( );
 
@@ -143,6 +143,7 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
         // Build the list of RecordFilter to use for the filter from the list of entry to search on
         List<RecordField> listRecordField = getRecordFieldList( listIEntryToRetrieveValueFrom );
         cleanListRecordField( listRecordField );
+        filterListRecordField( listRecordField, request );
         ReferenceListFactory referenceListFactory = new ReferenceListFactory( listRecordField, ENTRY_VALUE_ATTRIBUTE, ENTRY_VALUE_ATTRIBUTE, Boolean.FALSE );
 
         String strDefaultReferenceListName = getRecordFilterDisplayLabel( );
@@ -303,5 +304,16 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
         }
 
         return recordColumnResult;
+    }
+    
+    /**
+     * Process a filtration of the record field; must be overrided
+     * @param listRecordField
+     *                  The list of recordField
+     * @param request
+     */
+    protected void filterListRecordField( List<RecordField> listRecordField, HttpServletRequest request )
+    {
+        //Do nothing
     }
 }
