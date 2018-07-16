@@ -305,15 +305,16 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
 
         return recordColumnResult;
     }
-    
+
     /**
      * Process a filtration of the record field; must be overrided
+     * 
      * @param listRecordField
-     *                  The list of recordField
+     *            The list of recordField
      * @param request
      */
     protected void filterListRecordField( List<RecordField> listRecordField, HttpServletRequest request )
     {
-        //Do nothing
+        // Do nothing
     }
 }

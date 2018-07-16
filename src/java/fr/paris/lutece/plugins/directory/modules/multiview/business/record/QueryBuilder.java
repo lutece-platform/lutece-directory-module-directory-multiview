@@ -92,7 +92,7 @@ public final class QueryBuilder
 
             // Build the where query part
             buildWhereQueryPart( stringBuilderGlobalQuery, listRecordFilterQueryPart );
-        
+
             // Build the group by query part
             buildGroupByQueryPart( stringBuilderGlobalQuery );
         }
@@ -212,12 +212,13 @@ public final class QueryBuilder
             manageFilterWhereQueryParts( stringBuilderGlobalQuery, listRecordFilterQueryPart );
         }
     }
-    
+
     /**
      * Populate the Group by Query part of the global query
+     * 
      * @param stringBuilderGlobalQuery
-     *      The StringBuilder of the global query
-     * @param listRecordFilterQueryPart 
+     *            The StringBuilder of the global query
+     * @param listRecordFilterQueryPart
      */
     private static void buildGroupByQueryPart( StringBuilder stringBuilderGlobalQuery )
     {
