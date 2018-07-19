@@ -51,7 +51,7 @@ public class RecordFilterDisplayDirectoryFactory implements IRecordFilterDisplay
     {
         RecordFilterDisplayDirectory recordFilterDisplayDirectory = null;
 
-        if ( recordFilter instanceof RecordFilterDirectory )
+        if ( recordFilter.getClass().equals( RecordFilterDirectory.class ) )
         {
             recordFilterDisplayDirectory = new RecordFilterDisplayDirectory( );
             recordFilterDisplayDirectory.setRecordFilter( recordFilter );

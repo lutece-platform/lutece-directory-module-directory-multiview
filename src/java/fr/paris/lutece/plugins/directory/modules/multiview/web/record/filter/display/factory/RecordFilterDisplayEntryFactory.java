@@ -51,7 +51,7 @@ public class RecordFilterDisplayEntryFactory implements IRecordFilterDisplayFact
     {
         RecordFilterDisplayEntry recordFilterDisplayEntry = null;
 
-        if ( recordFilter instanceof RecordFilterEntry )
+        if ( recordFilter.getClass().equals( RecordFilterEntry.class ) )
         {
             recordFilterDisplayEntry = new RecordFilterDisplayEntry( );
             recordFilterDisplayEntry.setRecordFilter( recordFilter );
