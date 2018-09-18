@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -43,14 +44,14 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public class RecordFilterFactory
 {
     // Variables
-    private final List<IRecordFilter> _listRecordFilter;
+//    private final List<IRecordFilter> _listRecordFilter;
 
     /**
      * Constructor
      */
     public RecordFilterFactory( )
     {
-        _listRecordFilter = SpringContextService.getBeansOfType( IRecordFilter.class );
+//        _listRecordFilter = SpringContextService.getBeansOfType( IRecordFilter.class );
     }
 
     /**
@@ -61,7 +62,7 @@ public class RecordFilterFactory
      */
     public RecordFilterFactory( List<IRecordFilter> listRecordFilter )
     {
-        _listRecordFilter = listRecordFilter;
+//        _listRecordFilter = listRecordFilter;
     }
 
     /**
@@ -71,6 +72,6 @@ public class RecordFilterFactory
      */
     public List<IRecordFilter> buildRecordFilterList( )
     {
-        return _listRecordFilter;
+        return new ArrayList<>(SpringContextService.getContext().getBeansOfType( IRecordFilter.class ).values( ));
     }
 }

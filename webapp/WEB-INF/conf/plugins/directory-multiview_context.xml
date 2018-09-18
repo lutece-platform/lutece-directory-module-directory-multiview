@@ -50,7 +50,7 @@
     <bean id="directory-multiview.recordPanelInitializer.panelRecords" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.initializer.impl.RecordPanelRecordsInitializer"/>
     
     <!-- Filters QueryParts Factories -->    
-    <bean id="directory-multiview.recordFilter.directoryRecord.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterDirectoryQueryPartFactory"/>
+    <bean id="directory-multiview.recordFilter.directoryRecord.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterDirectoryQueryPartFactory" />
     <bean id="directory-multiview.recordFilter.entry.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterEntryQueryPartFactory"/>
     <bean id="directory-multiview.recordFilter.recordDateCreation.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterRecordDateCreationQueryPartFactory"/>
     <bean id="directory-multiview.recordFilter.workflowState.queryPart.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.querypart.factory.impl.RecordFilterWorkflowStateQueryPartFactory"/>
@@ -83,13 +83,13 @@
 	</bean>
 	
 	<!-- Filters -->
-	<bean id="directory-multiview.recordDateCreation.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterRecordDateCreation">
+	<bean id="directory-multiview.recordDateCreation.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterRecordDateCreation" scope="prototype">
 		<constructor-arg name="recordFilterConfiguration" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration" ref="directory-multiview.recordDateCreation.filterConfiguration"/>
 	</bean>
-	<bean id="directory-multiview.direcoryRecord.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterDirectory">
+	<bean id="directory-multiview.direcoryRecord.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterDirectory" scope="prototype">
 		<constructor-arg name="recordFilterConfiguration" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration" ref="directory-multiview.directoryRecord.filterConfiguration"/>
 	</bean>
-	<bean id="directory-multiview.workflowState.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterWorkflowState">
+	<bean id="directory-multiview.workflowState.filter" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.impl.RecordFilterWorkflowState" scope="prototype">
 		<constructor-arg name="recordFilterConfiguration" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.configuration.RecordFilterConfiguration" ref="directory-multiview.workflowState.filterConfiguration"/>
 	</bean>
 		
@@ -130,7 +130,7 @@
 	<bean id="directory-multiview.workflowState.column.display.factory" class="fr.paris.lutece.plugins.directory.modules.multiview.web.record.column.display.factory.RecordColumnDisplayWorkflowStateFactory"/>
 	
 	<!-- Panels -->
-	<bean id="directory-multiview.panelRecords" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.impl.RecordPanelRecords">
+	<bean id="directory-multiview.panelRecords" class="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.impl.RecordPanelRecords" scope="prototype">
 		<constructor-arg name="recordPanelConfiguration" type="fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.configuration.RecordPanelConfiguration" ref="directory-multiview.recordsPanel.panelConfiguration"/>
 	</bean>
 	
