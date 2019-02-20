@@ -173,7 +173,7 @@ public class MultiviewRecordDetailsJspBean extends AbstractJspBean
         int nIdRecord = NumberUtils.toInt( request.getParameter( PARAMETER_ID_DIRECTORY_RECORD ), NumberUtils.INTEGER_MINUS_ONE );
         Record record = _recordService.findByPrimaryKey( nIdRecord, pluginDirectoryMultiview );
 
-        boolean bRBACAuthorization = RBACService.isAuthorized( Directory.RESOURCE_TYPE, Integer.toString( nIdRecord ),
+        boolean bRBACAuthorization = RBACService.isAuthorized( Directory.RESOURCE_TYPE, String.valueOf( record.getDirectory( ).getIdDirectory( ) ),
                 DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, adminUser );
         boolean bAuthorizedRecord = _directoryMultiviewAuthorizationService.isUserAuthorizedOnRecord( request, nIdRecord );
 

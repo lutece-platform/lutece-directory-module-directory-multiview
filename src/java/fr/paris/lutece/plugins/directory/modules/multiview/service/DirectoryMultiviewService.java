@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.directory.modules.multiview.service;
 
+import fr.paris.lutece.plugins.directory.business.DirectoryFilter;
+import fr.paris.lutece.plugins.directory.business.DirectoryHome;
 import java.util.List;
 
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.column.IRecordColumn;
@@ -40,7 +42,14 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filte
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.list.RecordListFacade;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import fr.paris.lutece.plugins.directory.service.DirectoryPlugin;
+import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Service for the module-directory-multiview
@@ -54,7 +63,7 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
     public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
     {
         RecordListFacade recordListFacade = SpringContextService.getBean( RecordListFacade.BEAN_NAME );
-        recordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
+        recordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );    
     }
 
     /**
@@ -78,5 +87,26 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
         }
 
         return recordPanelDisplayActive;
+    }
+
+    /**
+     * Filter by authorized directory
+     * @param recordPanel
+     * @param request 
+     */
+    @Override
+    public void filterByAuthorizedDirectory(IRecordPanel recordPanel, HttpServletRequest request) 
+    {
+        List<Integer> listDirectory = RBACService.getAuthorizedCollection( DirectoryHome.getDirectoryList( new DirectoryFilter(), PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME ) ), DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, AdminUserService.getAdminUser( request ) )
+                .stream()
+                .map( directory -> directory.getIdDirectory( ) )
+                .collect( Collectors.toList( ) );
+
+        recordPanel.setDirectoryRecordItemList( 
+                recordPanel.getDirectoryRecordItemList()
+                    .stream()
+                    .filter( item -> listDirectory.contains( item.getIdDirectory( ) ) )
+                    .collect( Collectors.toList( ) ) );
+   
     }
 }

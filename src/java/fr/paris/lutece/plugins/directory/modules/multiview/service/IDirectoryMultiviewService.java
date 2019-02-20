@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.directory.modules.multiview.business.record.colum
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.filter.IRecordFilter;
 import fr.paris.lutece.plugins.directory.modules.multiview.business.record.panel.IRecordPanel;
 import fr.paris.lutece.plugins.directory.modules.multiview.web.record.panel.display.IRecordPanelDisplay;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Interface of the service for the module-directory-multiview
@@ -68,4 +69,11 @@ public interface IDirectoryMultiviewService
      * @return the IRecordFilterPanelDisplay which is active or null if not found
      */
     IRecordPanelDisplay findActiveRecordPanel( List<IRecordPanelDisplay> listRecordPanelDisplay );
+
+    /**
+     * Filter by authorized directory
+     * @param recordPanel
+     * @param request 
+     */
+    void filterByAuthorizedDirectory( IRecordPanel recordPanel, HttpServletRequest request );
 }

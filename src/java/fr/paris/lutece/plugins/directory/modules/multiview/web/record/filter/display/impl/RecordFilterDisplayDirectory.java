@@ -42,15 +42,19 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.business.DirectoryFilter;
 import fr.paris.lutece.plugins.directory.business.DirectoryHome;
+import fr.paris.lutece.plugins.directory.business.Directory;
 import fr.paris.lutece.plugins.directory.modules.multiview.service.DirectoryMultiviewPlugin;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.RecordDirectoryNameConstants;
 import fr.paris.lutece.plugins.directory.modules.multiview.util.ReferenceListFactory;
+import fr.paris.lutece.plugins.directory.service.DirectoryResourceIdService;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import java.util.ArrayList;
 
 /**
  * Implementation of the IRecordFilterDisplay interface for the filter on directory
@@ -104,7 +108,7 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
         String strTemplateResult = StringUtils.EMPTY;
 
         Map<String, Object> model = new LinkedHashMap<>( );
-        model.put( MARK_FILTER_LIST, createReferenceList( ) );
+        model.put( MARK_FILTER_LIST, createReferenceList( request ) );
         model.put( MARK_FILTER_LIST_VALUE, getValue( ) );
         model.put( MARK_FILTER_NAME, RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY );
         model.put( RecordDirectoryNameConstants.PARAMETER_PREVIOUS_ID_DIRECTORY, request.getParameter( RecordDirectoryNameConstants.PARAMETER_ID_DIRECTORY ) );
@@ -123,9 +127,9 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
      * 
      * @return the ReferenceList of Directory on which we can filter
      */
-    private ReferenceList createReferenceList( )
+    private ReferenceList createReferenceList( HttpServletRequest request )
     {
-        ReferenceListFactory referenceListFactory = new ReferenceListFactory( getDirectoryList( ), DIRECTORY_CODE_ATTRIBUTE, DIRECTORY_NAME_ATTRIBUTE );
+        ReferenceListFactory referenceListFactory = new ReferenceListFactory( getDirectoryList( request ), DIRECTORY_CODE_ATTRIBUTE, DIRECTORY_NAME_ATTRIBUTE );
 
         return referenceListFactory.createReferenceList( );
     }
@@ -135,17 +139,20 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
      * 
      * @return the list of all Directory associated to a workflow
      */
-    private List<Directory> getDirectoryList( )
+    private List<Directory> getDirectoryList( HttpServletRequest request )
     {
         DirectoryFilter filter = new DirectoryFilter( );
 
         List<Directory> listDirectory = DirectoryHome.getDirectoryList( filter, DirectoryMultiviewPlugin.getPlugin( ) );
 
-        if ( listDirectory != null && !listDirectory.isEmpty( ) )
+        List<Directory> listAuthorizedDirectory = new ArrayList<>( RBACService.getAuthorizedCollection ( listDirectory, DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, AdminUserService.getAdminUser( request ) ) );
+        
+        if ( listAuthorizedDirectory != null && !listAuthorizedDirectory.isEmpty( ) )
         {
-            listDirectory.sort( Comparator.comparing( Directory::getTitle, Comparator.nullsLast( Comparator.naturalOrder( ) ) ) );
+            
+            listAuthorizedDirectory.sort( Comparator.comparing( fr.paris.lutece.plugins.directory.business.Directory::getTitle, Comparator.nullsLast( Comparator.naturalOrder( ) ) ) );
         }
-
-        return listDirectory;
+        
+        return listAuthorizedDirectory;
     }
 }

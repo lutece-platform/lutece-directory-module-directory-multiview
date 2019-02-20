@@ -149,7 +149,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
         }
 
         // Build the Column for the Panel and save their values for the active panel
-        buildRecordPanelDisplayWithData( );
+        buildRecordPanelDisplayWithData( request );
 
         // Sort the list of DirectoryRecordItem of the RecordPanel with the request information
         sortDirectoryRecordItemList( request, _recordPanelDisplayActive.getDirectoryRecordItemList( ) );
@@ -252,7 +252,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
      * Build all the record panels by building their template and retrieve the data of their columns for the given list of filter and the specified text to
      * search
      */
-    private void buildRecordPanelDisplayWithData( )
+    private void buildRecordPanelDisplayWithData( HttpServletRequest request )
     {
         // Retrieve the list of all RecordFilter
         List<IRecordFilter> listRecordFilter = _listRecordFilterDisplay.stream( ).map( IRecordFilterDisplay::getRecordFilter ).collect( Collectors.toList( ) );
@@ -265,6 +265,9 @@ public class MultiDirectoryJspBean extends AbstractJspBean
             // Populate the RecordColumns from the information of the list of RecordFilterItem of the given RecordPanel
             _directoryMultiviewService.populateRecordColumns( recordPanel, _listRecordColumn, listRecordFilter );
 
+            // Filter the record with RBAC on directory
+            _directoryMultiviewService.filterByAuthorizedDirectory( recordPanel, request );
+            
             if ( StringUtils.isNotBlank( _strSearchedText ) )
             {
                 _directoryMultiviewSearchService.filterBySearchedText( recordPanel, _strSearchedText );

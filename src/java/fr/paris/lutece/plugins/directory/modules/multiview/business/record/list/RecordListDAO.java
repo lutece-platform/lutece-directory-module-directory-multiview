@@ -63,6 +63,7 @@ public class RecordListDAO implements IRecordListDAO
 {
     // Constants
     private static final String ID_RECORD_COLUMN_NAME = "id_record";
+    private static final String ID_DIRECTORY_COLUMN_NAME = "id_directory";
 
     /**
      * {@inheritDoc}
@@ -111,7 +112,7 @@ public class RecordListDAO implements IRecordListDAO
 
             daoUtil.close( );
         }
-
+        
         recordPanel.setDirectoryRecordItemList( listDirectoryRecordItem );
     }
 
@@ -154,6 +155,7 @@ public class RecordListDAO implements IRecordListDAO
     {
         DirectoryRecordItem directoryRecordItem = new DirectoryRecordItem( );
         directoryRecordItem.setIdRecord( daoUtil.getInt( ID_RECORD_COLUMN_NAME ) );
+        directoryRecordItem.setIdDirectory( daoUtil.getInt( ID_DIRECTORY_COLUMN_NAME ) );
 
         return directoryRecordItem;
     }

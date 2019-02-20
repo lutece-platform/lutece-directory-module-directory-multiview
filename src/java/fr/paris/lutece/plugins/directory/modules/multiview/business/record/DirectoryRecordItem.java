@@ -45,6 +45,7 @@ public class DirectoryRecordItem
 {
     // Variables
     private int _nIdRecord;
+    private int _nIdDirectory;
     private final List<RecordColumnCell> _listRecordColumnCell;
 
     /**
@@ -95,5 +96,23 @@ public class DirectoryRecordItem
     public void addRecordColumnCell( RecordColumnCell recordColumnCell )
     {
         _listRecordColumnCell.add( recordColumnCell );
+    }
+
+    /**
+     * Get the id directory
+     * @return the id directory
+     */
+    public int getIdDirectory() 
+    {
+        return _nIdDirectory;
+    }
+
+    /**
+     * Set the id directory
+     * @param nIdDirectory 
+     */
+    public void setIdDirectory( int nIdDirectory ) 
+    {
+        this._nIdDirectory = nIdDirectory;
     }
 }
