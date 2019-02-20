@@ -145,14 +145,16 @@ public class RecordFilterDisplayDirectory extends AbstractRecordFilterDisplay
 
         List<Directory> listDirectory = DirectoryHome.getDirectoryList( filter, DirectoryMultiviewPlugin.getPlugin( ) );
 
-        List<Directory> listAuthorizedDirectory = new ArrayList<>( RBACService.getAuthorizedCollection ( listDirectory, DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, AdminUserService.getAdminUser( request ) ) );
-        
+        List<Directory> listAuthorizedDirectory = new ArrayList<>( RBACService.getAuthorizedCollection( listDirectory,
+                DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, AdminUserService.getAdminUser( request ) ) );
+
         if ( listAuthorizedDirectory != null && !listAuthorizedDirectory.isEmpty( ) )
         {
-            
-            listAuthorizedDirectory.sort( Comparator.comparing( fr.paris.lutece.plugins.directory.business.Directory::getTitle, Comparator.nullsLast( Comparator.naturalOrder( ) ) ) );
+
+            listAuthorizedDirectory.sort( Comparator.comparing( fr.paris.lutece.plugins.directory.business.Directory::getTitle,
+                    Comparator.nullsLast( Comparator.naturalOrder( ) ) ) );
         }
-        
+
         return listAuthorizedDirectory;
     }
 }

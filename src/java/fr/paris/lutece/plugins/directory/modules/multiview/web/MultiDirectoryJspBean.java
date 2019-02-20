@@ -267,7 +267,7 @@ public class MultiDirectoryJspBean extends AbstractJspBean
 
             // Filter the record with RBAC on directory
             _directoryMultiviewService.filterByAuthorizedDirectory( recordPanel, request );
-            
+
             if ( StringUtils.isNotBlank( _strSearchedText ) )
             {
                 _directoryMultiviewSearchService.filterBySearchedText( recordPanel, _strSearchedText );

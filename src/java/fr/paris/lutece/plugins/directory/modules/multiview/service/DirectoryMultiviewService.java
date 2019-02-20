@@ -63,7 +63,7 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
     public void populateRecordColumns( IRecordPanel recordPanel, List<IRecordColumn> listRecordColumn, List<IRecordFilter> listRecordFilter )
     {
         RecordListFacade recordListFacade = SpringContextService.getBean( RecordListFacade.BEAN_NAME );
-        recordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );    
+        recordListFacade.populateRecordColumns( recordPanel, listRecordColumn, listRecordFilter );
     }
 
     /**
@@ -91,22 +91,20 @@ public class DirectoryMultiviewService implements IDirectoryMultiviewService
 
     /**
      * Filter by authorized directory
+     * 
      * @param recordPanel
-     * @param request 
+     * @param request
      */
     @Override
-    public void filterByAuthorizedDirectory(IRecordPanel recordPanel, HttpServletRequest request) 
+    public void filterByAuthorizedDirectory( IRecordPanel recordPanel, HttpServletRequest request )
     {
-        List<Integer> listDirectory = RBACService.getAuthorizedCollection( DirectoryHome.getDirectoryList( new DirectoryFilter(), PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME ) ), DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, AdminUserService.getAdminUser( request ) )
-                .stream()
-                .map( directory -> directory.getIdDirectory( ) )
-                .collect( Collectors.toList( ) );
+        List<Integer> listDirectory = RBACService
+                .getAuthorizedCollection( DirectoryHome.getDirectoryList( new DirectoryFilter( ), PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME ) ),
+                        DirectoryResourceIdService.PERMISSION_VISUALISATION_RECORD, AdminUserService.getAdminUser( request ) ).stream( )
+                .map( directory -> directory.getIdDirectory( ) ).collect( Collectors.toList( ) );
 
-        recordPanel.setDirectoryRecordItemList( 
-                recordPanel.getDirectoryRecordItemList()
-                    .stream()
-                    .filter( item -> listDirectory.contains( item.getIdDirectory( ) ) )
-                    .collect( Collectors.toList( ) ) );
-   
+        recordPanel.setDirectoryRecordItemList( recordPanel.getDirectoryRecordItemList( ).stream( )
+                .filter( item -> listDirectory.contains( item.getIdDirectory( ) ) ).collect( Collectors.toList( ) ) );
+
     }
 }

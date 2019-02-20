@@ -51,7 +51,7 @@ public class RecordFilterDisplayWorkflowStateFactory implements IRecordFilterDis
     {
         RecordFilterDisplayWorkflowState recordFilterDisplayWorkflowState = null;
 
-        if ( recordFilter.getClass().equals( RecordFilterWorkflowState.class ) )
+        if ( recordFilter.getClass( ).equals( RecordFilterWorkflowState.class ) )
         {
             recordFilterDisplayWorkflowState = new RecordFilterDisplayWorkflowState( );
             recordFilterDisplayWorkflowState.setRecordFilter( recordFilter );

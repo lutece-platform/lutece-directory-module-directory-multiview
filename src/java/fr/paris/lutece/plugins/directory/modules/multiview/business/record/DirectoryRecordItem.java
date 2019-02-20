@@ -100,18 +100,20 @@ public class DirectoryRecordItem
 
     /**
      * Get the id directory
+     * 
      * @return the id directory
      */
-    public int getIdDirectory() 
+    public int getIdDirectory( )
     {
         return _nIdDirectory;
     }
 
     /**
      * Set the id directory
-     * @param nIdDirectory 
+     * 
+     * @param nIdDirectory
      */
-    public void setIdDirectory( int nIdDirectory ) 
+    public void setIdDirectory( int nIdDirectory )
     {
         this._nIdDirectory = nIdDirectory;
     }

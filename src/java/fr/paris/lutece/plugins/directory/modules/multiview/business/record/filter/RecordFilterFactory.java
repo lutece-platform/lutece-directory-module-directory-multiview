@@ -44,14 +44,14 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public class RecordFilterFactory
 {
     // Variables
-//    private final List<IRecordFilter> _listRecordFilter;
+    // private final List<IRecordFilter> _listRecordFilter;
 
     /**
      * Constructor
      */
     public RecordFilterFactory( )
     {
-//        _listRecordFilter = SpringContextService.getBeansOfType( IRecordFilter.class );
+        // _listRecordFilter = SpringContextService.getBeansOfType( IRecordFilter.class );
     }
 
     /**
@@ -62,7 +62,7 @@ public class RecordFilterFactory
      */
     public RecordFilterFactory( List<IRecordFilter> listRecordFilter )
     {
-//        _listRecordFilter = listRecordFilter;
+        // _listRecordFilter = listRecordFilter;
     }
 
     /**
@@ -72,6 +72,6 @@ public class RecordFilterFactory
      */
     public List<IRecordFilter> buildRecordFilterList( )
     {
-        return new ArrayList<>(SpringContextService.getContext().getBeansOfType( IRecordFilter.class ).values( ));
+        return new ArrayList<>( SpringContextService.getContext( ).getBeansOfType( IRecordFilter.class ).values( ) );
     }
 }

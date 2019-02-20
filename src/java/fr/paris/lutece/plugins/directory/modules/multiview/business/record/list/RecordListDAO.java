@@ -112,7 +112,7 @@ public class RecordListDAO implements IRecordListDAO
 
             daoUtil.close( );
         }
-        
+
         recordPanel.setDirectoryRecordItemList( listDirectoryRecordItem );
     }
 

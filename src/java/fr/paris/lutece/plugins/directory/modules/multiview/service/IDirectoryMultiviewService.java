@@ -72,8 +72,9 @@ public interface IDirectoryMultiviewService
 
     /**
      * Filter by authorized directory
+     * 
      * @param recordPanel
-     * @param request 
+     * @param request
      */
     void filterByAuthorizedDirectory( IRecordPanel recordPanel, HttpServletRequest request );
 }

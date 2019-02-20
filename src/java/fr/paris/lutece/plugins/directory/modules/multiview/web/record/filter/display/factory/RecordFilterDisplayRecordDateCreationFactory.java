@@ -51,7 +51,7 @@ public class RecordFilterDisplayRecordDateCreationFactory implements IRecordFilt
     {
         RecordFilterDisplayRecordDateCreation recordFilterDisplayRecordDateCreation = null;
 
-        if ( recordFilter.getClass().equals( RecordFilterRecordDateCreation.class ) )
+        if ( recordFilter.getClass( ).equals( RecordFilterRecordDateCreation.class ) )
         {
             recordFilterDisplayRecordDateCreation = new RecordFilterDisplayRecordDateCreation( );
             recordFilterDisplayRecordDateCreation.setRecordFilter( recordFilter );
