@@ -48,7 +48,7 @@
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-directory</artifactId>
-            <version>[4.0.12-SNAPSHOT,)</version>
+            <version>[4.0.13-SNAPSHOT,)</version>
             <type>lutece-plugin</type>
         </dependency>
     </dependencies>

@@ -234,7 +234,7 @@ public class RecordFilterDisplayEntry extends AbstractRecordFilterDisplay
                 RecordFieldFilter recordFieldFilter = new RecordFieldFilter( );
                 recordFieldFilter.setIdEntry( entry.getIdEntry( ) );
 
-                listRecordFieldResult.addAll( RecordFieldHome.getRecordFieldList( recordFieldFilter, DirectoryMultiviewPlugin.getPlugin( ) ) );
+                listRecordFieldResult.addAll( RecordFieldHome.getRecordFieldList( recordFieldFilter, false, false, false, DirectoryMultiviewPlugin.getPlugin( ) ) );
             }
         }
 
