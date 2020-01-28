@@ -164,7 +164,7 @@ public class RecordColumnEntryQueryPart extends AbstractRecordColumnQueryPart
     }
 
     /**
-     * Return the position of the RecordColumn or {@linkplain NumberUtils.INTEGER_MINUS_ONE} if doesn't exist
+     * Return the position of the RecordColumn or NumberUtils.INTEGER_MINUS_ONE if doesn't exist
      * 
      * @return the position of the RecordColumn
      */

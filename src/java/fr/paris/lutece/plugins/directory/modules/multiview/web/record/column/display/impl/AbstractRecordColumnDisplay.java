@@ -123,9 +123,9 @@ public abstract class AbstractRecordColumnDisplay implements IRecordColumnDispla
     public abstract String buildRecordColumnCellTemplate( RecordColumnCell recordColumnCell, Locale locale );
 
     /**
-     * Return the title of the RecordColumn or {@linkplain StringUtils.EMPTY} if not found
+     * Return the title of the RecordColumn or StringUtils.EMPTY if not found
      * 
-     * @return the title of the RecordColumn or {@linkplain StringUtils.EMPTY} if not found
+     * @return the title of the RecordColumn or StringUtils.EMPTY if not found
      */
     protected String getRecordColumnTitle( )
     {
